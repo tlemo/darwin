@@ -32,7 +32,7 @@ class Exception : public std::exception {
   //! Constructs an exception object, optionally formatting the message
   //! \sa core::format()
   template <class... ARGS>
-  Exception(const char* message, ARGS&&... args)
+  explicit Exception(const char* message, ARGS&&... args)
       : message_(core::format(message, std::forward<ARGS>(args)...)) {}
 
   // move only
