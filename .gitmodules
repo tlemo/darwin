@@ -1,0 +1,6 @@
+[submodule "gtest"]
+	path = third_party/gtest/src
+	url = https://github.com/tlemo/googletest.git
+[submodule "pugixml"]
+	path = third_party/pugixml/src
+	url = https://github.com/tlemo/pugixml.git
