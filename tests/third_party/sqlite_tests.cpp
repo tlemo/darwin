@@ -33,7 +33,7 @@ struct SqliteTest : public testing::Test {
 
     if (sqlite3_open(path_.c_str(), &db_) != SQLITE_OK) {
       CHECK(sqlite3_close(db_) == SQLITE_OK);
-      throw core::Exception("Failed to open the database");
+      throw core::Exception("Failed to open the database: %s", path_);
     }
   }
 
