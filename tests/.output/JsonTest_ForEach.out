@@ -1,0 +1,31 @@
+> {"everything":42}
+> true
+> [1,0,2]
+> "Niels"
+> null
+> {"currency":"USD","value":"42.99"}
+> 3.141
+-------------------------------------
+> {"everything":42}
+> true
+> [1,0,2]
+> "Niels"
+> null
+> {"currency":"USD","value":"42.99"}
+> 3.141
+-------------------------------------
+'answer'='{"everything":42}'
+'happy'='true'
+'list'='[1,0,2]'
+'name'='"Niels"'
+'nothing'='null'
+'object'='{"currency":"USD","value":"42.99"}'
+'pi'='3.141'
+-------------------------------------
+'answer'='{"everything":42}'
+'happy'='true'
+'list'='[1,0,2]'
+'name'='"Niels"'
+'nothing'='null'
+'object'='{"currency":"USD","value":"42.99"}'
+'pi'='3.141'

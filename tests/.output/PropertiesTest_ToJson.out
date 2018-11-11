@@ -1,0 +1,14 @@
+{
+  "acc_operator": "add",
+  "custom": "{ 0, 0 }",
+  "custom_init": "{ 1, -100 }",
+  "extra_values": "{ 0, 10, 20, 30 }",
+  "flag": "false",
+  "layers": "{  }",
+  "max_value": "100",
+  "more_values": "{ 1, 2, 3 }",
+  "name": " <\"El chupacabra\"> ",
+  "resolution": "0.3",
+  "values": "{ -1, 0, 0.1, 0.2, 1.001 }",
+  "values_init": "{ -1, -2, -3 }"
+}

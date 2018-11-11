@@ -1,0 +1,12 @@
+
+
+
+%%
+% no arguments %
+'Hello world!'
+'~~~~ Hello world! ~~~~'
+' ... Hello world! ... '
+prefix 'Foo' %=123 sufix
+'               #####' + '*****               '
+'       Hello world! '
+[+00032.12345123]

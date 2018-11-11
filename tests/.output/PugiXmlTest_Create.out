@@ -1,0 +1,35 @@
+default format options
+----------------------------
+<?xml version="1.0"?>
+<child key="value">
+	<variable value="123.0" value="20" value2="aaa" value2=" foo_bar " value2="0.0" value="1" value="2" value="3" value="4">
+		<!--haha, i'm just a comment, ignore me    -->
+	</variable>
+	<content>... this is the content...  </content>
+	<content attribute="value">1234567890</content>
+	<content />
+</child>
+
+custom format options
+----------------------------
+<?xml version="1.0"?>
+<child
+  key="value">
+  <variable
+    value="123.0"
+    value="20"
+    value2="aaa"
+    value2=" foo_bar "
+    value2="0.0"
+    value="1"
+    value="2"
+    value="3"
+    value="4">
+    <!--haha, i'm just a comment, ignore me    -->
+  </variable>
+  <content>... this is the content...  </content>
+  <content
+    attribute="value">1234567890</content>
+  <content />
+</child>
+

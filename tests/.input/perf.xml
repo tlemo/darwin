@@ -1,0 +1,40 @@
+<perf>
+    <title name="test" build="123"/>
+    <epoch year="1">
+        <checkpoint name="eval_generation" timestamp="123">
+            <thread name="main">
+                <timing name="ann_reset" value="0.15"/>
+                <timing name="ann_fw_prop" value="0.891"/>
+                <timing name="sim" value="1.2"/>
+            </thread>
+            <thread name="worker_0">
+                <timing name="ann_reset" value="0.15"/>
+                <timing name="ann_fw_prop" value="0.891"/>
+                <timing name="sim" value="1.2"/>
+            </thread>
+            <thread name="worker_1">
+                <timing name="ann_reset" value="0.15"/>
+                <timing name="ann_fw_prop" value="0.891"/>
+                <timing name="sim" value="1.2"/>
+            </thread>
+        </checkpoint>
+        <summary timestamp="123"> epoch summary </summary>
+    </epoch>
+    <epoch year="2">
+        <checkpoint name="eval_generation" timestamp="123">
+            <thread name="main">
+                <timing name="ann_reset" value="0.1"/>
+                <timing name="ann_fw_prop" value="0.8"/>
+            </thread>
+            <thread name="worker_0">
+                <timing name="ann_reset" value="0.151"/>
+                <timing name="ann_fw_prop" value="0.89"/>
+            </thread>
+            <thread name="worker_1">
+                <timing name="ann_reset" value="4.15"/>
+                <timing name="ann_fw_prop" value="1.891"/>
+            </thread>
+        </checkpoint>
+        <summary timestamp="123"> epoch summary </summary>
+    </epoch>
+</perf>

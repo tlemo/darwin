@@ -1,0 +1,36 @@
+name: 'max_value'
+description: 'Maximum value'
+
+name: 'resolution'
+description: 'Display resolution'
+
+name: 'name'
+description: 'Name'
+
+name: 'flag'
+description: 'A boolean flag'
+
+name: 'acc_operator'
+description: 'Enumeration'
+
+name: 'layers'
+description: 'Hidden layer sizes'
+
+name: 'values'
+description: 'Vector of real values'
+
+name: 'more_values'
+description: 'More real values ...'
+
+name: 'extra_values'
+description: 'Even more real values ...'
+
+name: 'values_init'
+description: 'Almost natural use of initializer lists'
+
+name: 'custom'
+description: 'A simple custom type'
+
+name: 'custom_init'
+description: 'Initialized custom type'
+

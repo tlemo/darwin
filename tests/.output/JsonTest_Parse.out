@@ -1,0 +1,5 @@
+{
+    "happy": true,
+    "pi": 3.141
+}
+Exception: [json.exception.parse_error.101] parse error at 18: syntax error - invalid literal; last read: '"happy: true, "p'; expected ':'

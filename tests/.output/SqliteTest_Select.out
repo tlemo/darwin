@@ -1,0 +1,25 @@
+key = a
+flag = 1
+value = 1.0
+
+key = b
+flag = 2
+value = 2.2
+
+key = c
+flag = 3
+value = 3.3
+
+----------------------------------
+type = table
+name = foo
+tbl_name = foo
+rootpage = 2
+sql = CREATE TABLE foo(key text primary key, flag int default 0, value real)
+
+type = index
+name = sqlite_autoindex_foo_1
+tbl_name = foo
+rootpage = 3
+sql = NULL
+

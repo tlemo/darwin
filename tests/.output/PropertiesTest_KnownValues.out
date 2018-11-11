@@ -1,0 +1,12 @@
+max_value:
+resolution:
+name:
+flag: 'false' 'true'
+acc_operator: 'add' 'divide' 'multiply' 'subtract'
+layers:
+values:
+more_values:
+extra_values:
+values_init:
+custom:
+custom_init:

@@ -1,0 +1,80 @@
+Loading xml document: No error
+---------------------------------------
+node '' ()
+  node 'perf' ()
+    node 'title' ()
+      attribute 'name'='test'
+      attribute 'build'='123'
+    node 'epoch' ()
+      attribute 'year'='1'
+      node 'checkpoint' ()
+        attribute 'name'='eval_generation'
+        attribute 'timestamp'='123'
+        node 'thread' ()
+          attribute 'name'='main'
+          node 'timing' ()
+            attribute 'name'='ann_reset'
+            attribute 'value'='0.15'
+          node 'timing' ()
+            attribute 'name'='ann_fw_prop'
+            attribute 'value'='0.891'
+          node 'timing' ()
+            attribute 'name'='sim'
+            attribute 'value'='1.2'
+        node 'thread' ()
+          attribute 'name'='worker_0'
+          node 'timing' ()
+            attribute 'name'='ann_reset'
+            attribute 'value'='0.15'
+          node 'timing' ()
+            attribute 'name'='ann_fw_prop'
+            attribute 'value'='0.891'
+          node 'timing' ()
+            attribute 'name'='sim'
+            attribute 'value'='1.2'
+        node 'thread' ()
+          attribute 'name'='worker_1'
+          node 'timing' ()
+            attribute 'name'='ann_reset'
+            attribute 'value'='0.15'
+          node 'timing' ()
+            attribute 'name'='ann_fw_prop'
+            attribute 'value'='0.891'
+          node 'timing' ()
+            attribute 'name'='sim'
+            attribute 'value'='1.2'
+      node 'summary' ()
+        attribute 'timestamp'='123'
+        node '' ( epoch summary )
+    node 'epoch' ()
+      attribute 'year'='2'
+      node 'checkpoint' ()
+        attribute 'name'='eval_generation'
+        attribute 'timestamp'='123'
+        node 'thread' ()
+          attribute 'name'='main'
+          node 'timing' ()
+            attribute 'name'='ann_reset'
+            attribute 'value'='0.1'
+          node 'timing' ()
+            attribute 'name'='ann_fw_prop'
+            attribute 'value'='0.8'
+        node 'thread' ()
+          attribute 'name'='worker_0'
+          node 'timing' ()
+            attribute 'name'='ann_reset'
+            attribute 'value'='0.151'
+          node 'timing' ()
+            attribute 'name'='ann_fw_prop'
+            attribute 'value'='0.89'
+        node 'thread' ()
+          attribute 'name'='worker_1'
+          node 'timing' ()
+            attribute 'name'='ann_reset'
+            attribute 'value'='4.15'
+          node 'timing' ()
+            attribute 'name'='ann_fw_prop'
+            attribute 'value'='1.891'
+      node 'summary' ()
+        attribute 'timestamp'='123'
+        node '' ( epoch summary )

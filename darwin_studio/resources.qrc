@@ -1,0 +1,34 @@
+<RCC>
+    <qresource prefix="/">
+        <file>resources/connect.png</file>
+        <file>resources/view_refresh.png</file>
+        <file>resources/zoom_fit_best.png</file>
+        <file>resources/zoom_in.png</file>
+        <file>resources/zoom_out.png</file>
+        <file>resources/close.png</file>
+        <file>resources/gears.png</file>
+        <file>resources/mc_pause.png</file>
+        <file>resources/mc_play.png</file>
+        <file>resources/mc_skip_forward.png</file>
+        <file>resources/minus.png</file>
+        <file>resources/pause.png</file>
+        <file>resources/play.png</file>
+        <file>resources/plus.png</file>
+        <file>resources/refresh.png</file>
+        <file>resources/reset.png</file>
+        <file>resources/stop.png</file>
+        <file>resources/revert.png</file>
+        <file>resources/undo.png</file>
+        <file>resources/darwin.png</file>
+        <file>resources/blue_user.png</file>
+        <file>resources/flip_horizontal.png</file>
+        <file>resources/flip_sides.png</file>
+        <file>resources/flip_vertical.png</file>
+        <file>resources/mc_backward.png</file>
+        <file>resources/mc_eject.png</file>
+        <file>resources/mc_forward.png</file>
+        <file>resources/mc_skip_backward.png</file>
+        <file>resources/mc_stop.png</file>
+        <file>resources/white_user.png</file>
+    </qresource>
+</RCC>

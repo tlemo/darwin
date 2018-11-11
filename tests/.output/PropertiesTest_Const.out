@@ -1,0 +1,12 @@
+max_value = '100' ['100'] # Maximum value
+resolution = '0.3' ['0.3'] # Display resolution
+name = ' <"El chupacabra"> ' [' <"El chupacabra"> '] # Name
+flag = 'false' ['false'] # A boolean flag
+acc_operator = 'add' ['add'] # Enumeration
+layers = '{  }' ['{  }'] # Hidden layer sizes
+values = '{ -1, 0, 0.1, 0.2, 1.001 }' ['{ -1, 0, 0.1, 0.2, 1.001 }'] # Vector of real values
+more_values = '{ 1, 2, 3 }' ['{ 1, 2, 3 }'] # More real values ...
+extra_values = '{ 0, 10, 20, 30 }' ['{ 0, 10, 20, 30 }'] # Even more real values ...
+values_init = '{ -1, -2, -3 }' ['{ -1, -2, -3 }'] # Almost natural use of initializer lists
+custom = '{ 0, 0 }' ['{ 0, 0 }'] # A simple custom type
+custom_init = '{ 1, -100 }' ['{ 1, -100 }'] # Initialized custom type

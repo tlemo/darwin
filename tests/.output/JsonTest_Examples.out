@@ -1,0 +1,25 @@
+{"everything":42}
+42.99
+{"answer":{"everything":42},"happy":true,"list":[1,0,2],"name":"Niels","nothing":null,"object":{"currency":"USD","value":42.99},"pi":3.141}
+{
+  "answer": {
+    "everything": 42
+  },
+  "happy": true,
+  "list": [
+    1,
+    0,
+    2
+  ],
+  "name": "Niels",
+  "nothing": null,
+  "object": {
+    "currency": "USD",
+    "value": "42.99"
+  },
+  "pi": 3.141
+}
+[]
+null
+{}
+[["currency","USD"],["value",42.99]]
