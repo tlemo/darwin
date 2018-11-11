@@ -95,8 +95,8 @@ void PropertiesWidget::autoSizeColumns() {
 }
 
 bool PropertiesWidget::isModified() const {
-  for (const auto& child : children()) {
-    if (dynamic_cast<PropertyItemBase*>(child)->isModified()) {
+  for (int i = 0; i < topLevelItemCount(); ++i) {
+    if (dynamic_cast<PropertyItemBase*>(topLevelItem(i))->isModified()) {
       return true;
     }
   }

@@ -34,8 +34,9 @@ void ExperimentWindow::startingExperiment() {
   ui->properties->setEnabled(false);
   ui->properties->clearSelection();
 
-  if (ui->properties->isModified())
+  if (ui->properties->isModified()) {
     experiment_->newVariation();
+  }
 }
 
 void ExperimentWindow::newExperiment() {

@@ -131,6 +131,7 @@ void Experiment::prepareForEvolution() {
 
 void Experiment::save() {
   if (!db_variation_) {
+    core::log("Creating a new experiment variation ...\n");
     json json_config;
     json_config["core"] = core_config_->toJson();
     json_config["domain"] = domain_config_->toJson();
