@@ -186,12 +186,14 @@ class Factory : public darwin::PopulationFactory {
     switch (hint) {
       case darwin::ComplexityHint::Minimal:
         config->hidden_layers = {};
-        config->larva_age = 1;
-        config->old_age = 5;
         break;
 
       case darwin::ComplexityHint::Balanced:
+        config->hidden_layers = { 8 };
+        break;
+
       case darwin::ComplexityHint::Extra:
+        config->hidden_layers = { 12, 8, 5};
         break;
     }
     return config;
