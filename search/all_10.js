@@ -1,0 +1,26 @@
+var searchData=
+[
+  ['radianstodegrees',['radiansToDegrees',['../namespacemath.html#a1c4edc2296102d638579d6e8a69c4915',1,'math']]],
+  ['randomize',['randomize',['../namespaceann.html#a4947d519e002b1111c62d95fc4877ed4',1,'ann']]],
+  ['rankgenotypes',['rankGenotypes',['../classdarwin_1_1_population.html#a855f3c44d92a3af4597ad2620c5bfc95',1,'darwin::Population']]],
+  ['reexp',['ReExp',['../namespaceann.html#a1075b962a0c710dcafad8d7b7e9a1da3a40b7b292a4f039fc9ff3c91e1b1774f6',1,'ann']]],
+  ['registermonitor',['registerMonitor',['../classdarwin_1_1_progress_manager.html#aae0bf568662fcfc5bf1d3dd02d1a7b0e',1,'darwin::ProgressManager']]],
+  ['registry',['Registry',['../structdarwin_1_1_registry.html',1,'darwin::Registry'],['../namespaceregistry.html',1,'registry'],['../namespacedarwin.html#a38b95032ce2bce955453b3be5a81b223',1,'darwin::registry()']]],
+  ['registry_5fui',['registry_ui',['../namespaceregistry__ui.html',1,'']]],
+  ['relu',['ReLU',['../namespaceann.html#a1075b962a0c710dcafad8d7b7e9a1da3add10d919fa85cf27fc78c0e06fe0b378',1,'ann']]],
+  ['rematches',['rematches',['../structconquest_1_1_config.html#acbcbf2bae5a0e3258358b7b0410db17e',1,'conquest::Config::rematches()'],['../structtic__tac__toe_1_1_config.html#af2f5d9838a21cc2113b2eea8307190d9',1,'tic_tac_toe::Config::rematches()']]],
+  ['reportprogress',['reportProgress',['../classdarwin_1_1_progress_monitor.html#ae9a9b4c8cf9e43edabfa4bb9c346717b',1,'darwin::ProgressMonitor::reportProgress()'],['../classdarwin_1_1_progress_manager.html#a9e272e5d253c53062347ac036ea528a9',1,'darwin::ProgressManager::reportProgress()']]],
+  ['reset',['reset',['../classdarwin_1_1_evolution.html#a662f88f2b9c09576e7b0de849185603d',1,'darwin::Evolution::reset()'],['../classdarwin_1_1_evolution.html#a78d415aac62c8554b49d834dd2377e23a336945c0abed98bc268cb9ceaf3749b9',1,'darwin::Evolution::Reset()'],['../namespaceann.html#a017463770aba7abbb0c164b8c3e19dae',1,'ann::reset(std::vector&lt; T &gt; &amp;v)'],['../namespaceann.html#a0a2b138902e02421fee1f2d66158880e',1,'ann::reset(Matrix &amp;matrix)']]],
+  ['resetstate',['resetState',['../classdarwin_1_1_brain.html#a88b4e6b0a3170c7e211078f9b0a21641',1,'darwin::Brain']]],
+  ['resettodefaultvalues',['resetToDefaultValues',['../classcore_1_1_property_set.html#aba45789d3af1fd0d77c89856d2e633fb',1,'core::PropertySet']]],
+  ['resultset',['ResultSet',['../classdb_1_1_result_set.html',1,'db']]],
+  ['reverse_5fmove_5fdrain',['reverse_move_drain',['../structharvester_1_1_config.html#a3322d0b3565210378fae4b3e4f8414b1',1,'harvester::Config']]],
+  ['robot_5fsize',['robot_size',['../structharvester_1_1_config.html#a437ae0c0dfc50133c532f474accce252',1,'harvester::Config']]],
+  ['rollback',['rollback',['../classdb_1_1_connection.html#ae687fcf5819db06b84e19731702705c8',1,'db::Connection::rollback()'],['../classdb_1_1_transaction_scope.html#a9e7ee96e0ebd0169ca073ea1ab9bdaf6',1,'db::TransactionScope::rollback()']]],
+  ['rotation_5fspeed',['rotation_speed',['../structharvester_1_1_config.html#a59641f3ba387d107fbfcad3e11589668',1,'harvester::Config']]],
+  ['roundweight',['roundWeight',['../namespaceann.html#adc05226e652e098f6ca919e6f37307f5',1,'ann']]],
+  ['row',['Row',['../classdb_1_1_result_set.html#a011ed7b0d774e173fcf4c0d6d030b95c',1,'db::ResultSet']]],
+  ['rowid',['RowId',['../namespacedb.html#a0845f2bb472b4e673de2d2f977fb1da8',1,'db']]],
+  ['run',['run',['../classdarwin_1_1_evolution.html#adf26c34b1ec11fa92c8472f8578f461c',1,'darwin::Evolution']]],
+  ['running',['Running',['../classdarwin_1_1_evolution.html#aecca7c341a0fff28b85ad9d13d380ad9a5bda814c4aedb126839228f1a3d92f09',1,'darwin::Evolution']]]
+];
