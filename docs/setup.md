@@ -56,24 +56,30 @@ For more information see the official Qt Creator's [Autotests][7] documentation.
 
 ### Linux
 
-- Tested with GCC 6.x+ 
-- Add -jN, where N is the number of CPU cores.
+- Requires GCC 6.x+ 
+- In Qt Creator, under `Projects / Build / Build Steps` (_note that you need to do this
+    for every build flavor_):
+    - Optional (speed up the builds): Set `make / Make arguments` += `-jN`
+        (_where N is the number of available CPU cores_)
 - If the build fails complaining that `<gl/gl.h>` can't be found, try
     `sudo apt install libgl-dev` (noticed on Ubuntu 18.04)
 
 ### macOS
 
-The C++ toolchain included with the current Xcode (10.0) is lacking some of the required C++ 17 features and/or libraries. One workaround is to manually install Clang 7.x or newer:
+The C++ toolchain included with the current Xcode (10.0) is lacking some of the required 
+C++ 17 features and/or libraries. One workaround is to manually install Clang 7.x+:
 
 - Install [Homebrew][6]
 - `brew install llvm`
 - `brew install doxygen` (Optional, used to build the reference documentation)
-- In Qt Creator, under `Projects / Build / Build Steps` (note that you need to do this for every build flavor):
+- In Qt Creator, under `Projects / Build / Build Steps` (_note that you need to do this
+    for every build flavor_):
     - `qmake / Additional arguments` +=  
         `QMAKE_CXX=/usr/local/opt/llvm/bin/clang++`
         `QMAKE_CC=/usr/local/opt/llvm/bin/clang`
         `QMAKE_LIBDIR=/usr/local/opt/llvm/lib`
-    - `make / Make arguments` += `-jN` (_where N is the number of available CPU cores_)
+    - Optional (speed up the builds): Set `make / Make arguments` += `-jN`
+        (_where N is the number of available CPU cores_)
 
 [1]: http://www.doxygen.nl
 [2]: https://visualstudio.microsoft.com
