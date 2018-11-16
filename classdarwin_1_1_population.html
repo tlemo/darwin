@@ -147,7 +147,13 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 </div><div class="memdoc">
 
 <p>Creates a new generation based on the current one. </p>
-<p>It assumes that the fitness values are assigned for all genotypes in the population, as evaluated by the domain implementation (see <a class="el" href="classdarwin_1_1_domain.html#a4cb34f4fd48169976ab46aa6c4939b9f" title="Assigns fitness values to every genotype. ">Domain::evaluatePopulation</a>) </p>
+<p>It assumes that:</p><ol type="1">
+<li>The fitness values are assigned for all genotypes in the population, as evaluated by the domain implementation (see <a class="el" href="classdarwin_1_1_domain.html#a4cb34f4fd48169976ab46aa6c4939b9f" title="Assigns fitness values to every genotype. ">Domain::evaluatePopulation()</a>)</li>
+<li>The genotypes are ranked (see <a class="el" href="classdarwin_1_1_population.html#a855f3c44d92a3af4597ad2620c5bfc95" title="Sort (descending) the genotypes by fitness. ">Population::rankGenotypes()</a>)</li>
+</ol>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classdarwin_1_1_domain.html#a4cb34f4fd48169976ab46aa6c4939b9f" title="Assigns fitness values to every genotype. ">Domain::evaluatePopulation()</a> </dd>
+<dd>
+<a class="el" href="classdarwin_1_1_population.html#a855f3c44d92a3af4597ad2620c5bfc95" title="Sort (descending) the genotypes by fitness. ">Population::rankGenotypes()</a> </dd></dl>
 
 </div>
 </div>

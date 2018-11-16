@@ -164,6 +164,10 @@ virtual unique_ptr&lt; <a class="el" href="classcore_1_1_property_set.html">core
 </div><div class="memdoc">
 
 <p>Assigns fitness values to every genotype. </p>
+<p>Having a good fitness function is a key part of evolutionary algorithms:</p><ul>
+<li>Perhaps obvious, the fitness value should accurately estimate the quality of a particular solution</li>
+<li>A "smooth" distribution is preferable since it provides a gradient which can guide the incremental search in the solutions space. (ex. if most fitness values are 1.0 or 0.0 it's hard to know which genotypes are good candidates for reproduction)</li>
+</ul>
 <dl class="section return"><dt>Returns</dt><dd><code>true</code> if the evolution goal was reached </dd></dl>
 
 <p>Implements <a class="el" href="classdarwin_1_1_domain.html#a4cb34f4fd48169976ab46aa6c4939b9f">darwin::Domain</a>.</p>
