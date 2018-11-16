@@ -186,8 +186,13 @@ class Population : public core::NonCopyable {
   
   //! Creates a new generation based on the current one
   //! 
-  //! It assumes that the fitness values are assigned for all genotypes in the population,
-  //! as evaluated by the domain implementation (see Domain::evaluatePopulation)
+  //! It assumes that:
+  //! 1. The fitness values are assigned for all genotypes in the population,
+  //!   as evaluated by the domain implementation (see Domain::evaluatePopulation())
+  //! 2. The genotypes are ranked (see Population::rankGenotypes())
+  //! 
+  //! \sa Domain::evaluatePopulation()
+  //! \sa Population::rankGenotypes()
   //!
   virtual void createNextGeneration() = 0;
 };
@@ -236,6 +241,15 @@ class Domain : public core::NonCopyable {
   virtual size_t outputs() const = 0;
 
   //! Assigns fitness values to every genotype
+  //! 
+  //! Having a good fitness function is a key part of evolutionary algorithms:
+  //! - Perhaps obvious, the fitness value should accurately estimate the quality of a
+  //!   particular solution
+  //! - A "smooth" distribution is preferable since it provides a gradient which can
+  //!   guide the incremental search in the solutions space.
+  //!   (ex. if most fitness values are 1.0 or 0.0 it's hard to know which genotypes are
+  //!   good candidates for reproduction)
+  //! 
   //! \returns `true` if the evolution goal was reached
   virtual bool evaluatePopulation(Population* population) const = 0;
 
