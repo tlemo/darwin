@@ -87,9 +87,9 @@ Here's how all these pieces fit together:
 
 ![Key Interfaces](docs/darwin_overview.svg)
 
-Using these interfaces, the general structure of the evolution driver code is:
-(this evolution loop, with a few minor additions, is provided by the Darwin
-Framework so we don't have to re-implement it for every experiment)
+Using these interfaces, the general structure of the evolution driver code is illustrated
+below (this evolution top loop, with a few additions, is provided by the Darwin
+Framework so we don't have to re-implement it for every new experiment)
 
 ```cpp
 population->createPrimordialGeneration(population_size);
@@ -147,7 +147,7 @@ bindings). For post-processing experiment results there are a few Python
 
 ---
 
-> This is not an officially supported Google product.
+This is not an officially supported Google product.
 
 [1]: https://tlemo.github.io/darwin
 [2]: https://en.wikipedia.org/wiki/Neuroevolution
