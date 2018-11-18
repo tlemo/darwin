@@ -15,7 +15,7 @@
 #error This is used exclusively for generating the documentation (not a real header)
 
 //! \namespace darwin
-//! \brief The core Darwin Neuroevolution Framework definitions
+//! \brief Key Darwin Neuroevolution Framework interfaces
 
 //! \namespace ann
 //! \brief Artificial Neural Networks (ANN) building blocks
@@ -24,7 +24,7 @@
 //! \brief Generic utilities
 
 //! \namespace core_ui
-//! \brief The Generic utilities used to build UIs
+//! \brief Reusable components for building UIs
 
 //! \namespace db
 //! \brief Low level database utilities

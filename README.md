@@ -27,7 +27,7 @@ a iterative fashion: each iteration (_generation_) attempts to combine (_crossov
 most promising traits (_selection_) from the previous one, occasionally making random
 tweaks (_mutation_):
 
-![Evolve!](docs/evolution.svg)
+![Evolve!](docs/images/evolution.svg)
 
 At a high level, the generic structure of an evolutionary algorithm can be as simple as:
 
@@ -85,7 +85,7 @@ the domain selected in the active experiment.
 
 Here's how all these pieces fit together:
 
-![Key Interfaces](docs/darwin_overview.svg)
+![Key Interfaces](docs/images/darwin_overview.svg)
 
 Using these interfaces, the general structure of the evolution driver code is illustrated
 below (this evolution top loop, with a few additions, is provided by the Darwin
@@ -125,14 +125,14 @@ is started, a new [Trace] is created to record the history/results of the experi
 The database schema models the structural relationships, while the actual configuration
 values and results are stored as JSON strings (the fields highlighted in green):
 
-![Darwin Data Model](docs/darwin_data_model.svg)
+![Darwin Data Model](docs/images/darwin_data_model.svg)
 
 ## Darwin Studio
 
 Darwin Studio is a visual integrated environment used to create, run and visualize
 experiments:
 
-![Darwin Studio](docs/darwin_studio.png)
+![Darwin Studio](docs/images/darwin_studio.png)
 
 Currently it's the main user-facing tool included in the Darwin Framework, although there
 are plans to add additional options (for example a command line driver and/or Python
