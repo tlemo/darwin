@@ -3,6 +3,7 @@
 
 [General Prerequisites](#general-prerequisites)
 [Getting the Source Code](#getting-the-source-code)
+[Building & Running Darwin Studio](#building--running-darwin-studio)
 [Running the Tests](#running-the-tests)
 [Qt Creator Tips](#qt-creator-tips)
 [Windows](#windows)
@@ -17,7 +18,7 @@
 
 ### Getting the Source Code
 
-Darwin source tree uses [Git submodules][5] so add the `--recursive` flag to `git clone`:
+Darwin source tree uses [Git submodules][5] so add `--recursive` to `git clone`:
 
 `git clone --recursive <Darwin repository>`
 
@@ -27,6 +28,20 @@ Or, the submodules can be initialized after a regular clone:
 git submodule init
 git submodule update
 ```
+
+### Building & Running Darwin Studio
+
+> First, review the platform-specific instructions below.
+
+1. Open the `darwin.pro` project in Qt Creator (the first time the project is loaded it
+    will prompt you to select a kit)
+
+2. Select the `darwin_studio` subproject (Tip: experiments run much faster with the
+    `Release` build flavor, although `Debug` provides a better debugging experience)
+
+    ![Select Project](images/qtcreator_select_project.png)
+
+3. `Build / Run` (default keyboard shortcut is Ctrl+R)
 
 ### Running the Tests
 
