@@ -1,14 +1,14 @@
 
 # Setup Instructions
 
-[General Prerequisites](#general-prerequisites)
-[Getting the Source Code](#getting-the-source-code)
-[Building & Running Darwin Studio](#building--running-darwin-studio)
-[Running the Tests](#running-the-tests)
-[Qt Creator Tips](#qt-creator-tips)
-[Windows](#windows)
-[Linux](#linux)
-[macOS](#macos)
+- [General Prerequisites](#general-prerequisites)
+- [Getting the Source Code](#getting-the-source-code)
+- [Building & Running Darwin Studio](#building--running-darwin-studio)
+- [Running the Tests](#running-the-tests)
+- [Qt Creator Tips](#qt-creator-tips)
+- [Windows](#windows)
+- [Linux](#linux)
+- [macOS](#macos)
 
 ### General Prerequisites
 
