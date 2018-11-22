@@ -18,7 +18,8 @@ SOURCES += \
     parallel_for_each.cpp \
     thread_pool.cpp \
     ann_dynamic.cpp \
-    utils.cpp
+    utils.cpp \
+    modules.cpp
 
 HEADERS += \
     ann_utils.h \
@@ -37,13 +38,13 @@ HEADERS += \
     database.h \
     format.h \
     universe.h \
-    factory.h \
     evolution.h \
     ann_activation_functions.h \
     parallel_for_each.h \
     thread_pool.h \
     utils.h \
-    pp_utils.h
+    pp_utils.h \
+    modules.h
     
 #------------------------------------------------------------------------------
 # third_party/Sqlite3

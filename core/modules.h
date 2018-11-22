@@ -55,4 +55,10 @@ class ImplementationsSet : public core::NonCopyable {
   map<string, unique_ptr<INTERFACE>> factories_;
 };
 
+//! Root of the polymorphic factories
+class ModuleFactory : public core::NonCopyable {
+ public:
+  virtual ~ModuleFactory() = default;
+};
+
 }  // namespace core

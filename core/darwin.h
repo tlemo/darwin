@@ -16,7 +16,7 @@
 
 #include "ann_utils.h"
 #include "utils.h"
-#include "factory.h"
+#include "modules.h"
 #include "properties.h"
 #include "stringify.h"
 #include "universe.h"
@@ -199,14 +199,8 @@ class Population : public core::NonCopyable {
 
 class Domain;
 
-//! Root of the polymorphic factories
-class Factory : public core::NonCopyable {
- public:
-  virtual ~Factory() = default;
-};
-
 //! Interface to a population factory
-class PopulationFactory : public Factory {
+class PopulationFactory : public core::ModuleFactory {
  public:
   //! Creates a new population
   virtual unique_ptr<Population> create(const core::PropertySet& config,
@@ -262,7 +256,7 @@ class Domain : public core::NonCopyable {
 };
 
 //! Interface to the domain factory
-class DomainFactory : public Factory {
+class DomainFactory : public core::ModuleFactory {
  public:
   //! Creates a new domain
   virtual unique_ptr<Domain> create(const core::PropertySet& config) = 0;
@@ -275,7 +269,7 @@ class DomainFactory : public Factory {
 //! 
 //! \todo Move to core_ui?
 //! 
-class DomainUiFactory : public Factory {
+class DomainUiFactory : public core::ModuleFactory {
  public:
   //! Creates a new sandbox window, if available (or return nullptr)
   virtual QWidget* newSandboxWindow() = 0;
