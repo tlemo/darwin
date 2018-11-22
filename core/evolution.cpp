@@ -233,6 +233,8 @@ bool Evolution::newExperiment(shared_ptr<Experiment> experiment,
   core::log("New experiment (population size = %d)\n\n",
             experiment->setup()->population_size);
 
+  CHECK(config.max_generations >= 0);
+  
   {
     unique_lock<mutex> guard(lock_);
 
@@ -281,16 +283,25 @@ void Evolution::mainThread() {
 
   // the "evolution as a service" loop
   for (;;) {
+    bool canceled = false;
+    
     try {
       evolutionCycle();
+      core::log("\nEvolution complete.\n\n");
     } catch (const pp::CanceledException&) {
-      core::log("Restarting the evolution lifecycle...\n\n");
-
+      core::log("\nRestarting the evolution lifecycle...\n\n");
+      canceled = true;
+    }
+    
+    // stop the evolution
+    {
       unique_lock<mutex> guard(lock_);
-      CHECK(state_ == State::Canceling);
-      state_ = State::Canceled;
+      CHECK(!canceled || state_ == State::Canceling);
+      state_ = State::Stopped;
       state_cv_.notify_all();
     }
+
+    events.publish(EventFlag::StateChanged | EventFlag::EndEvolution);
   }
 }
 
@@ -312,7 +323,7 @@ void Evolution::evolutionCycle() {
   core::log("\nEvolution started:\n\n");
 
   // main evolution loop
-  for (bool first_generation = true;;) {
+  for (int generation = 0; generation < config_.max_generations; ++generation) {
     shared_ptr<core::PropertySet> calibration_fitness;
 
     // explicit scope for the top generation stage
@@ -321,12 +332,14 @@ void Evolution::evolutionCycle() {
           "Evolve one generation", 0, EvolutionStage::Annotation::Generation);
 
       // create the generation's genotypes
-      if (first_generation) {
+      if (generation == 0) {
         population_->createPrimordialGeneration(experiment_->setup()->population_size);
-        first_generation = false;
       } else {
         population_->createNextGeneration();
       }
+      
+      // TODO: remove generation tracking from darwin::Population
+      CHECK(population_->generation() == generation);
 
       // domain specific evaluation of the genotypes
       if (domain_->evaluatePopulation(population_.get()))
@@ -484,6 +497,8 @@ void Evolution::run() {
       state_ = State::Running;
       state_cv_.notify_all();
       update = true;
+    } else {
+      CHECK(state_ == State::Running);
     }
   }
 
@@ -496,20 +511,28 @@ bool Evolution::reset() {
   {
     unique_lock<mutex> guard(lock_);
 
-    if (state_ == State::Initializing) {
-      // nothing to reset
-      return true;
-    } else if (state_ != State::Paused) {
-      // the evolution must be paused before it can be reset
-      return false;
-    } else {
-      // requesting cancelation
-      state_ = State::Canceling;
-      state_cv_.notify_all();
+    switch (state_) {
+      case State::Initializing:
+        // nothing to reset
+        return true;
+
+      case State::Paused:
+        // requesting cancelation
+        state_ = State::Canceling;
+        state_cv_.notify_all();
+        break;
+
+      case State::Stopped:
+        // already stopped
+        break;
+
+      default:
+        // the evolution must be paused/stopped before it can be reset
+        return false;
     }
 
     // waiting for the cancelation confirmation
-    while (state_ != State::Canceled)
+    while (state_ != State::Stopped)
       state_cv_.wait(guard);
 
     // reset the evolution state
@@ -523,7 +546,7 @@ bool Evolution::reset() {
     state_cv_.notify_all();
   }
 
-  core::log("The evolution was reset.\n\n");
+  core::log("\nThe evolution was reset.\n");
   events.publish(EventFlag::StateChanged | EventFlag::Reset);
   return true;
 }

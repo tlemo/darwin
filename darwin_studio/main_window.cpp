@@ -206,6 +206,7 @@ void MainWindow::updateUi() {
 
   bool experiment_running = false;
   bool have_domain_ui = false;
+  bool runnable = false;
 
   CHECK(universe_ || !experiment_);
   CHECK(experiment_ || !active_experiment_);
@@ -216,7 +217,11 @@ void MainWindow::updateUi() {
   switch (snapshot.state) {
     case darwin::Evolution::State::Initializing:
     case darwin::Evolution::State::Paused:
-    case darwin::Evolution::State::Canceled:
+      experiment_running = false;
+      runnable = true;
+      break;
+
+    case darwin::Evolution::State::Stopped:
       experiment_running = false;
       break;
 
@@ -229,10 +234,11 @@ void MainWindow::updateUi() {
     default:
       FATAL("unexpected state");
   }
+  
   CHECK(!experiment_running || active_experiment_);
 
   // enable/disable UI actions
-  ui->action_run->setEnabled(experiment_ && !experiment_running);
+  ui->action_run->setEnabled(experiment_ && runnable);
   ui->action_pause->setEnabled(active_experiment_ && experiment_running);
   ui->action_reset->setEnabled(experiment_ && !experiment_running);
   ui->action_open->setEnabled(!experiment_running);
@@ -255,8 +261,8 @@ void MainWindow::updateUi() {
     case darwin::Evolution::State::Canceling:
       state_text = "Canceling...";
       break;
-    case darwin::Evolution::State::Canceled:
-      state_text = "Canceled";
+    case darwin::Evolution::State::Stopped:
+      state_text = "Stopped";
       break;
     case darwin::Evolution::State::Paused:
       state_text = "Paused";

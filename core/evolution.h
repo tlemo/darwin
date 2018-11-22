@@ -102,6 +102,11 @@ inline auto customStringify(core::TypeTag<ProfileInfoKind>) {
 
 //! Settings for an evolution experiment run
 struct EvolutionConfig : public core::PropertySet {
+  PROPERTY(max_generations,
+           int,
+           1000000,
+           "Automatically stop the experiment after the max number of generations");
+
   PROPERTY(save_champion_genotype,
            bool,
            true,
@@ -280,17 +285,18 @@ class Evolution : public core::NonCopyable,
     Pausing,        //!< Evolution pause requested
     Paused,         //!< Evolution experiment is paused
     Canceling,      //!< Evolution cancel/stop requested
-    Canceled        //!< Evolution experiment was canceled/stopped
+    Stopped         //!< Evolution experiment was canceled/stopped
   };
 
   //! Event hints (as bit flags)
   enum EventFlag : uint32_t {
-    StateChanged = 1,     //!< The evolution State has changed
-    ProgressUpdate = 2,   //!< Progress update notification
-    EndGeneration = 4,    //!< Generation end notification
-    NewExperiment = 8,    //!< New experiment notification
-    Reset = 16,           //!< Experiment reset notification
-    All = EventFlag(-1),  //!< Combination of all event flags
+    StateChanged = 1 << 0,    //!< The evolution State has changed
+    ProgressUpdate = 1 << 1,  //!< Progress update notification
+    EndGeneration = 1 << 2,   //!< Generation end notification
+    EndEvolution = 1 << 3,    //!< Evolution end notification
+    NewExperiment = 1 << 4,   //!< New experiment notification
+    Reset = 1 << 5,           //!< Experiment reset notification
+    All = EventFlag(-1),      //!< Combination of all event flags
   };
 
   //! Evolution events notifications

@@ -52,10 +52,14 @@ struct SmokeTest : public testing::TestWithParam<ExperimentConfig> {
   }
 
   void runEvolution(const string& config_name,
-                    const darwin::EvolutionConfig& evolution_config) {
+                    const darwin::EvolutionConfig& evolution_config,
+                    darwin::Evolution::State termination_state) {
     auto evolution = darwin::evolution();
     const auto& experiment_conf = GetParam();
 
+    // the event callback will pause the evolution
+    // when it reaches the target generation
+    // (unless the evolution terminates normally first)
     auto events_subscription = evolution->events.subscribe([&](uint32_t hints) {
       if ((hints & darwin::Evolution::EventFlag::EndGeneration) != 0) {
         auto snapshot = evolution->snapshot();
@@ -81,15 +85,16 @@ struct SmokeTest : public testing::TestWithParam<ExperimentConfig> {
     auto experiment =
         make_shared<darwin::Experiment>(name, experiment_setup, nullopt, universe.get());
 
+    // start the experiment
     evolution->newExperiment(experiment, evolution_config);
     evolution->run();
     evolution->waitForState(darwin::Evolution::State::Running);
 
-    // the event callback will pause the evolution
-    // when it reaches the target generation
-    evolution->waitForState(darwin::Evolution::State::Paused);
+    // wait for termination
+    evolution->waitForState(termination_state);
 
-    evolution->reset();
+    // reset the experiment
+    ASSERT_TRUE(evolution->reset());
     evolution->waitForState(darwin::Evolution::State::Initializing);
   }
 
@@ -98,20 +103,22 @@ struct SmokeTest : public testing::TestWithParam<ExperimentConfig> {
 
 TEST_P(SmokeTest, BalancedResults) {
   darwin::EvolutionConfig evolution_config;
+  evolution_config.max_generations = 100;
   evolution_config.save_champion_genotype = true;
   evolution_config.fitness_information = darwin::FitnessInfoKind::FullCompressed;
   evolution_config.save_genealogy = false;
   evolution_config.profile_information = darwin::ProfileInfoKind::GenerationOnly;
-  runEvolution("balanced", evolution_config);
+  runEvolution("balanced", evolution_config, darwin::Evolution::State::Paused);
 }
 
 TEST_P(SmokeTest, DetailedResults) {
   darwin::EvolutionConfig evolution_config;
+  evolution_config.max_generations = 3;
   evolution_config.save_champion_genotype = true;
   evolution_config.fitness_information = darwin::FitnessInfoKind::FullRaw;
   evolution_config.save_genealogy = true;
   evolution_config.profile_information = darwin::ProfileInfoKind::AllStages;
-  runEvolution("detailed", evolution_config);
+  runEvolution("detailed", evolution_config, darwin::Evolution::State::Stopped);
 }
 
 vector<ExperimentConfig> everyDomainPopulationCombination() {

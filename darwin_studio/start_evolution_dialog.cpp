@@ -16,6 +16,7 @@
 #include "ui_start_evolution_dialog.h"
 
 #include <QPushButton>
+#include <QMessageBox>
 
 StartEvolutionDialog::StartEvolutionDialog(QWidget* parent)
     : QDialog(parent,
@@ -31,4 +32,13 @@ StartEvolutionDialog::StartEvolutionDialog(QWidget* parent)
 
 StartEvolutionDialog::~StartEvolutionDialog() {
   delete ui;
+}
+
+void StartEvolutionDialog::done(int result) {
+  if (result == QDialog::Accepted && evolution_config_.max_generations < 0) {
+    QMessageBox::warning(
+        this, "Invalid configuration value", "Max generations must be a positive value");
+    return;
+  }
+  QDialog::done(result);
 }

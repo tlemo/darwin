@@ -34,6 +34,8 @@ class StartEvolutionDialog : public QDialog {
 
   const auto& evolutionConfig() const { return evolution_config_; }
 
+  void done(int result) override;
+
  private:
   Ui::StartEvolutionDialog* ui;
 
