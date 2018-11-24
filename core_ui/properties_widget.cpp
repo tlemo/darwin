@@ -45,11 +45,10 @@ bool PropertyItemBase::isModified() const {
 }
 
 void PropertyItemBase::valueChanged() {
-  // highlight the item
+  // highlight the modified item's name
   auto new_font = font(0);
   new_font.setBold(isModified());
   setFont(0, new_font);
-  setFont(1, new_font);  
 
   // propagate the notification to the parent, if any
   auto parent_item = parent();
@@ -123,7 +122,7 @@ PropertiesSectionItem::PropertiesSectionItem(const string& name)
   setBackgroundColor(0, QColor(200, 220, 255));
 }
 
-PropertyItem::PropertyItem(PropertiesSectionItem* section, const string& name)
+PropertyItem::PropertyItem(PropertyItemBase* section, const string& name)
     : PropertyItemBase(section) {
   setText(0, QString::fromStdString(name));
 }
@@ -132,14 +131,45 @@ bool BoundPropertyItem::isModified() const {
   return property_->value() != original_value_ || PropertyItemBase::isModified();
 }
 
-BoundPropertyItem::BoundPropertyItem(PropertiesSectionItem* section,
-                                     core::Property* property)
+void BoundPropertyItem::valueChanged() {
+  // highlight the value column if the *value* was modified
+  auto new_font = font(0);
+  new_font.setBold(property_->value() != original_value_);
+  setFont(1, new_font);  
+
+  updateChildProperties();
+
+  PropertyItemBase::valueChanged();
+}
+
+BoundPropertyItem::BoundPropertyItem(PropertyItemBase* section, core::Property* property)
     : PropertyItemBase(section), property_(property) {
   original_value_ = property_->value();
   setText(0, QString::fromStdString(property_->name()));
   setText(1, QString::fromStdString(original_value_));
   setToolTip(0, QString::fromStdString(property_->description()));
   setFlags(flags() | Qt::ItemIsEditable);
+  updateChildProperties();
+}
+
+void BoundPropertyItem::updateChildProperties() {
+  // first, hide current child items (if any)
+  for (int i = 0; i < childCount(); ++i) {
+    child(i)->setHidden(true);
+  }
+
+  // populate/show the active child property set (if any)
+  auto child_property_set = property_->childPropertySet();
+  if (child_property_set != nullptr) {
+    for (core::Property* property : child_property_set->properties()) {
+      auto& child_item = child_properties_[property];
+      if (child_item == nullptr) {
+        child_item = new BoundPropertyItem(this, property);
+      }
+      child_item->setHidden(false);
+    }
+    setExpanded(true);
+  }
 }
 
 void PropertyItemDelegate::onComboBoxUpdate(int) {

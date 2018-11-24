@@ -22,6 +22,7 @@
 #include <QTreeWidgetItem>
 
 #include <string>
+#include <unordered_map>
 using namespace std;
 
 namespace core_ui {
@@ -44,7 +45,7 @@ class PropertyItemBase : public QTreeWidgetItem {
   virtual bool isModified() const;
 
   //! Notify the item that it's value (or a sub-item) have been changed
-  void valueChanged();
+  virtual void valueChanged();
   
  protected:
   explicit PropertyItemBase(PropertyItemBase* parent) : QTreeWidgetItem(parent) {}
@@ -81,7 +82,7 @@ class PropertyItem : public PropertyItemBase {
   void setValue(const string& value) { setValue(QString::fromStdString(value)); }
 
  private:
-  PropertyItem(PropertiesSectionItem* section, const string& name);
+  PropertyItem(PropertyItemBase* section, const string& name);
 };
 
 //! A property item which is bound to a core::Property
@@ -94,13 +95,18 @@ class BoundPropertyItem : public PropertyItemBase {
   
   //! Returns `true` if it was set to a value different than the original one
   bool isModified() const override;
+  
+  void valueChanged() override;
 
  private:
-  BoundPropertyItem(PropertiesSectionItem* section, core::Property* property);
+  BoundPropertyItem(PropertyItemBase* section, core::Property* property);
+
+  void updateChildProperties();
 
  private:
   core::Property* property_ = nullptr;
   string original_value_;
+  unordered_map<core::Property*, BoundPropertyItem*> child_properties_;
 };
 
 class PropertyItemDelegate : public QStyledItemDelegate {
