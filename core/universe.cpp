@@ -60,39 +60,39 @@ void Universe::initializeUniverse(const string& path) {
   // TODO: a way to define both the db schema and the db objects simultaneously
 
   new_db.exec(R"(create table Experiment(
-        id integer primary key,
-        comment text,
-        timestamp int,
-        name text unique,
-        last_variation_id int,
-        last_activity_timestamp int,
-        setup text))");
+    id integer primary key,
+    comment text,
+    timestamp int,
+    name text unique,
+    last_variation_id int,
+    last_activity_timestamp int,
+    setup text))");
 
   new_db.exec(R"(create table Variation(
-        id integer primary key,
-        comment text,
-        timestamp int,
-        previous_id int,
-        experiment_id int,
-        name text,
-        config text))");
+    id integer primary key,
+    comment text,
+    timestamp int,
+    previous_id int,
+    experiment_id int,
+    name text,
+    config text))");
 
   new_db.exec(R"(create table Trace(
-        id integer primary key,
-        comment text,
-        timestamp int,
-        variation_id int,
-        evolution_config text))");
+    id integer primary key,
+    comment text,
+    timestamp int,
+    variation_id int,
+    evolution_config text))");
 
   new_db.exec(R"(create table Generation(
-        id integer primary key,
-        timestamp int,
-        trace_id int,
-        generation int,
-        summary text,
-        details text,
-        genotypes text,
-        profile text))");
+    id integer primary key,
+    timestamp int,
+    trace_id int,
+    generation int,
+    summary text,
+    details text,
+    genotypes text,
+    profile text))");
 
   transaction.commit();
 }
@@ -108,10 +108,10 @@ db::RowId Universe::createVariationHelper(db::RowId experiment_id,
   // insert the new variation
   db_.exec(
       R"(insert into Variation(
-            timestamp,
-            experiment_id,
-            previous_id,
-            config)
+          timestamp,
+          experiment_id,
+          previous_id,
+          config)
         values(?, ?, ?, ?))",
       now_timestamp,
       experiment_id,
@@ -123,8 +123,8 @@ db::RowId Universe::createVariationHelper(db::RowId experiment_id,
   // update the experiment's last_variation_id & last_activity_timestamp
   db_.exec(
       R"(update experiment set
-            last_variation_id = ?,
-            last_activity_timestamp = ?
+          last_variation_id = ?,
+          last_activity_timestamp = ?
         where id = ?)",
       new_variation_id,
       now_timestamp,
@@ -156,12 +156,12 @@ unique_ptr<DbExperiment> Universe::newExperiment(
     // create the experiment entry
     db_.exec(
         R"(insert into Experiment(
-                timestamp,
-                last_variation_id,
-                last_activity_timestamp,
-                name,
-                setup) 
-            values(?, ?, ?, ?, ?))",
+            timestamp,
+            last_variation_id,
+            last_activity_timestamp,
+            name,
+            setup) 
+          values(?, ?, ?, ?, ?))",
         now_timestamp,
         base_variation_id,
         now_timestamp,
@@ -186,15 +186,15 @@ unique_ptr<DbExperiment> Universe::newExperiment(
 unique_ptr<DbExperiment> Universe::loadExperiment(db::RowId experiment_id) const {
   auto results = db_.exec<db::RowId, string, int64_t, string, string, db::RowId, int64_t>(
       R"(select
-                id,
-                comment,
-                timestamp,
-                name,
-                setup,
-                last_variation_id,
-                last_activity_timestamp
-            from experiment
-                where id = ?)",
+          id,
+          comment,
+          timestamp,
+          name,
+          setup,
+          last_variation_id,
+          last_activity_timestamp
+        from experiment
+          where id = ?)",
       experiment_id);
 
   CHECK(results.size() == 1);
@@ -223,14 +223,14 @@ bool Universe::findExperiment(const string& name) const {
 vector<DbExperiment> Universe::experimentsList() const {
   auto results = db_.exec<db::RowId, string, int64_t, string, string, db::RowId, int64_t>(
       R"(select
-                id,
-                comment,
-                timestamp,
-                name,
-                setup,
-                last_variation_id,
-                last_activity_timestamp
-            from experiment)");
+          id,
+          comment,
+          timestamp,
+          name,
+          setup,
+          last_variation_id,
+          last_activity_timestamp
+        from experiment)");
 
   vector<DbExperiment> experiments;
   for (const auto& [id, comment, timestamp, name, setup, last_variation_id,
@@ -281,15 +281,15 @@ unique_ptr<DbExperimentVariation> Universe::loadVariation(db::RowId variation_id
   auto results =
       db_.exec<db::RowId, string, int64_t, db::RowId, db::RowId, string, string>(
           R"(select
-            id,
-            comment,
-            timestamp,
-            previous_id,
-            experiment_id,
-            name,
-            config
-        from variation
-            where id = ?)",
+              id,
+              comment,
+              timestamp,
+              previous_id,
+              experiment_id,
+              name,
+              config
+            from variation
+              where id = ?)",
           variation_id);
 
   CHECK(results.size() == 1);
@@ -325,10 +325,10 @@ unique_ptr<DbEvolutionTrace> Universe::newTrace(db::RowId variation_id,
     // insert the new trace
     db_.exec(
         R"(insert into Trace(
-                timestamp,
-                variation_id,
-                evolution_config)
-            values(?, ?, ?))",
+            timestamp,
+            variation_id,
+            evolution_config)
+          values(?, ?, ?))",
         int64_t(time(nullptr)),
         variation_id,
         evolution_config);
@@ -339,11 +339,11 @@ unique_ptr<DbEvolutionTrace> Universe::newTrace(db::RowId variation_id,
     int64_t now_timestamp = time(nullptr);
     db_.exec(
         R"(update experiment set
-                last_activity_timestamp = ?
-            where id in
-                (select experiment_id
-                from variation
-                where variation.id = ?))",
+            last_activity_timestamp = ?
+          where id in
+            (select experiment_id
+            from variation
+            where variation.id = ?))",
         now_timestamp,
         variation_id);
 
@@ -358,13 +358,13 @@ void Universe::newGeneration(const DbGeneration& db_generation) {
 
   db_.exec(
       R"(insert into Generation(
-            timestamp,
-            trace_id,
-            generation,
-            summary,
-            details,
-            genotypes,
-            profile)
+          timestamp,
+          trace_id,
+          generation,
+          summary,
+          details,
+          genotypes,
+          profile)
         values(?, ?, ?, ?, ?, ?, ?))",
       int64_t(time(nullptr)),
       db_generation.trace_id,
