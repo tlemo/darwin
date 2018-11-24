@@ -1,0 +1,13 @@
+{
+  "basic": {
+    "bool_flag": "false",
+    "max_value": "100"
+  },
+  "empty": {},
+  "extra": {
+    "name": "Darwin",
+    "scale": "1",
+    "values": "{  }"
+  },
+  "tag": "basic"
+}

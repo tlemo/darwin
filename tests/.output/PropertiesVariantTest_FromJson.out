@@ -1,0 +1,11 @@
+active tag: extra
+  values = '{  }'
+  scale = '2.5'
+  name = 'Lemo'
+---
+active tag: empty
+---
+active tag: basic
+  bool_flag = 'false'
+  max_value = '100'
+---

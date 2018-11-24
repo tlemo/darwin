@@ -273,18 +273,18 @@ TEST(PropertiesTest, FromJson) {
   core_test::TestCaseOutput output;
 
   const string json_str = R"(
-        {
-          "max_value": "256",
-          "resolution": "0.05",
-          "name": " <\"El chupacabra\"> ",
-          "layers": "{ 10, 20, 30 }",
-          "values": "{ }",
-          
-          "acc_operator_ex": "multiply",
-          "flag_ex": "true",
-          "acc_operator_ex": "add",
-          "custom_ex": "{ 1000, 2000 }"
-        })";
+    {
+      "max_value": "256",
+      "resolution": "0.05",
+      "name": " <\"El chupacabra\"> ",
+      "layers": "{ 10, 20, 30 }",
+      "values": "{ }",
+      
+      "acc_operator_ex": "multiply",
+      "flag_ex": "true",
+      "acc_operator_ex": "add",
+      "custom_ex": "{ 1000, 2000 }"
+    })";
 
   TestProperties test;
 

@@ -7,6 +7,7 @@ SOURCES += \
     properties_tests.cpp \
     format_tests.cpp \
     compressed_fitness_tests.cpp \
-    parallel_for_tests.cpp
+    parallel_for_tests.cpp \
+    properties_variant_tests.cpp
     
 include(../tests_common.pri)
