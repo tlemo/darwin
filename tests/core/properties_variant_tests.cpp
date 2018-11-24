@@ -72,6 +72,22 @@ struct TestProperties : public core::PropertySet {
   VARIANT(another_variant, TestVariant, VariantTag::Empty, "Another variant property");
 };
 
+TEST(PropertiesVariantTest, CopyFrom) {
+  TestVariant src_variant;
+  src_variant.basic.bool_flag = true;
+  src_variant.basic.max_value = 5000;
+  src_variant.extra.name = "Foo";
+  src_variant.selectCase(VariantTag::Basic);
+
+  TestVariant dst_variant;
+  dst_variant.copyFrom(src_variant);
+  
+  EXPECT_EQ(dst_variant.tag(), VariantTag::Basic);
+  EXPECT_EQ(dst_variant.basic.bool_flag, true);
+  EXPECT_EQ(dst_variant.basic.max_value, 5000);
+  EXPECT_EQ(dst_variant.extra.name, "Foo");
+}
+
 TEST(PropertiesVariantTest, ToJson) {
   core_test::TestCaseOutput output;
 

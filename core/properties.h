@@ -248,6 +248,7 @@ class PropertySetVariant : public core::NonCopyable {
   void copyFrom(const PropertySetVariant& src) {
     CHECK(typeid(*this) == typeid(src));
     CHECK(cases_.size() == src.cases_.size());
+    tag_ = src.tag_;
     for (const auto& [case_tag, case_value] : src.cases_) {
       cases_.at(case_tag)->copyFrom(*case_value);
     }

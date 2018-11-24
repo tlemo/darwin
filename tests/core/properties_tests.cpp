@@ -229,6 +229,26 @@ TEST(PropertiesTest, EmptyProperties) {
   fprintf(output, "%s", json_obj.dump(2).c_str());
 }
 
+TEST(PropertiesTest, CopyFrom) {
+  TestProperties src;
+  src.max_value = 5;
+  src.name = " *** lemo 123 *** ";
+  src.acc_operator = Operator::Multiply;
+  src.layers = { 16, 8, 4 };
+  src.custom.x = 64;
+  src.custom.y = 16;
+  
+  TestProperties dst;
+  dst.copyFrom(src);
+  
+  EXPECT_EQ(dst.max_value, 5);
+  EXPECT_EQ(dst.name, " *** lemo 123 *** ");
+  EXPECT_EQ(dst.acc_operator, Operator::Multiply);
+  EXPECT_EQ(dst.layers.size(), 3);
+  EXPECT_EQ(dst.custom.x, 64);
+  EXPECT_EQ(dst.custom.y, 16);
+}
+
 TEST(PropertiesTest, JsonRoundtrip) {
   TestProperties source;
   source.max_value = 5;
