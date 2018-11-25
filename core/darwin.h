@@ -159,8 +159,6 @@ class Genotype {
 //! \sa Domain
 //! \sa PopulationFactory
 //! 
-//! \todo Make this usable with ds::for_each?
-//! 
 class Population : public core::NonCopyable {
  public:
   Population() = default;
@@ -195,6 +193,10 @@ class Population : public core::NonCopyable {
   //! \sa Population::rankGenotypes()
   //!
   virtual void createNextGeneration() = 0;
+  
+  //! Array subscript operator (required for pp::for_each)
+  Genotype* operator[](size_t index) { return genotype(index); }
+  const Genotype* operator[](size_t index) const { return genotype(index); }
 };
 
 class Domain;
