@@ -76,6 +76,12 @@ class Property {
   //! Copies values between properties of the same runtime type
   //! \throws std::bad_cast if the types don't match
   virtual void copyFrom(const Property& src) = 0;
+  
+  //! Serialize the property value to a json object
+  virtual json toJson() const = 0;
+  
+  //! Deserialize the property value from a json object
+  virtual void fromJson(const json& json_obj) = 0;
 
   //! Type-safe accessor to the native property value
   //! \throws core::Exception if the runtime type doesn't match
@@ -114,7 +120,11 @@ class TypedProperty : public Property {
   vector<string> knownValues() const override { return core::knownValues<T>(); }
 
   void copyFrom(const Property& src) override;
-
+  
+  json toJson() const override { return value(); }
+  
+  void fromJson(const json& json_obj) override { setValue(json_obj); }
+  
   const T& nativeValue() const { return *value_; }
 
  private:
@@ -291,6 +301,10 @@ class VariantProperty : public Property {
   vector<string> knownValues() const override { return core::knownValues<TagType>(); }
 
   void copyFrom(const Property& src) override;
+  
+  json toJson() const override { return variant_->toJson(); }
+  
+  void fromJson(const json& json_obj) override { variant_->fromJson(json_obj); }
 
  private:
   TagType default_case_;
@@ -420,8 +434,9 @@ class PropertySet : public core::NonCopyable {
   //!
   json toJson() const {
     json json_obj = json::object();
-    for (const auto& property : properties_)
-      json_obj[property->name()] = property->value();
+    for (const auto& property : properties_) {
+      json_obj[property->name()] = property->toJson();
+    }
     return json_obj;
   }
 
@@ -438,7 +453,7 @@ class PropertySet : public core::NonCopyable {
     for (const auto& property : properties_) {
       auto json_it = json_obj.find(property->name());
       if (json_it != json_obj.end()) {
-        property->setValue(json_it.value());
+        property->fromJson(json_it.value());
         at_least_one_value = true;
       } else
         property->setValue(property->defaultValue());

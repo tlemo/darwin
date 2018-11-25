@@ -88,6 +88,30 @@ TEST(PropertiesVariantTest, CopyFrom) {
   EXPECT_EQ(dst_variant.extra.name, "Foo");
 }
 
+TEST(PropertiesVariantTest, EmbeddedCopyFrom) {
+  TestProperties src_properties;
+  src_properties.start_value = 1000;
+  src_properties.test_variant.basic.bool_flag = true;
+  src_properties.test_variant.basic.max_value = 5000;
+  src_properties.test_variant.extra.name = "Foo";
+  src_properties.test_variant.selectCase(VariantTag::Basic);
+  src_properties.another_variant.basic.max_value = 12345;
+  src_properties.another_variant.extra.scale = 5.0f;
+  src_properties.another_variant.selectCase(VariantTag::Extra);
+
+  TestProperties dst_properties;
+  dst_properties.copyFrom(src_properties);
+  
+  EXPECT_EQ(dst_properties.start_value, 1000);
+  EXPECT_EQ(dst_properties.test_variant.tag(), VariantTag::Basic);
+  EXPECT_EQ(dst_properties.test_variant.basic.bool_flag, true);
+  EXPECT_EQ(dst_properties.test_variant.basic.max_value, 5000);
+  EXPECT_EQ(dst_properties.test_variant.extra.name, "Foo");
+  EXPECT_EQ(dst_properties.another_variant.tag(), VariantTag::Extra);
+  EXPECT_EQ(dst_properties.another_variant.basic.max_value, 12345);
+  EXPECT_EQ(dst_properties.another_variant.extra.scale, 5.0f);
+}
+
 TEST(PropertiesVariantTest, ToJson) {
   core_test::TestCaseOutput output;
 
@@ -95,6 +119,16 @@ TEST(PropertiesVariantTest, ToJson) {
   test_variant.selectCase(VariantTag::Basic);
 
   auto json_obj = test_variant.toJson();
+  auto json_str = json_obj.dump(2);
+  fprintf(output, "%s", json_str.c_str());
+}
+
+TEST(PropertiesVariantTest, EmbeddedToJson) {
+  core_test::TestCaseOutput output;
+
+  TestProperties test_properties;
+
+  auto json_obj = test_properties.toJson();
   auto json_str = json_obj.dump(2);
   fprintf(output, "%s", json_str.c_str());
 }
@@ -137,6 +171,30 @@ TEST(PropertiesVariantTest, FromJson) {
 
   test_variant.selectCase(VariantTag::Basic);
   printVariant(output, test_variant);
+}
+
+TEST(PropertiesVariantTest, EmbeddedJsonRoundtrip) {
+  TestProperties src_properties;
+  src_properties.start_value = 1000;
+  src_properties.test_variant.basic.bool_flag = true;
+  src_properties.test_variant.basic.max_value = 5000;
+  src_properties.test_variant.extra.name = "Foo";
+  src_properties.test_variant.selectCase(VariantTag::Basic);
+  src_properties.another_variant.basic.max_value = 12345;
+  src_properties.another_variant.extra.scale = 5.0f;
+  src_properties.another_variant.selectCase(VariantTag::Extra);
+  
+  TestProperties dst_properties;
+  dst_properties.fromJson(src_properties.toJson());
+  
+  EXPECT_EQ(dst_properties.start_value, 1000);
+  EXPECT_EQ(dst_properties.test_variant.tag(), VariantTag::Basic);
+  EXPECT_EQ(dst_properties.test_variant.basic.bool_flag, true);
+  EXPECT_EQ(dst_properties.test_variant.basic.max_value, 5000);
+  EXPECT_EQ(dst_properties.test_variant.extra.name, "Foo");
+  EXPECT_EQ(dst_properties.another_variant.tag(), VariantTag::Extra);
+  EXPECT_EQ(dst_properties.another_variant.basic.max_value, 12345);
+  EXPECT_EQ(dst_properties.another_variant.extra.scale, 5.0f);
 }
 
 }  // namespace properties_variant_tests

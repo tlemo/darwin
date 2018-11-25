@@ -1,0 +1,29 @@
+{
+  "another_variant": {
+    "basic": {
+      "bool_flag": "false",
+      "max_value": "100"
+    },
+    "empty": {},
+    "extra": {
+      "name": "Darwin",
+      "scale": "1",
+      "values": "{  }"
+    },
+    "tag": "empty"
+  },
+  "start_value": "0",
+  "test_variant": {
+    "basic": {
+      "bool_flag": "false",
+      "max_value": "100"
+    },
+    "empty": {},
+    "extra": {
+      "name": "Darwin",
+      "scale": "1",
+      "values": "{  }"
+    },
+    "tag": "basic"
+  }
+}
