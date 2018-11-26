@@ -14,15 +14,18 @@
 
 #pragma once
 
+#include "tournament.h"
+
 #include <core/darwin.h>
+#include <core/properties.h>
 #include <core/stringify.h>
 
 namespace tic_tac_toe {
 
 //! Tic-Tac-Toe artificial brain type
 enum class AnnType {
-  Value,    //!< Value network (a single value per board configuration)
-  Policy,   //!< Policy network (one output signal for each potential move)
+  Value,   //!< Value network (a single value per board configuration)
+  Policy,  //!< Policy network (one output signal for each potential move)
 };
 
 inline auto customStringify(core::TypeTag<AnnType>) {
@@ -33,12 +36,28 @@ inline auto customStringify(core::TypeTag<AnnType>) {
   return stringify;
 }
 
+//! Tournament type
+enum class TournamentType {
+  Default,  //!< The default tournament implementation
+};
+
+inline auto customStringify(core::TypeTag<TournamentType>) {
+  static auto stringify = new core::StringifyKnownValues<TournamentType>{
+    { TournamentType::Default, "default" },
+  };
+  return stringify;
+}
+
+//! Tournament configurations
+struct TournamentVariant : public core::PropertySetVariant<TournamentType> {
+  CASE(TournamentType::Default, default_tournament, TournamentConfig);
+};
+
 //! Tic-Tac-Toe domain configuration
 struct Config : public core::PropertySet {
   PROPERTY(ann_type, AnnType, AnnType::Value, "The role of the evolved brains");
-  PROPERTY(eval_games, int, 10, "Number of evaluation games");
-  PROPERTY(rematches, bool, true, "Play both-side rematches?");
-  PROPERTY(calibration_games, int, 100, "Number of calibration games");
+  PROPERTY(calibration_matches, int, 100, "Number of calibration games");
+  VARIANT(tournament_type, TournamentVariant, TournamentType::Default, "Tournament type");
 };
 
 extern Config g_config;

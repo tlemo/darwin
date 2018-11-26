@@ -17,20 +17,20 @@
 namespace tic_tac_toe {
 
 // current position outcome (relative to X)
-Board::Outcome Board::outcome() const {
+Board::State Board::state() const {
   for (const auto& line : kLines) {
     auto c0 = board_[line[0]];
     auto c1 = board_[line[1]];
     auto c2 = board_[line[2]];
     if (c0 != Piece::Empty && c0 == c1 && c1 == c2)
-      return c0 == Piece::X ? Outcome::X_Wins : Outcome::Zero_Wins;
+      return c0 == Piece::X ? State::X_Wins : State::Zero_Wins;
   }
 
   for (auto piece : board_)
     if (piece == Piece::Empty)
-      return Outcome::Undecided;
+      return State::Undecided;
 
-  return Outcome::Draw;
+  return State::Draw;
 }
 
 Board::Piece Board::otherSide(Board::Piece piece) {

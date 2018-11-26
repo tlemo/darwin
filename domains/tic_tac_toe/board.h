@@ -48,7 +48,7 @@ class Board {
   };
 
   enum class Piece : char { Empty, X, Zero };
-  enum class Outcome { Undecided, X_Wins, Zero_Wins, Draw };
+  enum class State { Undecided, X_Wins, Zero_Wins, Draw };
 
   static constexpr int kSize = 9;
   static constexpr int kNoSquare = -1;
@@ -65,7 +65,7 @@ class Board {
 
   const Piece& operator[](int index) const { return board_[index]; }
 
-  Outcome outcome() const;
+  State state() const;
 
   static Piece otherSide(Piece piece);
 

@@ -11,14 +11,18 @@ SOURCES += \
     board.cpp \
     tic_tac_toe.cpp \
     ann_player.cpp \
-    test_players.cpp
+    test_players.cpp \
+    tournament.cpp \
+    game.cpp
 
 HEADERS += \
     player.h \
     board.h \
     tic_tac_toe.h \
     ann_player.h \
-    test_players.h
+    test_players.h \
+    tournament.h \
+    game.h
 
 unix {
     target.path = /usr/lib

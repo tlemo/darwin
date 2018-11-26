@@ -32,7 +32,7 @@ class HumanPlayer : public tic_tac_toe::Player {
 
     const auto& board = *board_;
     if (board[move] == tic_tac_toe::Board::Piece::Empty &&
-        board.outcome() == tic_tac_toe::Board::Outcome::Undecided) {
+        board.state() == tic_tac_toe::Board::State::Undecided) {
       selected_move_ = move;
     }
   }

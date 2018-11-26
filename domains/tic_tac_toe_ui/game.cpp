@@ -39,7 +39,7 @@ void Game::reset() {
 
 bool Game::takeTurn() {
   // is the game finished?
-  if (board_.outcome() != Board::Outcome::Undecided)
+  if (board_.state() != Board::State::Undecided)
     return false;
 
   // ask the current player to select a move
