@@ -146,6 +146,7 @@ struct AnnLayer {
   vector<float> values;
 
   AnnLayer(size_t size) : values(size) {}
+  virtual ~AnnLayer() = default;
 
   virtual void evaluate(const vector<float>& inputs) = 0;
   virtual void resetState() = 0;

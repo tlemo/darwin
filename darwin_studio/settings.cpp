@@ -30,7 +30,6 @@ namespace fs = std::experimental::filesystem;
 Settings g_settings;
 
 constexpr char kSettingsFile[] = "studio_settings.json";
-constexpr char kSettingsName[] = "settings";
 
 void Settings::init() {
   if (fs::is_regular_file(kSettingsFile)) {

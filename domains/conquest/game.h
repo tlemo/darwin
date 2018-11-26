@@ -118,7 +118,6 @@ class Game {
 
  private:
   State state_ = State::None;
-  const Board* const board_ = nullptr;
 
   vector<float> node_units_;
   vector<Deployment> deployments_;
@@ -133,6 +132,8 @@ class Game {
   int red_start_node_ = -1;
 
   default_random_engine rnd_{ random_device{}() };
+
+  const Board* const board_ = nullptr;
 };
 
 }  // namespace conquest
