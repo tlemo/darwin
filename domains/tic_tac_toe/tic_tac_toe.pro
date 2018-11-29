@@ -12,7 +12,6 @@ SOURCES += \
     tic_tac_toe.cpp \
     ann_player.cpp \
     test_players.cpp \
-    tournament.cpp \
     game.cpp
 
 HEADERS += \
@@ -21,7 +20,6 @@ HEADERS += \
     tic_tac_toe.h \
     ann_player.h \
     test_players.h \
-    tournament.h \
     game.h
 
 unix {

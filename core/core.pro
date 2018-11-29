@@ -19,7 +19,7 @@ SOURCES += \
     thread_pool.cpp \
     ann_dynamic.cpp \
     utils.cpp \
-    modules.cpp
+    tournament.cpp
 
 HEADERS += \
     ann_utils.h \
@@ -44,7 +44,8 @@ HEADERS += \
     thread_pool.h \
     utils.h \
     pp_utils.h \
-    modules.h
+    modules.h \
+    tournament.h
     
 #------------------------------------------------------------------------------
 # third_party/Sqlite3

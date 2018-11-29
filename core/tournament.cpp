@@ -14,7 +14,10 @@
 
 #include "tournament.h"
 
-namespace tic_tac_toe {
+#include <core/evolution.h>
+#include <core/parallel_for_each.h>
+
+namespace tournament {
 
 GameOutcome reverseOutcome(GameOutcome outcome) {
   switch (outcome) {
@@ -64,4 +67,4 @@ void Tournament::evaluatePopulation(darwin::Population* population) {
   });
 }
 
-}  // namespace tic_tac_toe
+}  // namespace tournament

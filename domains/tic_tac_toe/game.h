@@ -14,19 +14,20 @@
 
 #pragma once
 
-#include "tournament.h"
 #include "player.h"
+
+#include <core/tournament.h>
 
 namespace tic_tac_toe {
 
-class Game : public GameRules {
+class Game : public tournament::GameRules {
  public:
-  float score(GameOutcome outcome) const override;
+  float score(tournament::GameOutcome outcome) const override;
 
-  GameOutcome play(Player* x_player, Player* o_player) const;
+  tournament::GameOutcome play(Player* x_player, Player* o_player) const;
 
-  GameOutcome play(const darwin::Genotype* x_genotype,
-                   const darwin::Genotype* o_genotype) const override;
+  tournament::GameOutcome play(const darwin::Genotype* x_genotype,
+                               const darwin::Genotype* o_genotype) const override;
 };
 
 }  // namespace tic_tac_toe

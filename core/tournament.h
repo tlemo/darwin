@@ -15,11 +15,9 @@
 #pragma once
 
 #include <core/darwin.h>
-#include <core/evolution.h>
-#include <core/parallel_for_each.h>
 #include <core/properties.h>
 
-namespace tic_tac_toe {
+namespace tournament {
 
 struct TournamentConfig : public core::PropertySet {
   PROPERTY(eval_games, int, 10, "Number of evaluation games");
@@ -53,4 +51,4 @@ class Tournament : public core::NonCopyable {
   GameRules* game_;
 };
 
-}  // namespace tic_tac_toe
+}  // namespace tournament

@@ -53,7 +53,7 @@ bool TicTacToe::evaluatePopulation(darwin::Population* population) const {
   CHECK(g_config.tournament_type.tag() == TournamentType::Default);
 
   Game game;
-  Tournament tournament(g_config.tournament_type.default_tournament, &game);
+  tournament::Tournament tournament(g_config.tournament_type.default_tournament, &game);
   tournament.evaluatePopulation(population);
 
   return false;

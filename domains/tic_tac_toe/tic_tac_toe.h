@@ -14,11 +14,10 @@
 
 #pragma once
 
-#include "tournament.h"
-
 #include <core/darwin.h>
 #include <core/properties.h>
 #include <core/stringify.h>
+#include <core/tournament.h>
 
 namespace tic_tac_toe {
 
@@ -50,7 +49,7 @@ inline auto customStringify(core::TypeTag<TournamentType>) {
 
 //! Tournament configurations
 struct TournamentVariant : public core::PropertySetVariant<TournamentType> {
-  CASE(TournamentType::Default, default_tournament, TournamentConfig);
+  CASE(TournamentType::Default, default_tournament, tournament::TournamentConfig);
 };
 
 //! Tic-Tac-Toe domain configuration
