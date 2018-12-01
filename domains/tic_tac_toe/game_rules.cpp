@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "game.h"
+#include "game_rules.h"
 #include "ann_player.h"
 
 namespace tic_tac_toe {

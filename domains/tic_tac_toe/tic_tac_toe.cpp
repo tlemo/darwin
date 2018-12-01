@@ -15,7 +15,7 @@
 #include "tic_tac_toe.h"
 #include "ann_player.h"
 #include "test_players.h"
-#include "game.h"
+#include "game_rules.h"
 
 #include <core/utils.h>
 #include <core/darwin.h>
