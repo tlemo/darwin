@@ -14,6 +14,8 @@
 
 #include "classic.h"
 
+#include <core/ann_dynamic.h>
+
 namespace classic {
 
 void crossoverOperator(ann::Matrix& child,
@@ -184,6 +186,10 @@ void crossoverOperator(ann::Matrix& child,
     case CrossoverOp::BestParent: {
       child = (preference > 0.5f) ? parent1 : parent2;
     } break;
+
+    case CrossoverOp::Randomize:
+      ann::randomize(child);
+      break;
   }
 }
 

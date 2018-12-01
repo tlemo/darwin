@@ -87,6 +87,7 @@ INSTANTIATE_TEST_CASE_P(All,
                             classic::CrossoverOp::RowOrColMix,
                             classic::CrossoverOp::Quadrants,
                             classic::CrossoverOp::BestParent,
+                            classic::CrossoverOp::Randomize,
                         }));
 
 }  // namespace classic_crossover_tests

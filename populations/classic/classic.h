@@ -15,7 +15,6 @@
 #pragma once
 
 #include <core/ann_activation_functions.h>
-#include <core/ann_dynamic.h>
 #include <core/utils.h>
 #include <core/darwin.h>
 #include <core/properties.h>
@@ -42,6 +41,7 @@ enum class CrossoverOp {
   RowOrColMix,
   Quadrants,
   BestParent,
+  Randomize,
 };
 
 inline auto customStringify(core::TypeTag<CrossoverOp>) {
@@ -58,6 +58,7 @@ inline auto customStringify(core::TypeTag<CrossoverOp>) {
     { CrossoverOp::RowOrColMix, "row_or_col_mix" },
     { CrossoverOp::Quadrants, "quadrants" },
     { CrossoverOp::BestParent, "best_parent" },
+    { CrossoverOp::Randomize, "randomize" },
   };
   return stringify;
 }
