@@ -20,9 +20,9 @@
 
 namespace tic_tac_toe {
 
-class Game : public tournament::GameRules {
+class TicTacToeRules : public tournament::GameRules {
  public:
-  float score(tournament::GameOutcome outcome) const override;
+  tournament::Scores scores(tournament::GameOutcome outcome) const override;
 
   tournament::GameOutcome play(Player* x_player, Player* o_player) const;
 

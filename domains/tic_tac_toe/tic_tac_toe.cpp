@@ -52,8 +52,8 @@ bool TicTacToe::evaluatePopulation(darwin::Population* population) const {
   // currently there's only one type of tournament
   CHECK(g_config.tournament_type.tag() == TournamentType::Default);
 
-  Game game;
-  tournament::Tournament tournament(g_config.tournament_type.default_tournament, &game);
+  TicTacToeRules rules;
+  tournament::Tournament tournament(g_config.tournament_type.default_tournament, &rules);
   tournament.evaluatePopulation(population);
 
   return false;
@@ -64,19 +64,19 @@ struct CalibrationFitness : public core::PropertySet {
   PROPERTY(vs_average_player, float, 0, "Play against an average player");
 };
 
-static float calibrationScore(const Game& game,
+static float calibrationScore(const TicTacToeRules& rules,
                               Player& subject_player,
-                              Player& reference_player) {
+                              Player& calibration_player) {
   float calibration_score = 0;
   int calibration_games = 0;
 
   for (int i = 0; i < g_config.calibration_matches; ++i) {
-    auto outcome = game.play(&subject_player, &reference_player);
-    calibration_score += game.score(outcome);
+    auto outcome = rules.play(&subject_player, &calibration_player);
+    calibration_score += rules.scores(outcome).player1_score;
     ++calibration_games;
 
-    auto rematch_outcome = game.play(&reference_player, &subject_player);
-    calibration_score += game.score(reverseOutcome(rematch_outcome));
+    auto rematch_outcome = rules.play(&calibration_player, &subject_player);
+    calibration_score += rules.scores(rematch_outcome).player2_score;
     ++calibration_games;
   }
 
@@ -86,9 +86,9 @@ static float calibrationScore(const Game& game,
 
 unique_ptr<core::PropertySet> TicTacToe::calibrateGenotype(
     const darwin::Genotype* genotype) const {
-  darwin::StageScope stage("Calibrate fitness");
+  darwin::StageScope stage("Evaluate champion");
 
-  Game game;
+  TicTacToeRules rules;
   auto calibration = make_unique<CalibrationFitness>();
 
   AnnPlayer champion;
@@ -96,11 +96,11 @@ unique_ptr<core::PropertySet> TicTacToe::calibrateGenotype(
 
   // calibration: a completely random player
   RandomPlayer random_player(false);
-  calibration->vs_random_player = calibrationScore(game, champion, random_player);
+  calibration->vs_random_player = calibrationScore(rules, champion, random_player);
 
   // calibration: an average player (preferring winning and blocking moves)
   RandomPlayer average_player(true);
-  calibration->vs_average_player = calibrationScore(game, champion, average_player);
+  calibration->vs_average_player = calibrationScore(rules, champion, average_player);
 
   return calibration;
 }

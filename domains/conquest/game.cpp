@@ -14,6 +14,7 @@
 
 #include "game.h"
 #include "player.h"
+#include "ann_player.h"
 
 #include <core/utils.h>
 
@@ -28,7 +29,7 @@ namespace conquest {
 Config g_config;
 
 Game::Game(int max_steps, const Board* board) : max_steps_(max_steps), board_(board) {
-  assert(board_ != nullptr);
+  CHECK(board_ != nullptr);
   node_units_.resize(board->nodes.size());
   deployments_.resize(board->arcs.size());
 }
@@ -223,6 +224,50 @@ float Game::nodeUnits(int index) const {
 const Game::Deployment& Game::deployment(int index) const {
   CHECK(index >= 0 && index < int(deployments_.size()));
   return deployments_[index];
+}
+
+tournament::Scores ConquestRules::scores(tournament::GameOutcome outcome) const {
+  switch (outcome) {
+    case tournament::GameOutcome::FirstPlayerWins:
+      return { g_config.win_points, g_config.lose_points };
+    case tournament::GameOutcome::Draw:
+      return { g_config.draw_points, g_config.draw_points };
+    case tournament::GameOutcome::SecondPlayerWins:
+      return { g_config.lose_points, g_config.win_points };
+    default:
+      FATAL("unexpected outcome");
+  }
+}
+
+tournament::GameOutcome ConquestRules::play(Player* player1, Player* player2) const {
+  Game game(g_config.max_steps, board_);
+  game.newGame(player1, player2);
+
+  // play the game
+  while (game.gameStep())
+    ;
+
+  switch (game.state()) {
+    case Game::State::BlueWins:
+      return tournament::GameOutcome::FirstPlayerWins;
+    case Game::State::RedWins:
+      return tournament::GameOutcome::SecondPlayerWins;
+    case Game::State::Draw:
+      return tournament::GameOutcome::Draw;
+    default:
+      FATAL("Unexpected game state");
+  }
+}
+
+tournament::GameOutcome ConquestRules::play(const darwin::Genotype* player1,
+                                            const darwin::Genotype* player2) const {
+  AnnPlayer blue_player;
+  blue_player.grow(player1);
+
+  AnnPlayer red_player;
+  red_player.grow(player2);
+  
+  return play(&blue_player, &red_player);
 }
 
 }  // namespace conquest

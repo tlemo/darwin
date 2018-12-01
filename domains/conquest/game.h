@@ -17,6 +17,7 @@
 #include "board.h"
 
 #include <core/properties.h>
+#include <core/tournament.h>
 
 #include <random>
 #include <string>
@@ -27,10 +28,26 @@ namespace conquest {
 
 class Player;
 
+//! Tournament type
+enum class TournamentType {
+  Default,  //!< The default tournament implementation
+};
+
+inline auto customStringify(core::TypeTag<TournamentType>) {
+  static auto stringify = new core::StringifyKnownValues<TournamentType>{
+    { TournamentType::Default, "default" },
+  };
+  return stringify;
+}
+
+//! Tournament configurations
+struct TournamentVariant : public core::PropertySetVariant<TournamentType> {
+  CASE(TournamentType::Default, default_tournament, tournament::TournamentConfig);
+};
+
 //! Conquest domain configuration
 struct Config : public core::PropertySet {
-  PROPERTY(eval_games, int, 5, "Number of evaluation games");
-  PROPERTY(calibration_games, int, 100, "Number of calibration games");
+  PROPERTY(calibration_matches, int, 100, "Number of calibration matches");
 
   PROPERTY(board,
            BoardConfiguration,
@@ -38,7 +55,6 @@ struct Config : public core::PropertySet {
            "Board configuration name");
 
   PROPERTY(max_steps, int, 2500, "If no one wins before max_steps, the game is a tie");
-  PROPERTY(rematches, bool, true, "Play rematches?");
 
   PROPERTY(win_points, float, 1.0f, "Points for a win");
   PROPERTY(lose_points, float, 0.0f, "Points for a lost game");
@@ -59,11 +75,13 @@ struct Config : public core::PropertySet {
   PROPERTY(deploy_resolution, float, deploy_min, "Deployment resolution");
   PROPERTY(units_speed, float, 2.0f, "Units move speed");
   PROPERTY(deploy_percent, float, 0.99f, "What % of units are deployed? (0..1]");
+
+  VARIANT(tournament_type, TournamentVariant, TournamentType::Default, "Tournament type");
 };
 
 extern Config g_config;
 
-class Game {
+class Game : public core::NonCopyable {
  public:
   enum class State { None, InProgress, BlueWins, RedWins, Draw };
 
@@ -88,9 +106,6 @@ class Game {
 
  public:
   Game(int max_steps, const Board* board);
-
-  Game(const Game&) = delete;
-  Game& operator=(const Game&) = delete;
 
   void newGame(Player* blue_player, Player* red_player);
   void rematch();
@@ -134,6 +149,21 @@ class Game {
   default_random_engine rnd_{ random_device{}() };
 
   const Board* const board_ = nullptr;
+};
+
+class ConquestRules : public tournament::GameRules {
+ public:
+  ConquestRules(const Board* board) : board_(board) {}
+
+  tournament::Scores scores(tournament::GameOutcome outcome) const override;
+
+  tournament::GameOutcome play(Player* player1, Player* player2) const;
+  
+  tournament::GameOutcome play(const darwin::Genotype* player1,
+                               const darwin::Genotype* player2) const override;
+
+ private:
+  const Board* board_ = nullptr;
 };
 
 }  // namespace conquest

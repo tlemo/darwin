@@ -24,31 +24,36 @@ struct TournamentConfig : public core::PropertySet {
   PROPERTY(rematches, bool, true, "Play both-side rematches?");
 };
 
+struct Scores {
+  float player1_score = 0;
+  float player2_score = 0;
+};
+
 enum class GameOutcome {
   FirstPlayerWins,
   SecondPlayerWins,
   Draw,
 };
 
-GameOutcome reverseOutcome(GameOutcome outcome);
-
 class GameRules : public core::NonCopyable {
  public:
+  virtual ~GameRules() = default;
+  
   virtual GameOutcome play(const darwin::Genotype* player1,
                            const darwin::Genotype* player2) const = 0;
 
-  virtual float score(GameOutcome outcome) const = 0;
+  virtual Scores scores(GameOutcome outcome) const = 0;
 };
 
 class Tournament : public core::NonCopyable {
  public:
-  Tournament(const core::PropertySet& config, GameRules* game);
+  Tournament(const core::PropertySet& config, GameRules* game_rules);
 
   void evaluatePopulation(darwin::Population* population);
 
  private:
   TournamentConfig config_;
-  GameRules* game_;
+  GameRules* game_rules_;
 };
 
 }  // namespace tournament

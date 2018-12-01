@@ -17,20 +17,20 @@
 
 namespace tic_tac_toe {
 
-float Game::score(tournament::GameOutcome outcome) const {
+tournament::Scores TicTacToeRules::scores(tournament::GameOutcome outcome) const {
   switch (outcome) {
     case tournament::GameOutcome::FirstPlayerWins:
-      return +1;
+      return { +1, 0 };
     case tournament::GameOutcome::Draw:
-      return +0.5f;
+      return { +0.5f, +0.5f };
     case tournament::GameOutcome::SecondPlayerWins:
-      return 0;
+      return { 0, +1 };
     default:
       FATAL("unexpected outcome");
   }
 }
 
-tournament::GameOutcome Game::play(Player* x_player, Player* o_player) const {
+tournament::GameOutcome TicTacToeRules::play(Player* x_player, Player* o_player) const {
   Board board;
 
   x_player->newGame(&board, Board::Piece::X);
@@ -63,8 +63,8 @@ tournament::GameOutcome Game::play(Player* x_player, Player* o_player) const {
   }
 }
 
-tournament::GameOutcome Game::play(const darwin::Genotype* x_genotype,
-                                   const darwin::Genotype* o_genotype) const {
+tournament::GameOutcome TicTacToeRules::play(const darwin::Genotype* x_genotype,
+                                             const darwin::Genotype* o_genotype) const {
   AnnPlayer x_player;
   x_player.grow(x_genotype);
 

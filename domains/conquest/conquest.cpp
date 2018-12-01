@@ -27,8 +27,6 @@
 #include <random>
 using namespace std;
 
-using core::log;
-
 namespace conquest {
 
 void init() {
@@ -43,101 +41,18 @@ Conquest::Conquest() {
   outputs_ = AnnPlayer::outputsCount(board_);
 }
 
-// return the points for the blue player, considering the game outcome
-static float gamePoints(Game::State outcome, int games_count) {
-  float points = 0;
-  switch (outcome) {
-    case Game::State::BlueWins:
-      points = g_config.win_points;
-      break;
-    case Game::State::RedWins:
-      points = g_config.lose_points;
-      break;
-    case Game::State::Draw:
-      points = g_config.draw_points;
-      break;
-    default:
-      FATAL("unexpected game outcome");
-  }
-
-  // scale the fitness to make it invariant to the number of played games
-  return points * 100.0f / games_count;
-}
-
-static Game::State playGame(Game& game) {
-  while (game.gameStep())
-    ;
-  assert(game.finished());
-  return game.state();
-}
-
 bool Conquest::evaluatePopulation(darwin::Population* population) const {
   darwin::StageScope stage("Evaluate population");
 
   const int generation = population->generation();
-  log("\n. generation %d\n", generation);
+  core::log("\n. generation %d\n", generation);
 
-  // "grow" players from the genotypes
-  vector<AnnPlayer> players(population->size());
+  // currently there's only one type of tournament
+  CHECK(g_config.tournament_type.tag() == TournamentType::Default);
 
-  {
-    darwin::StageScope stage("Ontogenesis");
-    pp::for_each(players, [&](int index, AnnPlayer& player) {
-      auto genotype = population->genotype(index);
-      player.grow(genotype);
-      genotype->fitness = 0;
-    });
-  }
-
-  // TODO: temporary, replace with a better/more generic stats collection
-  atomic<int> total_count = 0;
-  atomic<int> draws_count = 0;
-
-  // let the tournament begin!
-  //
-  // TODO: stats (w/l/d)
-  //
-  {
-    darwin::StageScope stage("Tournament", players.size());
-    pp::for_each(players, [&](int player_index, AnnPlayer& player) {
-      random_device rd;
-      default_random_engine rnd(rd());
-      uniform_int_distribution<size_t> dist(0, players.size() - 1);
-
-      Game game(g_config.max_steps, board_);
-
-      for (int i = 0; i < g_config.eval_games; ++i) {
-        // CONSIDER: player.clone() instead of grow()
-        AnnPlayer opponent;
-        auto opponent_index = dist(rnd);
-        opponent.grow(players[opponent_index].genotype);
-
-        // play the game
-        game.newGame(&player, &opponent);
-        auto outcome = playGame(game);
-
-        if (g_config.rematches) {
-          game.rematch();
-          if (outcome != playGame(game))
-            outcome = Game::State::Draw;
-        }
-
-        ++total_count;
-        if (outcome == Game::State::Draw)
-          ++draws_count;
-
-        population->genotype(player_index)->fitness +=
-            gamePoints(outcome, g_config.eval_games);
-      }
-
-      darwin::ProgressManager::reportProgress();
-    });
-  }
-
-  core::log("Total games: %d, draws: %d (%.2f%%)\n",
-            total_count.load(),
-            draws_count.load(),
-            (double(draws_count) / total_count) * 100);
+  ConquestRules rules(board_);
+  tournament::Tournament tournament(g_config.tournament_type.default_tournament, &rules);
+  tournament.evaluatePopulation(population);
 
   return false;
 }
@@ -147,32 +62,43 @@ struct CalibrationFitness : public core::PropertySet {
   PROPERTY(vs_handcrafted, float, 0, "Score vs. a handcrafted player");
 };
 
+static float calibrationScore(const ConquestRules& rules,
+                              Player& subject_player,
+                              Player& calibration_player) {
+  float calibration_score = 0;
+  int calibration_games = 0;
+
+  for (int i = 0; i < g_config.calibration_matches; ++i) {
+    auto outcome = rules.play(&subject_player, &calibration_player);
+    calibration_score += rules.scores(outcome).player1_score;
+    ++calibration_games;
+
+    auto rematch_outcome = rules.play(&calibration_player, &subject_player);
+    calibration_score += rules.scores(rematch_outcome).player2_score;
+    ++calibration_games;
+  }
+
+  // normalize the fitness to make it invariant to the number of played games
+  return calibration_score / calibration_games * 100;
+}
+
 unique_ptr<core::PropertySet> Conquest::calibrateGenotype(
     const darwin::Genotype* genotype) const {
   darwin::StageScope stage("Evaluate champion");
 
+  ConquestRules rules(board_);
   auto calibration = make_unique<CalibrationFitness>();
 
-  Game game(g_config.max_steps, board_);
-
-  AnnPlayer player;
-  player.grow(genotype);
+  AnnPlayer champion;
+  champion.grow(genotype);
 
   // calibration: random player
   RandomPlayer random_player;
-  for (int i = 0; i < g_config.calibration_games; ++i) {
-    game.newGame(&player, &random_player);
-    auto outcome = playGame(game);
-    calibration->vs_random_orders += gamePoints(outcome, g_config.calibration_games);
-  }
+  calibration->vs_random_orders = calibrationScore(rules, champion, random_player);
 
   // calibration: handcrafted
   HandcraftedPlayer handcrafted_player;
-  for (int i = 0; i < g_config.calibration_games; ++i) {
-    game.newGame(&player, &handcrafted_player);
-    auto outcome = playGame(game);
-    calibration->vs_handcrafted += gamePoints(outcome, g_config.calibration_games);
-  }
+  calibration->vs_handcrafted = calibrationScore(rules, champion, handcrafted_player);
 
   return calibration;
 }
@@ -186,8 +112,10 @@ unique_ptr<core::PropertySet> Factory::defaultConfig(darwin::ComplexityHint hint
   auto config = make_unique<Config>();
   switch (hint) {
     case darwin::ComplexityHint::Minimal:
-      config->eval_games = 2;
-      config->calibration_games = 2;
+      config->tournament_type.default_tournament.eval_games = 2;
+      config->tournament_type.default_tournament.rematches = true;
+      config->tournament_type.selectCase(TournamentType::Default);
+      config->calibration_matches = 2;
       config->max_steps = 1000;
       break;
 
@@ -195,8 +123,7 @@ unique_ptr<core::PropertySet> Factory::defaultConfig(darwin::ComplexityHint hint
       break;
 
     case darwin::ComplexityHint::Extra:
-      config->eval_games = 10;
-      config->calibration_games = 200;
+      config->calibration_matches = 200;
       config->max_steps = 5000;
       break;
   }

@@ -19,20 +19,8 @@
 
 namespace tournament {
 
-GameOutcome reverseOutcome(GameOutcome outcome) {
-  switch (outcome) {
-    case GameOutcome::Draw:
-      return outcome;
-    case GameOutcome::FirstPlayerWins:
-      return GameOutcome::SecondPlayerWins;
-    case GameOutcome::SecondPlayerWins:
-      return GameOutcome::FirstPlayerWins;
-    default:
-      FATAL("unexpected outcome");
-  }
-}
-
-Tournament::Tournament(const core::PropertySet& config, GameRules* game) : game_(game) {
+Tournament::Tournament(const core::PropertySet& config, GameRules* game_rules)
+    : game_rules_(game_rules) {
   config_.copyFrom(config);
 }
 
@@ -49,13 +37,13 @@ void Tournament::evaluatePopulation(darwin::Population* population) {
     for (int i = 0; i < config_.eval_games; ++i) {
       auto opponent_genotype = population->genotype(dist(rnd));
 
-      auto outcome = game_->play(genotype, opponent_genotype);
-      score += game_->score(outcome);
+      auto outcome = game_rules_->play(genotype, opponent_genotype);
+      score += game_rules_->scores(outcome).player1_score;
       ++eval_games;
 
       if (config_.rematches) {
-        auto rematch_outcome = game_->play(opponent_genotype, genotype);
-        score += game_->score(reverseOutcome(rematch_outcome));
+        auto rematch_outcome = game_rules_->play(opponent_genotype, genotype);
+        score += game_rules_->scores(rematch_outcome).player2_score;
         ++eval_games;
       }
     }
