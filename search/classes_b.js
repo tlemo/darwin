@@ -11,6 +11,8 @@ var searchData=
   ['propertyitem',['PropertyItem',['../classcore__ui_1_1_property_item.html',1,'core_ui']]],
   ['propertyitembase',['PropertyItemBase',['../classcore__ui_1_1_property_item_base.html',1,'core_ui']]],
   ['propertyset',['PropertySet',['../classcore_1_1_property_set.html',1,'core']]],
+  ['propertysetvariant',['PropertySetVariant',['../classcore_1_1_property_set_variant.html',1,'core']]],
+  ['propertysetvariant_3c_20tournamenttype_20_3e',['PropertySetVariant&lt; TournamentType &gt;',['../classcore_1_1_property_set_variant.html',1,'core']]],
   ['pubsub',['PubSub',['../classcore_1_1_pub_sub.html',1,'core']]],
   ['pubsub_3c_20darwin_3a_3aevolutionstage_20_3e',['PubSub&lt; darwin::EvolutionStage &gt;',['../classcore_1_1_pub_sub.html',1,'core']]],
   ['pubsub_3c_20darwin_3a_3agenerationsummary_20_3e',['PubSub&lt; darwin::GenerationSummary &gt;',['../classcore_1_1_pub_sub.html',1,'core']]],

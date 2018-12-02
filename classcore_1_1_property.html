@@ -78,7 +78,7 @@ $(function() {
 
 <p><code>#include &lt;<a class="el" href="properties_8h_source.html">properties.h</a>&gt;</code></p>
 
-<p>Inherited by core::TypedProperty&lt; T &gt;.</p>
+<p>Inherited by core::TypedProperty&lt; T &gt;, and core::VariantProperty&lt; T &gt;.</p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -102,6 +102,10 @@ virtual string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" 
 virtual string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcore_1_1_property.html#a55de1bbde375c89d4da5a7904b4a8960">defaultValue</a> () const =0</td></tr>
 <tr class="memdesc:a55de1bbde375c89d4da5a7904b4a8960"><td class="mdescLeft">&#160;</td><td class="mdescRight">The default property value, formatted as a string. <br /></td></tr>
 <tr class="separator:a55de1bbde375c89d4da5a7904b4a8960"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a372b528ae1591f39be1208d6ef4a0499"><td class="memItemLeft" align="right" valign="top"><a id="a372b528ae1591f39be1208d6ef4a0499"></a>
+virtual <a class="el" href="classcore_1_1_property_set.html">PropertySet</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcore_1_1_property.html#a372b528ae1591f39be1208d6ef4a0499">childPropertySet</a> ()</td></tr>
+<tr class="memdesc:a372b528ae1591f39be1208d6ef4a0499"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the optional child <a class="el" href="classcore_1_1_property_set.html" title="The foundation for data structures supporting runtime reflection. ">PropertySet</a>, or <code>nullptr</code> <br /></td></tr>
+<tr class="separator:a372b528ae1591f39be1208d6ef4a0499"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad3d2da7211eacf8efbfe99ec44462099"><td class="memItemLeft" align="right" valign="top"><a id="ad3d2da7211eacf8efbfe99ec44462099"></a>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcore_1_1_property.html#ad3d2da7211eacf8efbfe99ec44462099">setValue</a> (const string &amp;str)=0</td></tr>
 <tr class="memdesc:ad3d2da7211eacf8efbfe99ec44462099"><td class="mdescLeft">&#160;</td><td class="mdescRight">Update the current value from a string representation. <br /></td></tr>
@@ -113,6 +117,14 @@ virtual vector&lt; string &gt;&#160;</td><td class="memItemRight" valign="bottom
 <tr class="memitem:a0ab3ec5f275fc6955ba1017e9bd20f4b"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcore_1_1_property.html#a0ab3ec5f275fc6955ba1017e9bd20f4b">copyFrom</a> (const <a class="el" href="classcore_1_1_property.html">Property</a> &amp;src)=0</td></tr>
 <tr class="memdesc:a0ab3ec5f275fc6955ba1017e9bd20f4b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copies values between properties of the same runtime type.  <a href="#a0ab3ec5f275fc6955ba1017e9bd20f4b">More...</a><br /></td></tr>
 <tr class="separator:a0ab3ec5f275fc6955ba1017e9bd20f4b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1ecd8cc43e4da44683f745cc8f528e03"><td class="memItemLeft" align="right" valign="top"><a id="a1ecd8cc43e4da44683f745cc8f528e03"></a>
+virtual json&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcore_1_1_property.html#a1ecd8cc43e4da44683f745cc8f528e03">toJson</a> () const =0</td></tr>
+<tr class="memdesc:a1ecd8cc43e4da44683f745cc8f528e03"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialize the property value to a json object. <br /></td></tr>
+<tr class="separator:a1ecd8cc43e4da44683f745cc8f528e03"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aece7fae22a3e625120b85bbb9c7ed65c"><td class="memItemLeft" align="right" valign="top"><a id="aece7fae22a3e625120b85bbb9c7ed65c"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcore_1_1_property.html#aece7fae22a3e625120b85bbb9c7ed65c">fromJson</a> (const json &amp;json_obj)=0</td></tr>
+<tr class="memdesc:aece7fae22a3e625120b85bbb9c7ed65c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deserialize the property value from a json object. <br /></td></tr>
+<tr class="separator:aece7fae22a3e625120b85bbb9c7ed65c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8fc5d01f78ed60a16aa2d9effcdd82cc"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
 <tr class="memitem:a8fc5d01f78ed60a16aa2d9effcdd82cc"><td class="memTemplItemLeft" align="right" valign="top">const T &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcore_1_1_property.html#a8fc5d01f78ed60a16aa2d9effcdd82cc">nativeValue</a> () const</td></tr>
 <tr class="memdesc:a8fc5d01f78ed60a16aa2d9effcdd82cc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type-safe accessor to the native property value.  <a href="#a8fc5d01f78ed60a16aa2d9effcdd82cc">More...</a><br /></td></tr>

@@ -1,7 +1,7 @@
 var searchData=
 [
   ['easy_5fmap',['easy_map',['../structfind__max__value_1_1_config.html#a4d217c6d3aab1ff561b6e3b9092e63db',1,'find_max_value::Config']]],
-  ['eval_5fgames',['eval_games',['../structconquest_1_1_config.html#af9020dee9dfe1992fcd8aecf836ac57d',1,'conquest::Config::eval_games()'],['../structpong_1_1_config.html#af347cb6c23a1c655c0eda476f451b70d',1,'pong::Config::eval_games()'],['../structtic__tac__toe_1_1_config.html#a5e910c90b4ff1be075324c216e2f23dd',1,'tic_tac_toe::Config::eval_games()']]],
+  ['eval_5fgames',['eval_games',['../structtournament_1_1_tournament_config.html#a7cabb5eea958e7735db0e6169b2622f8',1,'tournament::TournamentConfig']]],
   ['evaluatelayer',['evaluateLayer',['../namespaceann.html#ac2a70be69002224cde0f24adf0cc399e',1,'ann']]],
   ['events',['events',['../classdarwin_1_1_evolution.html#abea945095945598ab195887235081de4',1,'darwin::Evolution']]],
   ['exclusive_5factuators',['exclusive_actuators',['../structharvester_1_1_config.html#a5d7db81fd8dafa29263430b1f95410d7',1,'harvester::Config']]],

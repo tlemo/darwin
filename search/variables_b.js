@@ -7,6 +7,7 @@ var searchData=
   ['map_5fjunk_5ffruits',['map_junk_fruits',['../structharvester_1_1_config.html#aff5637a83b8e5cb433c269aaff133e6f',1,'harvester::Config']]],
   ['map_5fwalls',['map_walls',['../structharvester_1_1_config.html#a721329f059c4e228dcd28f033f51f8a3',1,'harvester::Config']]],
   ['map_5fwidth',['map_width',['../structharvester_1_1_config.html#a0ad4ae10fbd1f41ecc0effbc23f12c9e',1,'harvester::Config']]],
+  ['max_5fgenerations',['max_generations',['../structdarwin_1_1_evolution_config.html#a7c1da39897521afa323d2282a6fed8c5',1,'darwin::EvolutionConfig']]],
   ['max_5fsize',['max_size',['../structfind__max__value_1_1_config.html#a4d3093a62e880a6f6a7b49ea8665c7f5',1,'find_max_value::Config']]],
   ['max_5fsteps',['max_steps',['../structconquest_1_1_config.html#ad70cd05f4083f4b2e559cd94107a19ad',1,'conquest::Config::max_steps()'],['../structpong_1_1_config.html#afd29453d39e5479c4cf727762fac443b',1,'pong::Config::max_steps()']]],
   ['max_5fvalue',['max_value',['../structfind__max__value_1_1_config.html#a8c919bd88730cdd99d8ccfc62e430690',1,'find_max_value::Config']]],

@@ -26,6 +26,5 @@ var searchData=
   ['domainfactory',['DomainFactory',['../classdarwin_1_1_domain_factory.html',1,'darwin::DomainFactory'],['../classdarwin_1_1_experiment.html#a7c815e06a7415ebd7e8422c72ca0b867',1,'darwin::Experiment::domainFactory()']]],
   ['domains',['domains',['../structdarwin_1_1_registry.html#a977c7cb6eb1c65679a6d3bf8bf00e476',1,'darwin::Registry']]],
   ['domains_5fui',['domains_ui',['../structdarwin_1_1_registry.html#a8f87dc1f11012512fde65b639fb46b6f',1,'darwin::Registry']]],
-  ['domainuifactory',['DomainUiFactory',['../classdarwin_1_1_domain_ui_factory.html',1,'darwin::DomainUiFactory'],['../classdarwin_1_1_experiment.html#ad50fa6639d87a99cdb517a1b5d01849d',1,'darwin::Experiment::domainUiFactory()']]],
-  ['draw_5fpoints',['draw_points',['../structconquest_1_1_config.html#abdee0beb716e63072a9ec240998232d8',1,'conquest::Config']]]
+  ['domainuifactory',['DomainUiFactory',['../classdarwin_1_1_domain_ui_factory.html',1,'darwin::DomainUiFactory'],['../classdarwin_1_1_experiment.html#ad50fa6639d87a99cdb517a1b5d01849d',1,'darwin::Experiment::domainUiFactory()']]]
 ];

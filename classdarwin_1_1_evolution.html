@@ -114,21 +114,23 @@ Public Types</h2></td></tr>
 <br />
 &#160;&#160;<a class="el" href="classdarwin_1_1_evolution.html#aecca7c341a0fff28b85ad9d13d380ad9a8452baa7ceca9feac301db63d024dd64">State::Canceling</a>, 
 <br />
-&#160;&#160;<a class="el" href="classdarwin_1_1_evolution.html#aecca7c341a0fff28b85ad9d13d380ad9a0e22fe7d45f8e5632a4abf369b24e29c">State::Canceled</a>
+&#160;&#160;<a class="el" href="classdarwin_1_1_evolution.html#aecca7c341a0fff28b85ad9d13d380ad9ac23e2b09ebe6bf4cb5e2a9abe85c0be2">State::Stopped</a>
 <br />
  }</td></tr>
 <tr class="memdesc:aecca7c341a0fff28b85ad9d13d380ad9"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classdarwin_1_1_evolution.html" title="The controller for running evolution experiments. ">Evolution</a> state.  <a href="classdarwin_1_1_evolution.html#aecca7c341a0fff28b85ad9d13d380ad9">More...</a><br /></td></tr>
 <tr class="separator:aecca7c341a0fff28b85ad9d13d380ad9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a78d415aac62c8554b49d834dd2377e23"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdarwin_1_1_evolution.html#a78d415aac62c8554b49d834dd2377e23">EventFlag</a> : uint32_t { <br />
-&#160;&#160;<a class="el" href="classdarwin_1_1_evolution.html#a78d415aac62c8554b49d834dd2377e23a6aee2dd4b42d146bf849a47054cd9a44">StateChanged</a> = 1, 
+&#160;&#160;<a class="el" href="classdarwin_1_1_evolution.html#a78d415aac62c8554b49d834dd2377e23a6aee2dd4b42d146bf849a47054cd9a44">StateChanged</a> = 1 &lt;&lt; 0, 
 <br />
-&#160;&#160;<a class="el" href="classdarwin_1_1_evolution.html#a78d415aac62c8554b49d834dd2377e23ae07e6553b3a3f607298f402c141a4393">ProgressUpdate</a> = 2, 
+&#160;&#160;<a class="el" href="classdarwin_1_1_evolution.html#a78d415aac62c8554b49d834dd2377e23ae07e6553b3a3f607298f402c141a4393">ProgressUpdate</a> = 1 &lt;&lt; 1, 
 <br />
-&#160;&#160;<a class="el" href="classdarwin_1_1_evolution.html#a78d415aac62c8554b49d834dd2377e23a648970649a3399ccce2fd1c6212e74ef">EndGeneration</a> = 4, 
+&#160;&#160;<a class="el" href="classdarwin_1_1_evolution.html#a78d415aac62c8554b49d834dd2377e23a648970649a3399ccce2fd1c6212e74ef">EndGeneration</a> = 1 &lt;&lt; 2, 
 <br />
-&#160;&#160;<a class="el" href="classdarwin_1_1_evolution.html#a78d415aac62c8554b49d834dd2377e23a8442672ba275661e0b73f0c694fc974d">NewExperiment</a> = 8, 
+&#160;&#160;<a class="el" href="classdarwin_1_1_evolution.html#a78d415aac62c8554b49d834dd2377e23ae471726490a02bcbc6d05d7c160f1df4">EndEvolution</a> = 1 &lt;&lt; 3, 
 <br />
-&#160;&#160;<a class="el" href="classdarwin_1_1_evolution.html#a78d415aac62c8554b49d834dd2377e23a336945c0abed98bc268cb9ceaf3749b9">Reset</a> = 16, 
+&#160;&#160;<a class="el" href="classdarwin_1_1_evolution.html#a78d415aac62c8554b49d834dd2377e23a8442672ba275661e0b73f0c694fc974d">NewExperiment</a> = 1 &lt;&lt; 4, 
+<br />
+&#160;&#160;<a class="el" href="classdarwin_1_1_evolution.html#a78d415aac62c8554b49d834dd2377e23a336945c0abed98bc268cb9ceaf3749b9">Reset</a> = 1 &lt;&lt; 5, 
 <br />
 &#160;&#160;<a class="el" href="classdarwin_1_1_evolution.html#a78d415aac62c8554b49d834dd2377e23aa6d386c8a405002b5c1ad2e60c1475ec">All</a> = EventFlag(-1)
 <br />
@@ -211,6 +213,8 @@ Friends</h2></td></tr>
 </td></tr>
 <tr><td class="fieldname"><a id="a78d415aac62c8554b49d834dd2377e23a648970649a3399ccce2fd1c6212e74ef"></a>EndGeneration&#160;</td><td class="fielddoc"><p>Generation end notification. </p>
 </td></tr>
+<tr><td class="fieldname"><a id="a78d415aac62c8554b49d834dd2377e23ae471726490a02bcbc6d05d7c160f1df4"></a>EndEvolution&#160;</td><td class="fielddoc"><p><a class="el" href="classdarwin_1_1_evolution.html" title="The controller for running evolution experiments. ">Evolution</a> end notification. </p>
+</td></tr>
 <tr><td class="fieldname"><a id="a78d415aac62c8554b49d834dd2377e23a8442672ba275661e0b73f0c694fc974d"></a>NewExperiment&#160;</td><td class="fielddoc"><p>New experiment notification. </p>
 </td></tr>
 <tr><td class="fieldname"><a id="a78d415aac62c8554b49d834dd2377e23a336945c0abed98bc268cb9ceaf3749b9"></a>Reset&#160;</td><td class="fielddoc"><p><a class="el" href="classdarwin_1_1_experiment.html" title="Encapsulates the runtime experiment state. ">Experiment</a> reset notification. </p>
@@ -255,7 +259,7 @@ Friends</h2></td></tr>
 </td></tr>
 <tr><td class="fieldname"><a id="aecca7c341a0fff28b85ad9d13d380ad9a8452baa7ceca9feac301db63d024dd64"></a>Canceling&#160;</td><td class="fielddoc"><p><a class="el" href="classdarwin_1_1_evolution.html" title="The controller for running evolution experiments. ">Evolution</a> cancel/stop requested. </p>
 </td></tr>
-<tr><td class="fieldname"><a id="aecca7c341a0fff28b85ad9d13d380ad9a0e22fe7d45f8e5632a4abf369b24e29c"></a>Canceled&#160;</td><td class="fielddoc"><p><a class="el" href="classdarwin_1_1_evolution.html" title="The controller for running evolution experiments. ">Evolution</a> experiment was canceled/stopped. </p>
+<tr><td class="fieldname"><a id="aecca7c341a0fff28b85ad9d13d380ad9ac23e2b09ebe6bf4cb5e2a9abe85c0be2"></a>Stopped&#160;</td><td class="fielddoc"><p><a class="el" href="classdarwin_1_1_evolution.html" title="The controller for running evolution experiments. ">Evolution</a> experiment was canceled/stopped. </p>
 </td></tr>
 </table>
 

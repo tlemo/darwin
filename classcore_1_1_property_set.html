@@ -83,15 +83,16 @@ Inheritance diagram for core::PropertySet:</div>
  <div class="center">
   <img src="classcore_1_1_property_set.png" usemap="#core::PropertySet_map" alt=""/>
   <map id="core::PropertySet_map" name="core::PropertySet_map">
-<area href="classcore_1_1_non_copyable.html" title="Classes derived from this are not copyable or movable. " alt="core::NonCopyable" shape="rect" coords="0,0,150,24"/>
-<area href="structann_1_1_config.html" title="The ANN library configuration. " alt="ann::Config" shape="rect" coords="160,112,310,136"/>
-<area href="structconquest_1_1_config.html" title="Conquest domain configuration. " alt="conquest::Config" shape="rect" coords="160,168,310,192"/>
-<area href="structdarwin_1_1_evolution_config.html" title="Settings for an evolution experiment run. " alt="darwin::EvolutionConfig" shape="rect" coords="160,224,310,248"/>
-<area href="structdarwin_1_1_experiment_setup.html" title="An experiment configuration. " alt="darwin::ExperimentSetup" shape="rect" coords="160,280,310,304"/>
-<area href="structfind__max__value_1_1_config.html" title="Find_Max_Value domain configuration. " alt="find_max_value::Config" shape="rect" coords="160,336,310,360"/>
-<area href="structharvester_1_1_config.html" title="Harvester domain configuration. " alt="harvester::Config" shape="rect" coords="160,392,310,416"/>
-<area href="structpong_1_1_config.html" title="Pong domain configuration. " alt="pong::Config" shape="rect" coords="160,448,310,472"/>
-<area href="structtic__tac__toe_1_1_config.html" title="Tic-Tac-Toe domain configuration. " alt="tic_tac_toe::Config" shape="rect" coords="160,504,310,528"/>
+<area href="classcore_1_1_non_copyable.html" title="Classes derived from this are not copyable or movable. " alt="core::NonCopyable" shape="rect" coords="0,0,183,24"/>
+<area href="structann_1_1_config.html" title="The ANN library configuration. " alt="ann::Config" shape="rect" coords="193,112,376,136"/>
+<area href="structconquest_1_1_config.html" title="Conquest domain configuration. " alt="conquest::Config" shape="rect" coords="193,168,376,192"/>
+<area href="structdarwin_1_1_evolution_config.html" title="Settings for an evolution experiment run. " alt="darwin::EvolutionConfig" shape="rect" coords="193,224,376,248"/>
+<area href="structdarwin_1_1_experiment_setup.html" title="An experiment configuration. " alt="darwin::ExperimentSetup" shape="rect" coords="193,280,376,304"/>
+<area href="structfind__max__value_1_1_config.html" title="Find_Max_Value domain configuration. " alt="find_max_value::Config" shape="rect" coords="193,336,376,360"/>
+<area href="structharvester_1_1_config.html" title="Harvester domain configuration. " alt="harvester::Config" shape="rect" coords="193,392,376,416"/>
+<area href="structpong_1_1_config.html" title="Pong domain configuration. " alt="pong::Config" shape="rect" coords="193,448,376,472"/>
+<area href="structtic__tac__toe_1_1_config.html" title="Tic-Tac-Toe domain configuration. " alt="tic_tac_toe::Config" shape="rect" coords="193,504,376,528"/>
+<area href="structtournament_1_1_tournament_config.html" title="Tournament configuration. " alt="tournament::TournamentConfig" shape="rect" coords="193,560,376,584"/>
 </map>
  </div></div>
 <table class="memberdecls">
@@ -109,8 +110,9 @@ vector&lt; const <a class="el" href="classcore_1_1_property.html">Property</a> *
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcore_1_1_property_set.html#aba45789d3af1fd0d77c89856d2e633fb">resetToDefaultValues</a> ()</td></tr>
 <tr class="memdesc:aba45789d3af1fd0d77c89856d2e633fb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Resets all the properties to the default values. <br /></td></tr>
 <tr class="separator:aba45789d3af1fd0d77c89856d2e633fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a82c1fedba829084422073eee41ded7fc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcore_1_1_property_set.html#a82c1fedba829084422073eee41ded7fc">copyFrom</a> (const <a class="el" href="classcore_1_1_property_set.html">PropertySet</a> &amp;src)</td></tr>
-<tr class="memdesc:a82c1fedba829084422073eee41ded7fc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Support for transfering values between property sets.  <a href="#a82c1fedba829084422073eee41ded7fc">More...</a><br /></td></tr>
+<tr class="memitem:a82c1fedba829084422073eee41ded7fc"><td class="memItemLeft" align="right" valign="top"><a id="a82c1fedba829084422073eee41ded7fc"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcore_1_1_property_set.html#a82c1fedba829084422073eee41ded7fc">copyFrom</a> (const <a class="el" href="classcore_1_1_property_set.html">PropertySet</a> &amp;src)</td></tr>
+<tr class="memdesc:a82c1fedba829084422073eee41ded7fc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Transfer values between two property sets. <br /></td></tr>
 <tr class="separator:a82c1fedba829084422073eee41ded7fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4b081d98adbbf678ba5002b02f48c526"><td class="memItemLeft" align="right" valign="top"><a id="a4b081d98adbbf678ba5002b02f48c526"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcore_1_1_property_set.html#a4b081d98adbbf678ba5002b02f48c526">seal</a> ()</td></tr>
@@ -139,40 +141,6 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <div class="fragment"><div class="line"><span class="keywordtype">void</span> printProperties(<span class="keyword">const</span> <a class="code" href="classcore_1_1_property_set.html">core::PropertySet</a>* config) {</div><div class="line">  <span class="comment">// enumerate properties</span></div><div class="line">  <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span>&amp; property : config-&gt;<a class="code" href="classcore_1_1_property_set.html#aa2b26e814908929c68515f18e8e36746">properties</a>()) {</div><div class="line">    <span class="comment">// read the property name and value as strings</span></div><div class="line">    <a class="code" href="namespacecore.html#ab3d8380ec0c61b6e6de47ed06e2659e6">core::log</a>(<span class="stringliteral">&quot;%s = %s\n&quot;</span>, property-&gt;name(), <span class="keyword">property</span>-&gt;value());</div><div class="line">  }</div><div class="line">}</div></div><!-- fragment --><dl class="section note"><dt>Note</dt><dd>This is a specialized reflection solution intended to support dynamic UIs and serializing configuration values. Since every instance of PropertySet-derived structures builds its own internal reflection metadata it may not be appropriate for use cases where there are lots of instances of the reflected structures, or when the object creation performance is critical.</dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="classcore_1_1_property.html" title="Reflection interface to a property in a PropertySet. ">Property</a></dd></dl>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a id="a82c1fedba829084422073eee41ded7fc"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a82c1fedba829084422073eee41ded7fc">&#9670;&nbsp;</a></span>copyFrom()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void core::PropertySet::copyFrom </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="classcore_1_1_property_set.html">PropertySet</a> &amp;&#160;</td>
-          <td class="paramname"><em>src</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Support for transfering values between property sets. </p>
-<dl class="exception"><dt>Exceptions</dt><dd>
-  <table class="exception">
-    <tr><td class="paramname"><a class="el" href="classcore_1_1_exception.html" title="The base for exception types in the Darwin framework. ">core::Exception</a>,if</td><td>the dynamic types are not compatible </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
 <a id="a7efad703bb60c3e420b6a1925b38377c"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a7efad703bb60c3e420b6a1925b38377c">&#9670;&nbsp;</a></span>fromJson()</h2>
 

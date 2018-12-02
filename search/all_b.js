@@ -9,6 +9,5 @@ var searchData=
   ['loadvariation',['loadVariation',['../classdarwin_1_1_universe.html#ac9386e986683195fd2cc60323537ffd6',1,'darwin::Universe']]],
   ['log',['log',['../namespacecore.html#ab3d8380ec0c61b6e6de47ed06e2659e6',1,'core']]],
   ['logistic',['Logistic',['../namespaceann.html#a1075b962a0c710dcafad8d7b7e9a1da3a9a2126552a9de60d20d95a47f85a16fd',1,'ann']]],
-  ['logisticex',['LogisticEx',['../namespaceann.html#a1075b962a0c710dcafad8d7b7e9a1da3a861dd7b22061c1b102f2a4bd726c83eb',1,'ann']]],
-  ['lose_5fpoints',['lose_points',['../structconquest_1_1_config.html#a595a39761c1fb7fc8ae5d243ad1b3969',1,'conquest::Config']]]
+  ['logisticex',['LogisticEx',['../namespaceann.html#a1075b962a0c710dcafad8d7b7e9a1da3a861dd7b22061c1b102f2a4bd726c83eb',1,'ann']]]
 ];
