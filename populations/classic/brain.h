@@ -17,6 +17,7 @@
 #include "classic.h"
 
 #include <core/darwin.h>
+#include <core/ann_dynamic.h>
 
 namespace classic {
 
