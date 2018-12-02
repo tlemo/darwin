@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['default_5ftournament',['default_tournament',['../structtournament_1_1_tournament_variant.html#acaedc99b6f2b6f3d57e7cb9769ed4d59',1,'tournament::TournamentVariant']]],
   ['deploy_5fmin',['deploy_min',['../structconquest_1_1_config.html#a047d4b3b0746b0ac07ff6087cb2b2e4e',1,'conquest::Config']]],
   ['deploy_5fpercent',['deploy_percent',['../structconquest_1_1_config.html#aa568e749e1f91c05a19c35b46e197a46',1,'conquest::Config']]],
   ['deploy_5fresolution',['deploy_resolution',['../structconquest_1_1_config.html#a7ea8f0f5026d9453d818b12f8d8f9f1c',1,'conquest::Config']]],

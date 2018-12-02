@@ -9,6 +9,8 @@ var searchData=
   ['dbgeneration',['DbGeneration',['../structdarwin_1_1_db_generation.html',1,'darwin']]],
   ['dbuniverseobject',['DbUniverseObject',['../structdarwin_1_1_db_universe_object.html',1,'darwin']]],
   ['dbvariationid',['dbVariationId',['../classdarwin_1_1_experiment.html#afb135bb2f961521f7fc53ac817d2d4ae',1,'darwin::Experiment']]],
+  ['default',['Default',['../namespacetournament.html#ac7e249f02d2cdfeff04f1a700d46a6bda7a1920d61156abc05a60135aefe8bc67',1,'tournament']]],
+  ['default_5ftournament',['default_tournament',['../structtournament_1_1_tournament_variant.html#acaedc99b6f2b6f3d57e7cb9769ed4d59',1,'tournament::TournamentVariant']]],
   ['defaultconfig',['defaultConfig',['../classdarwin_1_1_population_factory.html#a838a495c7164d6c678c2ea88d7350d19',1,'darwin::PopulationFactory::defaultConfig()'],['../classdarwin_1_1_domain_factory.html#a00ad35fdd79e8a29173c3be879c9c4a0',1,'darwin::DomainFactory::defaultConfig()']]],
   ['defaultvalue',['defaultValue',['../classcore_1_1_property.html#a55de1bbde375c89d4da5a7904b4a8960',1,'core::Property']]],
   ['deferred',['Deferred',['../namespacedb.html#a24b52b53160e032c8bfc78bc6a0d365aa4ed71db54748b36eeb398876b0c747ac',1,'db']]],
@@ -26,5 +28,6 @@ var searchData=
   ['domainfactory',['DomainFactory',['../classdarwin_1_1_domain_factory.html',1,'darwin::DomainFactory'],['../classdarwin_1_1_experiment.html#a7c815e06a7415ebd7e8422c72ca0b867',1,'darwin::Experiment::domainFactory()']]],
   ['domains',['domains',['../structdarwin_1_1_registry.html#a977c7cb6eb1c65679a6d3bf8bf00e476',1,'darwin::Registry']]],
   ['domains_5fui',['domains_ui',['../structdarwin_1_1_registry.html#a8f87dc1f11012512fde65b639fb46b6f',1,'darwin::Registry']]],
-  ['domainuifactory',['DomainUiFactory',['../classdarwin_1_1_domain_ui_factory.html',1,'darwin::DomainUiFactory'],['../classdarwin_1_1_experiment.html#ad50fa6639d87a99cdb517a1b5d01849d',1,'darwin::Experiment::domainUiFactory()']]]
+  ['domainuifactory',['DomainUiFactory',['../classdarwin_1_1_domain_ui_factory.html',1,'darwin::DomainUiFactory'],['../classdarwin_1_1_experiment.html#ad50fa6639d87a99cdb517a1b5d01849d',1,'darwin::Experiment::domainUiFactory()']]],
+  ['draw',['Draw',['../namespacetournament.html#afb2d89307ef2ac4c6e727eb2c88b304ca2d03c2d5a7ec65ef4619e0582c272ec2',1,'tournament']]]
 ];

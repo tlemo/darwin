@@ -6,6 +6,7 @@ var searchData=
   ['findmaxvalue',['FindMaxValue',['../classfind__max__value_1_1_find_max_value.html',1,'find_max_value']]],
   ['finish',['finish',['../classdarwin_1_1_evolution_stage.html#a9556ee0972426e441d864f78aae64e26',1,'darwin::EvolutionStage']]],
   ['finishstage',['finishStage',['../classdarwin_1_1_progress_monitor.html#a077fbae2b9b893151646734c452f2438',1,'darwin::ProgressMonitor::finishStage()'],['../classdarwin_1_1_progress_manager.html#af05f83d2f342988b46d989f5b2879b1a',1,'darwin::ProgressManager::finishStage()']]],
+  ['firstplayerwins',['FirstPlayerWins',['../namespacetournament.html#afb2d89307ef2ac4c6e727eb2c88b304ca687b86fb01fccf350cf12a50b1b31aa6',1,'tournament']]],
   ['fitness',['fitness',['../classdarwin_1_1_genotype.html#a5ec0b67d4b7cb3e084998abc239d1e27',1,'darwin::Genotype']]],
   ['fitness_5finformation',['fitness_information',['../structdarwin_1_1_evolution_config.html#a4908f120e732237d3a1eed9fe07c33f7',1,'darwin::EvolutionConfig']]],
   ['fitnessinfokind',['FitnessInfoKind',['../namespacedarwin.html#a0ea494dca80c520041435bf2048f2059',1,'darwin']]],

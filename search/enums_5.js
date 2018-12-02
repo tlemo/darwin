@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['profileinfokind',['ProfileInfoKind',['../namespacedarwin.html#ab2846c46660beffd6d0ebacd4f5fe876',1,'darwin']]]
+  ['openmode',['OpenMode',['../namespacedb.html#a28b71085755f495ec7c3492d729bef81',1,'db']]]
 ];

@@ -8,6 +8,7 @@ var searchData=
   ['scale',['scale',['../classcore__ui_1_1_canvas.html#a3f6347f9ef9f37ad16e88bc7bbb21020',1,'core_ui::Canvas']]],
   ['scores',['Scores',['../structtournament_1_1_scores.html',1,'tournament::Scores'],['../classtournament_1_1_game_rules.html#a32ce9de85e59e5f6599774fdfe678184',1,'tournament::GameRules::scores()']]],
   ['seal',['seal',['../classcore_1_1_property_set.html#a4b081d98adbbf678ba5002b02f48c526',1,'core::PropertySet']]],
+  ['secondplayerwins',['SecondPlayerWins',['../namespacetournament.html#afb2d89307ef2ac4c6e727eb2c88b304ca5c063a22d48106711ccd0c4565563dba',1,'tournament']]],
   ['selectcase',['selectCase',['../classcore_1_1_property_set_variant.html#afb03276d84f14bec4280983c45b0bb39',1,'core::PropertySetVariant']]],
   ['setactivationfunction',['setActivationFunction',['../namespaceann.html#abaea07e8f3251b1f14c6675d2498de4e',1,'ann']]],
   ['setbordersize',['setBorderSize',['../classcore__ui_1_1_canvas.html#aa0a09f962a4169fb782ee446e3051d76',1,'core_ui::Canvas']]],

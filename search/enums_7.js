@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['transactionoption',['TransactionOption',['../namespacedb.html#a24b52b53160e032c8bfc78bc6a0d365a',1,'db']]]
+  ['state',['State',['../classdarwin_1_1_evolution.html#aecca7c341a0fff28b85ad9d13d380ad9',1,'darwin::Evolution']]]
 ];

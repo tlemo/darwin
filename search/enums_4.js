@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['openmode',['OpenMode',['../namespacedb.html#a28b71085755f495ec7c3492d729bef81',1,'db']]]
+  ['gameoutcome',['GameOutcome',['../namespacetournament.html#afb2d89307ef2ac4c6e727eb2c88b304c',1,'tournament']]]
 ];
