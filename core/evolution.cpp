@@ -246,22 +246,31 @@ bool Evolution::newExperiment(shared_ptr<Experiment> experiment,
     // sanity checks (make sure we have a clean state)
     CHECK(stage_stack_.empty());
 
+    // setup the shared ANN library
+    ann::g_config.copyFrom(*experiment->coreConfig());
+
+    try {
+      // setup the domain
+      auto domain_factory = experiment->domainFactory();
+      auto domain = domain_factory->create(*experiment->domainConfig());
+
+      // setup the population
+      auto population_factory = experiment->populationFactory();
+      auto population =
+          population_factory->create(*experiment->populationConfig(), *domain);
+
+      domain_ = std::move(domain);
+      population_ = std::move(population);
+    } catch (const std::exception& e) {
+      core::log("Failed to create the domain or the population: %s\n", e.what());
+      throw;
+    }
+
     config_.copyFrom(config);
 
     CHECK(experiment_ == nullptr);
     experiment_ = experiment;
     experiment_->prepareForEvolution();
-
-    // setup the shared ANN library
-    ann::g_config.copyFrom(*experiment->coreConfig());
-
-    // setup the domain
-    auto domain_factory = experiment->domainFactory();
-    domain_ = domain_factory->create(*experiment->domainConfig());
-
-    // setup the population
-    auto population_factory = experiment->populationFactory();
-    population_ = population_factory->create(*experiment_->populationConfig(), *domain_);
 
     trace_ = make_shared<EvolutionTrace>(this);
 
