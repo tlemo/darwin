@@ -28,10 +28,10 @@ World::World(const WorldMap& world_map, Robot* robot) : map_(world_map), robot_(
 void World::simInit() {
   // make sure the map hasn't been already used
   //
-  // TODO: redesign the World interface to avoid the need for this
+  // TODO: redesign the World interface to avoid the need for this validation
   //
   for (const auto& cell : map_.cells.values)
-    assert(cell != WorldMap::Cell::Visited);
+    CHECK(cell != WorldMap::Cell::Visited);
 
   step_ = 0;
   robot_->simInit(this);
