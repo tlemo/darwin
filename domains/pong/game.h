@@ -15,6 +15,7 @@
 #pragma once
 
 #include <core/properties.h>
+#include <core/tournament.h>
 
 namespace pong {
 
@@ -35,22 +36,26 @@ struct Config : public core::PropertySet {
   PROPERTY(ball_radius, float, 0.01f, "Ball size");
   PROPERTY(ball_speed, float, 0.04f, "Ball speed");
 
-  PROPERTY(max_steps, int, 2500, "If no one scores before max_steps, the game is a tie");
-
-  PROPERTY(eval_games, int, 10, "Number of evaluation games");
   PROPERTY(calibration_games, int, 100, "Number of calibration games");
+
+  PROPERTY(max_steps, int, 2500, "If no one scores before max_steps, the game is a draw");
   PROPERTY(sets_per_game, int, 10, "Sets per game");
-
-  PROPERTY(points_win, int, 5, "Points for a win");
-  PROPERTY(points_lose, int, -3, "Points for a lost game");
-  PROPERTY(points_tie, int, 0, "Points for a tie");
-
+  PROPERTY(sets_required_to_win, int, 6, "The minimum number of sets required to win");
   PROPERTY(simple_serve, bool, false, "Fixed serving angle");
+
+  PROPERTY(points_win, float, 1.0f, "Points for a win");
+  PROPERTY(points_lose, float, 0, "Points for a lost game");
+  PROPERTY(points_draw, float, 0.4f, "Points for a tie");
+
+  VARIANT(tournament_type,
+          tournament::TournamentVariant,
+          tournament::TournamentType::Default,
+          "Tournament type");
 };
 
 extern Config g_config;
 
-class Game {
+class Game : public core::NonCopyable {
  public:
   struct Ball {
     float x = 0;
@@ -61,9 +66,6 @@ class Game {
 
  public:
   explicit Game(int max_steps) : max_steps_(max_steps) {}
-
-  Game(const Game&) = delete;
-  Game& operator=(const Game&) = delete;
 
   void reset();
   void newGame(Player* player1, Player* player2);
@@ -104,6 +106,16 @@ class Game {
 
   Player* player1_ = nullptr;
   Player* player2_ = nullptr;
+};
+
+class PongRules : public tournament::GameRules {
+ public:
+  tournament::Scores scores(tournament::GameOutcome outcome) const override;
+
+  tournament::GameOutcome play(Player* player1, Player* player2) const;
+  
+  tournament::GameOutcome play(const darwin::Genotype* player1_genotype,
+                               const darwin::Genotype* player2_genotype) const override;
 };
 
 }  // namespace pong

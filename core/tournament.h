@@ -19,36 +19,72 @@
 
 namespace tournament {
 
+//! Tournament configuration
 struct TournamentConfig : public core::PropertySet {
   PROPERTY(eval_games, int, 10, "Number of evaluation games");
   PROPERTY(rematches, bool, true, "Play both-side rematches?");
 };
 
+//! Tournament type
+enum class TournamentType {
+  Default,  //!< The default tournament implementation
+};
+
+inline auto customStringify(core::TypeTag<TournamentType>) {
+  static auto stringify = new core::StringifyKnownValues<TournamentType>{
+    { TournamentType::Default, "default" },
+  };
+  return stringify;
+}
+
+//! Tournament configurations
+struct TournamentVariant : public core::PropertySetVariant<TournamentType> {
+  CASE(TournamentType::Default, default_tournament, TournamentConfig);
+};
+
+//! Final game scores
+//! \sa GameRules
 struct Scores {
-  float player1_score = 0;
-  float player2_score = 0;
+  float player1_score = 0;  //!< Player1 score
+  float player2_score = 0;  //!< Player2 score
 };
 
+//! Game outcome
+//! \sa GameRules
 enum class GameOutcome {
-  FirstPlayerWins,
-  SecondPlayerWins,
-  Draw,
+  FirstPlayerWins,   //!< First player wins
+  SecondPlayerWins,  //!< Second player wins
+  Draw,              //!< Game ended up in a draw
 };
 
+//! Game rules abstraction (used to run the tournament)
+//! \sa Tournament
 class GameRules : public core::NonCopyable {
  public:
   virtual ~GameRules() = default;
-  
+
+  //! Sets up a game between players "grown" from the argument genotypes  
   virtual GameOutcome play(const darwin::Genotype* player1,
                            const darwin::Genotype* player2) const = 0;
 
+  //! Returns the final scores based on a game outcome
   virtual Scores scores(GameOutcome outcome) const = 0;
 };
 
+//! A simple tournament implementation
+//! 
+//! Every genotype in a population is paired with a fixed number of random
+//! opponents (genotypes from the same population). The fitness of the genotype
+//! is updated based on the aggregated results from all the games.
+//! 
+//! \note The fitness of the opponent fitness is not updated
+//! 
 class Tournament : public core::NonCopyable {
  public:
+  //! Creates a new tournament based on the specified game rules
   Tournament(const core::PropertySet& config, GameRules* game_rules);
 
+  //! Assigns fitness values based on the tournament results
   void evaluatePopulation(darwin::Population* population);
 
  private:

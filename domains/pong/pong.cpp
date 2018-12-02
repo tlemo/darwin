@@ -21,12 +21,10 @@
 #include <core/darwin.h>
 #include <core/evolution.h>
 #include <core/logging.h>
-#include <core/parallel_for_each.h>
+#include <core/exception.h>
 
 #include <random>
 using namespace std;
-
-using core::log;
 
 namespace pong {
 
@@ -38,63 +36,14 @@ bool Pong::evaluatePopulation(darwin::Population* population) const {
   darwin::StageScope stage("Evaluate population");
 
   const int generation = population->generation();
-  log("\n. generation %d\n", generation);
+  core::log("\n. generation %d\n", generation);
 
-  // "grow" players from the genotypes
-  vector<AnnPlayer> players(population->size());
+  // currently there's only one type of tournament
+  CHECK(g_config.tournament_type.tag() == tournament::TournamentType::Default);
 
-  {
-    darwin::StageScope stage("Ontogenesis");
-    pp::for_each(players, [&](int index, AnnPlayer& player) {
-      auto genotype = population->genotype(index);
-      player.grow(genotype);
-      genotype->fitness = 0;
-    });
-  }
-
-  // let the tournament begin!
-  {
-    darwin::StageScope stage("Tournament", players.size());
-    pp::for_each(players, [&](int player_index, AnnPlayer& player) {
-      random_device rd;
-      default_random_engine rnd(rd());
-      uniform_int_distribution<size_t> dist(0, players.size() - 1);
-
-      Game game(g_config.max_steps);
-
-      for (int i = 0; i < g_config.eval_games; ++i) {
-        // CONSIDER: player.clone() instead of grow()
-        AnnPlayer opponent;
-        auto opponent_index = dist(rnd);
-        opponent.grow(players[opponent_index].genotype);
-
-        // play the game
-        game.newGame(&player, &opponent);
-
-        for (int set = 0; set < g_config.sets_per_game; ++set) {
-          while (game.gameStep())
-            ;
-          game.newSet();
-        }
-
-        // TODO: need over a % of points for a win? (also evalChampion)
-        int points = g_config.points_tie;
-        if (game.scoreP1() > game.scoreP2())
-          points = g_config.points_win;
-        else if (game.scoreP1() < game.scoreP2())
-          points = g_config.points_lose;
-
-        // TODO: update and publish stats
-
-        // scale the fitness to make it invariant to the number of played games
-        points *= 100.0f / g_config.eval_games;
-
-        population->genotype(player_index)->fitness += points;
-      }
-
-      darwin::ProgressManager::reportProgress();
-    });
-  }
+  PongRules rules;
+  tournament::Tournament tournament(g_config.tournament_type.default_tournament, &rules);
+  tournament.evaluatePopulation(population);
 
   return false;
 }
@@ -103,43 +52,55 @@ struct CalibrationFitness : public core::PropertySet {
   PROPERTY(vs_handcrafted, float, 0, "Score vs. a handcrafted player");
 };
 
+static float calibrationScore(const PongRules& rules,
+                              Player& subject_player,
+                              Player& calibration_player) {
+  float calibration_score = 0;
+  int calibration_games = 0;
+
+  for (int i = 0; i < g_config.calibration_games; ++i) {
+    auto outcome = rules.play(&subject_player, &calibration_player);
+    calibration_score += rules.scores(outcome).player1_score;
+    ++calibration_games;
+
+    auto rematch_outcome = rules.play(&calibration_player, &subject_player);
+    calibration_score += rules.scores(rematch_outcome).player2_score;
+    ++calibration_games;
+  }
+
+  // normalize the fitness to make it invariant to the number of played games
+  return calibration_score / calibration_games * 100;
+}
+
 unique_ptr<core::PropertySet> Pong::calibrateGenotype(
     const darwin::Genotype* genotype) const {
   darwin::StageScope stage("Evaluate champion");
 
+  PongRules rules;
   auto calibration = make_unique<CalibrationFitness>();
 
-  Game game(g_config.max_steps);
+  AnnPlayer champion;
+  champion.grow(genotype);
 
-  AnnPlayer player;
-  player.grow(genotype);
-
+  // calibration: handcrafted
   HandcraftedPlayer handcrafted_player;
-  for (int i = 0; i < g_config.calibration_games; ++i) {
-    game.newGame(&player, &handcrafted_player);
-
-    for (int set = 0; set < g_config.sets_per_game; ++set) {
-      while (game.gameStep())
-        ;
-      game.newSet();
-    }
-
-    int points = g_config.points_tie;
-    if (game.scoreP1() > game.scoreP2())
-      points = g_config.points_win;
-    else if (game.scoreP1() < game.scoreP2())
-      points = g_config.points_lose;
-
-    // scale the fitness to make it invariant to the number of played games
-    points *= 100.0f / g_config.calibration_games;
-    calibration->vs_handcrafted += points;
-  }
+  calibration->vs_handcrafted = calibrationScore(rules, champion, handcrafted_player);
 
   return calibration;
 }
 
 unique_ptr<darwin::Domain> Factory::create(const core::PropertySet& config) {
   g_config.copyFrom(config);
+
+  // config values validation
+  if (g_config.sets_per_game < 1)
+    throw core::Exception("Invalid config value: sets_per_game");
+  if (g_config.sets_required_to_win <= g_config.sets_per_game / 2)
+    throw core::Exception(
+        "Invalid config values: sets_required_to_win <= sets_per_game / 2");
+  if (g_config.sets_required_to_win > g_config.sets_per_game)
+    throw core::Exception("Invalid config values: sets_required_to_win > sets_per_game");
+
   return make_unique<Pong>();
 }
 
@@ -147,13 +108,17 @@ unique_ptr<core::PropertySet> Factory::defaultConfig(darwin::ComplexityHint hint
   auto config = make_unique<Config>();
   switch (hint) {
     case darwin::ComplexityHint::Minimal:
-      config->max_steps = 1000;
-      config->eval_games = 2;
+      config->tournament_type.default_tournament.eval_games = 2;
+      config->tournament_type.default_tournament.rematches = false;
+      config->tournament_type.selectCase(tournament::TournamentType::Default);
       config->calibration_games = 3;
+      config->max_steps = 1000;
       config->sets_per_game = 2;
+      config->sets_required_to_win = 2;
       break;
 
     case darwin::ComplexityHint::Balanced:
+      config->tournament_type.default_tournament.rematches = false;
       break;
 
     case darwin::ComplexityHint::Extra:

@@ -229,11 +229,11 @@ const Game::Deployment& Game::deployment(int index) const {
 tournament::Scores ConquestRules::scores(tournament::GameOutcome outcome) const {
   switch (outcome) {
     case tournament::GameOutcome::FirstPlayerWins:
-      return { g_config.win_points, g_config.lose_points };
+      return { g_config.points_win, g_config.points_lose };
     case tournament::GameOutcome::Draw:
-      return { g_config.draw_points, g_config.draw_points };
+      return { g_config.points_draw, g_config.points_draw };
     case tournament::GameOutcome::SecondPlayerWins:
-      return { g_config.lose_points, g_config.win_points };
+      return { g_config.points_lose, g_config.points_win };
     default:
       FATAL("unexpected outcome");
   }

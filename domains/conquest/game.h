@@ -28,23 +28,6 @@ namespace conquest {
 
 class Player;
 
-//! Tournament type
-enum class TournamentType {
-  Default,  //!< The default tournament implementation
-};
-
-inline auto customStringify(core::TypeTag<TournamentType>) {
-  static auto stringify = new core::StringifyKnownValues<TournamentType>{
-    { TournamentType::Default, "default" },
-  };
-  return stringify;
-}
-
-//! Tournament configurations
-struct TournamentVariant : public core::PropertySetVariant<TournamentType> {
-  CASE(TournamentType::Default, default_tournament, tournament::TournamentConfig);
-};
-
 //! Conquest domain configuration
 struct Config : public core::PropertySet {
   PROPERTY(calibration_matches, int, 100, "Number of calibration matches");
@@ -56,9 +39,9 @@ struct Config : public core::PropertySet {
 
   PROPERTY(max_steps, int, 2500, "If no one wins before max_steps, the game is a tie");
 
-  PROPERTY(win_points, float, 1.0f, "Points for a win");
-  PROPERTY(lose_points, float, 0.0f, "Points for a lost game");
-  PROPERTY(draw_points, float, 0.4f, "Points for a draw");
+  PROPERTY(points_win, float, 1.0f, "Points for a win");
+  PROPERTY(points_lose, float, 0.0f, "Points for a lost game");
+  PROPERTY(points_draw, float, 0.4f, "Points for a draw");
 
   PROPERTY(int_unit_scale, float, 10.0f, "A scaling factor to display units as integers");
 
@@ -76,7 +59,10 @@ struct Config : public core::PropertySet {
   PROPERTY(units_speed, float, 2.0f, "Units move speed");
   PROPERTY(deploy_percent, float, 0.99f, "What % of units are deployed? (0..1]");
 
-  VARIANT(tournament_type, TournamentVariant, TournamentType::Default, "Tournament type");
+  VARIANT(tournament_type,
+          tournament::TournamentVariant,
+          tournament::TournamentType::Default,
+          "Tournament type");
 };
 
 extern Config g_config;
@@ -153,7 +139,7 @@ class Game : public core::NonCopyable {
 
 class ConquestRules : public tournament::GameRules {
  public:
-  ConquestRules(const Board* board) : board_(board) {}
+  explicit ConquestRules(const Board* board) : board_(board) {}
 
   tournament::Scores scores(tournament::GameOutcome outcome) const override;
 

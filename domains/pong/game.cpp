@@ -14,6 +14,7 @@
 
 #include "game.h"
 #include "player.h"
+#include "ann_player.h"
 
 #include <core/utils.h>
 
@@ -205,8 +206,6 @@ bool Game::gameStep() {
 
   if (++step_ == max_steps_) {
     // tie
-    ++score_p1_;
-    ++score_p2_;
     return false;
   }
 
@@ -214,6 +213,55 @@ bool Game::gameStep() {
   movePaddle(paddle_pos_p2_, player2_->action());
 
   return moveBall(1.0f);
+}
+
+tournament::Scores PongRules::scores(tournament::GameOutcome outcome) const {
+  switch (outcome) {
+    case tournament::GameOutcome::FirstPlayerWins:
+      return { g_config.points_win, g_config.points_lose };
+    case tournament::GameOutcome::Draw:
+      return { g_config.points_draw, g_config.points_draw };
+    case tournament::GameOutcome::SecondPlayerWins:
+      return { g_config.points_lose, g_config.points_win };
+    default:
+      FATAL("unexpected outcome");
+  }
+}
+
+tournament::GameOutcome PongRules::play(Player* player1, Player* player2) const {
+  Game game(g_config.max_steps);
+
+  CHECK(g_config.sets_per_game > 0);
+  CHECK(g_config.sets_required_to_win > g_config.sets_per_game / 2);
+  CHECK(g_config.sets_required_to_win <= g_config.sets_per_game);
+
+  // play the game
+  game.newGame(player1, player2);
+  for (int set = 0; set < g_config.sets_per_game; ++set) {
+    while (game.gameStep())
+      ;
+    game.newSet();
+  }
+
+  // decide the final game results
+  if (game.scoreP1() >= g_config.sets_required_to_win) {
+    return tournament::GameOutcome::FirstPlayerWins;
+  } else if (game.scoreP2() >= g_config.sets_required_to_win) {
+    return tournament::GameOutcome::SecondPlayerWins;
+  } else {
+    return tournament::GameOutcome::Draw;
+  }
+}
+
+tournament::GameOutcome PongRules::play(const darwin::Genotype* player1_genotype,
+                                        const darwin::Genotype* player2_genotype) const {
+  AnnPlayer player1;
+  player1.grow(player1_genotype);
+
+  AnnPlayer player2;
+  player2.grow(player2_genotype);
+
+  return play(&player1, &player2);
 }
 
 }  // namespace pong

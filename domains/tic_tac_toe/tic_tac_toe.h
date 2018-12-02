@@ -35,28 +35,15 @@ inline auto customStringify(core::TypeTag<AnnType>) {
   return stringify;
 }
 
-//! Tournament type
-enum class TournamentType {
-  Default,  //!< The default tournament implementation
-};
-
-inline auto customStringify(core::TypeTag<TournamentType>) {
-  static auto stringify = new core::StringifyKnownValues<TournamentType>{
-    { TournamentType::Default, "default" },
-  };
-  return stringify;
-}
-
-//! Tournament configurations
-struct TournamentVariant : public core::PropertySetVariant<TournamentType> {
-  CASE(TournamentType::Default, default_tournament, tournament::TournamentConfig);
-};
-
 //! Tic-Tac-Toe domain configuration
 struct Config : public core::PropertySet {
   PROPERTY(ann_type, AnnType, AnnType::Value, "The role of the evolved brains");
   PROPERTY(calibration_matches, int, 100, "Number of calibration games");
-  VARIANT(tournament_type, TournamentVariant, TournamentType::Default, "Tournament type");
+
+  VARIANT(tournament_type,
+          tournament::TournamentVariant,
+          tournament::TournamentType::Default,
+          "Tournament type");
 };
 
 extern Config g_config;
