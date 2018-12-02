@@ -77,7 +77,7 @@ class GameRules : public core::NonCopyable {
 //! opponents (genotypes from the same population). The fitness of the genotype
 //! is updated based on the aggregated results from all the games.
 //! 
-//! \note The fitness of the opponent fitness is not updated
+//! \note The opponent's fitness is not updated
 //! 
 class Tournament : public core::NonCopyable {
  public:

@@ -23,6 +23,9 @@
 //! \namespace core
 //! \brief Generic utilities
 
+//! \namespace tournament
+//! \brief Reusable tournament implementations
+
 //! \namespace core_ui
 //! \brief Reusable components for building UIs
 
