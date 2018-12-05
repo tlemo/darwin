@@ -317,6 +317,7 @@ unique_ptr<DbEvolutionTrace> Universe::newTrace(db::RowId variation_id,
 
   auto new_trace = make_unique<DbEvolutionTrace>();
   new_trace->variation_id = variation_id;
+  new_trace->config = evolution_config;
 
   // transaction scope
   {

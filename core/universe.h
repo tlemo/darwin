@@ -80,6 +80,9 @@ struct DbExperimentVariation : public DbUniverseObject {
 struct DbEvolutionTrace : public DbUniverseObject {
   //! Parent experiment variation
   db::RowId variation_id = 0;
+
+  //! The evolution run configuration (json)
+  string config;
 };
 
 //! A recording of a particular generation history
