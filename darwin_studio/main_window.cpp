@@ -29,6 +29,7 @@
 #include <core/platform_abstraction_layer.h>
 
 #include <QApplication>
+#include <QString>
 #include <QByteArray>
 #include <QFileDialog>
 #include <QMessageBox>
@@ -117,6 +118,8 @@ void MainWindow::closeExperiment() {
     CHECK(darwin::evolution()->reset());
 
     active_experiment_ = false;
+    batch_total_runs_ = 0;
+    batch_current_run_ = 0;
     experiment_.reset();
   }
 
@@ -162,6 +165,8 @@ void MainWindow::reopenLastUniverse() {
   CHECK(!universe_);
   CHECK(!experiment_);
   CHECK(!active_experiment_);
+  CHECK(batch_total_runs_ == 0);
+  CHECK(batch_current_run_ == 0);
 
   auto last_universe = g_settings.last_universe;
 
@@ -189,7 +194,8 @@ bool MainWindow::confirmEndOfExperiment() {
   QMessageBox confirmation_dialog(this);
   confirmation_dialog.setIcon(QMessageBox::Question);
   confirmation_dialog.setWindowTitle("Close the current experiment");
-  confirmation_dialog.setText("Are you sure? This will discard all current generations.");
+  confirmation_dialog.setText(
+      "Are you sure? This will terminate the current experiment batch.");
   confirmation_dialog.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
   confirmation_dialog.setDefaultButton(QMessageBox::No);
   return confirmation_dialog.exec() == QMessageBox::Yes;
@@ -234,8 +240,17 @@ void MainWindow::updateUi() {
     default:
       FATAL("unexpected state");
   }
-  
+
   CHECK(!experiment_running || active_experiment_);
+
+  if (active_experiment_) {
+    CHECK(batch_total_runs_ > 0);
+    CHECK(batch_current_run_ > 0);
+    CHECK(batch_current_run_ <= batch_total_runs_);
+  } else {
+    CHECK(batch_total_runs_ == 0);
+    CHECK(batch_current_run_ == 0);
+  }
 
   // enable/disable UI actions
   ui->action_run->setEnabled(experiment_ && runnable);
@@ -249,8 +264,11 @@ void MainWindow::updateUi() {
   ui->action_branch_experiment->setEnabled(experiment_ && !experiment_running);
   ui->action_open_experiment->setEnabled(universe_ && !experiment_running);
 
+  // current batch
+  auto batch_text = QString::asprintf("Run %d/%d", batch_current_run_, batch_total_runs_);
+
   // status label
-  const char* state_text = nullptr;
+  QString state_text;
   switch (snapshot.state) {
     case darwin::Evolution::State::Initializing:
       state_text = "Initializing";
@@ -262,18 +280,17 @@ void MainWindow::updateUi() {
       state_text = "Canceling...";
       break;
     case darwin::Evolution::State::Stopped:
-      state_text = "Stopped";
+      state_text = QString("Stopped (%1)").arg(batch_text);
       break;
     case darwin::Evolution::State::Paused:
-      state_text = "Paused";
+      state_text = QString("Paused (%1)").arg(batch_text);
       break;
     case darwin::Evolution::State::Running:
-      state_text = "Running";
+      state_text = QString("Running (%1)").arg(batch_text);
       break;
     default:
       FATAL("unexpected value");
   }
-  CHECK(state_text != nullptr);
   status_label_->setText(state_text);
 
   // main window title
@@ -541,6 +558,8 @@ void MainWindow::on_action_run_triggered() {
   // are we starting the experiment?
   if (!active_experiment_) {
     CHECK(experiment_);
+    CHECK(batch_total_runs_ == 0);
+    CHECK(batch_current_run_ == 0);
 
     StartEvolutionDialog dlg(this);
     if (dlg.exec() != QDialog::Accepted)
@@ -549,6 +568,8 @@ void MainWindow::on_action_run_triggered() {
     emit sigStartingExperiment();
 
     active_experiment_ = evolution->newExperiment(experiment_, dlg.evolutionConfig());
+    batch_total_runs_ = dlg.batchRuns();
+    batch_current_run_ = 1;
   }
 
   // start/resume

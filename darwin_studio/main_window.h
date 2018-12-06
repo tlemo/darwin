@@ -93,4 +93,9 @@ class MainWindow : public QMainWindow {
 
   // has the experiment been started?
   bool active_experiment_ = false;
+  
+  // track the current experiment runs batch
+  // (current_run = [1 .. total_runs])
+  int batch_total_runs_ = 0;
+  int batch_current_run_ = 0;
 };
