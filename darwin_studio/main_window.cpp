@@ -29,7 +29,6 @@
 #include <core/platform_abstraction_layer.h>
 
 #include <QApplication>
-#include <QString>
 #include <QByteArray>
 #include <QFileDialog>
 #include <QMessageBox>
@@ -97,6 +96,22 @@ void MainWindow::dockWindow(const char* name,
     experiment_windows_.push_back(dock);
 
   ui->menu_window->addAction(dock->toggleViewAction());
+}
+
+bool MainWindow::confirmationDialog(const QString& title, const QString& text) {
+  QMessageBox confirmation_dialog(this);
+  confirmation_dialog.setIcon(QMessageBox::Question);
+  confirmation_dialog.setWindowTitle(title);
+  confirmation_dialog.setText(text);
+  confirmation_dialog.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+  confirmation_dialog.setDefaultButton(QMessageBox::No);
+  return confirmation_dialog.exec() == QMessageBox::Yes;
+}
+
+bool MainWindow::confirmEndOfExperiment() {
+  return confirmationDialog(
+      "Close the current experiment",
+      "Are you sure? This will terminate the current experiment batch.");
 }
 
 void MainWindow::closeExperiment() {
@@ -190,18 +205,72 @@ void MainWindow::universeSwitched() {
   }
 }
 
-bool MainWindow::confirmEndOfExperiment() {
-  QMessageBox confirmation_dialog(this);
-  confirmation_dialog.setIcon(QMessageBox::Question);
-  confirmation_dialog.setWindowTitle("Close the current experiment");
-  confirmation_dialog.setText(
-      "Are you sure? This will terminate the current experiment batch.");
-  confirmation_dialog.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-  confirmation_dialog.setDefaultButton(QMessageBox::No);
-  return confirmation_dialog.exec() == QMessageBox::Yes;
+bool MainWindow::resetExperiment() {
+  // remember the experiment ID so we can reload it
+  auto experiment_id = experiment_->dbExperimentId();
+
+  closeExperiment();
+
+  // reload the experiment
+  //
+  // TODO: keep the DbExperiment instead of the experiment_id
+  //  (last variation might change)
+  //
+  try {
+    auto db_experiment = universe_->loadExperiment(experiment_id);
+    CHECK(db_experiment != nullptr);
+
+    experiment_ = make_shared<darwin::Experiment>(db_experiment.get(), universe_.get());
+
+    createExperimentWindows();
+  } catch (const std::exception& e) {
+    QMessageBox::warning(this, "Can't reset experiment", e.what());
+    return false;
+  }
+
+  return true;
+}
+
+void MainWindow::nextBatchedRun() {
+  CHECK(experiment_);
+  CHECK(active_experiment_);
+  CHECK(batch_total_runs_ > 0);
+  CHECK(batch_current_run_ > 0);
+  CHECK(batch_current_run_ <= batch_total_runs_);
+
+  if (batch_current_run_ < batch_total_runs_) {
+    if (ui->sandbox_tabs->count() > 0) {
+      // TODO: revisit this (should we prompt the user instead?)
+      core::log("Warning: closing sandbox windows before starting next batched run.\n");
+    }
+
+    auto saved_total_runs = batch_total_runs_;
+    auto saved_current_run = batch_current_run_;
+
+    CHECK(resetExperiment());
+
+    auto evolution = darwin::evolution();
+    active_experiment_ = evolution->newExperiment(experiment_, evolution_config_);
+    CHECK(active_experiment_);
+
+    batch_total_runs_ = saved_total_runs;
+    batch_current_run_ = saved_current_run + 1;
+
+    core::log("\nStarting run %d/%d\n\n", batch_current_run_, batch_total_runs_);
+
+    evolution->run();
+  }
+
+  updateUi();
 }
 
 void MainWindow::evolutionEvent(uint32_t event_flags) {
+  // end of an evolution run?
+  if ((event_flags & darwin::Evolution::EventFlag::EndEvolution) != 0) {
+    nextBatchedRun();
+  }
+  
+  // any state change?
   if ((event_flags & darwin::Evolution::EventFlag::StateChanged) != 0) {
     updateUi();
   }
@@ -373,22 +442,8 @@ void MainWindow::on_action_reset_triggered() {
   // TODO: only prompt if active or modified
   if (!confirmEndOfExperiment())
     return;
-
-  auto experiment_id = experiment_->dbExperimentId();
-
-  closeExperiment();
-
-  try {
-    auto db_experiment = universe_->loadExperiment(experiment_id);
-    CHECK(db_experiment != nullptr);
-
-    experiment_ = make_shared<darwin::Experiment>(db_experiment.get(), universe_.get());
-
-    createExperimentWindows();
-  } catch (const std::exception& e) {
-    QMessageBox::warning(this, "Can't reset experiment", e.what());
-  }
-
+    
+  resetExperiment();
   updateUi();
 }
 
@@ -567,7 +622,8 @@ void MainWindow::on_action_run_triggered() {
 
     emit sigStartingExperiment();
 
-    active_experiment_ = evolution->newExperiment(experiment_, dlg.evolutionConfig());
+    evolution_config_.copyFrom(dlg.evolutionConfig());
+    active_experiment_ = evolution->newExperiment(experiment_, evolution_config_);
     batch_total_runs_ = dlg.batchRuns();
     batch_current_run_ = 1;
   }
