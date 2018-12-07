@@ -218,8 +218,8 @@ bool MainWindow::resetExperiment() {
 
   // reload the experiment
   //
-  // TODO: keep the DbExperiment instead of the experiment_id
-  //  (last variation might change)
+  // TODO: keep the DbExperiment instead of the experiment_id?
+  // (last variation might change if multiple users use the same universe db concurrently)
   //
   try {
     auto db_experiment = universe_->loadExperiment(experiment_id);
