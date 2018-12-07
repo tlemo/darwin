@@ -349,8 +349,8 @@ void MainWindow::updateUi() {
   // batch status
   if (batch_total_runs_ > 1) {
     const double generation_progress_percent =
-        (snapshot.generation + 1) / double(evolution_config_.max_generations) * 100;
-    batch_label_->setText(QString::asprintf("Run %d/%d, %.2f%",
+        snapshot.generation / double(evolution_config_.max_generations) * 100;
+    batch_label_->setText(QString::asprintf("Run %d/%d (%.2f%% generations complete)",
                                             batch_current_run_,
                                             batch_total_runs_,
                                             generation_progress_percent));
