@@ -34,6 +34,10 @@ StartEvolutionDialog::~StartEvolutionDialog() {
   delete ui;
 }
 
+int StartEvolutionDialog::batchRuns() const {
+  return ui->batch_runs->value();
+}
+
 void StartEvolutionDialog::done(int result) {
   if (result == QDialog::Accepted && evolution_config_.max_generations < 0) {
     QMessageBox::warning(

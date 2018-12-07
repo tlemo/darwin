@@ -33,6 +33,8 @@ class StartEvolutionDialog : public QDialog {
   ~StartEvolutionDialog();
 
   const auto& evolutionConfig() const { return evolution_config_; }
+  
+  int batchRuns() const;
 
   void done(int result) override;
 

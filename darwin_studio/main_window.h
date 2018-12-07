@@ -14,11 +14,13 @@
 
 #pragma once
 
+#include <QString>
 #include <QDockWidget>
 #include <QLabel>
 #include <QMainWindow>
 
 #include <core/darwin.h>
+#include <core/evolution.h>
 #include <core/universe.h>
 
 #include <memory>
@@ -65,14 +67,18 @@ class MainWindow : public QMainWindow {
                   Qt::DockWidgetAreas allowed_areas,
                   Qt::DockWidgetArea area,
                   bool permanent = false);
+                  
+  bool confirmationDialog(const QString& title, const QString& text);
+  bool confirmEndOfExperiment();
 
   void createExperimentWindows();
 
   void reopenLastUniverse();
   void universeSwitched();
 
+  bool resetExperiment();
   void closeExperiment();
-  bool confirmEndOfExperiment();
+  void nextBatchedRun();
 
   void saveGeometry() const;
   void restoreGeometry();
@@ -86,6 +92,7 @@ class MainWindow : public QMainWindow {
  private:
   Ui::MainWindow* ui;
   QLabel* status_label_ = nullptr;
+  QLabel* batch_label_ = nullptr;
   vector<QDockWidget*> experiment_windows_;
 
   unique_ptr<darwin::Universe> universe_;
@@ -93,4 +100,12 @@ class MainWindow : public QMainWindow {
 
   // has the experiment been started?
   bool active_experiment_ = false;
+  
+  // current batch state
+  // (current_run = [1 .. total_runs])
+  int batch_total_runs_ = 0;
+  int batch_current_run_ = 0;
+
+  // the evolution config for the current batch  
+  darwin::EvolutionConfig evolution_config_;
 };
