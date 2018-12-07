@@ -310,7 +310,11 @@ void Evolution::mainThread() {
       state_cv_.notify_all();
     }
 
-    events.publish(EventFlag::StateChanged | (canceled ? 0 : EventFlag::EndEvolution));
+    uint32_t event_flags = EventFlag::StateChanged;
+    if (!canceled) {
+      event_flags |= EventFlag::EndEvolution;
+    }
+    events.publish(event_flags);
   }
 }
 
