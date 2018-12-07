@@ -293,7 +293,7 @@ class Evolution : public core::NonCopyable,
     StateChanged = 1 << 0,    //!< The evolution State has changed
     ProgressUpdate = 1 << 1,  //!< Progress update notification
     EndGeneration = 1 << 2,   //!< Generation end notification
-    EndEvolution = 1 << 3,    //!< Evolution end notification
+    EndEvolution = 1 << 3,    //!< Evolution run completed successfully
     NewExperiment = 1 << 4,   //!< New experiment notification
     Reset = 1 << 5,           //!< Experiment reset notification
     All = EventFlag(-1),      //!< Combination of all event flags

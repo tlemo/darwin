@@ -47,6 +47,11 @@ MainWindow::MainWindow() : QMainWindow(nullptr), ui(new Ui::MainWindow) {
   // main toolbar menu entry
   ui->menu_window->addAction(ui->main_toolbar->toggleViewAction());
 
+  // batch status
+  batch_label_ = new QLabel;
+  batch_label_->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+  ui->statusbar->addPermanentWidget(batch_label_);
+
   // status bar
   status_label_ = new QLabel;
   status_label_->setFrameStyle(QFrame::Panel | QFrame::Sunken);
@@ -249,6 +254,8 @@ void MainWindow::nextBatchedRun() {
 
     CHECK(resetExperiment());
 
+    emit sigStartingExperiment();
+
     auto evolution = darwin::evolution();
     active_experiment_ = evolution->newExperiment(experiment_, evolution_config_);
     CHECK(active_experiment_);
@@ -256,9 +263,15 @@ void MainWindow::nextBatchedRun() {
     batch_total_runs_ = saved_total_runs;
     batch_current_run_ = saved_current_run + 1;
 
-    core::log("\nStarting run %d/%d\n\n", batch_current_run_, batch_total_runs_);
+    core::log("============================================================\n");
+    core::log("Starting run %d/%d\n", batch_current_run_, batch_total_runs_);
+    core::log("============================================================\n");
 
     evolution->run();
+  } else if (batch_total_runs_ > 1) {
+    core::log("============================================================\n");
+    core::log("Experiment batch completed successfully (%d runs)\n", batch_total_runs_);
+    core::log("============================================================\n\n");
   }
 
   updateUi();
@@ -333,8 +346,18 @@ void MainWindow::updateUi() {
   ui->action_branch_experiment->setEnabled(experiment_ && !experiment_running);
   ui->action_open_experiment->setEnabled(universe_ && !experiment_running);
 
-  // current batch
-  auto batch_text = QString::asprintf("Run %d/%d", batch_current_run_, batch_total_runs_);
+  // batch status
+  if (batch_total_runs_ > 1) {
+    const double generation_progress_percent =
+        (snapshot.generation + 1) / double(evolution_config_.max_generations) * 100;
+    batch_label_->setText(QString::asprintf("Run %d/%d, %.2f%",
+                                            batch_current_run_,
+                                            batch_total_runs_,
+                                            generation_progress_percent));
+    batch_label_->setHidden(false);
+  } else {
+    batch_label_->setHidden(true);
+  }
 
   // status label
   QString state_text;
@@ -349,13 +372,13 @@ void MainWindow::updateUi() {
       state_text = "Canceling...";
       break;
     case darwin::Evolution::State::Stopped:
-      state_text = QString("Stopped (%1)").arg(batch_text);
+      state_text = "Stopped";
       break;
     case darwin::Evolution::State::Paused:
-      state_text = QString("Paused (%1)").arg(batch_text);
+      state_text = "Paused";
       break;
     case darwin::Evolution::State::Running:
-      state_text = QString("Running (%1)").arg(batch_text);
+      state_text = "Running";
       break;
     default:
       FATAL("unexpected value");

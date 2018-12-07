@@ -92,6 +92,7 @@ class MainWindow : public QMainWindow {
  private:
   Ui::MainWindow* ui;
   QLabel* status_label_ = nullptr;
+  QLabel* batch_label_ = nullptr;
   vector<QDockWidget*> experiment_windows_;
 
   unique_ptr<darwin::Universe> universe_;
