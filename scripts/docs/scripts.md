@@ -1,15 +1,15 @@
 
 # Darwin Scripts
 
-[Overview](#overview)
-[fitness_chart.py](#fitness_chartpy)
-[fitness_dist.py](#fitness_distpy)
-[fitness_diff.py](#fitness_diffpy)
-[batch_fitness.py](#batch_fitnesspy)
-[neat_genotype_exporter.py](#neat_genotype_exporterpy)
-[universe_summary.py](#universe_summarypy)
-[universe_graph.py](#universe_graphpy)
-[perf_chart.py](#perf_chartpy)
+- [Overview](#overview)
+- [fitness_chart.py](#fitness_chartpy)
+- [fitness_dist.py](#fitness_distpy)
+- [fitness_diff.py](#fitness_diffpy)
+- [batch_fitness.py](#batch_fitnesspy)
+- [neat_genotype_exporter.py](#neat_genotype_exporterpy)
+- [universe_summary.py](#universe_summarypy)
+- [universe_graph.py](#universe_graphpy)
+- [perf_chart.py](#perf_chartpy)
 
 # Overview
 
@@ -169,7 +169,7 @@ optional arguments:
 
 The raw output is [Graphviz DOT language](https://www.graphviz.org/documentation/):
 
-```python
+```shell
 # traceid = 9
 # generation = 1010
 # inputs = 3
