@@ -5,6 +5,7 @@
 [fitness_chart.py](#fitness_chartpy)
 [fitness_dist.py](#fitness_distpy)
 [fitness_diff.py](#fitness_diffpy)
+[batch_fitness.py](#batch_fitnesspy)
 [neat_genotype_exporter.py](#neat_genotype_exporterpy)
 [universe_summary.py](#universe_summarypy)
 [universe_graph.py](#universe_graphpy)
@@ -17,7 +18,7 @@ database and output various digested results (charts, dot files, ...). The scrip
 experimental and currently there's no test suite for the scripts.
 
 The scripts are written in Python 3 and they may use additional libraries
-(ex. `matplotlib`, `seaborn`, ...). Most of them output charts so a Python environment
+(ex. `matplotlib`, `seaborn`, ...). Most of them output charts, so a Python environment
 with support for graphical output is recommended:
 
 - [Jupyter QtConsole](https://qtconsole.readthedocs.io/en/stable/#)
@@ -113,6 +114,34 @@ optional arguments:
 **Example**: `fitness_diff.py -u universe.darwin -td 9 -tb 8 --all-generations`
 
 ![Fitness diff](fitness_diff.png)
+
+# batch_fitness.py
+
+Plots the aggregated results for all traces under the specified variation
+(average, min..max range)
+
+```
+usage: batch_fitness.py [-h] -u UNIVERSE -v VARIATIONID [--calibration]
+                        [-o OUTPUT]
+
+Evolution fitness visualization
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -u UNIVERSE, --universe UNIVERSE
+                        Darwin universe database
+  -v VARIATIONID, --variationid VARIATIONID
+                        Experiment Variation ID
+  --calibration         Plot the calibration fitness values instead of the
+                        best/median/worst values
+  -o OUTPUT, --output OUTPUT
+                        Save chart to the specified file (in a format
+                        supported by matplotlib)
+```
+
+**Example**: `batch_fitness.py -u universe.darwin -v 5 --calibration`
+
+![Batch fitness](batch_fitness.png)
 
 # neat_genotype_exporter.py
 
