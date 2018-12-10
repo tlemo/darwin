@@ -14,7 +14,7 @@ the [Google C++ style][2]) with a few small tweaks. The notable differences are:
 Also, Darwin adoption of Chromium style is mostly limited to code formatting. The Chromium
 and Google styles go beyond formatting and offer C++ language guidance and restrictions. 
 While these guidelines have solid rationales and are proven on large code bases, in Darwin
-we don’t treat them as the letter of the law, but rather advice.
+we don't treat them as the letter of the law, but rather advice.
 
 In particular, Darwin style does not restrict the use of any language feature, or limits
 to a particular C++ standard version, although the code must compile on all the supported

@@ -120,6 +120,8 @@ optional arguments:
 Plots the aggregated results for all traces under the specified variation
 (average, min..max range)
 
+> Note: the colors for the calibration series are randomly selected
+
 ```
 usage: batch_fitness.py [-h] -u UNIVERSE -v VARIATIONID [--calibration]
                         [-o OUTPUT]
