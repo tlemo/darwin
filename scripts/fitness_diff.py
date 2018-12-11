@@ -121,6 +121,7 @@ plt.plot(
     label = "Diff")
 
 plt.grid(True)
+plt.tight_layout()
 ax.legend(loc='upper left')
 
 if args.output != None:

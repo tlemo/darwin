@@ -99,6 +99,7 @@ if base is not None:
         label = "Base")
 
 plt.grid(True)
+plt.tight_layout()
 ax.legend(loc='upper left')
 
 if args.output is not None:

@@ -56,6 +56,7 @@ kAlpha = 0.5
 
 fig, ax = plt.subplots(figsize=(15, 5))
 plt.grid(True)
+plt.tight_layout()
 
 db = sqlite3.connect(universe_db)
 db.row_factory = sqlite3.Row

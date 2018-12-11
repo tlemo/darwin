@@ -95,6 +95,7 @@ plt.plot(worst, color = [1, 0, 0, kAlpha], linewidth = 0.5, label = "Worst")
 plt.plot(moving_average, color = [0, 0, 1, kAvgAlpha], linewidth = 3)
 
 plt.grid(True)
+plt.tight_layout()
 ax.legend(loc='upper left')
 
 if args.output != None:
