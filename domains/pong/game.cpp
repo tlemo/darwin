@@ -42,9 +42,11 @@ void Game::newSet() {
 
   ball_.x = 0;
   ball_.y = 0.5f;
+  
+  ball_speed_ = g_config.serve_speed;
 
   if (g_config.simple_serve) {
-    ball_.vx = g_config.ball_speed;
+    ball_.vx = ball_speed_;
     ball_.vy = 0;
   } else {
     random_device rd;
@@ -52,8 +54,8 @@ void Game::newSet() {
     uniform_real_distribution<float> dist(-kMaxAngle, kMaxAngle);
 
     float angle = dist(rnd);
-    ball_.vx = cos(angle) * g_config.ball_speed;
-    ball_.vy = sin(angle) * g_config.ball_speed;
+    ball_.vx = cos(angle) * ball_speed_;
+    ball_.vy = sin(angle) * ball_speed_;
   }
 
   if (set_ % 2 == 1)
@@ -188,9 +190,11 @@ bool Game::moveBall(float dt) {
     return false;
   }
 
+  // ball return (bounce from a paddle)
+  ball_speed_ = g_config.ball_speed;
   float angle = (dy / phs) * kMaxAngle;
-  ball_.vx = cos(angle) * g_config.ball_speed;
-  ball_.vy = sin(angle) * g_config.ball_speed;
+  ball_.vx = cos(angle) * ball_speed_;
+  ball_.vy = sin(angle) * ball_speed_;
   if (contact == Contact::Right)
     ball_.vx = -ball_.vx;
 
@@ -199,6 +203,7 @@ bool Game::moveBall(float dt) {
 
 bool Game::gameStep() {
   CHECK(step_ >= 0);
+  CHECK(step_ < max_steps_);
 
   CHECK(set_ > 0);
   CHECK(score_p1_ >= 0);

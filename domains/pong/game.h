@@ -35,6 +35,7 @@ struct Config : public core::PropertySet {
 
   PROPERTY(ball_radius, float, 0.01f, "Ball size");
   PROPERTY(ball_speed, float, 0.04f, "Ball speed");
+  PROPERTY(serve_speed, float, 0.02f, "Ball speed before first return");
 
   PROPERTY(calibration_games, int, 100, "Number of calibration games");
 
@@ -93,6 +94,7 @@ class Game : public core::NonCopyable {
   int set_ = -1;
   int step_ = -1;
   int max_steps_ = -1;
+  float ball_speed_ = 0;
 
   // scores
   int score_p1_ = -1;

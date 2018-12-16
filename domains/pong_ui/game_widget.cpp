@@ -26,11 +26,12 @@
 #include <core/logging.h>
 
 #include <memory>
+#include <limits>
 using namespace std;
 
 namespace pong_ui {
 
-GameWidget::GameWidget() : ui(new Ui::GameWidget), game_(-1) {
+GameWidget::GameWidget() : ui(new Ui::GameWidget), game_(numeric_limits<int>::max()) {
   ui->setupUi(this);
   ui->pong_widget->setDebugRendering(ui->debug_rendering->isChecked());
 
