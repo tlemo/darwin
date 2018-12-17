@@ -35,7 +35,7 @@ struct Config : public core::PropertySet {
 
   PROPERTY(ball_radius, float, 0.01f, "Ball size");
   PROPERTY(ball_speed, float, 0.04f, "Ball speed");
-  PROPERTY(serve_speed, float, 0.02f, "Ball speed before first return");
+  PROPERTY(serve_speed, float, 0.04f, "Ball speed before first return");
 
   PROPERTY(calibration_games, int, 100, "Number of calibration games");
 
