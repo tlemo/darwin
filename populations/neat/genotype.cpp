@@ -357,9 +357,7 @@ double Genotype::compatibility(const Genotype& ref) const {
 }
 
 unique_ptr<darwin::Brain> Genotype::grow() const {
-  auto brain = make_unique<Brain>();
-  brain->synthesize(this);
-  return brain;
+  return make_unique<Brain>(this);
 }
 
 }  // namespace neat

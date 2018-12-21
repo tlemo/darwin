@@ -61,6 +61,8 @@ class Brain : public darwin::Brain {
   constexpr static int kFirstInput = 1;
 
  public:
+  Brain(const Genotype* genotype);
+
   // index is the input index [0, INPUTS)
   void setInput(int index, float value) override {
     CHECK(index < g_inputs);
@@ -72,8 +74,6 @@ class Brain : public darwin::Brain {
     CHECK(index < g_outputs);
     return nodes_[kFirstInput + g_inputs + index]->value;
   }
-
-  void synthesize(const Genotype* genotype);
 
   void think() override;
 

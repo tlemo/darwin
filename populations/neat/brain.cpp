@@ -33,7 +33,7 @@ void LstmNode::activate(float input) {
   value = o_gate * ann::activate(cell);
 }
 
-void Brain::synthesize(const Genotype* genotype) {
+Brain::Brain(const Genotype* genotype) {
   const int kFirstOutput = kFirstInput + g_inputs;
 
   CHECK(g_inputs > 0);
