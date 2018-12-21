@@ -2,6 +2,7 @@ var searchData=
 [
   ['save_5fchampion_5fgenotype',['save_champion_genotype',['../structdarwin_1_1_evolution_config.html#a51a9827127ba7d8722a438614f0a22b3',1,'darwin::EvolutionConfig']]],
   ['save_5fgenealogy',['save_genealogy',['../structdarwin_1_1_evolution_config.html#ad47b308fc8ea84cecb9e38573e830e2e',1,'darwin::EvolutionConfig']]],
+  ['serve_5fspeed',['serve_speed',['../structpong_1_1_config.html#aafdc8c76be52b4446a43327ed05b8d4e',1,'pong::Config']]],
   ['sets_5fper_5fgame',['sets_per_game',['../structpong_1_1_config.html#a839a65b148040016f798a5c2461e1077',1,'pong::Config']]],
   ['sets_5frequired_5fto_5fwin',['sets_required_to_win',['../structpong_1_1_config.html#a02feacd86496c28cd4e5e6864e8f50fe',1,'pong::Config']]],
   ['setup',['setup',['../structdarwin_1_1_db_experiment.html#ad199a9347eebcdc7cb3dfdc04781271b',1,'darwin::DbExperiment']]],

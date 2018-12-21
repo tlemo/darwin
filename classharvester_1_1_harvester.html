@@ -116,6 +116,9 @@ virtual unique_ptr&lt; <a class="el" href="classcore_1_1_property_set.html">core
 <li>Poison (Red): Fixed health loss</li>
 <li>Wall (Gray): Blocks movement</li>
 </ul>
+<div class="image">
+<img src="harvester_sandbox.png" alt="harvester_sandbox.png"/>
+</div>
 <p>The robot starts with an initial health value, then at each step it can perform an action. Each action has a health "cost", and once the health drops to zero the experiment is terminated.</p>
 <h3>Inputs</h3>
 <p>The robot's vision is constructed from a number of rays (<a class="el" href="structharvester_1_1_config.html#ab8af0d48f81aa8aadaf9754ea0edeef8" title="&quot;Number of vision rays&quot; ">Config::vision_resolution</a>) fanned within a field of view (<a class="el" href="structharvester_1_1_config.html#a510b7a9144def0b015d0db559f3557d8" title="&quot;Vision field of view (in radians)&quot; ">Config::vision_fov</a>). For each ray, two input values are calculated (distance and color)</p>
