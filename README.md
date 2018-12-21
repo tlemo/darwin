@@ -6,20 +6,15 @@ provides building blocks, samples and tooling to avoid the repetitive (and poten
 complex) scaffolding required to research new ideas.
 
 The current implementation is a combination of portable C++ (running on Linux,
-Windows and macOS), augmented by a collection of Python scripts for post-processing
-recorded evolution traces.
-
-## Getting Started
-
-- [Setup Instructions](docs/setup.md)
-- [Contributing](CONTRIBUTING.md)
+Windows and macOS), augmented by a collection of Python [scripts](scripts/docs/scripts.md)
+for post-processing recorded evolution traces.
 
 ## Evolutionary Algorithms and Neuroevolution
 
 [Evolutionary Algorithms][3] are a class of nature-inspired algorithms based on the idea
 that a few basic mechanisms, loosely inspired by biological evolution (selection,
 reproduction and mutation) can be the building blocks for efficient searches in complex
-problem spaces. In particular, we can use [Evolutionary Algorithms][3] to train artificial
+problem spaces. In particular, we can use Evolutionary Algorithms to train artificial
 neural networks: [Neuroevolution][2].
 
 Starting with a random initial _population_, we seek to evolve towards better solutions in
@@ -44,7 +39,7 @@ At a high level, the generic structure of an evolutionary algorithm can be as si
 This conceptual simplicity makes Evolutionary Algorithms attractive and easy to implement,
 although creating interesting domain-specific fitness functions and supporting a
 structured experimentation approach requires a lot of scaffolding: persisting experiment
-variations and results, visualizations, reports, profiling. This is where the Darwin
+variations and results, visualizations, reports, profiling, etc. This is where the Darwin
 Framework comes in.
 
 ## Darwin Neuroevolution Framework Overview
@@ -107,6 +102,19 @@ analyze the results, etc.
 
 For additional information see the [full documentation][1].
 
+## Darwin Studio
+
+Darwin Studio is a visual integrated environment used to create, run and visualize
+experiments:
+
+![Darwin Studio](docs/images/darwin_studio.png)
+
+Currently it's the main user-facing tool included in the Darwin Framework, although there
+are plans to add additional options (for example a command line driver and/or Python
+bindings). For post-processing experiment results there are Python
+[scripts](scripts/docs/scripts.md) which can parse Darwin universe databases.
+
+
 ## Running Experiments & The Universe Database
 
 Every instance of an experiment is persisted in a [Universe] database, which is
@@ -127,23 +135,13 @@ values and results are stored as JSON strings (the fields highlighted in green):
 
 ![Darwin Data Model](docs/images/darwin_data_model.svg)
 
-## Darwin Studio
+## Getting Started
 
-Darwin Studio is a visual integrated environment used to create, run and visualize
-experiments:
-
-![Darwin Studio](docs/images/darwin_studio.png)
-
-Currently it's the main user-facing tool included in the Darwin Framework, although there
-are plans to add additional options (for example a command line driver and/or Python
-bindings). For post-processing experiment results there are a few Python
-[scripts](scripts/docs/scripts.md) which can parse Darwin universe databases.
-
-## Documentation
-
+- [Setup Instructions](docs/setup.md)
 - [Implementation Reference][1]
 - [Scripts](scripts/docs/scripts.md)
 - [Coding Style](docs/coding_style.md)
+- [Contributing](CONTRIBUTING.md)
 
 ---
 

@@ -1,4 +1,8 @@
 
+## Dec 21st, 2018
+
+Updating and restructuring the documentation.
+
 ## Dec 9th, 2018
 
 Added a rudimentary support for batching experiment runs in Darwin Studio. The
