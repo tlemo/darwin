@@ -32,6 +32,8 @@ void init();
 //! - Poison (Red): Fixed health loss
 //! - Wall (Gray): Blocks movement
 //!
+//! ![](images/harvester_sandbox.png)
+//!
 //! The robot starts with an initial health value, then at each step it can perform an
 //! action. Each action has a health "cost", and once the health drops to zero the
 //! experiment is terminated.

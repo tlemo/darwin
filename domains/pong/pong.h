@@ -29,6 +29,8 @@ void init();
 //! paddle (which can be moved up or down). The ball bounces off the walls, and if it goes
 //! behind the paddle line, the other player scores a point.
 //!
+//! ![](images/pong_sandbox.png)
+//!
 //! All the population members participate in a tournament and the outcomes are used to
 //! calculate the individual fitness values.
 //!

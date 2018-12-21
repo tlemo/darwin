@@ -31,6 +31,8 @@ void init();
 //! generates new units at a fixed rate (up to a specified cap, ex. 10 units). The goal
 //! of the game is to capture all the nodes.
 //!
+//! ![](images/conquest_sandbox.png)
+//!
 //! All the population members participate in a tournament and the outcomes are used to
 //! calculate the individual fitness values.
 //!

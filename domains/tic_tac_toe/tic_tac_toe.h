@@ -54,6 +54,8 @@ void init();
 //!
 //! Classic tic-tac-toe game on a 3x3 grid.
 //!
+//! ![](images/tic_tac_toe_sandbox.png)
+//!
 //! All the population members participate in a tournament and the outcomes are used to
 //! calculate the individual fitness values.
 //!
