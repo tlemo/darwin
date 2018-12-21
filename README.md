@@ -143,6 +143,43 @@ values and results are stored as JSON strings (the fields highlighted in green):
 - [Coding Style](docs/coding_style.md)
 - [Contributing](CONTRIBUTING.md)
 
+## Related projects
+
+It's worth mentioning a few similar projects. Many of them are focused on RL rather than
+EA (while some cover both and more) but they overlap in interesting ways with the Darwin 
+Framework:
+
+- [SharpNEAT](http://sharpneat.sourceforge.net)
+- [Open AI Gym](https://gym.openai.com)
+- [Pyevolve](http://pyevolve.sourceforge.net)
+- DeepMind's [TRFL](https://deepmind.com/blog/trfl)
+- [Reinforcement Learning Coach](https://nervanasystems.github.io/coach/index.html)
+- [Dopamine](https://github.com/google/dopamine)
+- [OpenNERO](https://github.com/nnrg/opennero/wiki)
+- [ESTool](https://github.com/hardmaru/estool)
+- [Neataptic](https://wagenaartje.github.io/neataptic)
+- [DEAP](https://deap.readthedocs.io/en/master)
+- [PyBrain](http://www.pybrain.org/pages/home)
+- [Maja Machine Learning Framework](http://mmlf.sourceforge.net)
+
+Darwin Framework was created with the following goals and design principles in mind:
+
+- **First class support for Evolutionary Algorithms concepts** (population, generation,
+    genotype/phenotype), without specializing on a particular EA flavor. This allows
+    simple interfaces for implementing new algorithms (and domains) while accommodating
+    a wide variety of algorithms (Neuroevolution, GP, GEP, ...)
+- **Capable of running interesting experiments on easily available hardware**
+    (no expensive GPU or data center required). There are plans to take advantage of both
+    GPUs and distributed platforms in the future.
+- **Complete package**: creating & running experiments, visualizing the progress and the final
+     results, interacting with the solutions, and more. Currently Darwin Studio is the
+     central part of the framework and it aims to offer a familiar integrated environment
+     UI (_it may be worth noting that the Darwin Framework would score well against John
+     R. Koza's wish list mentioned in the seminal Genetic Programming book_)
+- **Structured approach to experimentation**: all the experiment runs are automatically
+    recorded, including the experiment variation "lineage"
+- **Cross-platform with minimal external dependencies**
+
 ---
 
 This is not an officially supported Google product.
