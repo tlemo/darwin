@@ -45,7 +45,11 @@ struct Config : public core::PropertySet {
            "Vision field of view (in radians)");
 
   PROPERTY(robot_size, double, 0.6, "Robot size");
-  PROPERTY(exclusive_actuators, bool, false, "Pick move or rotate in a simulation step?");
+
+  PROPERTY(exclusive_actuators,
+           bool,
+           true,
+           "At each step, the robot can either move or turn, but not both");
 
   PROPERTY(move_speed, double, 1, "Move speed");
   PROPERTY(rotation_speed,
