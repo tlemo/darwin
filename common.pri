@@ -11,6 +11,8 @@ win32-msvc {
     # TODO: re-enable once the size_t mess is cleaned up
     QMAKE_CXXFLAGS += -Wno-sign-compare
     QMAKE_CXXFLAGS += -Wno-type-limits
+
+    QMAKE_CXXFLAGS += -Wno-deprecated-declarations
 }
 
 CONFIG += c++1z
