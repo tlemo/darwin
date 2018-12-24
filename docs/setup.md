@@ -12,7 +12,7 @@
 
 ### General Prerequisites
 
-- [Qt 5.x+ and QtCreator 4.x+][3]
+- [Qt 5.x+ and QtCreator 4.x+][3] (_Qt Charts must be selected_)
 - [Python 3][4] for running the bundled scripts
 - [Doxygen][1] for generating the API documentation
 
