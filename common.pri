@@ -27,3 +27,9 @@ unix {
     else: LIBS += -ldl -lstdc++fs
 }
 
+# workarounds for mingw/glibc
+win32-g++ {
+    DEFINES += __STDC_FORMAT_MACROS
+    LIBS += -lstdc++fs
+}
+
