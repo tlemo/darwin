@@ -69,6 +69,9 @@ For more information see the official Qt Creator's [Autotests][7] documentation.
 - The recommended toolchain is MSVC (Microsoft Visual C++), included with
     [Visual Studio 2017 or newer][2]. The free Community Edition will suffice.
 
+> NOTE: Darwin should build fine with MinGW 7.x+, although this configuration is not
+> currently supported. MinGW ships with a [broken][8] std::random_device implementation
+
 ### Linux
 
 - Requires GCC 6.x+ 
@@ -103,3 +106,4 @@ C++ 17 features and/or libraries. One workaround is to manually install Clang 7.
 [5]: https://git-scm.com/book/en/v2/Git-Tools-Submodules
 [6]: https://brew.sh
 [7]: http://doc.qt.io/qtcreator/creator-autotest.html
+[8]: https://sourceforge.net/p/mingw-w64/bugs/338
