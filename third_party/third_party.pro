@@ -5,5 +5,5 @@ SUBDIRS += \
     gtest \
     pugixml \
     json \
-    sqlite
-    
+    sqlite \
+    box2d
