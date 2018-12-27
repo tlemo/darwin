@@ -63,21 +63,6 @@ else:win32:!win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$OUT_PWD/
 else:unix: PRE_TARGETDEPS += $$OUT_PWD/../../third_party/gtest/libgtest.a
 
 #------------------------------------------------------------------------------
-# sqlite
-#
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../../third_party/sqlite/release/ -lsqlite
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../../third_party/sqlite/debug/ -lsqlite
-else:unix: LIBS += -L$$OUT_PWD/../../third_party/sqlite/ -lsqlite
-
-DEPENDPATH += $$PWD/../third_party/sqlite
-
-win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../../third_party/sqlite/release/libsqlite.a
-else:win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../../third_party/sqlite/debug/libsqlite.a
-else:win32:!win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../../third_party/sqlite/release/sqlite.lib
-else:win32:!win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../../third_party/sqlite/debug/sqlite.lib
-else:unix: PRE_TARGETDEPS += $$OUT_PWD/../../third_party/sqlite/libsqlite.a
-
-#------------------------------------------------------------------------------
 # common definitions
 #
 include(../common.pri)
