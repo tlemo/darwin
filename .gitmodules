@@ -4,3 +4,6 @@
 [submodule "pugixml"]
 	path = third_party/pugixml/src
 	url = https://github.com/tlemo/pugixml.git
+[submodule "box2d"]
+	path = third_party/box2d/src
+	url = https://github.com/tlemo/Box2D.git
