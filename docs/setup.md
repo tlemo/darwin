@@ -29,6 +29,10 @@ git submodule init
 git submodule update
 ```
 
+> Submodules may change. To avoid having to repeatedly run `git submodule update`:
+> - Use `git pull --recurse-submodules` when updating the local repository.
+> - Or, you can make it automatic: `git config submodule.recurse true`
+
 ### Building & Running Darwin Studio
 
 > First, review the platform-specific instructions below.
