@@ -5,9 +5,6 @@ TARGET = gtest
 TEMPLATE = lib
 CONFIG += staticlib
 
-# workaround for https://github.com/google/googletest/issues/1352
-DEFINES += GTEST_HAS_TR1_TUPLE=1
-
 SOURCES += \
     src/googletest/src/gtest-all.cc \
     src/googlemock/src/gmock-all.cc

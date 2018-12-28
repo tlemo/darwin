@@ -10,9 +10,6 @@ DEFINES += TEST_OUTPUT_PATH=\\\"$$PWD/.output\\\"
 DEFINES += TEST_INPUT_PATH=\\\"$$PWD/.input\\\"
 DEFINES += TEST_TEMP_PATH=\\\"$$PWD/.temp\\\"
 
-# workaround for https://github.com/google/googletest/issues/1352
-DEFINES += GTEST_HAS_TR1_TUPLE=1
-
 #------------------------------------------------------------------------------
 # registry
 #
