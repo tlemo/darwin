@@ -230,6 +230,12 @@ TEST(Box2dTest, RoundProjectiles) {
   EXPECT_EQ(checkpoint_objects, kProjectilesCount);
 }
 
+// this test case might be pushing Box2D a bit too hard (apparently it's not too hard to
+// get even "bullet" bodies to go though solid edges)
+//
+// the simulation parameters have been selected conservatively to make the checks
+// predictible (and reasonability fast)
+//
 TEST(Box2dTest, BoxProjectiles) {
   constexpr float kOuterBoxSize = 100.0f;
   constexpr float kInnerBoxSize = 99.0f;
@@ -281,10 +287,10 @@ TEST(Box2dTest, BoxProjectiles) {
 
   // script (shooting projectiles)
   Script script;
-  constexpr int kProjectilesCount = 250;
+  constexpr int kProjectilesCount = 50;
   for (int i = 0; i < kProjectilesCount; ++i) {
     script.record(i / 10.0f, [&, i](float) {
-      auto projectile = createBoxProjectile(-95, 50, 100 * 100, (i - 100) * 100, &world);
+      auto projectile = createBoxProjectile(-95, 50, 100 * 100, (i - 25) * 1000, &world);
       projectile->ApplyAngularImpulse(i, true);
       projectile->SetLinearDamping(0.2f);
       projectile->SetAngularDamping(0.2f);
@@ -293,7 +299,7 @@ TEST(Box2dTest, BoxProjectiles) {
 
   // run the simulation
   constexpr float32 kTotalTime = 50.0f;  
-  constexpr float32 kTimeStep = 1.0f / 50.0f;
+  constexpr float32 kTimeStep = 1.0f / 30.0f;
   constexpr int32 kVelocityIterations = 10;
   constexpr int32 kPositionIterations = 10;
 
