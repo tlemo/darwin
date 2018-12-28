@@ -21,6 +21,9 @@ CONFIG(release, debug|release): DEFINES += NDEBUG
 
 INCLUDEPATH += $$PWD
 
+# Box2D
+INCLUDEPATH *= $$PWD/third_party/box2d/src
+
 # libraries
 unix {
     clang: LIBS += -ldl -lc++fs
