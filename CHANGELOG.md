@@ -1,4 +1,9 @@
 
+## Dec 27th, 2018
+
+Adding experimental support for the [Box2d](http://box2d.org) physics engine 
+(third_party/box2d).
+
 ## Dec 21st, 2018
 
 Updating and restructuring the documentation.
