@@ -10,7 +10,8 @@ SUBDIRS += \
     harvester_ui \
     max \
     tic_tac_toe \
-    tic_tac_toe_ui
+    tic_tac_toe_ui \
+    cart_pole
 
 pong_ui.depends = pong
 tic_tac_toe_ui.depends = tic_tac_toe

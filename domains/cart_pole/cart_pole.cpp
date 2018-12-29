@@ -12,32 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "registry.h"
+#include "cart_pole.h"
 
-#include <populations/classic/classic.h>
-#include <populations/neat/neat.h>
+namespace cart_pole {
 
-#include <domains/conquest/conquest.h>
-#include <domains/harvester/harvester.h>
-#include <domains/max/max.h>
-#include <domains/pong/pong.h>
-#include <domains/tic_tac_toe/tic_tac_toe.h>
-#include <domains/cart_pole/cart_pole.h>
-
-namespace registry {
-
-void init() {
-  // domains
-  pong::init();
-  find_max_value::init();
-  tic_tac_toe::init();
-  conquest::init();
-  harvester::init();
-  cart_pole::init();
-
-  // populations
-  neat::init();
-  classic::init();
+CartPole::CartPole(const core::PropertySet& config) {
+  config_.copyFrom(config);
 }
 
-}  // namespace registry
+bool CartPole::evaluatePopulation(darwin::Population* population) const {
+  // TODO
+  return false;
+}
+
+}  // namespace cart_pole
