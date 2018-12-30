@@ -16,40 +16,25 @@
 
 #include <core/darwin.h>
 
-namespace find_max_value {
+#include <memory>
+using namespace std;
 
-struct World;
+namespace cart_pole {
 
-struct Robot {
+class World;
+
+class Agent {
+ public:
   static constexpr int kInputs = 3;
   static constexpr int kOutputs = 3;
-
-  enum class Action { None, MoveLeft, MoveRight, Done };
-
-  static constexpr int kInputLeftAntena = 0;
-  static constexpr int kInputRightAntena = 1;
-  static constexpr int kInputValue = 2;
-
-  static constexpr int kOutputMoveLeft = 0;
-  static constexpr int kOutputMoveRight = 1;
-  static constexpr int kOutputDone = 2;
-
-  unique_ptr<darwin::Brain> brain;
-
-  int pos = 0;
-  int health = 0;
-  float fitness = 0;
-
-  const World* world = nullptr;
-
-  void grow(const darwin::Genotype* genotype);
-  bool alive() const { return health > 0; }
-
-  void simInit(const World* new_world);
+ 
+ public:
+  Agent(const darwin::Genotype* genotype, World* world);
   void simStep();
 
  private:
-  Action decideAction() const;
+  World* world_ = nullptr;
+  unique_ptr<darwin::Brain> brain_;
 };
 
-}  // namespace find_max_value
+}  // namespace cart_pole

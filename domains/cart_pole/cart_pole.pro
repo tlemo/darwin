@@ -8,10 +8,14 @@ TEMPLATE = lib
 CONFIG += staticlib
 
 SOURCES += \
-    cart_pole.cpp
+    cart_pole.cpp \
+    agent.cpp \
+    world.cpp
 
 HEADERS += \
-    cart_pole.h
+    cart_pole.h \
+    agent.h \
+    world.h
 
 unix {
     target.path = /usr/lib

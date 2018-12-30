@@ -14,22 +14,28 @@
 
 #pragma once
 
+#include "agent.h"
+
 #include <core/darwin.h>
-#include <core/evolution.h>
-#include <core/logging.h>
+#include <core/properties.h>
 
 namespace cart_pole {
 
 //! Cart-Pole domain configuration
-struct Config : public core::PropertySet {};
+struct Config : public core::PropertySet {
+  PROPERTY(gravity, float, 9.8f, "Gravitational acceleration");
+  
+  PROPERTY(test_worlds, int, 10, "Number of test worlds per generation");
+  PROPERTY(max_steps, int, 1000, "Maximum number of steps per episode");
+};
 
 //! Domain: Cart-Pole
 class CartPole : public darwin::Domain {
  public:
   explicit CartPole(const core::PropertySet& config);
 
-  size_t inputs() const override { return 1; }
-  size_t outputs() const override { return 1; }
+  size_t inputs() const override { return Agent::kInputs; }
+  size_t outputs() const override { return Agent::kOutputs; }
 
   bool evaluatePopulation(darwin::Population* population) const override;
 
@@ -45,6 +51,20 @@ class Factory : public darwin::DomainFactory {
   unique_ptr<core::PropertySet> defaultConfig(
       darwin::ComplexityHint hint) const override {
     auto config = make_unique<Config>();
+    switch (hint) {
+      case darwin::ComplexityHint::Minimal:
+        config->test_worlds = 2;
+        config->max_steps = 100;
+        break;
+
+      case darwin::ComplexityHint::Balanced:
+        break;
+
+      case darwin::ComplexityHint::Extra:
+        config->test_worlds = 20;
+        config->max_steps = 10000;
+        break;
+    }
     return config;
   }
 };
