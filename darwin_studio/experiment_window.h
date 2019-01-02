@@ -33,7 +33,8 @@ class ExperimentWindow : public QFrame {
   explicit ExperimentWindow(shared_ptr<darwin::Experiment> experiment);
   ~ExperimentWindow();
 
-  void startingExperiment();
+  void onBeginRun();
+  void onAbortRun();
 
  private:
   void newExperiment();

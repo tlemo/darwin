@@ -39,7 +39,8 @@ class MainWindow : public QMainWindow {
   ~MainWindow();
 
  signals:
-  void sigStartingExperiment();
+  void sigBeginRun();
+  void sigAbortRun();
 
  protected:
   void closeEvent(QCloseEvent* event) override;

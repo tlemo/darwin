@@ -247,6 +247,7 @@ class Domain : public core::NonCopyable {
   //!   good candidates for reproduction)
   //! 
   //! \returns `true` if the evolution goal was reached
+  //! 
   virtual bool evaluatePopulation(Population* population) const = 0;
 
   //! Optional: additional fitness metrics
@@ -371,9 +372,13 @@ class Experiment : public core::NonCopyable {
   //! Universe database Id of the particular experiment variation
   db::RowId dbVariationId() const { return db_variation_->id; }
 
-  //! Notification that we updated the experiment configuration so
-  //! we have to create a new experiment variation
-  void newVariation();
+  //! Update the configuration modification flag
+  //! 
+  //! This is intended for configuration editors (or any code which updates configuration
+  //! values directly) to keep track of the state of potential changes. If this flag is
+  //! set, a new experiment variation will be created when the experiment starts
+  //! 
+  void setModified(bool modified) { modified_ = modified; }
 
   //! Notification that an evolution run is about to start
   //! \sa Evolution::newExperiment()
@@ -403,6 +408,9 @@ class Experiment : public core::NonCopyable {
   // corresponding database objects
   unique_ptr<DbExperiment> db_experiment_;
   unique_ptr<DbExperimentVariation> db_variation_;
+  
+  // tracks the configuration modification state
+  bool modified_ = false;
 
   Universe* universe_ = nullptr;
 };

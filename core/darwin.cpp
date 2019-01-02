@@ -76,11 +76,6 @@ Experiment::Experiment(const DbExperiment* db_experiment, Universe* universe)
     loadLatestVariation();
 }
 
-void Experiment::newVariation() {
-  // discard the current variation
-  db_variation_.reset();
-}
-
 void Experiment::basicSetup(const optional<string>& name, const ExperimentSetup& setup) {
   CHECK(!db_experiment_);
   CHECK(!db_variation_);
@@ -118,6 +113,7 @@ void Experiment::loadLatestVariation() {
   population_config_->fromJson(json_config.at("population"));
 
   db_variation_ = std::move(db_variation);
+  modified_ = false;
 }
 
 void Experiment::prepareForEvolution() {
@@ -130,13 +126,14 @@ void Experiment::prepareForEvolution() {
 }
 
 void Experiment::save() {
-  if (!db_variation_) {
+  if (!db_variation_ || modified_) {
     core::log("Creating a new experiment variation ...\n");
     json json_config;
     json_config["core"] = core_config_->toJson();
     json_config["domain"] = domain_config_->toJson();
     json_config["population"] = population_config_->toJson();
     db_variation_ = universe_->newVariation(db_experiment_->id, json_config.dump(2));
+    modified_ = false;
   }
 }
 

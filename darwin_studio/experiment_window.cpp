@@ -30,13 +30,14 @@ ExperimentWindow::~ExperimentWindow() {
   delete ui;
 }
 
-void ExperimentWindow::startingExperiment() {
+void ExperimentWindow::onBeginRun() {
   ui->properties->setEnabled(false);
   ui->properties->clearSelection();
+  experiment_->setModified(ui->properties->isModified());
+}
 
-  if (ui->properties->isModified()) {
-    experiment_->newVariation();
-  }
+void ExperimentWindow::onAbortRun() {
+  ui->properties->setEnabled(true);
 }
 
 void ExperimentWindow::newExperiment() {
