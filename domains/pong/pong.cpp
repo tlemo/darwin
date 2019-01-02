@@ -94,7 +94,7 @@ unique_ptr<darwin::Domain> Factory::create(const core::PropertySet& config) {
 
   // config values validation
   if (g_config.sets_per_game < 1)
-    throw core::Exception("Invalid config value: sets_per_game");
+    throw core::Exception("Invalid config value: sets_per_game must be a positive value");
   if (g_config.sets_required_to_win <= g_config.sets_per_game / 2)
     throw core::Exception(
         "Invalid config values: sets_required_to_win <= sets_per_game / 2");

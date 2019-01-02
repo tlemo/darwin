@@ -156,9 +156,13 @@ void MainWindow::createExperimentWindows() {
 
   auto experiment_window = make_unique<ExperimentWindow>(experiment_);
   connect(this,
-          &MainWindow::sigStartingExperiment,
+          &MainWindow::sigBeginRun,
           experiment_window.get(),
-          &ExperimentWindow::startingExperiment);
+          &ExperimentWindow::onBeginRun);
+  connect(this,
+          &MainWindow::sigAbortRun,
+          experiment_window.get(),
+          &ExperimentWindow::onAbortRun);
 
   dockWindow("experiment_window",
              experiment_window.release(),
@@ -253,8 +257,6 @@ void MainWindow::nextBatchedRun() {
     auto saved_current_run = batch_current_run_;
 
     CHECK(resetExperiment());
-
-    emit sigStartingExperiment();
 
     auto evolution = darwin::evolution();
     active_experiment_ = evolution->newExperiment(experiment_, evolution_config_);
@@ -643,12 +645,20 @@ void MainWindow::on_action_run_triggered() {
     if (dlg.exec() != QDialog::Accepted)
       return;
 
-    emit sigStartingExperiment();
+    emit sigBeginRun();
 
-    evolution_config_.copyFrom(dlg.evolutionConfig());
-    active_experiment_ = evolution->newExperiment(experiment_, evolution_config_);
-    batch_total_runs_ = dlg.batchRuns();
-    batch_current_run_ = 1;
+    try {
+      evolution_config_.copyFrom(dlg.evolutionConfig());
+      active_experiment_ = evolution->newExperiment(experiment_, evolution_config_);
+      batch_total_runs_ = dlg.batchRuns();
+      batch_current_run_ = 1;
+    } catch (const std::exception& e) {
+      QMessageBox::warning(this, "Failed to start the experiment", e.what());
+      active_experiment_ = false;
+      batch_total_runs_ = 0;
+      batch_current_run_ = 0;
+      emit sigAbortRun();
+    }
   }
 
   // start/resume
