@@ -14,6 +14,8 @@
 
 #pragma once
 
+#include "cart_pole.h"
+
 #include <core/darwin.h>
 
 #include <memory>
@@ -31,6 +33,9 @@ class Agent {
  public:
   Agent(const darwin::Genotype* genotype, World* world);
   void simStep();
+  
+  static int inputs(const Config& config);
+  static int outputs(const Config& config);
 
  private:
   World* world_ = nullptr;

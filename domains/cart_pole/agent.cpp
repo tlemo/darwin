@@ -21,13 +21,40 @@ Agent::Agent(const darwin::Genotype* genotype, World* world)
     : world_(world), brain_(genotype->grow()) {}
 
 void Agent::simStep() {
-  brain_->setInput(0, world_->poleAngle());
-  brain_->setInput(1, world_->cartDistance());
-  brain_->setInput(2, world_->cartVelocity());
+  const auto& config = world_->domain()->config();
   
+  // setup inputs
+  int input_index = 0;
+  if (config.input_pole_angle)
+    brain_->setInput(input_index++, world_->poleAngle());
+  if (config.input_angular_velocity)
+    brain_->setInput(input_index++, world_->poleAngularVelocity());
+  if (config.input_cart_distance)
+    brain_->setInput(input_index++, world_->cartDistance());
+  if (config.input_cart_velocity)
+    brain_->setInput(input_index++, world_->cartVelocity());
+
   brain_->think();
   
+  // act based on the output values
   world_->moveCart(brain_->output(0));
+}
+
+int Agent::inputs(const Config& config) {
+  int inputs_count = 0;
+  if (config.input_pole_angle)
+    ++inputs_count;
+  if (config.input_angular_velocity)
+    ++inputs_count;
+  if (config.input_cart_distance)
+    ++inputs_count;
+  if (config.input_cart_velocity)
+    ++inputs_count;
+  return inputs_count;
+}
+
+int Agent::outputs(const Config&) {
+  return 1;
 }
 
 }  // namespace cart_pole

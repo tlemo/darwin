@@ -14,8 +14,6 @@
 
 #pragma once
 
-#include "agent.h"
-
 #include <core/darwin.h>
 #include <core/properties.h>
 
@@ -24,7 +22,6 @@ namespace cart_pole {
 //! Cart-Pole domain configuration
 struct Config : public core::PropertySet {
   PROPERTY(gravity, float, 9.8f, "Gravitational acceleration");
-
   PROPERTY(max_distance, float, 2.5f, "Maximum distance from the center");
   PROPERTY(max_angle, float, 60.0f, "Maximum angle from vertical");
   PROPERTY(max_initial_angle, float, 10.0f, "Maximum starting angle from vertical");
@@ -33,6 +30,11 @@ struct Config : public core::PropertySet {
   PROPERTY(cart_density, float, 0.0f, "Cart density");
   PROPERTY(cart_friction, float, 0.0f, "Cart friction");
   PROPERTY(max_force, float, 5.0f, "Maximum force which can be applied to the cart");
+  
+  PROPERTY(input_pole_angle, bool, true, "Use the pole angle as input");
+  PROPERTY(input_angular_velocity, bool, false, "Use the angular velocity as input");
+  PROPERTY(input_cart_distance, bool, true, "Use the cart distance as input");
+  PROPERTY(input_cart_velocity, bool, false, "Use the cart velocity as input");
   
   PROPERTY(test_worlds, int, 5, "Number of test worlds per generation");
   PROPERTY(max_steps, int, 1000, "Maximum number of steps per episode");
@@ -53,14 +55,17 @@ class CartPole : public darwin::Domain {
  public:
   explicit CartPole(const core::PropertySet& config);
 
-  size_t inputs() const override { return Agent::kInputs; }
-  size_t outputs() const override { return Agent::kOutputs; }
+  size_t inputs() const override;
+  size_t outputs() const override;
 
   bool evaluatePopulation(darwin::Population* population) const override;
   
   const Config& config() const { return config_; }
   
   float randomInitialAngle() const;
+  
+ private:
+  void validateConfiguration();
 
  private:
   Config config_;

@@ -28,25 +28,15 @@ namespace cart_pole {
 
 CartPole::CartPole(const core::PropertySet& config) {
   config_.copyFrom(config);
+  validateConfiguration();
+}
 
-  // validate the configuration
-  // (just obvious sanity checks, nonsensical configurations are still possible)
-  if (config_.max_distance <= 0)
-    throw core::Exception("Invalid configuration: max_distance <= 0");
-  if (config_.max_angle >= 90)
-    throw core::Exception("Invalid configuration: max_angle >= 90");
-  if (config_.max_initial_angle >= config_.max_angle)
-    throw core::Exception("Invalid configuration: max_initial_angle >= max_angle");
-  if (config_.pole_length <= 0)
-    throw core::Exception("Invalid configuration: pole_length must be positive");
-  if (config_.pole_density <= 0)
-    throw core::Exception("Invalid configuration: pole_density must be positive");
-  if (config_.cart_density < 0)
-    throw core::Exception("Invalid configuration: cart_density must be positive or 0");
-  if (config_.test_worlds < 1)
-    throw core::Exception("Invalid configuration: test_worlds < 1");
-  if (config_.max_steps < 1)
-    throw core::Exception("Invalid configuration: max_steps < 1");
+size_t CartPole::inputs() const {
+  return Agent::inputs(config_);
+}
+
+size_t CartPole::outputs() const {
+  return Agent::outputs(config_);
 }
 
 bool CartPole::evaluatePopulation(darwin::Population* population) const {
@@ -95,6 +85,33 @@ float CartPole::randomInitialAngle() const {
   uniform_real_distribution<float> dist(-config_.max_initial_angle,
                                         config_.max_initial_angle);
   return dist(rnd);
+}
+
+// validate the configuration
+// (just a few obvious sanity checks for values which would completly break the domain,
+// nonsensical configurations are still possible)
+void CartPole::validateConfiguration()
+{
+  if (config_.max_distance <= 0)
+    throw core::Exception("Invalid configuration: max_distance <= 0");
+  if (config_.max_angle >= 90)
+    throw core::Exception("Invalid configuration: max_angle >= 90");
+  if (config_.max_initial_angle >= config_.max_angle)
+    throw core::Exception("Invalid configuration: max_initial_angle >= max_angle");
+  if (config_.pole_length <= 0)
+    throw core::Exception("Invalid configuration: pole_length must be positive");
+  if (config_.pole_density <= 0)
+    throw core::Exception("Invalid configuration: pole_density must be positive");
+  if (config_.cart_density < 0)
+    throw core::Exception("Invalid configuration: cart_density must be positive or 0");
+
+  if (inputs() < 1)
+    throw core::Exception("Invalid configuration: at least one input must be selected");
+
+  if (config_.test_worlds < 1)
+    throw core::Exception("Invalid configuration: test_worlds < 1");
+  if (config_.max_steps < 1)
+    throw core::Exception("Invalid configuration: max_steps < 1");
 }
 
 unique_ptr<darwin::Domain> Factory::create(const core::PropertySet& config) {
