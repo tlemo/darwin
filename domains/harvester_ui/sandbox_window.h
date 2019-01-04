@@ -35,7 +35,7 @@ class SandboxWindow;
 class SandboxWindow : public QFrame {
   Q_OBJECT
 
-  static constexpr int kDefaultTimerSpeed = 40;  // msec
+  static constexpr int kDefaultTimerSpeed = 40;  // ms
 
   const QIcon kPlayIcon{ ":/resources/mc_play.png" };
   const QIcon kPauseIcon{ ":/resources/mc_pause.png" };
