@@ -328,6 +328,16 @@ class Evolution : public core::NonCopyable,
     //! The associated EvolutionTrace instance
     //! \warning This is a shallow copy
     shared_ptr<const EvolutionTrace> trace;
+    
+    //! The associated darwin::Population instance
+    //! \warning This is a non-owning pointer and will be invalidated if the
+    //!   Snapshot instance outlives the Population instance
+    const Population* population = nullptr;
+
+    //! The associated darwin::Domain instance
+    //! \warning This is a non-owning pointer and will be invalidated if the
+    //!   Snapshot instance outlives the Domain instance
+    const Domain* domain = nullptr;
   };
 
  public:
