@@ -1,4 +1,4 @@
-// Copyright 2018 The Darwin Neuroevolution Framework Authors.
+// Copyright 2019 The Darwin Neuroevolution Framework Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,15 +22,32 @@ namespace cart_pole {
 
 class World {
  public:
-  World(float start_angle, const Config& config);
+  World(float initial_angle, const CartPole* domain);
   
   // advances the physical simulation one step, returning false
   // if the state reaches one of the termination conditions
   bool simStep();
+
+  // world features
+  float cartDistance() const { return cart_->GetPosition().x; }
+  float cartVelocity() const { return cart_->GetLinearVelocity().x; }
+  float poleAngle() const { return pole_->GetAngle(); }
+  float poleAngularVelocity() const { return pole_->GetAngularVelocity(); }
+  
+  // actuators
+  void moveCart(float force);
+  
+  const CartPole* domain() const { return domain_; }
+
+  b2World* box2dWorld() { return &b2_world_; }
   
  private:
   b2World b2_world_;
-  const Config& config_;
+
+  b2Body* cart_ = nullptr;
+  b2Body* pole_ = nullptr;
+  
+  const CartPole* domain_ = nullptr;
 };
 
 }  // namespace cart_pole

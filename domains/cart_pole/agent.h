@@ -1,4 +1,4 @@
-// Copyright 2018 The Darwin Neuroevolution Framework Authors.
+// Copyright 2019 The Darwin Neuroevolution Framework Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ class World;
 class Agent {
  public:
   static constexpr int kInputs = 3;
-  static constexpr int kOutputs = 3;
+  static constexpr int kOutputs = 1;
  
  public:
   Agent(const darwin::Genotype* genotype, World* world);

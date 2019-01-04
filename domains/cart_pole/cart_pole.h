@@ -1,4 +1,4 @@
-// Copyright 2018 The Darwin Neuroevolution Framework Authors.
+// Copyright 2019 The Darwin Neuroevolution Framework Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,9 +24,28 @@ namespace cart_pole {
 //! Cart-Pole domain configuration
 struct Config : public core::PropertySet {
   PROPERTY(gravity, float, 9.8f, "Gravitational acceleration");
+
+  PROPERTY(max_distance, float, 2.5f, "Maximum distance from the center");
+  PROPERTY(max_angle, float, 60.0f, "Maximum angle from vertical");
+  PROPERTY(max_initial_angle, float, 10.0f, "Maximum starting angle from vertical");
+  PROPERTY(pole_length, float, 1.5f, "Pole length");
+  PROPERTY(pole_density, float, 1.0f, "Pole density");
+  PROPERTY(cart_density, float, 0.0f, "Cart density");
+  PROPERTY(cart_friction, float, 0.0f, "Cart friction");
+  PROPERTY(max_force, float, 5.0f, "Maximum force which can be applied to the cart");
   
-  PROPERTY(test_worlds, int, 10, "Number of test worlds per generation");
+  PROPERTY(test_worlds, int, 5, "Number of test worlds per generation");
   PROPERTY(max_steps, int, 1000, "Maximum number of steps per episode");
+
+  PROPERTY(discrete_controls,
+           bool,
+           true,
+           "Force the actuator force to fixed +/-discrete_force_magnitude");
+
+  PROPERTY(discrete_force_magnitude,
+           float,
+           2.5f,
+           "The fixed force magnitude used if discrete_controls is true");
 };
 
 //! Domain: Cart-Pole
@@ -38,35 +57,18 @@ class CartPole : public darwin::Domain {
   size_t outputs() const override { return Agent::kOutputs; }
 
   bool evaluatePopulation(darwin::Population* population) const override;
+  
+  const Config& config() const { return config_; }
+  
+  float randomInitialAngle() const;
 
  private:
   Config config_;
 };
 
 class Factory : public darwin::DomainFactory {
-  unique_ptr<darwin::Domain> create(const core::PropertySet& config) override {
-    return make_unique<CartPole>(config);
-  }
-
-  unique_ptr<core::PropertySet> defaultConfig(
-      darwin::ComplexityHint hint) const override {
-    auto config = make_unique<Config>();
-    switch (hint) {
-      case darwin::ComplexityHint::Minimal:
-        config->test_worlds = 2;
-        config->max_steps = 100;
-        break;
-
-      case darwin::ComplexityHint::Balanced:
-        break;
-
-      case darwin::ComplexityHint::Extra:
-        config->test_worlds = 20;
-        config->max_steps = 10000;
-        break;
-    }
-    return config;
-  }
+  unique_ptr<darwin::Domain> create(const core::PropertySet& config) override;
+  unique_ptr<core::PropertySet> defaultConfig(darwin::ComplexityHint hint) const override;
 };
 
 inline void init() {
