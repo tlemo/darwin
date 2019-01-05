@@ -51,6 +51,41 @@ struct Config : public core::PropertySet {
 };
 
 //! Domain: Cart-Pole
+//!
+//! The classic cart-pole (also known as "pole balancing" or "inverted pendulum") problem:
+//! [Wikipedia](https://en.wikipedia.org/wiki/Inverted_pendulum)
+//! 
+//! ![](images/cart_pole_sandbox.png)
+//!
+//! The cart starts in the middle (x = 0) and the initial pole angle is a random value in
+//! `[-max_initial_angle, +max_initial_angle]` range. An episode is successful if the pole
+//! remains between `-max_angle` and `+max_angle` for at least `max_steps`.
+//!
+//! ### Inputs
+//!
+//! The inputs are configurable by individually selecting at least one of:
+//! - pole_angle
+//! - angular_velocity
+//! - cart_distance
+//! - cart_velocity
+//! 
+//! Input | Value
+//! -----:|------
+//!     0 | pole_angle
+//!     1 | angular_velocity
+//!     2 | cart_distance
+//!     3 | cart_velocity
+//!
+//! ### Outputs
+//! 
+//! The single output indicates the horizontal force to be applied to the cart. This can
+//! be discrete (fixed +/-discrete_force_magnitude depending on the sign of the output) or
+//! can be continuous (the output value maps directly to the force magnitude)
+//!
+//! Output | Value
+//! ------:|------
+//!      0 | force
+//!
 class CartPole : public darwin::Domain {
  public:
   explicit CartPole(const core::PropertySet& config);
