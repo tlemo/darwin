@@ -1,4 +1,4 @@
-// Copyright 2018 The Darwin Neuroevolution Framework Authors.
+// Copyright 2019 The Darwin Neuroevolution Framework Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,10 +14,10 @@
 
 #pragma once
 
+#include <domains/cart_pole/cart_pole.h>
+#include <domains/cart_pole/world.h>
+#include <domains/cart_pole/agent.h>
 #include <core_ui/properties_widget.h>
-#include <domains/harvester/robot.h>
-#include <domains/harvester/world.h>
-#include <domains/harvester/world_map.h>
 
 #include <QFrame>
 #include <QIcon>
@@ -26,7 +26,7 @@
 #include <memory>
 using namespace std;
 
-namespace harvester_ui {
+namespace cart_pole_ui {
 
 namespace Ui {
 class SandboxWindow;
@@ -35,7 +35,7 @@ class SandboxWindow;
 class SandboxWindow : public QFrame {
   Q_OBJECT
 
-  static constexpr int kDefaultTimerSpeed = 40;  // ms
+  static constexpr int kDefaultTimerSpeed = 20;  // ms
 
   const QIcon kPlayIcon{ ":/resources/mc_play.png" };
   const QIcon kPauseIcon{ ":/resources/mc_pause.png" };
@@ -43,23 +43,18 @@ class SandboxWindow : public QFrame {
   struct Variables {
     // configuration
     core_ui::PropertyItem* generation = nullptr;
-    core_ui::PropertyItem* initial_health = nullptr;
-    core_ui::PropertyItem* world_width = nullptr;
-    core_ui::PropertyItem* world_height = nullptr;
+    core_ui::PropertyItem* max_steps = nullptr;
 
     // simulation state
     core_ui::PropertyItem* state = nullptr;
-    core_ui::PropertyItem* sim_step = nullptr;
-    core_ui::PropertyItem* health = nullptr;
+    core_ui::PropertyItem* step = nullptr;
     core_ui::PropertyItem* pos = nullptr;
+    core_ui::PropertyItem* velocity = nullptr;
     core_ui::PropertyItem* angle = nullptr;
-    core_ui::PropertyItem* last_move_dist = nullptr;
-    core_ui::PropertyItem* total_move_dist = nullptr;
-    core_ui::PropertyItem* good_fruits = nullptr;
-    core_ui::PropertyItem* junk_fruits = nullptr;
-    core_ui::PropertyItem* bad_fruits = nullptr;
-    core_ui::PropertyItem* visited_cells = nullptr;
+    core_ui::PropertyItem* angular_velocity = nullptr;
   };
+  
+  enum class State { None, Running, Paused, Failed, Completed };
 
  public:
   explicit SandboxWindow(QWidget* parent = nullptr);
@@ -68,25 +63,35 @@ class SandboxWindow : public QFrame {
   bool setup();
 
  private slots:
-  void on_simulation_speed_valueChanged(int value);
   void on_play_pause_clicked();
   void on_single_step_clicked();
   void on_restart_clicked();
+  void on_simulation_speed_valueChanged(int value);
 
  private:
+  void newEpisode();
   void singleStep();
   void updateUI();
   void setupVariables();
   void pause();
+  void stop(State state);
   void play();
 
  private:
   Ui::SandboxWindow* ui = nullptr;
-  QTimer timer_;
 
-  unique_ptr<harvester::Robot> robot_;
-  unique_ptr<harvester::World> world_;
   Variables variables_;
+  QTimer timer_;
+  
+  const cart_pole::CartPole* cart_pole_ = nullptr;
+
+  shared_ptr<const darwin::Genotype> genotype_;
+  unique_ptr<cart_pole::World> world_;
+  unique_ptr<cart_pole::Agent> agent_;
+  int step_ = -1;
+  int max_steps_ = -1;
+  
+  State state_ = State::None;
 };
 
-}  // namespace harvester_ui
+}  // namespace cart_pole_ui

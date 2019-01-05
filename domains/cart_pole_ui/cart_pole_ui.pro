@@ -5,21 +5,23 @@ QT += core gui charts
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = harvester_ui
+TARGET = cart_pole_ui
 TEMPLATE = lib
 CONFIG += staticlib
 
 SOURCES += \
+    cart_pole_ui.cpp \
     new_sandbox_dialog.cpp \
-    harvester_ui.cpp \
     world_widget.cpp \
-    sandbox_window.cpp
+    sandbox_window.cpp \
+    box2d_renderer.cpp
 
 HEADERS += \
+    cart_pole_ui.h \
     new_sandbox_dialog.h \
-    harvester_ui.h \
     world_widget.h \
-    sandbox_window.h
+    sandbox_window.h \
+    box2d_renderer.h
 
 FORMS += \
     new_sandbox_dialog.ui \
@@ -61,16 +63,16 @@ else:win32:!win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$OUT_PWD/
 else:unix: PRE_TARGETDEPS += $$OUT_PWD/../../core_ui/libcore_ui.a
 
 #------------------------------------------------------------------------------
-# harvester
+# cart_pole
 #
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../harvester/release/ -lharvester
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../harvester/debug/ -lharvester
-else:unix: LIBS += -L$$OUT_PWD/../harvester/ -lharvester
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../cart_pole/release/ -lcart_pole
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../cart_pole/debug/ -lcart_pole
+else:unix: LIBS += -L$$OUT_PWD/../cart_pole/ -lcart_pole
 
-DEPENDPATH += $$PWD/../harvester
+DEPENDPATH += $$PWD/../cart_pole
 
-win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../harvester/release/libharvester.a
-else:win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../harvester/debug/libharvester.a
-else:win32:!win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../harvester/release/harvester.lib
-else:win32:!win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../harvester/debug/harvester.lib
-else:unix: PRE_TARGETDEPS += $$OUT_PWD/../harvester/libharvester.a
+win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../cart_pole/release/libcart_pole.a
+else:win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../cart_pole/debug/libcart_pole.a
+else:win32:!win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../cart_pole/release/cart_pole.lib
+else:win32:!win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../cart_pole/debug/cart_pole.lib
+else:unix: PRE_TARGETDEPS += $$OUT_PWD/../cart_pole/libcart_pole.a

@@ -1,4 +1,4 @@
-// Copyright 2018 The Darwin Neuroevolution Framework Authors.
+// Copyright 2019 The Darwin Neuroevolution Framework Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,22 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#pragma once
+
 #include <core/darwin.h>
-#include <core/thread_pool.h>
-#include <registry/registry.h>
 
-#include <third_party/gtest/gtest.h>
+namespace cart_pole_ui {
 
-int main(int argc, char* argv[]) {
-  // Darwin initialization
-  //
-  // NOTE: this must be done before InitGoogleTest() in order
-  //  to allow parameterized tests query the environment
-  //
-  darwin::init(0, nullptr, TEST_TEMP_PATH);
-  registry::init();
-  pp::ParallelForSupport::init(nullptr);
+void init();
 
-  ::testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
-}
+class Factory : public darwin::DomainUiFactory {
+  QWidget* newSandboxWindow() override;
+};
+
+}  // namespace cart_pole_ui

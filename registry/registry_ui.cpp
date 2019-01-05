@@ -14,10 +14,11 @@
 
 #include "registry_ui.h"
 
-#include <domains/conquest_ui/conquest_ui.h>
-#include <domains/harvester_ui/harvester_ui.h>
 #include <domains/pong_ui/pong_ui.h>
 #include <domains/tic_tac_toe_ui/tic_tac_toe_ui.h>
+#include <domains/conquest_ui/conquest_ui.h>
+#include <domains/harvester_ui/harvester_ui.h>
+#include <domains/cart_pole_ui/cart_pole_ui.h>
 
 namespace registry_ui {
 
@@ -26,6 +27,7 @@ void init() {
   tic_tac_toe_ui::init();
   conquest_ui::init();
   harvester_ui::init();
+  cart_pole_ui::init();
 }
 
 }  // namespace registry_ui

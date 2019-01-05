@@ -1,4 +1,4 @@
-// Copyright 2018 The Darwin Neuroevolution Framework Authors.
+// Copyright 2019 The Darwin Neuroevolution Framework Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,22 +12,28 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "cart_pole_ui.h"
+#include "sandbox_window.h"
+
 #include <core/darwin.h>
-#include <core/thread_pool.h>
-#include <registry/registry.h>
+#include <core/logging.h>
 
-#include <third_party/gtest/gtest.h>
+#include <memory>
+using namespace std;
 
-int main(int argc, char* argv[]) {
-  // Darwin initialization
-  //
-  // NOTE: this must be done before InitGoogleTest() in order
-  //  to allow parameterized tests query the environment
-  //
-  darwin::init(0, nullptr, TEST_TEMP_PATH);
-  registry::init();
-  pp::ParallelForSupport::init(nullptr);
+namespace cart_pole_ui {
 
-  ::testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
+void init() {
+  darwin::registry()->domains_ui.add<Factory>("cart_pole");
 }
+
+QWidget* Factory::newSandboxWindow() {
+  auto sandbox_window = make_unique<SandboxWindow>();
+  if (!sandbox_window->setup()) {
+    core::log("Failed to setup the new sandbox window\n\n");
+    sandbox_window.reset();
+  }
+  return sandbox_window.release();
+}
+
+}  // namespace cart_pole_ui

@@ -16,9 +16,6 @@
 
 #include <core/darwin.h>
 
-#include <memory>
-using namespace std;
-
 namespace find_max_value {
 
 struct World;

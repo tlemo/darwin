@@ -22,6 +22,7 @@
 #include <domains/max/max.h>
 #include <domains/pong/pong.h>
 #include <domains/tic_tac_toe/tic_tac_toe.h>
+#include <domains/cart_pole/cart_pole.h>
 
 namespace registry {
 
@@ -32,6 +33,7 @@ void init() {
   tic_tac_toe::init();
   conquest::init();
   harvester::init();
+  cart_pole::init();
 
   // populations
   neat::init();

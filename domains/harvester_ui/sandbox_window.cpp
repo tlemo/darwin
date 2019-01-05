@@ -38,6 +38,7 @@ SandboxWindow::SandboxWindow(QWidget* parent)
 }
 
 SandboxWindow::~SandboxWindow() {
+  timer_.stop();
   delete ui;
 }
 
@@ -85,6 +86,7 @@ bool SandboxWindow::setup() {
   variables_.world_width->setValue(world_width);
   variables_.world_height->setValue(world_height);
 
+  // setup animation timer
   CHECK(!timer_.isActive());
   connect(&timer_, &QTimer::timeout, this, &SandboxWindow::singleStep);
   timer_.setInterval(kDefaultTimerSpeed);

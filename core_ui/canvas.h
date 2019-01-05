@@ -21,11 +21,17 @@
 
 namespace core_ui {
 
-//! A reusable canvas with support for auto-scalling the content
+//! A reusable canvas with support for logical coordinates and auto-scalling the content
 //! 
-//! It has the concept of a logical viewport. Once the viewport rectangle is defined,
-//! this class will maintain the transformations to/from logical viewport coordinates
-//! such that the entire viewport is always visible.
+//! Once the logical viewport rectangle is defined, this class maintains the
+//! transformations to/from logical viewport coordinates such that the entire viewport
+//! is always visible.
+//! 
+//! Canvas supports both orientations of the y-axis:
+//!   - pointing down (default QPainter coordinates)
+//!   - pointing up (traditional math/physics Cartesian coordinates)
+//! 
+//! Using coordinates with y "pointing up" requires extra care, see Canvas::setViewport()
 //! 
 class Canvas : public QFrame {
  public:
@@ -42,9 +48,24 @@ class Canvas : public QFrame {
   const QRectF& viewport() const { return viewport_rect_; }
   
   //! Sets the viewport rectangle
+  //! 
+  //! In order to use the traditional Cartesian coordinates, with the y-axis pointing up,
+  //! the height of the viewport rectangle should have a negative value. The top_left 
+  //! viewport corner should still use the **top** y coordinate. For example, in order
+  //! to define a (0,0) -> (10,5) viewport you would call:
+  //! 
+  //! ```cpp
+  //! setViewport(QRectF(0, 5, 10, -5));
+  //! ```
+  //! 
+  //! \warning When using coordinates where y "points up", the text will also be 
+  //!   flipped upside down. To render text properly, the viewport transformation must
+  //!   be temporary modified to flip the y-coordinate.
+  //! 
   void setViewport(const QRectF& viewport_rect);
   
   //! Sets the viewport rectangle
+  //! \note Convenience overload, calls setViewport(const QRect&)
   void setViewport(const QPointF& top_left, const QPointF& bottom_right);
 
   //! Logical viewport coordinates to client window coordinates
@@ -67,7 +88,7 @@ class Canvas : public QFrame {
   int border_size_ = 0;
 
   // logical viewport coordinates
-  QRectF viewport_rect_;
+  QRectF viewport_rect_{ 0, 0, 1, 1 };
 
   // cached, lazy evaluated transformations
   mutable bool valid_transformations_ = false;

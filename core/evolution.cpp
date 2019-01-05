@@ -479,6 +479,8 @@ Evolution::Snapshot Evolution::snapshot() const {
   s.generation = population_ ? population_->generation() : 0;
   s.stage = stage_stack_.empty() ? EvolutionStage() : stage_stack_.back();
   s.state = state_;
+  s.population = population_.get();
+  s.domain = domain_.get();
   return s;
 }
 
