@@ -10,6 +10,7 @@ var searchData=
   ['setgateactivationfunction',['setGateActivationFunction',['../namespaceann.html#a108775be4eb41201f34132723ff65a33',1,'ann']]],
   ['setidentity',['setIdentity',['../structmath_1_1_h_matrix2d.html#a82c2fbc22825ac2eb756c86c122b73ff',1,'math::HMatrix2d']]],
   ['setinput',['setInput',['../classdarwin_1_1_brain.html#a2ff543fb3eab1eed2338bef7bf906a91',1,'darwin::Brain']]],
+  ['setmodified',['setModified',['../classdarwin_1_1_experiment.html#a9a860a34d6c74e5f68c80b5e4be98843',1,'darwin::Experiment']]],
   ['setrotation',['setRotation',['../structmath_1_1_h_matrix2d.html#abd27122f8d47f23df5fbe8981ff47d06',1,'math::HMatrix2d']]],
   ['setscale',['setScale',['../structmath_1_1_h_matrix2d.html#ad4fee2257507697011b5523c1f67dda4',1,'math::HMatrix2d']]],
   ['settranslate',['setTranslate',['../structmath_1_1_h_matrix2d.html#added63980afc0ec64cc91e3675872db0',1,'math::HMatrix2d']]],

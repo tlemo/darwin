@@ -141,10 +141,9 @@ const <a class="el" href="structdarwin_1_1_experiment_setup.html">ExperimentSetu
 <a class="el" href="namespacedb.html#a0845f2bb472b4e673de2d2f977fb1da8">db::RowId</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdarwin_1_1_experiment.html#afb135bb2f961521f7fc53ac817d2d4ae">dbVariationId</a> () const</td></tr>
 <tr class="memdesc:afb135bb2f961521f7fc53ac817d2d4ae"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classdarwin_1_1_universe.html" title="The persistent storage for all the experiments and variations. ">Universe</a> database Id of the particular experiment variation. <br /></td></tr>
 <tr class="separator:afb135bb2f961521f7fc53ac817d2d4ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abc388b6a91a23252c54322e2d96941b2"><td class="memItemLeft" align="right" valign="top"><a id="abc388b6a91a23252c54322e2d96941b2"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdarwin_1_1_experiment.html#abc388b6a91a23252c54322e2d96941b2">newVariation</a> ()</td></tr>
-<tr class="memdesc:abc388b6a91a23252c54322e2d96941b2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Notification that we updated the experiment configuration so we have to create a new experiment variation. <br /></td></tr>
-<tr class="separator:abc388b6a91a23252c54322e2d96941b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9a860a34d6c74e5f68c80b5e4be98843"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdarwin_1_1_experiment.html#a9a860a34d6c74e5f68c80b5e4be98843">setModified</a> (bool modified)</td></tr>
+<tr class="memdesc:a9a860a34d6c74e5f68c80b5e4be98843"><td class="mdescLeft">&#160;</td><td class="mdescRight">Update the configuration modification flag.  <a href="#a9a860a34d6c74e5f68c80b5e4be98843">More...</a><br /></td></tr>
+<tr class="separator:a9a860a34d6c74e5f68c80b5e4be98843"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aed1e5d7d20b104e15b93a8cbfc654bae"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdarwin_1_1_experiment.html#aed1e5d7d20b104e15b93a8cbfc654bae">prepareForEvolution</a> ()</td></tr>
 <tr class="memdesc:aed1e5d7d20b104e15b93a8cbfc654bae"><td class="mdescLeft">&#160;</td><td class="mdescRight">Notification that an evolution run is about to start.  <a href="#aed1e5d7d20b104e15b93a8cbfc654bae">More...</a><br /></td></tr>
 <tr class="separator:aed1e5d7d20b104e15b93a8cbfc654bae"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -175,6 +174,35 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 
 <p>Notification that an evolution run is about to start. </p>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="classdarwin_1_1_evolution.html#aef0e1583cdf98b6c5424645e662ac825" title="Sets up a new evolution experiment. ">Evolution::newExperiment()</a> </dd></dl>
+
+</div>
+</div>
+<a id="a9a860a34d6c74e5f68c80b5e4be98843"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9a860a34d6c74e5f68c80b5e4be98843">&#9670;&nbsp;</a></span>setModified()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void darwin::Experiment::setModified </td>
+          <td>(</td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>modified</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Update the configuration modification flag. </p>
+<p>This is intended for configuration editors (or any code which updates configuration values directly) to keep track of the state of potential changes. If this flag is set, a new experiment variation will be created when the experiment starts </p>
 
 </div>
 </div>

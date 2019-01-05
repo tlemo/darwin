@@ -73,20 +73,20 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
-<p>A reusable canvas with support for auto-scalling the content.  
+<p>A reusable canvas with support for logical coordinates and auto-scalling the content.  
  <a href="classcore__ui_1_1_canvas.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="canvas_8h_source.html">canvas.h</a>&gt;</code></p>
 
 <p>Inherits QFrame.</p>
 
-<p>Inherited by conquest_ui::BoardWidget, harvester_ui::WorldWidget, and tic_tac_toe_ui::BoardWidget.</p>
+<p>Inherited by cart_pole_ui::WorldWidget, conquest_ui::BoardWidget, harvester_ui::WorldWidget, and tic_tac_toe_ui::BoardWidget.</p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a8f96d64e521d20f346f3dcad05c6e81b"><td class="memItemLeft" align="right" valign="top"><a id="a8f96d64e521d20f346f3dcad05c6e81b"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcore__ui_1_1_canvas.html#a8f96d64e521d20f346f3dcad05c6e81b">Canvas</a> (QWidget *parent)</td></tr>
-<tr class="memdesc:a8f96d64e521d20f346f3dcad05c6e81b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a new <a class="el" href="classcore__ui_1_1_canvas.html" title="A reusable canvas with support for auto-scalling the content. ">Canvas</a>. <br /></td></tr>
+<tr class="memdesc:a8f96d64e521d20f346f3dcad05c6e81b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a new <a class="el" href="classcore__ui_1_1_canvas.html" title="A reusable canvas with support for logical coordinates and auto-scalling the content. ">Canvas</a>. <br /></td></tr>
 <tr class="separator:a8f96d64e521d20f346f3dcad05c6e81b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6658c07638368a94b8d1f34b9b0ed463"><td class="memItemLeft" align="right" valign="top"><a id="a6658c07638368a94b8d1f34b9b0ed463"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcore__ui_1_1_canvas.html#a6658c07638368a94b8d1f34b9b0ed463">borderSize</a> () const</td></tr>
@@ -100,13 +100,11 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 const QRectF &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcore__ui_1_1_canvas.html#a0c9674114af388e3ea92263508e7b2b5">viewport</a> () const</td></tr>
 <tr class="memdesc:a0c9674114af388e3ea92263508e7b2b5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Current viewport rectangle. <br /></td></tr>
 <tr class="separator:a0c9674114af388e3ea92263508e7b2b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aabc61b6b2dacdde251af9fd7f11f0eee"><td class="memItemLeft" align="right" valign="top"><a id="aabc61b6b2dacdde251af9fd7f11f0eee"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcore__ui_1_1_canvas.html#aabc61b6b2dacdde251af9fd7f11f0eee">setViewport</a> (const QRectF &amp;viewport_rect)</td></tr>
-<tr class="memdesc:aabc61b6b2dacdde251af9fd7f11f0eee"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the viewport rectangle. <br /></td></tr>
+<tr class="memitem:aabc61b6b2dacdde251af9fd7f11f0eee"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcore__ui_1_1_canvas.html#aabc61b6b2dacdde251af9fd7f11f0eee">setViewport</a> (const QRectF &amp;viewport_rect)</td></tr>
+<tr class="memdesc:aabc61b6b2dacdde251af9fd7f11f0eee"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the viewport rectangle.  <a href="#aabc61b6b2dacdde251af9fd7f11f0eee">More...</a><br /></td></tr>
 <tr class="separator:aabc61b6b2dacdde251af9fd7f11f0eee"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a906cfba45ce833470df8316bdb0b222c"><td class="memItemLeft" align="right" valign="top"><a id="a906cfba45ce833470df8316bdb0b222c"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcore__ui_1_1_canvas.html#a906cfba45ce833470df8316bdb0b222c">setViewport</a> (const QPointF &amp;top_left, const QPointF &amp;bottom_right)</td></tr>
-<tr class="memdesc:a906cfba45ce833470df8316bdb0b222c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the viewport rectangle. <br /></td></tr>
+<tr class="memitem:a906cfba45ce833470df8316bdb0b222c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcore__ui_1_1_canvas.html#a906cfba45ce833470df8316bdb0b222c">setViewport</a> (const QPointF &amp;top_left, const QPointF &amp;bottom_right)</td></tr>
+<tr class="memdesc:a906cfba45ce833470df8316bdb0b222c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the viewport rectangle.  <a href="#a906cfba45ce833470df8316bdb0b222c">More...</a><br /></td></tr>
 <tr class="separator:a906cfba45ce833470df8316bdb0b222c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a485709e04c2e2a48924017e55e35bd67"><td class="memItemLeft" align="right" valign="top"><a id="a485709e04c2e2a48924017e55e35bd67"></a>
 const QTransform &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcore__ui_1_1_canvas.html#a485709e04c2e2a48924017e55e35bd67">transformFromViewport</a> () const</td></tr>
@@ -122,9 +120,68 @@ double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cl
 <tr class="separator:a3f6347f9ef9f37ad16e88bc7bbb21020"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>A reusable canvas with support for auto-scalling the content. </p>
-<p>It has the concept of a logical viewport. Once the viewport rectangle is defined, this class will maintain the transformations to/from logical viewport coordinates such that the entire viewport is always visible. </p>
-</div><hr/>The documentation for this class was generated from the following files:<ul>
+<div class="textblock"><p>A reusable canvas with support for logical coordinates and auto-scalling the content. </p>
+<p>Once the logical viewport rectangle is defined, this class maintains the transformations to/from logical viewport coordinates such that the entire viewport is always visible.</p>
+<p><a class="el" href="classcore__ui_1_1_canvas.html" title="A reusable canvas with support for logical coordinates and auto-scalling the content. ">Canvas</a> supports both orientations of the y-axis:</p><ul>
+<li>pointing down (default QPainter coordinates)</li>
+<li>pointing up (traditional math/physics Cartesian coordinates)</li>
+</ul>
+<p>Using coordinates with y "pointing up" requires extra care, see <a class="el" href="classcore__ui_1_1_canvas.html#aabc61b6b2dacdde251af9fd7f11f0eee" title="Sets the viewport rectangle. ">Canvas::setViewport()</a> </p>
+</div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="aabc61b6b2dacdde251af9fd7f11f0eee"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aabc61b6b2dacdde251af9fd7f11f0eee">&#9670;&nbsp;</a></span>setViewport() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void core_ui::Canvas::setViewport </td>
+          <td>(</td>
+          <td class="paramtype">const QRectF &amp;&#160;</td>
+          <td class="paramname"><em>viewport_rect</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Sets the viewport rectangle. </p>
+<p>In order to use the traditional Cartesian coordinates, with the y-axis pointing up, the height of the viewport rectangle should have a negative value. The top_left viewport corner should still use the <b>top</b> y coordinate. For example, in order to define a (0,0) -&gt; (10,5) viewport you would call:</p>
+<div class="fragment"><div class="line"><a class="code" href="classcore__ui_1_1_canvas.html#aabc61b6b2dacdde251af9fd7f11f0eee">setViewport</a>(QRectF(0, 5, 10, -5));</div></div><!-- fragment --><dl class="section warning"><dt>Warning</dt><dd>When using coordinates where y "points up", the text will also be flipped upside down. To render text properly, the viewport transformation must be temporary modified to flip the y-coordinate. </dd></dl>
+
+</div>
+</div>
+<a id="a906cfba45ce833470df8316bdb0b222c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a906cfba45ce833470df8316bdb0b222c">&#9670;&nbsp;</a></span>setViewport() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void core_ui::Canvas::setViewport </td>
+          <td>(</td>
+          <td class="paramtype">const QPointF &amp;&#160;</td>
+          <td class="paramname"><em>top_left</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const QPointF &amp;&#160;</td>
+          <td class="paramname"><em>bottom_right</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Sets the viewport rectangle. </p>
+<dl class="section note"><dt>Note</dt><dd>Convenience overload, calls setViewport(const QRect&amp;) </dd></dl>
+
+</div>
+</div>
+<hr/>The documentation for this class was generated from the following files:<ul>
 <li>C:/Users/lemo/work/darwin/core_ui/<a class="el" href="canvas_8h_source.html">canvas.h</a></li>
 <li>C:/Users/lemo/work/darwin/core_ui/canvas.cpp</li>
 </ul>

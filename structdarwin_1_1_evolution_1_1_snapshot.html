@@ -98,11 +98,34 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struc
 <tr class="memitem:a1669d6bc32756924d304b6145c0b87e7"><td class="memItemLeft" align="right" valign="top">shared_ptr&lt; const <a class="el" href="classdarwin_1_1_evolution_trace.html">EvolutionTrace</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdarwin_1_1_evolution_1_1_snapshot.html#a1669d6bc32756924d304b6145c0b87e7">trace</a></td></tr>
 <tr class="memdesc:a1669d6bc32756924d304b6145c0b87e7"><td class="mdescLeft">&#160;</td><td class="mdescRight">The associated <a class="el" href="classdarwin_1_1_evolution_trace.html" title="Recording of a evolution experiment run. ">EvolutionTrace</a> instance.  <a href="#a1669d6bc32756924d304b6145c0b87e7">More...</a><br /></td></tr>
 <tr class="separator:a1669d6bc32756924d304b6145c0b87e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7938010aab82225353b2cf37175f154a"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classdarwin_1_1_population.html">Population</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdarwin_1_1_evolution_1_1_snapshot.html#a7938010aab82225353b2cf37175f154a">population</a> = nullptr</td></tr>
+<tr class="memdesc:a7938010aab82225353b2cf37175f154a"><td class="mdescLeft">&#160;</td><td class="mdescRight">The associated <a class="el" href="classdarwin_1_1_population.html" title="A population implementation encapsulates the fixed-size set of genotypes, together with the rules for...">darwin::Population</a> instance.  <a href="#a7938010aab82225353b2cf37175f154a">More...</a><br /></td></tr>
+<tr class="separator:a7938010aab82225353b2cf37175f154a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acd3cea67c20b93203b479e9ffebdd71f"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classdarwin_1_1_domain.html">Domain</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdarwin_1_1_evolution_1_1_snapshot.html#acd3cea67c20b93203b479e9ffebdd71f">domain</a> = nullptr</td></tr>
+<tr class="memdesc:acd3cea67c20b93203b479e9ffebdd71f"><td class="mdescLeft">&#160;</td><td class="mdescRight">The associated <a class="el" href="classdarwin_1_1_domain.html" title="Interface to a domain implementation. ">darwin::Domain</a> instance.  <a href="#acd3cea67c20b93203b479e9ffebdd71f">More...</a><br /></td></tr>
+<tr class="separator:acd3cea67c20b93203b479e9ffebdd71f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>State snapshot of an evolution run. </p>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="classdarwin_1_1_evolution.html#a279f7cfe198fcf5023131114660315ed" title="Captures a Snapshot of the current evolution state. ">snapshot()</a> </dd></dl>
 </div><h2 class="groupheader">Member Data Documentation</h2>
+<a id="acd3cea67c20b93203b479e9ffebdd71f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acd3cea67c20b93203b479e9ffebdd71f">&#9670;&nbsp;</a></span>domain</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const <a class="el" href="classdarwin_1_1_domain.html">Domain</a>* darwin::Evolution::Snapshot::domain = nullptr</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>The associated <a class="el" href="classdarwin_1_1_domain.html" title="Interface to a domain implementation. ">darwin::Domain</a> instance. </p>
+<dl class="section warning"><dt>Warning</dt><dd>This is a non-owning pointer and will be invalidated if the <a class="el" href="structdarwin_1_1_evolution_1_1_snapshot.html" title="State snapshot of an evolution run. ">Snapshot</a> instance outlives the <a class="el" href="classdarwin_1_1_domain.html" title="Interface to a domain implementation. ">Domain</a> instance </dd></dl>
+
+</div>
+</div>
 <a id="a18a5c7c6bdbef4f5ae31078ab5a3709f"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a18a5c7c6bdbef4f5ae31078ab5a3709f">&#9670;&nbsp;</a></span>experiment</h2>
 
@@ -117,6 +140,23 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struc
 
 <p>The associated <a class="el" href="classdarwin_1_1_experiment.html" title="Encapsulates the runtime experiment state. ">Experiment</a> instance. </p>
 <dl class="section warning"><dt>Warning</dt><dd>This is a shallow copy </dd></dl>
+
+</div>
+</div>
+<a id="a7938010aab82225353b2cf37175f154a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7938010aab82225353b2cf37175f154a">&#9670;&nbsp;</a></span>population</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const <a class="el" href="classdarwin_1_1_population.html">Population</a>* darwin::Evolution::Snapshot::population = nullptr</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>The associated <a class="el" href="classdarwin_1_1_population.html" title="A population implementation encapsulates the fixed-size set of genotypes, together with the rules for...">darwin::Population</a> instance. </p>
+<dl class="section warning"><dt>Warning</dt><dd>This is a non-owning pointer and will be invalidated if the <a class="el" href="structdarwin_1_1_evolution_1_1_snapshot.html" title="State snapshot of an evolution run. ">Snapshot</a> instance outlives the <a class="el" href="classdarwin_1_1_population.html" title="A population implementation encapsulates the fixed-size set of genotypes, together with the rules for...">Population</a> instance </dd></dl>
 
 </div>
 </div>
