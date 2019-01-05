@@ -27,10 +27,6 @@ class World;
 
 class Agent {
  public:
-  static constexpr int kInputs = 3;
-  static constexpr int kOutputs = 1;
- 
- public:
   Agent(const darwin::Genotype* genotype, World* world);
   void simStep();
   
