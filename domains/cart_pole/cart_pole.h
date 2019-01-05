@@ -64,9 +64,9 @@ struct Config : public core::PropertySet {
 //! ### Inputs
 //!
 //! The inputs are configurable by individually selecting at least one of:
-//! - pole_angle
+//! - pole_angle (from vertical)
 //! - angular_velocity
-//! - cart_distance
+//! - cart_distance (from the center)
 //! - cart_velocity
 //! 
 //! Input | Value
