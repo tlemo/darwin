@@ -244,20 +244,28 @@ class ProgressMonitor {
 //!
 //! \sa ProgressMonitor
 //! \sa EvolutionStage
-//! 
+//!
 class ProgressManager {
  public:
   //! Reports the start of a stage
   static void beginStage(const string& name, size_t size, uint32_t annotations) {
-    progress_monitor_->beginStage(name, size, annotations);
+    if (progress_monitor_ != nullptr) {
+      progress_monitor_->beginStage(name, size, annotations);
+    }
   }
 
   //! Reports the finish of a stage
-  static void finishStage(const string& name) { progress_monitor_->finishStage(name); }
+  static void finishStage(const string& name) {
+    if (progress_monitor_ != nullptr) {
+      progress_monitor_->finishStage(name);
+    }
+  }
 
   //! Reports stage progress
   static void reportProgress(size_t increment = 1) {
-    progress_monitor_->reportProgress(increment);
+    if (progress_monitor_ != nullptr) {
+      progress_monitor_->reportProgress(increment);
+    }
   }
 
   //! Registers a ProgressMonitor implementation
