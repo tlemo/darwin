@@ -40,42 +40,42 @@ struct TestBrain : public darwin::Brain {
   State state = State::WaitingForInputs;
 
   // make sure all the inputs and outputs are used
-  mutable unordered_set<int> input_set;
-  mutable unordered_set<int> output_set;
-  
+  mutable unordered_set<int> used_inputs;
+  mutable unordered_set<int> used_outputs;
+
   TestBrain(float force_value, size_t inputs, size_t outputs)
       : force_value(force_value), inputs(inputs), outputs(outputs) {}
 
-  ~TestBrain() {
-    checkOutputsConsumed();
-  }
-  
+  ~TestBrain() { checkOutputsConsumed(); }
+
   void checkInputsSet() {
     EXPECT_EQ(state, State::WaitingForInputs);
-    EXPECT_EQ(input_set.size(), inputs);
+    EXPECT_EQ(used_inputs.size(), inputs);
   }
-  
+
   void checkOutputsConsumed() {
     EXPECT_EQ(state, State::OutputsReady);
-    EXPECT_EQ(output_set.size(), outputs);
+    EXPECT_EQ(used_outputs.size(), outputs);
   }
 
   void setInput(int index, float) override {
     if (state == State::OutputsReady) {
       checkOutputsConsumed();
+      used_inputs.clear();
+      used_outputs.clear();
       state = State::WaitingForInputs;
     }
     EXPECT_EQ(state, State::WaitingForInputs);
     EXPECT_GE(index, 0);
     EXPECT_LT(index, inputs);
-    EXPECT_TRUE(input_set.insert(index).second);
+    EXPECT_TRUE(used_inputs.insert(index).second);
   }
 
   float output(int index) const override {
     EXPECT_EQ(state, State::OutputsReady);
     EXPECT_GE(index, 0);
     EXPECT_LT(index, outputs);
-    EXPECT_TRUE(output_set.insert(index).second);
+    EXPECT_TRUE(used_outputs.insert(index).second);
     return force_value;
   }
 
@@ -122,7 +122,7 @@ struct TestPopulation : public darwin::Population {
 
   void rankGenotypes() override { FATAL("Not implemented"); }
 
-  int generation() const override { FATAL("Not implemented"); }
+  int generation() const override { return 0; }
 
   void createPrimordialGeneration(int) override { FATAL("Not implemented"); }
 
@@ -132,11 +132,65 @@ struct TestPopulation : public darwin::Population {
   vector<TestGenotype> genotypes_;
 };
 
-TEST(CartPoleTest, Test) {
+TEST(CartPoleTest, EvaluatePopulation_SingleInput) {
+  constexpr int kMaxSteps = 100;
+
   cart_pole::Config config;
+  config.max_steps = kMaxSteps;
+  config.max_force = 5.0f;
+  config.test_worlds = 2;
+  config.discrete_controls = true;
+  config.input_pole_angle = false;
+  config.input_angular_velocity = true;
+  config.input_cart_distance = false;
+  config.input_cart_velocity = false;
+
   cart_pole::CartPole cart_pole(config);
-  TestPopulation population(&cart_pole, { 0.0f, 1.0f, -1.0f, 2.0f, -2.0f });
-  EXPECT_FALSE(cart_pole.evaluatePopulation(&population));
+  TestPopulation population(&cart_pole, { 0.0f, +100.0f, -0.01f, 1.123e30f, -1.0e-40f });
+  cart_pole.evaluatePopulation(&population);
+
+  for (size_t i = 0; i < population.size(); ++i) {
+    EXPECT_GT(population[i]->fitness, 0);
+    EXPECT_LE(population[i]->fitness, kMaxSteps);
+  }
+}
+
+TEST(CartPoleTest, EvaluatePopulation_EveryInput) {
+  constexpr int kMaxSteps = 250;
+
+  cart_pole::Config config;
+  config.max_initial_angle = 0.0f;
+  config.max_steps = kMaxSteps;
+  config.max_force = 5.0f;
+  config.test_worlds = 3;
+  config.discrete_controls = false;
+  config.input_pole_angle = true;
+  config.input_angular_velocity = true;
+  config.input_cart_distance = true;
+  config.input_cart_velocity = true;
+  
+  vector<float> force_values(5);
+  force_values[0] = 0.0f;
+  force_values[1] = +1.0f;
+  force_values[2] = -1.0f;
+  force_values[3] = +2.0f;
+  force_values[4] = -2.0f;
+
+  cart_pole::CartPole cart_pole(config);
+  TestPopulation population(&cart_pole, force_values);
+  cart_pole.evaluatePopulation(&population);
+
+  // force = 0.0f
+  EXPECT_EQ(population[0]->fitness, kMaxSteps);
+  
+  // force = +/-1.0f
+  EXPECT_GT(population[0]->fitness, population[1]->fitness);
+  EXPECT_EQ(population[1]->fitness, population[2]->fitness);
+
+  // force = +/-2.0f
+  EXPECT_GT(population[2]->fitness, population[3]->fitness);
+  EXPECT_EQ(population[3]->fitness, population[4]->fitness);
+  EXPECT_GT(population[4]->fitness, 0);
 }
 
 }  // namespace cart_pole_tests

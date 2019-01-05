@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include <core/darwin.h>
+#include <core/thread_pool.h>
 #include <registry/registry.h>
 
 #include <third_party/gtest/gtest.h>
@@ -25,6 +26,7 @@ int main(int argc, char* argv[]) {
   //
   darwin::init(0, nullptr, TEST_TEMP_PATH);
   registry::init();
+  pp::ParallelForSupport::init(nullptr);
 
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
