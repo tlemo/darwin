@@ -35,11 +35,12 @@ class TestGenotype : public darwin::Genotype {
 
 class TestPopulation : public darwin::Population {
  public:
-  TestPopulation(const vector<float>& fitness_values) {
+  explicit TestPopulation(const vector<float>& fitness_values) {
     CHECK(!fitness_values.empty());
     genotypes_.resize(fitness_values.size());
-    for (size_t i = 0; i < genotypes_.size(); ++i)
+    for (size_t i = 0; i < genotypes_.size(); ++i) {
       genotypes_[i].fitness = fitness_values[i];
+    }
   }
 
   size_t size() const override { return genotypes_.size(); }
