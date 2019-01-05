@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include <domains/cart_pole/cart_pole.h>
+#include <domains/cart_pole/world.h>
 
 #include <core/darwin.h>
 #include <third_party/gtest/gtest.h>
@@ -131,6 +132,52 @@ struct TestPopulation : public darwin::Population {
  private:
   vector<TestGenotype> genotypes_;
 };
+
+TEST(CartPoleTest, World_PoleGravity) {
+  cart_pole::Config config;
+  config.max_initial_angle = 15.0f;
+  config.max_angle = 60.0f;
+  config.max_steps = 100;
+  cart_pole::CartPole cart_pole(config);
+
+  auto simulation = [&](float initial_angle) -> int {
+    cart_pole::World world(initial_angle, &cart_pole);
+    int step = 0;
+    for (; step < config.max_steps; ++step) {
+      if (!world.simStep())
+        break;
+    }
+    return step;
+  };
+
+  EXPECT_EQ(simulation(0.0f), config.max_steps);
+  EXPECT_LT(simulation(+config.max_initial_angle), config.max_steps);
+  EXPECT_LT(simulation(-config.max_initial_angle), config.max_steps);
+}
+
+TEST(CartPoleTest, World_PoleInertia) {
+  cart_pole::Config config;
+  config.discrete_controls = false;
+  config.max_angle = 60.0f;
+  config.max_steps = 250;
+  config.max_distance = 1.0e10f;
+  cart_pole::CartPole cart_pole(config);
+
+  auto simulation = [&](float force) -> int {
+    cart_pole::World world(0.0f, &cart_pole);
+    int step = 0;
+    for (; step < config.max_steps; ++step) {
+      world.moveCart(force);
+      if (!world.simStep())
+        break;
+    }
+    return step;
+  };
+
+  EXPECT_EQ(simulation(0.0f), config.max_steps);
+  EXPECT_LT(simulation(+1.0f), config.max_steps);
+  EXPECT_LT(simulation(-1.0f), config.max_steps);
+}
 
 TEST(CartPoleTest, EvaluatePopulation_SingleInput) {
   constexpr int kMaxSteps = 100;
