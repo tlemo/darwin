@@ -16,6 +16,8 @@
 
 #include <core/utils.h>
 
+#include <math.h>
+
 namespace core_ui {
 
 Canvas::Canvas(QWidget* parent) : QFrame(parent) {}
@@ -27,6 +29,8 @@ void Canvas::setBorderSize(int border_size) {
 }
 
 void Canvas::setViewport(const QRectF& viewport_rect) {
+  Q_ASSERT(viewport_rect.width() > 0);
+  Q_ASSERT(viewport_rect.height() != 0);
   viewport_rect_ = viewport_rect;
   valid_transformations_ = false;
   update();
@@ -68,7 +72,8 @@ void Canvas::updateTransformations() const {
   client_rect.adjust(border_size_, border_size_, -border_size_, -border_size_);
 
   // adjust the width or the height to keep the target ratio
-  const double target_ratio = viewport_rect_.width() / viewport_rect_.height();
+  const bool flip_y = viewport_rect_.height() < 0;
+  const double target_ratio = fabs(viewport_rect_.width() / viewport_rect_.height());
   if (client_rect.width() / client_rect.height() > target_ratio)
     client_rect.setWidth(client_rect.height() * target_ratio);
   else
@@ -77,12 +82,16 @@ void Canvas::updateTransformations() const {
   client_rect.moveCenter(rect().center());
 
   scale_ = client_rect.width() / viewport_rect_.width();
-  auto offset = client_rect.topLeft() - viewport_rect_.topLeft() * scale_;
+  auto viewport_origin = viewport_rect_.topLeft() * scale_;
+  if (flip_y) {
+    viewport_origin.setY(-viewport_origin.y());
+  }
+  auto offset = client_rect.topLeft() - viewport_origin;
 
   // build the tranfromations
   transform_from_viewport_.reset();
   transform_from_viewport_.translate(offset.x(), offset.y());
-  transform_from_viewport_.scale(scale_, scale_);
+  transform_from_viewport_.scale(scale_, (flip_y ? -scale_ : scale_));
   transform_to_viewport_ = transform_from_viewport_.inverted();
 
   valid_transformations_ = true;
