@@ -1,4 +1,4 @@
-// Copyright 2018 The Darwin Neuroevolution Framework Authors.
+// Copyright 2019 The Darwin Neuroevolution Framework Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,22 +12,28 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "registry_ui.h"
+#include "cart_pole_ui.h"
+#include "sandbox_window.h"
 
-#include <domains/pong_ui/pong_ui.h>
-#include <domains/tic_tac_toe_ui/tic_tac_toe_ui.h>
-#include <domains/conquest_ui/conquest_ui.h>
-#include <domains/harvester_ui/harvester_ui.h>
-#include <domains/cart_pole_ui/cart_pole_ui.h>
+#include <core/darwin.h>
+#include <core/logging.h>
 
-namespace registry_ui {
+#include <memory>
+using namespace std;
+
+namespace cart_pole_ui {
 
 void init() {
-  pong_ui::init();
-  tic_tac_toe_ui::init();
-  conquest_ui::init();
-  harvester_ui::init();
-  cart_pole_ui::init();
+  darwin::registry()->domains_ui.add<Factory>("cart_pole");
 }
 
-}  // namespace registry_ui
+QWidget* Factory::newSandboxWindow() {
+  auto sandbox_window = make_unique<SandboxWindow>();
+  if (!sandbox_window->setup()) {
+    core::log("Failed to setup the new sandbox window\n\n");
+    sandbox_window.reset();
+  }
+  return sandbox_window.release();
+}
+
+}  // namespace cart_pole_ui

@@ -72,6 +72,20 @@ else:unix: PRE_TARGETDEPS += $$OUT_PWD/../domains/pong/libpong.a
 
 #------------------------------------------------------------------------------
 #
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../domains/cart_pole_ui/release/ -lcart_pole_ui
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../domains/cart_pole_ui/debug/ -lcart_pole_ui
+else:unix: LIBS += -L$$OUT_PWD/../domains/cart_pole_ui/ -lcart_pole_ui
+
+DEPENDPATH += $$PWD/../domains/cart_pole_ui
+
+win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../domains/cart_pole_ui/release/libcart_pole_ui.a
+else:win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../domains/cart_pole_ui/debug/libcart_pole_ui.a
+else:win32:!win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../domains/cart_pole_ui/release/cart_pole_ui.lib
+else:win32:!win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../domains/cart_pole_ui/debug/cart_pole_ui.lib
+else:unix: PRE_TARGETDEPS += $$OUT_PWD/../domains/cart_pole_ui/libcart_pole_ui.a
+
+#------------------------------------------------------------------------------
+#
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../domains/cart_pole/release/ -lcart_pole
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../domains/cart_pole/debug/ -lcart_pole
 else:unix: LIBS += -L$$OUT_PWD/../domains/cart_pole/ -lcart_pole

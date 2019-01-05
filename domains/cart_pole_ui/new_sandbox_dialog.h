@@ -1,4 +1,4 @@
-// Copyright 2018 The Darwin Neuroevolution Framework Authors.
+// Copyright 2019 The Darwin Neuroevolution Framework Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,22 +12,28 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "registry_ui.h"
+#pragma once
 
-#include <domains/pong_ui/pong_ui.h>
-#include <domains/tic_tac_toe_ui/tic_tac_toe_ui.h>
-#include <domains/conquest_ui/conquest_ui.h>
-#include <domains/harvester_ui/harvester_ui.h>
-#include <domains/cart_pole_ui/cart_pole_ui.h>
+#include <QDialog>
 
-namespace registry_ui {
+namespace cart_pole_ui {
 
-void init() {
-  pong_ui::init();
-  tic_tac_toe_ui::init();
-  conquest_ui::init();
-  harvester_ui::init();
-  cart_pole_ui::init();
+namespace Ui {
+class NewSandboxDialog;
 }
 
-}  // namespace registry_ui
+class NewSandboxDialog : public QDialog {
+  Q_OBJECT
+
+ public:
+  explicit NewSandboxDialog(QWidget* parent = nullptr);
+  ~NewSandboxDialog();
+
+  int generation() const;
+  int maxSteps() const;
+
+ private:
+  Ui::NewSandboxDialog* ui;
+};
+
+}  // namespace cart_pole_ui
