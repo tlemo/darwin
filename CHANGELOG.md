@@ -1,4 +1,24 @@
 
+## Jan 5th, 2019
+
+New domain: the classic cart-pole control theory benchmark problem (also known as “pole
+balancing” or “inverted pendulum”)
+
+![Cart-Pole screenshot](docs/images/cart_pole_sandbox.png)
+
+This is the first domain implementation to take advantage of third_party/box2d. Using a 
+complex physics engine for this problem is arguably an overkill, although it does allow
+a wide range of interesting variations. For example the current implementation exposes the
+following configuration knobs:
+
+- world gravity
+- pole length and density
+- cart density and friction
+- discrete vs continuous force applications
+
+For more information, see the cart_pole domain
+[documentation](https://tlemo.github.io/darwin/classcart__pole_1_1_cart_pole.html).
+
 ## Dec 27th, 2018
 
 Adding experimental support for the [Box2d](http://box2d.org) physics engine 
