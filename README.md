@@ -142,6 +142,7 @@ values and results are stored as JSON strings (the fields highlighted in green):
 - [Scripts](scripts/docs/scripts.md)
 - [Coding Style](docs/coding_style.md)
 - [Contributing](CONTRIBUTING.md)
+- [Changelog](CHANGELOG.md)
 
 ## Related projects
 
