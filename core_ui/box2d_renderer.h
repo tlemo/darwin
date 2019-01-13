@@ -18,7 +18,7 @@
 
 #include <QPainter>
 
-namespace cart_pole_ui {
+namespace core_ui {
 
 class Box2dRenderer : public b2Draw {
  public:
@@ -51,4 +51,4 @@ class Box2dRenderer : public b2Draw {
   QPainter* painter_ = nullptr;
 };
 
-}  // namespace cart_pole_ui
+}  // namespace core_ui

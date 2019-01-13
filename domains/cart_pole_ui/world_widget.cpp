@@ -13,10 +13,10 @@
 // limitations under the License.
 
 #include "world_widget.h"
-#include "box2d_renderer.h"
 
 #include <core/math_2d.h>
 #include <core/utils.h>
+#include <core_ui/box2d_renderer.h>
 
 #include <QBrush>
 #include <QPainter>
@@ -69,7 +69,7 @@ void WorldWidget::paintEvent(QPaintEvent*) {
   if (world_ != nullptr) {
     auto box2d_world = world_->box2dWorld();
 
-    Box2dRenderer box2d_renderer(&painter);
+    core_ui::Box2dRenderer box2d_renderer(&painter);
     box2d_renderer.SetFlags(b2Draw::e_shapeBit | b2Draw::e_centerOfMassBit);
 
     box2d_world->SetDebugDraw(&box2d_renderer);

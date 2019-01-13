@@ -19,7 +19,7 @@
 #include <QPen>
 #include <QPolygonF>
 
-namespace cart_pole_ui {
+namespace core_ui {
 
 void Box2dRenderer::DrawPolygon(const b2Vec2* vertices,
                                 int32 vertexCount,
@@ -127,4 +127,4 @@ void Box2dRenderer::DrawPoint(const b2Vec2& p, float32 size, const b2Color& colo
   painter_->drawEllipse(QPointF(p.x, p.y), size, size);
 }
 
-}  // namespace cart_pole_ui
+}  // namespace core_ui
