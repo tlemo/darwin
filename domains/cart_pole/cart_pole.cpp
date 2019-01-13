@@ -67,6 +67,7 @@ bool CartPole::evaluatePopulation(darwin::Population* population) const {
         if (!world.simStep())
           break;
       }
+      CHECK(step > 0);
 
       // the fitness is the average number of steps over all test worlds
       genotype->fitness += float(step) / config_.test_worlds;
