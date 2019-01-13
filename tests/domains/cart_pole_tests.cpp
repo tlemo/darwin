@@ -147,6 +147,7 @@ TEST(CartPoleTest, World_PoleGravity) {
       if (!world.simStep())
         break;
     }
+    EXPECT_GT(step, 0);
     return step;
   };
 
@@ -171,6 +172,7 @@ TEST(CartPoleTest, World_PoleInertia) {
       if (!world.simStep())
         break;
     }
+    EXPECT_GT(step, 0);
     return step;
   };
 
