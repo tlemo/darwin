@@ -15,6 +15,6 @@ DEFINES += TEST_TEMP_PATH=\\\"$$PWD/.temp\\\"
 INCLUDEPATH += $$PWD/../third_party/gtest/src/googletest/include
 INCLUDEPATH += $$PWD/../third_party/gtest/src/googlemock/include
 
-addLibrary(../../core)
 addLibrary(../../registry)
+addLibrary(../../core)
 addLibrary(../../third_party/gtest)

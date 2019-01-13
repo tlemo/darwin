@@ -30,6 +30,6 @@ unix {
     INSTALLS += target
 }
 
-addLibrary(../../core)
-addLibrary(../../core_ui)
 addLibrary(../cart_pole)
+addLibrary(../../core_ui)
+addLibrary(../../core)

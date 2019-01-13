@@ -26,6 +26,6 @@ FORMS += \
     new_sandbox_dialog.ui \
     sandbox_window.ui
 
-addLibrary(../../core)
-addLibrary(../../core_ui)
 addLibrary(../tic_tac_toe)
+addLibrary(../../core_ui)
+addLibrary(../../core)

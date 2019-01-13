@@ -55,6 +55,6 @@ FORMS += \
 RESOURCES += \
     resources.qrc
 
-addLibrary(../core)
-addLibrary(../core_ui)
 addLibrary(../registry)
+addLibrary(../core_ui)
+addLibrary(../core)

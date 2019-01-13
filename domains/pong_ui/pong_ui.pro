@@ -29,6 +29,6 @@ unix {
     INSTALLS += target
 }
 
-addLibrary(../../core)
-addLibrary(../../core_ui)
 addLibrary(../pong)
+addLibrary(../../core_ui)
+addLibrary(../../core)

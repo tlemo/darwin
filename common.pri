@@ -19,22 +19,14 @@ CONFIG += c++1z
 
 CONFIG(release, debug|release): DEFINES += NDEBUG
 
+# project root include path
 INCLUDEPATH += $$PWD
 
-# Box2D
+# Box2D include path
 INCLUDEPATH *= $$PWD/third_party/box2d/src
 
-# libraries
-unix {
-    clang: LIBS += -ldl -lc++fs
-    else: LIBS += -ldl -lstdc++fs
-}
-
-# workarounds for mingw/glibc
-win32-g++ {
-    DEFINES += __STDC_FORMAT_MACROS
-    LIBS += -lstdc++fs
-}
+# workaround for mingw/glibc
+win32-g++: DEFINES += __STDC_FORMAT_MACROS
 
 # helper function to generate the library dependency boilerplate
 #
@@ -58,4 +50,16 @@ defineTest(addLibrary) {
     else:win32:!win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$OUT_PWD/$$LIB_PATH/debug/$${LIB_NAME}.lib
     else:unix: PRE_TARGETDEPS += $$OUT_PWD/$$LIB_PATH/lib$${LIB_NAME}.a
     export(PRE_TARGETDEPS)
+}
+
+# system & runtime libraries
+defineTest(addSystemLibraries) {
+    unix {
+        clang: LIBS += -ldl -lc++fs
+        else: LIBS += -ldl -lstdc++fs
+    }
+    else:win32-g++ {
+        LIBS += -lstdc++fs
+    }
+    export(LIBS)
 }

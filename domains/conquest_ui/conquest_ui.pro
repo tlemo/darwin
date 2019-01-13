@@ -31,6 +31,6 @@ unix {
     INSTALLS += target
 }
 
-addLibrary(../../core)
-addLibrary(../../core_ui)
 addLibrary(../conquest)
+addLibrary(../../core_ui)
+addLibrary(../../core)
