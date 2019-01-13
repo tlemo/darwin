@@ -36,3 +36,26 @@ win32-g++ {
     LIBS += -lstdc++fs
 }
 
+# helper function to generate the library dependency boilerplate
+#
+# NOTE: it assumes that the library target name is the same as the subdirectory name
+#
+defineTest(addLibrary) {
+    LIB_PATH = $$1
+    LIB_NAME = $$basename(LIB_PATH)
+
+    win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/$$LIB_PATH/release/ -l$${LIB_NAME}
+    else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/$$LIB_PATH/debug/ -l$${LIB_NAME}
+    else:unix: LIBS += -L$$OUT_PWD/$$LIB_PATH/ -l$${LIB_NAME}
+    export(LIBS)
+    
+    DEPENDPATH += $$PWD/$$LIB_PATH
+    export(DEPENDPATH)
+    
+    win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$OUT_PWD/$$LIB_PATH/release/lib$${LIB_NAME}.a
+    else:win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$OUT_PWD/$$LIB_PATH/debug/lib$${LIB_NAME}.a
+    else:win32:!win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$OUT_PWD/$$LIB_PATH/release/$${LIB_NAME}.lib
+    else:win32:!win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$OUT_PWD/$$LIB_PATH/debug/$${LIB_NAME}.lib
+    else:unix: PRE_TARGETDEPS += $$OUT_PWD/$$LIB_PATH/lib$${LIB_NAME}.a
+    export(PRE_TARGETDEPS)
+}
