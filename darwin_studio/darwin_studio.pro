@@ -1,7 +1,7 @@
 
-QT += core gui charts
+include(../common.pri)
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+QT += core gui charts widgets
 
 TARGET = darwin_studio
 TEMPLATE = app
@@ -55,52 +55,6 @@ FORMS += \
 RESOURCES += \
     resources.qrc
 
-#------------------------------------------------------------------------------
-# registry
-#
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../registry/release/ -lregistry
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../registry/debug/ -lregistry
-else:unix: LIBS += -L$$OUT_PWD/../registry/ -lregistry
-
-DEPENDPATH += $$PWD/../registry
-
-win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../registry/release/libregistry.a
-else:win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../registry/debug/libregistry.a
-else:win32:!win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../registry/release/registry.lib
-else:win32:!win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../registry/debug/registry.lib
-else:unix: PRE_TARGETDEPS += $$OUT_PWD/../registry/libregistry.a
-
-#------------------------------------------------------------------------------
-# core_ui
-#
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../core_ui/release/ -lcore_ui
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../core_ui/debug/ -lcore_ui
-else:unix: LIBS += -L$$OUT_PWD/../core_ui/ -lcore_ui
-
-DEPENDPATH += $$PWD/../core_ui
-
-win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../core_ui/release/libcore_ui.a
-else:win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../core_ui/debug/libcore_ui.a
-else:win32:!win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../core_ui/release/core_ui.lib
-else:win32:!win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../core_ui/debug/core_ui.lib
-else:unix: PRE_TARGETDEPS += $$OUT_PWD/../core_ui/libcore_ui.a
-
-#------------------------------------------------------------------------------
-# core
-#
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../core/release/ -lcore
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../core/debug/ -lcore
-else:unix: LIBS += -L$$OUT_PWD/../core/ -lcore
-
-DEPENDPATH += $$PWD/../core
-
-win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../core/release/libcore.a
-else:win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../core/debug/libcore.a
-else:win32:!win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../core/release/core.lib
-else:win32:!win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../core/debug/core.lib
-else:unix: PRE_TARGETDEPS += $$OUT_PWD/../core/libcore.a
-
-#------------------------------------------------------------------------------
-# common
-#
-include(../common.pri)
+addLibrary(../registry)
+addLibrary(../core_ui)
+addLibrary(../core)
