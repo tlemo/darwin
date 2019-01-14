@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>cart_pole_ui::SandboxWindow</class>
- <widget class="QFrame" name="cart_pole_ui::SandboxWindow">
+ <class>core_ui::Box2dSandboxWindow</class>
+ <widget class="QFrame" name="core_ui::Box2dSandboxWindow">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -47,7 +47,7 @@ background-clip: content;
      <property name="handleWidth">
       <number>2</number>
      </property>
-     <widget class="cart_pole_ui::WorldWidget" name="world_widget">
+     <widget class="core_ui::Box2dWidget" name="world_widget">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
         <horstretch>4</horstretch>
@@ -131,7 +131,7 @@ background-clip: content;
            <string/>
           </property>
           <property name="icon">
-           <iconset resource="../../darwin_studio/resources.qrc">
+           <iconset resource="../darwin_studio/resources.qrc">
             <normaloff>:/resources/mc_play.png</normaloff>:/resources/mc_play.png</iconset>
           </property>
           <property name="iconSize">
@@ -160,7 +160,7 @@ background-clip: content;
            <string/>
           </property>
           <property name="icon">
-           <iconset resource="../../darwin_studio/resources.qrc">
+           <iconset resource="../darwin_studio/resources.qrc">
             <normaloff>:/resources/mc_skip_forward.png</normaloff>:/resources/mc_skip_forward.png</iconset>
           </property>
           <property name="iconSize">
@@ -229,7 +229,7 @@ background-clip: content;
            <string/>
           </property>
           <property name="icon">
-           <iconset resource="../../darwin_studio/resources.qrc">
+           <iconset resource="../darwin_studio/resources.qrc">
             <normaloff>:/resources/refresh.png</normaloff>:/resources/refresh.png</iconset>
           </property>
           <property name="iconSize">
@@ -258,14 +258,14 @@ background-clip: content;
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>cart_pole_ui::WorldWidget</class>
+   <class>core_ui::Box2dWidget</class>
    <extends>QFrame</extends>
-   <header>world_widget.h</header>
+   <header>core_ui/box2d_widget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="../../darwin_studio/resources.qrc"/>
+  <include location="../darwin_studio/resources.qrc"/>
  </resources>
  <connections/>
 </ui>

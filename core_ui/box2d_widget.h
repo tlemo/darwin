@@ -14,26 +14,33 @@
 
 #pragma once
 
-#include <QDialog>
+#include <core_ui/canvas.h>
+#include <third_party/box2d/box2d.h>
 
-namespace cart_pole_ui {
+#include <QColor>
 
-namespace Ui {
-class NewSandboxDialog;
-}
+namespace core_ui {
 
-class NewSandboxDialog : public QDialog {
+class Box2dWidget : public core_ui::Canvas {
   Q_OBJECT
 
- public:
-  explicit NewSandboxDialog(QWidget* parent = nullptr);
-  ~NewSandboxDialog();
+  const QColor kBackgroundColor{ 255, 255, 255 };
+  const QColor kViewportColor{ 240, 240, 255 };
 
-  int generation() const;
-  int maxSteps() const;
+ public:
+  explicit Box2dWidget(QWidget* parent);
+
+  void setWorld(b2World* world, const QRectF& viewport);
+
+ signals:
+  void sigPlayPause();
+
+ protected:
+  void paintEvent(QPaintEvent* event) override;
+  void mousePressEvent(QMouseEvent* event) override;
 
  private:
-  Ui::NewSandboxDialog* ui;
+  b2World* world_ = nullptr;
 };
 
-}  // namespace cart_pole_ui
+}  // namespace core_ui

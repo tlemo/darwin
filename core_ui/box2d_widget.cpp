@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "world_widget.h"
+#include "box2d_widget.h"
 
 #include <core/math_2d.h>
 #include <core/utils.h>
@@ -22,34 +22,25 @@
 #include <QPainter>
 #include <QPen>
 #include <QPointF>
-#include <QKeyEvent>
 
 #include <math.h>
 
-namespace cart_pole_ui {
+namespace core_ui {
 
-WorldWidget::WorldWidget(QWidget* parent) : core_ui::Canvas(parent) {
+Box2dWidget::Box2dWidget(QWidget* parent) : core_ui::Canvas(parent) {
   setAutoFillBackground(false);
   setFocusPolicy(Qt::StrongFocus);
   setBorderSize(15);
 }
 
-void WorldWidget::setWorld(cart_pole::World* world) {
+void Box2dWidget::setWorld(b2World* world, const QRectF& viewport) {
   CHECK(world != nullptr);
   world_ = world;
-
-  const auto& config = world_->domain()->config();
-
-  // calculate viewport extents based on the configuration values
-  constexpr float kMargin = 0.5f;
-  const auto half_width = fmax(config.max_distance + kMargin, config.pole_length);
-  const auto height = config.pole_length + kMargin;
-  setViewport(QRectF(-half_width, height, 2 * half_width, -height));
-
+  setViewport(viewport);
   update();
 }
 
-void WorldWidget::paintEvent(QPaintEvent*) {
+void Box2dWidget::paintEvent(QPaintEvent*) {
   QPainter painter(this);
 
   painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
@@ -60,27 +51,25 @@ void WorldWidget::paintEvent(QPaintEvent*) {
   painter.drawRect(rect());
 
   painter.setTransform(transformFromViewport());
-  
+
   // viewport background
   painter.setPen(Qt::NoPen);
   painter.setBrush(kViewportColor);
   painter.drawRect(viewport());
 
   if (world_ != nullptr) {
-    auto box2d_world = world_->box2dWorld();
-
     core_ui::Box2dRenderer box2d_renderer(&painter);
     box2d_renderer.SetFlags(b2Draw::e_shapeBit | b2Draw::e_centerOfMassBit);
 
-    box2d_world->SetDebugDraw(&box2d_renderer);
-    box2d_world->DrawDebugData();
-    box2d_world->SetDebugDraw(nullptr);
+    world_->SetDebugDraw(&box2d_renderer);
+    world_->DrawDebugData();
+    world_->SetDebugDraw(nullptr);
   }
 }
 
-void WorldWidget::mousePressEvent(QMouseEvent*) {
+void Box2dWidget::mousePressEvent(QMouseEvent*) {
   emit sigPlayPause();
   update();
 }
 
-}  // namespace cart_pole_ui
+}  // namespace core_ui
