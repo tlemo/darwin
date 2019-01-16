@@ -33,14 +33,14 @@ World::World(float initial_angle, const CartPole* domain)
   ground->CreateFixture(&ground_shape, 0.0f);
 
   // cart
-  constexpr float kCartWidth = 0.2f;
-  constexpr float kCartHeight = 0.05f;
+  constexpr float kCartHalfWidth = 0.2f;
+  constexpr float kCartHalfHeight = 0.05f;
   b2PolygonShape cart_shape;
-  cart_shape.SetAsBox(kCartWidth, kCartHeight);
+  cart_shape.SetAsBox(kCartHalfWidth, kCartHalfHeight);
 
   b2BodyDef cart_body_def;
   cart_body_def.type = b2_dynamicBody;
-  cart_body_def.position.Set(0.0f, kCartHeight + kGroundY);
+  cart_body_def.position.Set(0.0f, kCartHalfHeight + kGroundY);
   cart_ = b2_world_.CreateBody(&cart_body_def);
 
   b2FixtureDef cart_fixture_def;
@@ -57,7 +57,7 @@ World::World(float initial_angle, const CartPole* domain)
 
   b2BodyDef pole_body_def;
   pole_body_def.type = b2_dynamicBody;
-  pole_body_def.position.Set(0.0f, kCartHeight + kGroundY);
+  pole_body_def.position.Set(0.0f, kCartHalfHeight + kGroundY);
   pole_body_def.angle = math::degreesToRadians(initial_angle);
   pole_ = b2_world_.CreateBody(&pole_body_def);
 

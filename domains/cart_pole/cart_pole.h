@@ -22,7 +22,7 @@ namespace cart_pole {
 //! Cart-Pole domain configuration
 struct Config : public core::PropertySet {
   PROPERTY(gravity, float, 9.8f, "Gravitational acceleration");
-  PROPERTY(max_distance, float, 2.5f, "Maximum distance from the center");
+  PROPERTY(max_distance, float, 2.4f, "Maximum distance from the center");
   PROPERTY(max_angle, float, 60.0f, "Maximum angle from vertical");
   PROPERTY(max_initial_angle, float, 10.0f, "Maximum starting angle from vertical");
   PROPERTY(pole_length, float, 1.5f, "Pole length");
@@ -59,7 +59,8 @@ struct Config : public core::PropertySet {
 //!
 //! The cart starts in the middle (x = 0) and the initial pole angle is a random value in
 //! `[-max_initial_angle, +max_initial_angle]` range. An episode is successful if the pole
-//! remains between `-max_angle` and `+max_angle` for at least `max_steps`.
+//! remains between `-max_angle` and `+max_angle` for at least `max_steps`. The cart
+//! position must also be maintained between [-max_distance, +max_distance].
 //!
 //! ### Inputs
 //!
