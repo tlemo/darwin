@@ -24,6 +24,7 @@
 #include <domains/tic_tac_toe/tic_tac_toe.h>
 #include <domains/cart_pole/cart_pole.h>
 #include <domains/double_cart_pole/double_cart_pole.h>
+#include <domains/unicycle/unicycle.h>
 
 namespace registry {
 
@@ -36,6 +37,7 @@ void init() {
   harvester::init();
   cart_pole::init();
   double_cart_pole::init();
+  unicycle::init();
 
   // populations
   neat::init();

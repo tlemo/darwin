@@ -29,6 +29,8 @@ addLibrary(../domains/pong_ui)
 addLibrary(../domains/pong)
 addLibrary(../domains/tic_tac_toe_ui)
 addLibrary(../domains/tic_tac_toe)
+addLibrary(../domains/unicycle_ui)
+addLibrary(../domains/unicycle)
 
 addLibrary(../populations/classic)
 addLibrary(../populations/neat)
