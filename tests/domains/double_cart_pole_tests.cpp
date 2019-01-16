@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <domains/cart_pole/cart_pole.h>
-#include <domains/cart_pole/world.h>
+#include <domains/double_cart_pole/double_cart_pole.h>
+#include <domains/double_cart_pole/world.h>
 
 #include <core/darwin.h>
 #include <tests/domains/test_brain.h>
@@ -24,7 +24,7 @@
 #include <unordered_set>
 using namespace std;
 
-namespace cart_pole_tests {
+namespace double_cart_pole_tests {
 
 struct TestBrain : public core_test::TestBrain {
   const float force_value = 0;
@@ -40,7 +40,7 @@ struct TestBrain : public core_test::TestBrain {
 
 struct TestGenotype : public darwin::Genotype {
   float force_value = 0;
-  const cart_pole::CartPole* domain = nullptr;
+  const double_cart_pole::DoubleCartPole* domain = nullptr;
 
   unique_ptr<darwin::Brain> grow() const override {
     return make_unique<TestBrain>(force_value, domain->inputs(), domain->outputs());
@@ -54,7 +54,7 @@ struct TestGenotype : public darwin::Genotype {
 };
 
 struct TestPopulation : public darwin::Population {
-  TestPopulation(const cart_pole::CartPole* domain, const vector<float>& force_values) {
+  TestPopulation(const double_cart_pole::DoubleCartPole* domain, const vector<float>& force_values) {
     CHECK(!force_values.empty());
     genotypes_.resize(force_values.size());
     for (size_t i = 0; i < genotypes_.size(); ++i) {
@@ -81,15 +81,15 @@ struct TestPopulation : public darwin::Population {
   vector<TestGenotype> genotypes_;
 };
 
-TEST(CartPoleTest, World_PoleGravity) {
-  cart_pole::Config config;
+TEST(DoubleCartPoleTest, World_PoleGravity) {
+  double_cart_pole::Config config;
   config.max_initial_angle = 15.0f;
   config.max_angle = 60.0f;
   config.max_steps = 100;
-  cart_pole::CartPole cart_pole(config);
+  double_cart_pole::DoubleCartPole cart_pole(config);
 
-  auto simulation = [&](float initial_angle) -> int {
-    cart_pole::World world(initial_angle, &cart_pole);
+  auto simulation = [&](float initial_angle_1, float initial_angle_2) -> int {
+    double_cart_pole::World world(initial_angle_1, initial_angle_2, &cart_pole);
     int step = 0;
     for (; step < config.max_steps; ++step) {
       if (!world.simStep())
@@ -99,21 +99,27 @@ TEST(CartPoleTest, World_PoleGravity) {
     return step;
   };
 
-  EXPECT_EQ(simulation(0.0f), config.max_steps);
-  EXPECT_LT(simulation(+config.max_initial_angle), config.max_steps);
-  EXPECT_LT(simulation(-config.max_initial_angle), config.max_steps);
+  const float kAngle = config.max_initial_angle;
+  
+  EXPECT_EQ(simulation(0.0f, 0.0f), config.max_steps);
+  EXPECT_LT(simulation(+kAngle, 0.0f), config.max_steps);
+  EXPECT_LT(simulation(0.0f, -kAngle), config.max_steps);
+  EXPECT_LT(simulation(+kAngle, +kAngle), config.max_steps);
+  EXPECT_LT(simulation(-kAngle, -kAngle), config.max_steps);
+  EXPECT_LT(simulation(+kAngle, -kAngle), config.max_steps);
+  EXPECT_LT(simulation(-kAngle, +kAngle), config.max_steps);
 }
 
-TEST(CartPoleTest, World_PoleInertia) {
-  cart_pole::Config config;
+TEST(DoubleCartPoleTest, World_PoleInertia) {
+  double_cart_pole::Config config;
   config.discrete_controls = false;
   config.max_angle = 60.0f;
   config.max_steps = 250;
   config.max_distance = 1.0e10f;
-  cart_pole::CartPole cart_pole(config);
+  double_cart_pole::DoubleCartPole cart_pole(config);
 
   auto simulation = [&](float force) -> int {
-    cart_pole::World world(0.0f, &cart_pole);
+    double_cart_pole::World world(0.0f, 0.0f, &cart_pole);
     int step = 0;
     for (; step < config.max_steps; ++step) {
       world.moveCart(force);
@@ -129,21 +135,21 @@ TEST(CartPoleTest, World_PoleInertia) {
   EXPECT_LT(simulation(-1.0f), config.max_steps);
 }
 
-TEST(CartPoleTest, EvaluatePopulation_SingleInput) {
+TEST(DoubleCartPoleTest, EvaluatePopulation_SingleInput) {
   constexpr int kMaxSteps = 100;
 
-  cart_pole::Config config;
+  double_cart_pole::Config config;
   config.max_steps = kMaxSteps;
   config.max_force = 5.0f;
   config.test_worlds = 2;
   config.discrete_controls = true;
-  config.input_pole_angle = false;
-  config.input_angular_velocity = true;
+  config.input_pole_angle = true;
+  config.input_angular_velocity = false;
   config.input_cart_distance = false;
   config.input_cart_velocity = false;
 
-  cart_pole::CartPole cart_pole(config);
-  TestPopulation population(&cart_pole, { 0.0f, +100.0f, -0.01f, 1.123e30f, -1.0e-40f });
+  double_cart_pole::DoubleCartPole cart_pole(config);
+  TestPopulation population(&cart_pole, { 0.0f, +100.0f, -0.001f, 0.123e10f, -1.0e-20f });
   cart_pole.evaluatePopulation(&population);
 
   for (size_t i = 0; i < population.size(); ++i) {
@@ -152,10 +158,10 @@ TEST(CartPoleTest, EvaluatePopulation_SingleInput) {
   }
 }
 
-TEST(CartPoleTest, EvaluatePopulation_EveryInput) {
+TEST(DoubleCartPoleTest, EvaluatePopulation_EveryInput) {
   constexpr int kMaxSteps = 250;
 
-  cart_pole::Config config;
+  double_cart_pole::Config config;
   config.max_initial_angle = 0.0f;
   config.max_steps = kMaxSteps;
   config.max_force = 5.0f;
@@ -173,7 +179,7 @@ TEST(CartPoleTest, EvaluatePopulation_EveryInput) {
   force_values[3] = +2.0f;
   force_values[4] = -2.0f;
 
-  cart_pole::CartPole cart_pole(config);
+  double_cart_pole::DoubleCartPole cart_pole(config);
   TestPopulation population(&cart_pole, force_values);
   cart_pole.evaluatePopulation(&population);
 
@@ -190,4 +196,4 @@ TEST(CartPoleTest, EvaluatePopulation_EveryInput) {
   EXPECT_GT(population[4]->fitness, 0);
 }
 
-}  // namespace cart_pole_tests
+}  // namespace double_cart_pole_tests

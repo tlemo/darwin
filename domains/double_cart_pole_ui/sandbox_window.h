@@ -16,9 +16,9 @@
 
 #include <core_ui/box2d_sandbox_window.h>
 #include <core_ui/properties_widget.h>
-#include <domains/cart_pole/agent.h>
-#include <domains/cart_pole/cart_pole.h>
-#include <domains/cart_pole/world.h>
+#include <domains/double_cart_pole/agent.h>
+#include <domains/double_cart_pole/double_cart_pole.h>
+#include <domains/double_cart_pole/world.h>
 
 #include <QFrame>
 #include <QIcon>
@@ -27,7 +27,7 @@
 #include <memory>
 using namespace std;
 
-namespace cart_pole_ui {
+namespace double_cart_pole_ui {
 
 class SandboxWindow : public core_ui::Box2dSandboxWindow {
   struct Variables {
@@ -40,8 +40,10 @@ class SandboxWindow : public core_ui::Box2dSandboxWindow {
     core_ui::PropertyItem* step = nullptr;
     core_ui::PropertyItem* pos = nullptr;
     core_ui::PropertyItem* velocity = nullptr;
-    core_ui::PropertyItem* angle = nullptr;
-    core_ui::PropertyItem* angular_velocity = nullptr;
+    core_ui::PropertyItem* angle_1 = nullptr;
+    core_ui::PropertyItem* angular_velocity_1 = nullptr;
+    core_ui::PropertyItem* angle_2 = nullptr;
+    core_ui::PropertyItem* angular_velocity_2 = nullptr;
   };
 
  public:
@@ -57,13 +59,13 @@ class SandboxWindow : public core_ui::Box2dSandboxWindow {
  private:
   Variables variables_;
 
-  const cart_pole::CartPole* cart_pole_ = nullptr;
+  const double_cart_pole::DoubleCartPole* cart_pole_ = nullptr;
 
   shared_ptr<const darwin::Genotype> genotype_;
-  unique_ptr<cart_pole::World> world_;
-  unique_ptr<cart_pole::Agent> agent_;
+  unique_ptr<double_cart_pole::World> world_;
+  unique_ptr<double_cart_pole::Agent> agent_;
   int step_ = -1;
   int max_steps_ = -1;
 };
 
-}  // namespace cart_pole_ui
+}  // namespace double_cart_pole_ui

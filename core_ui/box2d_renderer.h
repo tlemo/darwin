@@ -18,8 +18,9 @@
 
 #include <QPainter>
 
-namespace cart_pole_ui {
+namespace core_ui {
 
+//! A QPainter-based implementation of Box2d debug draw interface (b2Draw)
 class Box2dRenderer : public b2Draw {
  public:
   explicit Box2dRenderer(QPainter* painter) : painter_(painter) {}
@@ -51,4 +52,4 @@ class Box2dRenderer : public b2Draw {
   QPainter* painter_ = nullptr;
 };
 
-}  // namespace cart_pole_ui
+}  // namespace core_ui

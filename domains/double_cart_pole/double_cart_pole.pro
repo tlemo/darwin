@@ -3,17 +3,18 @@ include(../../common.pri)
 
 QT -= core gui
 
-TARGET = max
+TARGET = double_cart_pole
 TEMPLATE = lib
 CONFIG += staticlib
 
 SOURCES += \
-    robot.cpp \
+    double_cart_pole.cpp \
+    agent.cpp \
     world.cpp
 
 HEADERS += \
-    robot.h \
-    world.h \
-    max.h
+    double_cart_pole.h \
+    agent.h \
+    world.h
 
 addLibrary(../../core)

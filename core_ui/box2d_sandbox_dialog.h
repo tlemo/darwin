@@ -16,24 +16,24 @@
 
 #include <QDialog>
 
-namespace cart_pole_ui {
+namespace core_ui {
 
 namespace Ui {
-class NewSandboxDialog;
+class Box2dSandboxDialog;
 }
 
-class NewSandboxDialog : public QDialog {
+class Box2dSandboxDialog : public QDialog {
   Q_OBJECT
 
  public:
-  explicit NewSandboxDialog(QWidget* parent = nullptr);
-  ~NewSandboxDialog();
+  explicit Box2dSandboxDialog(int default_generation, int default_max_steps);
+  ~Box2dSandboxDialog();
 
   int generation() const;
   int maxSteps() const;
 
  private:
-  Ui::NewSandboxDialog* ui;
+  Ui::Box2dSandboxDialog* ui = nullptr;
 };
 
-}  // namespace cart_pole_ui
+}  // namespace core_ui

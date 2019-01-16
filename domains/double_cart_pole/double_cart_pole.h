@@ -17,19 +17,21 @@
 #include <core/darwin.h>
 #include <core/properties.h>
 
-namespace cart_pole {
+namespace double_cart_pole {
 
-//! Cart-Pole domain configuration
+//! Double-Cart-Pole domain configuration
 struct Config : public core::PropertySet {
   PROPERTY(gravity, float, 9.8f, "Gravitational acceleration");
   PROPERTY(max_distance, float, 2.4f, "Maximum distance from the center");
   PROPERTY(max_angle, float, 60.0f, "Maximum angle from vertical");
   PROPERTY(max_initial_angle, float, 10.0f, "Maximum starting angle from vertical");
-  PROPERTY(pole_length, float, 1.5f, "Pole length");
-  PROPERTY(pole_density, float, 1.0f, "Pole density");
+  PROPERTY(pole_1_length, float, 1.5f, "First pole length");
+  PROPERTY(pole_1_density, float, 1.0f, "First pole density");
+  PROPERTY(pole_2_length, float, 0.3f, "Second pole length");
+  PROPERTY(pole_2_density, float, 1.0f, "Second pole density");
   PROPERTY(cart_density, float, 0.0f, "Cart density");
   PROPERTY(cart_friction, float, 0.0f, "Cart friction");
-  PROPERTY(max_force, float, 5.0f, "Maximum force which can be applied to the cart");
+  PROPERTY(max_force, float, 10.0f, "Maximum force which can be applied to the cart");
   
   PROPERTY(input_pole_angle, bool, true, "Use the pole angle as input");
   PROPERTY(input_angular_velocity, bool, false, "Use the angular velocity as input");
@@ -41,7 +43,7 @@ struct Config : public core::PropertySet {
 
   PROPERTY(discrete_controls,
            bool,
-           true,
+           false,
            "Force the actuator force to fixed +/-discrete_force_magnitude");
 
   PROPERTY(discrete_force_magnitude,
@@ -50,35 +52,35 @@ struct Config : public core::PropertySet {
            "The fixed force magnitude used if discrete_controls is true");
 };
 
-//! Domain: Cart-Pole
+//! Domain: Double-Cart-Pole
 //!
-//! The classic cart-pole (also known as "pole balancing" or "inverted pendulum") problem:
-//! [Wikipedia](https://en.wikipedia.org/wiki/Inverted_pendulum)
-//! 
-//! ![](images/cart_pole_sandbox.png)
+//! A variation of the cart-pole domain (cart_pole::CartPole), with two
+//! independent poles attached to the cart.
 //!
-//! The cart starts in the middle (x = 0) and the initial pole angle is a random value in
-//! `[-max_initial_angle, +max_initial_angle]` range. An episode is successful if the pole
-//! remains between `-max_angle` and `+max_angle` for at least `max_steps`. The cart
-//! position must also be maintained between [-max_distance, +max_distance].
+//! ![](images/double_cart_pole_sandbox.png)
+//!
+//! The cart starts in the middle (x = 0) and the initial pole angles is a random value in
+//! `[-max_initial_angle, +max_initial_angle]` range. An episode is successful if both
+//! poles remain between `-max_angle` and `+max_angle` for at least `max_steps`. The cart
+//! position must also stay between [-max_distance, +max_distance].
 //!
 //! ### Inputs
 //!
 //! The inputs are configurable by individually selecting at least one of:
-//! - pole_angle (from vertical)
-//! - angular_velocity
+//! - pole_angle(1,2) (from vertical)
+//! - angular_velocity(1,2)
 //! - cart_distance (from the center)
 //! - cart_velocity
-//! 
+//!
 //! Input | Value
 //! -----:|------
-//!     0 | pole_angle
-//!     1 | angular_velocity
-//!     2 | cart_distance
-//!     3 | cart_velocity
+//!   0,1 | pole_angle(1,2)
+//!   2,3 | angular_velocity(1,2)
+//!     4 | cart_distance
+//!     5 | cart_velocity
 //!
 //! ### Outputs
-//! 
+//!
 //! The single output indicates the horizontal force to be applied to the cart. This can
 //! be discrete (fixed +/-discrete_force_magnitude depending on the sign of the output) or
 //! can be continuous (the output value maps directly to the force magnitude)
@@ -87,9 +89,9 @@ struct Config : public core::PropertySet {
 //! ------:|------
 //!      0 | force
 //!
-class CartPole : public darwin::Domain {
+class DoubleCartPole : public darwin::Domain {
  public:
-  explicit CartPole(const core::PropertySet& config);
+  explicit DoubleCartPole(const core::PropertySet& config);
 
   size_t inputs() const override;
   size_t outputs() const override;
@@ -113,7 +115,7 @@ class Factory : public darwin::DomainFactory {
 };
 
 inline void init() {
-  darwin::registry()->domains.add<Factory>("cart_pole");
+  darwin::registry()->domains.add<Factory>("double_cart_pole");
 }
 
-}  // namespace cart_pole
+}  // namespace double_cart_pole

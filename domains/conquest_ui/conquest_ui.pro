@@ -26,11 +26,6 @@ FORMS += \
     game_stats_window.ui \
     game_window.ui
 
-unix {
-    target.path = /usr/lib
-    INSTALLS += target
-}
-
 addLibrary(../conquest)
 addLibrary(../../core_ui)
 addLibrary(../../core)

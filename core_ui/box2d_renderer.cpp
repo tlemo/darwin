@@ -14,12 +14,12 @@
 
 #include "box2d_renderer.h"
 
-#include <QColor>
 #include <QBrush>
+#include <QColor>
 #include <QPen>
 #include <QPolygonF>
 
-namespace cart_pole_ui {
+namespace core_ui {
 
 void Box2dRenderer::DrawPolygon(const b2Vec2* vertices,
                                 int32 vertexCount,
@@ -41,7 +41,7 @@ void Box2dRenderer::DrawSolidPolygon(const b2Vec2* vertices,
                                      int32 vertexCount,
                                      const b2Color& color) {
   constexpr float kAlphaScale = 0.7f;
-  
+
   QColor brush_color;
   brush_color.setRgbF(color.r, color.g, color.b, color.a * kAlphaScale);
 
@@ -71,7 +71,7 @@ void Box2dRenderer::DrawSolidCircle(const b2Vec2& center,
                                     const b2Vec2& axis,
                                     const b2Color& color) {
   constexpr float kAlphaScale = 0.7f;
-  
+
   QColor brush_color;
   brush_color.setRgbF(color.r, color.g, color.b, color.a * kAlphaScale);
 
@@ -89,7 +89,7 @@ void Box2dRenderer::DrawSegment(const b2Vec2& p1,
                                 const b2Color& color) {
   QColor pen_color;
   pen_color.setRgbF(color.r, color.g, color.b, color.a);
-  
+
   painter_->setPen(QPen(pen_color, 0));
   painter_->setBrush(Qt::NoBrush);
   painter_->drawLine(QLineF(p1.x, p1.y, p2.x, p2.y));
@@ -121,10 +121,10 @@ void Box2dRenderer::DrawTransform(const b2Transform& xf) {
 void Box2dRenderer::DrawPoint(const b2Vec2& p, float32 size, const b2Color& color) {
   QColor pen_color;
   pen_color.setRgbF(color.r, color.g, color.b, color.a);
-  
+
   painter_->setPen(QPen(pen_color, 0));
   painter_->setBrush(pen_color);
   painter_->drawEllipse(QPointF(p.x, p.y), size, size);
 }
 
-}  // namespace cart_pole_ui
+}  // namespace core_ui

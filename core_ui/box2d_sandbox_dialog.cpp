@@ -12,40 +12,33 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "new_sandbox_dialog.h"
-#include "ui_new_sandbox_dialog.h"
+#include "box2d_sandbox_dialog.h"
+#include "ui_box2d_sandbox_dialog.h"
 
-#include <core/darwin.h>
-#include <core/evolution.h>
-#include <domains/cart_pole/cart_pole.h>
+namespace core_ui {
 
-namespace cart_pole_ui {
-
-NewSandboxDialog::NewSandboxDialog(QWidget* parent)
-    : QDialog(parent,
+Box2dSandboxDialog::Box2dSandboxDialog(int default_generation, int default_max_steps)
+    : QDialog(nullptr,
               Qt::WindowTitleHint | Qt::WindowSystemMenuHint | Qt::WindowCloseButtonHint),
-      ui(new Ui::NewSandboxDialog) {
+      ui(new Ui::Box2dSandboxDialog) {
   ui->setupUi(this);
 
-  auto snapshot = darwin::evolution()->snapshot();
-  auto cart_pole = dynamic_cast<const cart_pole::CartPole*>(snapshot.domain);
-  CHECK(cart_pole != nullptr);
-  ui->generation->setValue(snapshot.generation - 1);
-  ui->max_steps->setValue(cart_pole->config().max_steps);
+  ui->generation->setValue(default_generation);
+  ui->max_steps->setValue(default_max_steps);
 
   ui->generation->setFocus();
 }
 
-NewSandboxDialog::~NewSandboxDialog() {
+Box2dSandboxDialog::~Box2dSandboxDialog() {
   delete ui;
 }
 
-int NewSandboxDialog::generation() const {
+int Box2dSandboxDialog::generation() const {
   return ui->generation->value();
 }
 
-int NewSandboxDialog::maxSteps() const {
+int Box2dSandboxDialog::maxSteps() const {
   return ui->max_steps->value();
 }
 
-}  // namespace cart_pole_ui
+}  // namespace core_ui

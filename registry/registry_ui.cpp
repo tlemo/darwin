@@ -19,6 +19,7 @@
 #include <domains/conquest_ui/conquest_ui.h>
 #include <domains/harvester_ui/harvester_ui.h>
 #include <domains/cart_pole_ui/cart_pole_ui.h>
+#include <domains/double_cart_pole_ui/double_cart_pole_ui.h>
 
 namespace registry_ui {
 
@@ -28,6 +29,7 @@ void init() {
   conquest_ui::init();
   harvester_ui::init();
   cart_pole_ui::init();
+  double_cart_pole_ui::init();
 }
 
 }  // namespace registry_ui

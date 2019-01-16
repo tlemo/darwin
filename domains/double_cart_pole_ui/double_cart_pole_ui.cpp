@@ -12,35 +12,28 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#pragma once
+#include "double_cart_pole_ui.h"
+#include "sandbox_window.h"
 
-#include <core_ui/canvas.h>
-#include <domains/cart_pole/world.h>
+#include <core/darwin.h>
+#include <core/logging.h>
 
-#include <QColor>
+#include <memory>
+using namespace std;
 
-namespace cart_pole_ui {
+namespace double_cart_pole_ui {
 
-class WorldWidget : public core_ui::Canvas {
-  Q_OBJECT
+void init() {
+  darwin::registry()->domains_ui.add<Factory>("double_cart_pole");
+}
 
-  const QColor kBackgroundColor{ 255, 255, 255 };
-  const QColor kViewportColor{ 240, 240, 255 };
+QWidget* Factory::newSandboxWindow() {
+  auto sandbox_window = make_unique<SandboxWindow>();
+  if (!sandbox_window->setup()) {
+    core::log("Failed to setup the new sandbox window\n\n");
+    sandbox_window.reset();
+  }
+  return sandbox_window.release();
+}
 
- public:
-  explicit WorldWidget(QWidget* parent);
-
-  void setWorld(cart_pole::World* world);
-
- signals:
-  void sigPlayPause();
-
- protected:
-  void paintEvent(QPaintEvent* event) override;
-  void mousePressEvent(QMouseEvent* event) override;
-
- private:
-  cart_pole::World* world_ = nullptr;
-};
-
-}  // namespace cart_pole_ui
+}  // namespace double_cart_pole_ui
