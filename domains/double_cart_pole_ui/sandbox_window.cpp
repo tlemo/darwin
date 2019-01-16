@@ -25,17 +25,17 @@
 namespace double_cart_pole_ui {
 
 bool SandboxWindow::setup() {
-  CHECK(!cart_pole_);
+  CHECK(!domain_);
   CHECK(!world_);
   CHECK(!agent_);
   CHECK(state() == State::None);
 
   auto snapshot = darwin::evolution()->snapshot();
-  cart_pole_ = dynamic_cast<const double_cart_pole::DoubleCartPole*>(snapshot.domain);
-  CHECK(cart_pole_ != nullptr);
+  domain_ = dynamic_cast<const double_cart_pole::DoubleCartPole*>(snapshot.domain);
+  CHECK(domain_ != nullptr);
 
   const auto default_generation = snapshot.generation - 1;
-  const auto default_max_steps = cart_pole_->config().max_steps;
+  const auto default_max_steps = domain_->config().max_steps;
 
   core_ui::Box2dSandboxDialog dlg(default_generation, default_max_steps);
   if (dlg.exec() != QDialog::Accepted) {
@@ -69,18 +69,18 @@ bool SandboxWindow::setup() {
 }
 
 void SandboxWindow::newScene() {
-  CHECK(cart_pole_ != nullptr);
+  CHECK(domain_ != nullptr);
   CHECK(max_steps_ > 0);
 
-  const float initial_angle_1 = cart_pole_->randomInitialAngle();
-  const float initial_angle_2 = cart_pole_->randomInitialAngle();
+  const float initial_angle_1 = domain_->randomInitialAngle();
+  const float initial_angle_2 = domain_->randomInitialAngle();
   world_ =
-      make_unique<double_cart_pole::World>(initial_angle_1, initial_angle_2, cart_pole_);
+      make_unique<double_cart_pole::World>(initial_angle_1, initial_angle_2, domain_);
   agent_ = make_unique<double_cart_pole::Agent>(genotype_.get(), world_.get());
   step_ = 0;
 
   // calculate viewport extents based on the configuration values
-  const auto& config = cart_pole_->config();
+  const auto& config = domain_->config();
   constexpr float kMargin = 0.5f;
   const auto max_length = fmax(config.pole_1_length, config.pole_2_length);
   const auto half_width = fmax(config.max_distance + kMargin, max_length);

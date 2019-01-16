@@ -59,7 +59,7 @@ class SandboxWindow : public core_ui::Box2dSandboxWindow {
  private:
   Variables variables_;
 
-  const double_cart_pole::DoubleCartPole* cart_pole_ = nullptr;
+  const double_cart_pole::DoubleCartPole* domain_ = nullptr;
 
   shared_ptr<const darwin::Genotype> genotype_;
   unique_ptr<double_cart_pole::World> world_;
