@@ -17,9 +17,4 @@ HEADERS += \
     agent.h \
     world.h
 
-unix {
-    target.path = /usr/lib
-    INSTALLS += target
-}
-
 addLibrary(../../core)

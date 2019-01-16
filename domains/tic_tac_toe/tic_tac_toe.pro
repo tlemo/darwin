@@ -22,9 +22,4 @@ HEADERS += \
     test_players.h \
     game_rules.h
 
-unix {
-    target.path = /usr/lib
-    INSTALLS += target
-}
-
 addLibrary(../../core)

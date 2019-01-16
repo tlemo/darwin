@@ -24,11 +24,6 @@ FORMS += \
     game_widget.ui \
     new_sandbox_dialog.ui
 
-unix {
-    target.path = /usr/lib
-    INSTALLS += target
-}
-
 addLibrary(../pong)
 addLibrary(../../core_ui)
 addLibrary(../../core)

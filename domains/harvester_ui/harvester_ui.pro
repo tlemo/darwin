@@ -23,11 +23,6 @@ FORMS += \
     new_sandbox_dialog.ui \
     sandbox_window.ui
 
-unix {
-    target.path = /usr/lib
-    INSTALLS += target
-}
-
 addLibrary(../harvester)
 addLibrary(../../core_ui)
 addLibrary(../../core)

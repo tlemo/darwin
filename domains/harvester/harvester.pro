@@ -19,9 +19,4 @@ HEADERS += \
     world_map.h \
     harvester.h
 
-unix {
-    target.path = /usr/lib
-    INSTALLS += target
-}
-
 addLibrary(../../core)

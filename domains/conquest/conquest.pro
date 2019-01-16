@@ -22,9 +22,4 @@ HEADERS += \
     ann_player.h \
     test_players.h
 
-unix {
-    target.path = /usr/lib
-    INSTALLS += target
-}
-
 addLibrary(../../core)

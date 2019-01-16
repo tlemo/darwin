@@ -18,8 +18,3 @@ SOURCES += \
     $$files(src/Box2D/*.cpp, true)
 
 INCLUDEPATH *= src
-
-unix {
-    target.path = /usr/lib
-    INSTALLS += target
-}

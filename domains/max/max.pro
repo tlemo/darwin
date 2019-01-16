@@ -16,9 +16,4 @@ HEADERS += \
     world.h \
     max.h
 
-unix {
-    target.path = /usr/lib
-    INSTALLS += target
-}
-
 addLibrary(../../core)

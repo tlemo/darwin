@@ -15,11 +15,6 @@ HEADERS += \
     double_cart_pole_ui.h \
     sandbox_window.h
 
-unix {
-    target.path = /usr/lib
-    INSTALLS += target
-}
-
 addLibrary(../double_cart_pole)
 addLibrary(../../core_ui)
 addLibrary(../../core)

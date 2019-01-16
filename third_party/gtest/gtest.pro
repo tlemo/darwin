@@ -18,8 +18,3 @@ INCLUDEPATH *= \
     src/googletest/include \
     src/googlemock \
     src/googlemock/include
-    
-unix {
-    target.path = /usr/lib
-    INSTALLS += target
-}
