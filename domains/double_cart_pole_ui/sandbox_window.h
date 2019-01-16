@@ -40,8 +40,10 @@ class SandboxWindow : public core_ui::Box2dSandboxWindow {
     core_ui::PropertyItem* step = nullptr;
     core_ui::PropertyItem* pos = nullptr;
     core_ui::PropertyItem* velocity = nullptr;
-    core_ui::PropertyItem* angle = nullptr;
-    core_ui::PropertyItem* angular_velocity = nullptr;
+    core_ui::PropertyItem* angle_1 = nullptr;
+    core_ui::PropertyItem* angular_velocity_1 = nullptr;
+    core_ui::PropertyItem* angle_2 = nullptr;
+    core_ui::PropertyItem* angular_velocity_2 = nullptr;
   };
 
  public:
@@ -57,7 +59,7 @@ class SandboxWindow : public core_ui::Box2dSandboxWindow {
  private:
   Variables variables_;
 
-  const double_cart_pole::CartPole* cart_pole_ = nullptr;
+  const double_cart_pole::DoubleCartPole* cart_pole_ = nullptr;
 
   shared_ptr<const darwin::Genotype> genotype_;
   unique_ptr<double_cart_pole::World> world_;

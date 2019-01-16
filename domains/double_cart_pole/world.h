@@ -21,8 +21,13 @@
 namespace double_cart_pole {
 
 class World {
+  static constexpr float kCartHalfWidth = 0.2f;
+  static constexpr float kCartHalfHeight = 0.05f;
+  static constexpr float kPoleHalfWidth = 0.02f;
+  static constexpr float kGroundY = 0.1f;
+
  public:
-  World(float initial_angle, const CartPole* domain);
+  World(float initial_angle_1, float initial_angle_2, const DoubleCartPole* domain);
   
   // advances the physical simulation one step, returning false
   // if the state reaches one of the termination conditions
@@ -31,23 +36,31 @@ class World {
   // world features
   float cartDistance() const { return cart_->GetPosition().x; }
   float cartVelocity() const { return cart_->GetLinearVelocity().x; }
-  float poleAngle() const { return pole_->GetAngle(); }
-  float poleAngularVelocity() const { return pole_->GetAngularVelocity(); }
+  float pole1Angle() const { return pole_1_->GetAngle(); }
+  float pole1AngularVelocity() const { return pole_1_->GetAngularVelocity(); }
+  float pole2Angle() const { return pole_2_->GetAngle(); }
+  float pole2AngularVelocity() const { return pole_2_->GetAngularVelocity(); }
   
   // actuators
   void moveCart(float force);
   
-  const CartPole* domain() const { return domain_; }
+  const DoubleCartPole* domain() const { return domain_; }
 
   b2World* box2dWorld() { return &b2_world_; }
+  
+ private:
+  b2Body* createPole(float length, float density, float initial_angle);
+  b2Body* createCart(float density, float friction);
+  void createHinge(b2Body* cart, b2Body* pole);
   
  private:
   b2World b2_world_;
 
   b2Body* cart_ = nullptr;
-  b2Body* pole_ = nullptr;
+  b2Body* pole_1_ = nullptr;
+  b2Body* pole_2_ = nullptr;
   
-  const CartPole* domain_ = nullptr;
+  const DoubleCartPole* domain_ = nullptr;
 };
 
 }  // namespace double_cart_pole

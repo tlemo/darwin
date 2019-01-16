@@ -22,20 +22,24 @@ Agent::Agent(const darwin::Genotype* genotype, World* world)
 
 void Agent::simStep() {
   const auto& config = world_->domain()->config();
-  
+
   // setup inputs
   int input_index = 0;
-  if (config.input_pole_angle)
-    brain_->setInput(input_index++, world_->poleAngle());
-  if (config.input_angular_velocity)
-    brain_->setInput(input_index++, world_->poleAngularVelocity());
+  if (config.input_pole_angle) {
+    brain_->setInput(input_index++, world_->pole1Angle());
+    brain_->setInput(input_index++, world_->pole2Angle());
+  }
+  if (config.input_angular_velocity) {
+    brain_->setInput(input_index++, world_->pole1AngularVelocity());
+    brain_->setInput(input_index++, world_->pole2AngularVelocity());
+  }
   if (config.input_cart_distance)
     brain_->setInput(input_index++, world_->cartDistance());
   if (config.input_cart_velocity)
     brain_->setInput(input_index++, world_->cartVelocity());
 
   brain_->think();
-  
+
   // act based on the output values
   world_->moveCart(brain_->output(0));
 }
@@ -43,9 +47,9 @@ void Agent::simStep() {
 int Agent::inputs(const Config& config) {
   int inputs_count = 0;
   if (config.input_pole_angle)
-    ++inputs_count;
+    inputs_count += 2;
   if (config.input_angular_velocity)
-    ++inputs_count;
+    inputs_count += 2;
   if (config.input_cart_distance)
     ++inputs_count;
   if (config.input_cart_velocity)

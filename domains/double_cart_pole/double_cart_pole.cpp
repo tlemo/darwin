@@ -17,29 +17,29 @@
 #include "world.h"
 
 #include <core/evolution.h>
-#include <core/parallel_for_each.h>
-#include <core/logging.h>
 #include <core/exception.h>
+#include <core/logging.h>
+#include <core/parallel_for_each.h>
 
 #include <random>
 using namespace std;
 
 namespace double_cart_pole {
 
-CartPole::CartPole(const core::PropertySet& config) {
+DoubleCartPole::DoubleCartPole(const core::PropertySet& config) {
   config_.copyFrom(config);
   validateConfiguration();
 }
 
-size_t CartPole::inputs() const {
+size_t DoubleCartPole::inputs() const {
   return Agent::inputs(config_);
 }
 
-size_t CartPole::outputs() const {
+size_t DoubleCartPole::outputs() const {
   return Agent::outputs(config_);
 }
 
-bool CartPole::evaluatePopulation(darwin::Population* population) const {
+bool DoubleCartPole::evaluatePopulation(darwin::Population* population) const {
   darwin::StageScope stage("Evaluate population");
 
   const int generation = population->generation();
@@ -54,10 +54,11 @@ bool CartPole::evaluatePopulation(darwin::Population* population) const {
     darwin::StageScope stage("Evaluate one world", population->size());
     core::log(" ... world %d\n", world_index);
 
-    const float initial_angle = randomInitialAngle();
+    const float initial_angle_1 = randomInitialAngle();
+    const float initial_angle_2 = randomInitialAngle();
 
     pp::for_each(*population, [&](int, darwin::Genotype* genotype) {
-      World world(initial_angle, this);
+      World world(initial_angle_1, initial_angle_2, this);
       Agent agent(genotype, &world);
 
       // simulation loop
@@ -80,7 +81,7 @@ bool CartPole::evaluatePopulation(darwin::Population* population) const {
   return false;
 }
 
-float CartPole::randomInitialAngle() const {
+float DoubleCartPole::randomInitialAngle() const {
   random_device rd;
   default_random_engine rnd(rd());
   uniform_real_distribution<float> dist(-config_.max_initial_angle,
@@ -91,18 +92,21 @@ float CartPole::randomInitialAngle() const {
 // validate the configuration
 // (just a few obvious sanity checks for values which would completly break the domain,
 // nonsensical configurations are still possible)
-void CartPole::validateConfiguration()
-{
+void DoubleCartPole::validateConfiguration() {
   if (config_.max_distance <= 0)
     throw core::Exception("Invalid configuration: max_distance <= 0");
   if (config_.max_angle >= 90)
     throw core::Exception("Invalid configuration: max_angle >= 90");
   if (config_.max_initial_angle >= config_.max_angle)
     throw core::Exception("Invalid configuration: max_initial_angle >= max_angle");
-  if (config_.pole_length <= 0)
-    throw core::Exception("Invalid configuration: pole_length must be positive");
-  if (config_.pole_density <= 0)
-    throw core::Exception("Invalid configuration: pole_density must be positive");
+  if (config_.pole_1_length <= 0)
+    throw core::Exception("Invalid configuration: pole_1_length must be positive");
+  if (config_.pole_1_density <= 0)
+    throw core::Exception("Invalid configuration: pole_1_density must be positive");
+  if (config_.pole_2_length <= 0)
+    throw core::Exception("Invalid configuration: pole_2_length must be positive");
+  if (config_.pole_2_density <= 0)
+    throw core::Exception("Invalid configuration: pole_2_density must be positive");
   if (config_.cart_density < 0)
     throw core::Exception("Invalid configuration: cart_density must be positive or 0");
 
@@ -116,7 +120,7 @@ void CartPole::validateConfiguration()
 }
 
 unique_ptr<darwin::Domain> Factory::create(const core::PropertySet& config) {
-  return make_unique<CartPole>(config);
+  return make_unique<DoubleCartPole>(config);
 }
 
 unique_ptr<core::PropertySet> Factory::defaultConfig(darwin::ComplexityHint hint) const {

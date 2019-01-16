@@ -18,12 +18,59 @@
 
 namespace double_cart_pole {
 
-World::World(float initial_angle, const CartPole* domain)
+b2Body* World::createPole(float length, float density, float initial_angle) {
+  const float kPoleHalfHeight = length / 2;
+
+  b2PolygonShape pole_shape;
+  pole_shape.SetAsBox(kPoleHalfWidth, kPoleHalfHeight, b2Vec2(0, kPoleHalfHeight), 0.0f);
+
+  b2BodyDef pole_body_def;
+  pole_body_def.type = b2_dynamicBody;
+  pole_body_def.position.Set(0.0f, kCartHalfHeight + kGroundY);
+  pole_body_def.angle = math::degreesToRadians(initial_angle);
+  auto pole = b2_world_.CreateBody(&pole_body_def);
+
+  b2FixtureDef pole_fixture_def;
+  pole_fixture_def.shape = &pole_shape;
+  pole_fixture_def.density = density;
+  pole_fixture_def.filter.groupIndex = -1;
+  pole->CreateFixture(&pole_fixture_def);
+
+  return pole;
+}
+
+b2Body* World::createCart(float density, float friction) {
+  b2PolygonShape cart_shape;
+  cart_shape.SetAsBox(kCartHalfWidth, kCartHalfHeight);
+
+  b2BodyDef cart_body_def;
+  cart_body_def.type = b2_dynamicBody;
+  cart_body_def.position.Set(0.0f, kCartHalfHeight + kGroundY);
+  auto cart = b2_world_.CreateBody(&cart_body_def);
+
+  b2FixtureDef cart_fixture_def;
+  cart_fixture_def.shape = &cart_shape;
+  cart_fixture_def.density = density;
+  cart_fixture_def.friction = friction;
+  cart->CreateFixture(&cart_fixture_def);
+
+  return cart;
+}
+
+void World::createHinge(b2Body* cart, b2Body* pole) {
+  b2RevoluteJointDef hinge_def;
+  hinge_def.bodyA = cart;
+  hinge_def.bodyB = pole;
+  hinge_def.localAnchorA.Set(0.0f, 0.0f);
+  hinge_def.localAnchorB.Set(0.0f, 0.0f);
+  b2_world_.CreateJoint(&hinge_def);
+}
+
+World::World(float initial_angle_1, float initial_angle_2, const DoubleCartPole* domain)
     : b2_world_(b2Vec2(0, -domain->config().gravity)), domain_(domain) {
   const auto& config = domain_->config();
 
   // ground
-  constexpr float kGroundY = 0.1f;
   b2EdgeShape ground_shape;
   ground_shape.Set(b2Vec2(-config.max_distance, 0), b2Vec2(config.max_distance, 0));
 
@@ -32,47 +79,12 @@ World::World(float initial_angle, const CartPole* domain)
   auto ground = b2_world_.CreateBody(&ground_body_def);
   ground->CreateFixture(&ground_shape, 0.0f);
 
-  // cart
-  constexpr float kCartWidth = 0.2f;
-  constexpr float kCartHeight = 0.05f;
-  b2PolygonShape cart_shape;
-  cart_shape.SetAsBox(kCartWidth, kCartHeight);
-
-  b2BodyDef cart_body_def;
-  cart_body_def.type = b2_dynamicBody;
-  cart_body_def.position.Set(0.0f, kCartHeight + kGroundY);
-  cart_ = b2_world_.CreateBody(&cart_body_def);
-
-  b2FixtureDef cart_fixture_def;
-  cart_fixture_def.shape = &cart_shape;
-  cart_fixture_def.density = config.cart_density;
-  cart_fixture_def.friction = config.cart_friction;
-  cart_->CreateFixture(&cart_fixture_def);
-
-  // pole
-  constexpr float kPoleHalfWidth = 0.02f;
-  const float kPoleHalfHeight = config.pole_length / 2;
-  b2PolygonShape pole_shape;
-  pole_shape.SetAsBox(kPoleHalfWidth, kPoleHalfHeight, b2Vec2(0, kPoleHalfHeight), 0.0f);
-
-  b2BodyDef pole_body_def;
-  pole_body_def.type = b2_dynamicBody;
-  pole_body_def.position.Set(0.0f, kCartHeight + kGroundY);
-  pole_body_def.angle = math::degreesToRadians(initial_angle);
-  pole_ = b2_world_.CreateBody(&pole_body_def);
-
-  b2FixtureDef pole_fixture_def;
-  pole_fixture_def.shape = &pole_shape;
-  pole_fixture_def.density = config.pole_density;
-  pole_->CreateFixture(&pole_fixture_def);
-
-  // hinge
-  b2RevoluteJointDef hinge_def;
-  hinge_def.bodyA = cart_;
-  hinge_def.bodyB = pole_;
-  hinge_def.localAnchorA.Set(0.0f, 0.0f);
-  hinge_def.localAnchorB.Set(0.0f, 0.0f);
-  b2_world_.CreateJoint(&hinge_def);
+  // cart & poles
+  cart_ = createCart(config.cart_density, config.cart_friction);
+  pole_1_ = createPole(config.pole_1_length, config.pole_1_density, initial_angle_1);
+  pole_2_ = createPole(config.pole_2_length, config.pole_2_density, initial_angle_2);
+  createHinge(cart_, pole_1_);
+  createHinge(cart_, pole_2_);
 }
 
 bool World::simStep() {
@@ -90,10 +102,16 @@ bool World::simStep() {
   if (distance < -config.max_distance || distance > config.max_distance)
     return false;
 
-  // check pole angle
-  const auto pole_angle = poleAngle();
   const auto max_angle = math::degreesToRadians(config.max_angle);
-  if (pole_angle < -max_angle || pole_angle > max_angle)
+
+  // check pole 1 angle
+  const auto pole_1_angle = pole1Angle();
+  if (pole_1_angle < -max_angle || pole_1_angle > max_angle)
+    return false;
+    
+  // check pole 2 angle
+  const auto pole_2_angle = pole2Angle();
+  if (pole_2_angle < -max_angle || pole_2_angle > max_angle)
     return false;
 
   return true;

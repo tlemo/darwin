@@ -31,7 +31,7 @@ bool SandboxWindow::setup() {
   CHECK(state() == State::None);
 
   auto snapshot = darwin::evolution()->snapshot();
-  cart_pole_ = dynamic_cast<const double_cart_pole::CartPole*>(snapshot.domain);
+  cart_pole_ = dynamic_cast<const double_cart_pole::DoubleCartPole*>(snapshot.domain);
   CHECK(cart_pole_ != nullptr);
 
   const auto default_generation = snapshot.generation - 1;
@@ -72,15 +72,19 @@ void SandboxWindow::newScene() {
   CHECK(cart_pole_ != nullptr);
   CHECK(max_steps_ > 0);
 
-  world_ = make_unique<double_cart_pole::World>(cart_pole_->randomInitialAngle(), cart_pole_);
+  const float initial_angle_1 = cart_pole_->randomInitialAngle();
+  const float initial_angle_2 = cart_pole_->randomInitialAngle();
+  world_ =
+      make_unique<double_cart_pole::World>(initial_angle_1, initial_angle_2, cart_pole_);
   agent_ = make_unique<double_cart_pole::Agent>(genotype_.get(), world_.get());
   step_ = 0;
 
   // calculate viewport extents based on the configuration values
   const auto& config = cart_pole_->config();
   constexpr float kMargin = 0.5f;
-  const auto half_width = fmax(config.max_distance + kMargin, config.pole_length);
-  const auto height = config.pole_length + kMargin;
+  const auto max_length = fmax(config.pole_1_length, config.pole_2_length);
+  const auto half_width = fmax(config.max_distance + kMargin, max_length);
+  const auto height = max_length + kMargin;
   QRectF viewport(-half_width, height, 2 * half_width, -height);
 
   setWorld(world_->box2dWorld(), viewport);
@@ -107,15 +111,19 @@ void SandboxWindow::singleStep() {
 void SandboxWindow::updateUI() {
   const float cart_distance = world_->cartDistance();
   const float cart_velocity = world_->cartVelocity();
-  const float pole_angle = math::radiansToDegrees(world_->poleAngle());
-  const float angular_velocity = math::radiansToDegrees(world_->poleAngularVelocity());
+  const float pole_angle_1 = math::radiansToDegrees(world_->pole1Angle());
+  const float angular_velocity_1 = math::radiansToDegrees(world_->pole1AngularVelocity());
+  const float pole_angle_2 = math::radiansToDegrees(world_->pole2Angle());
+  const float angular_velocity_2 = math::radiansToDegrees(world_->pole2AngularVelocity());
 
   variables_.state->setValue(stateDescription());
   variables_.step->setValue(step_);
   variables_.pos->setValue(QString::asprintf("%.3f", cart_distance));
   variables_.velocity->setValue(QString::asprintf("%.3f", cart_velocity));
-  variables_.angle->setValue(QString::asprintf("%.2f", pole_angle));
-  variables_.angular_velocity->setValue(QString::asprintf("%.3f", angular_velocity));
+  variables_.angle_1->setValue(QString::asprintf("%.2f", pole_angle_1));
+  variables_.angular_velocity_1->setValue(QString::asprintf("%.3f", angular_velocity_1));
+  variables_.angle_2->setValue(QString::asprintf("%.2f", pole_angle_2));
+  variables_.angular_velocity_2->setValue(QString::asprintf("%.3f", angular_velocity_2));
 
   update();
 }
@@ -130,8 +138,10 @@ void SandboxWindow::setupVariables() {
   variables_.step = game_state_section->addProperty("Simulation step");
   variables_.pos = game_state_section->addProperty("Cart position");
   variables_.velocity = game_state_section->addProperty("Cart velocity");
-  variables_.angle = game_state_section->addProperty("Pole angle");
-  variables_.angular_velocity = game_state_section->addProperty("Angular velocity");
+  variables_.angle_1 = game_state_section->addProperty("Pole 1 angle");
+  variables_.angular_velocity_1 = game_state_section->addProperty("Angular velocity 1");
+  variables_.angle_2 = game_state_section->addProperty("Pole 2 angle");
+  variables_.angular_velocity_2 = game_state_section->addProperty("Angular velocity 2");
 }
 
 }  // namespace double_cart_pole_ui
