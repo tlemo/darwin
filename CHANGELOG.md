@@ -1,4 +1,11 @@
 
+## Jan 16th, 2019
+
+New domain: [double-cart-pole][4]. This is a more difficult variation of the single-pole
+balancing problem.
+
+![Double-Cart-Pole screenshot](docs/images/double_cart_pole_sandbox.png)
+
 ## Jan 5th, 2019
 
 New domain: the classic cart-pole control theory benchmark problem (also known as “pole
@@ -17,7 +24,7 @@ following configuration knobs:
 - discrete vs continuous force applications
 
 For more information, see the cart_pole domain
-[documentation](https://tlemo.github.io/darwin/classcart__pole_1_1_cart_pole.html).
+[documentation][3].
 
 ## Dec 27th, 2018
 
@@ -59,4 +66,5 @@ Initial release
 
 [1]: https://tlemo.github.io/darwin/classcore_1_1_property_set_variant.html
 [2]: https://tlemo.github.io/darwin/classcore__ui_1_1_properties_widget.html
-
+[3]: https://tlemo.github.io/darwin/classcart__pole_1_1_cart_pole.html
+[4]: https://tlemo.github.io/darwin/classdouble__cart__pole_1_1_double_cart_pole.html
