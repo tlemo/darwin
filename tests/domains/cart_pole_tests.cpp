@@ -16,6 +16,7 @@
 #include <domains/cart_pole/world.h>
 
 #include <core/darwin.h>
+#include <tests/domains/test_brain.h>
 #include <third_party/gtest/gtest.h>
 
 #include <memory>
@@ -25,67 +26,16 @@ using namespace std;
 
 namespace cart_pole_tests {
 
-struct TestBrain : public darwin::Brain {
+struct TestBrain : public core_test::TestBrain {
   const float force_value = 0;
-  const size_t inputs = 0;
-  const size_t outputs = 0;
 
-  // model the expected usage pattern:
-  //
-  // for_each(episode_step):
-  //    1. for_each(input_index): setInput(input_index, value)
-  //    2. think()
-  //    3. for_each(ouput_index): output(output_index)
-  //
-  enum class State { WaitingForInputs, OutputsReady };
-  State state = State::WaitingForInputs;
-
-  // make sure all the inputs and outputs are used
-  mutable unordered_set<int> used_inputs;
-  mutable unordered_set<int> used_outputs;
-
-  TestBrain(float force_value, size_t inputs, size_t outputs)
-      : force_value(force_value), inputs(inputs), outputs(outputs) {}
-
-  ~TestBrain() { checkOutputsConsumed(); }
-
-  void checkInputsSet() {
-    EXPECT_EQ(state, State::WaitingForInputs);
-    EXPECT_EQ(used_inputs.size(), inputs);
+  TestBrain(float force_value, size_t inputs_count, size_t outputs_count)
+      : core_test::TestBrain(inputs_count, outputs_count), force_value(force_value) {}
+      
+  void setTestOutputs() override {
+    EXPECT_EQ(outputs.size(), 1);
+    outputs[0] = force_value;
   }
-
-  void checkOutputsConsumed() {
-    EXPECT_EQ(state, State::OutputsReady);
-    EXPECT_EQ(used_outputs.size(), outputs);
-  }
-
-  void setInput(int index, float) override {
-    if (state == State::OutputsReady) {
-      checkOutputsConsumed();
-      used_inputs.clear();
-      used_outputs.clear();
-      state = State::WaitingForInputs;
-    }
-    EXPECT_EQ(state, State::WaitingForInputs);
-    EXPECT_GE(index, 0);
-    EXPECT_LT(index, inputs);
-    EXPECT_TRUE(used_inputs.insert(index).second);
-  }
-
-  float output(int index) const override {
-    EXPECT_EQ(state, State::OutputsReady);
-    EXPECT_GE(index, 0);
-    EXPECT_LT(index, outputs);
-    EXPECT_TRUE(used_outputs.insert(index).second);
-    return force_value;
-  }
-
-  void think() override {
-    checkInputsSet();
-    state = State::OutputsReady;
-  }
-
-  void resetState() override { FATAL("Not implemented"); }
 };
 
 struct TestGenotype : public darwin::Genotype {
@@ -121,12 +71,10 @@ struct TestPopulation : public darwin::Population {
     return &genotypes_[index];
   }
 
-  void rankGenotypes() override { FATAL("Not implemented"); }
-
   int generation() const override { return 0; }
 
+  void rankGenotypes() override { FATAL("Not implemented"); }
   void createPrimordialGeneration(int) override { FATAL("Not implemented"); }
-
   void createNextGeneration() override { FATAL("Not implemented"); }
 
  private:
