@@ -12,5 +12,7 @@ var searchData=
   ['board',['board',['../structconquest_1_1_config.html#aab127b444d203e4962e8ba5636ee7a6e',1,'conquest::Config']]],
   ['bordersize',['borderSize',['../classcore__ui_1_1_canvas.html#a6658c07638368a94b8d1f34b9b0ed463',1,'core_ui::Canvas']]],
   ['boundpropertyitem',['BoundPropertyItem',['../classcore__ui_1_1_bound_property_item.html',1,'core_ui']]],
+  ['box2drenderer',['Box2dRenderer',['../classcore__ui_1_1_box2d_renderer.html',1,'core_ui']]],
+  ['box2dsandboxwindow',['Box2dSandboxWindow',['../classcore__ui_1_1_box2d_sandbox_window.html',1,'core_ui::Box2dSandboxWindow'],['../classcore__ui_1_1_box2d_sandbox_window.html#a6c4c4dffb5d4322f7efd84c0b312e6d0',1,'core_ui::Box2dSandboxWindow::Box2dSandboxWindow()']]],
   ['brain',['Brain',['../classdarwin_1_1_brain.html',1,'darwin']]]
 ];

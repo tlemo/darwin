@@ -6,5 +6,5 @@ var searchData=
   ['genetic_5foperator',['genetic_operator',['../structdarwin_1_1_genealogy.html#a9980c3d0ed1539eae91bb5f3448a6a3e',1,'darwin::Genealogy']]],
   ['genotypes',['genotypes',['../structdarwin_1_1_db_generation.html#abed564224705f83d2a0f54a5a88ab202',1,'darwin::DbGeneration']]],
   ['good_5ffruit_5fhealth',['good_fruit_health',['../structharvester_1_1_config.html#ad666f7b3cc1b59899fe4879bb21d7af2',1,'harvester::Config']]],
-  ['gravity',['gravity',['../structcart__pole_1_1_config.html#a6d5d4720c7e77775a579dc035d7c1c12',1,'cart_pole::Config']]]
+  ['gravity',['gravity',['../structcart__pole_1_1_config.html#a6d5d4720c7e77775a579dc035d7c1c12',1,'cart_pole::Config::gravity()'],['../structdouble__cart__pole_1_1_config.html#a08ab04fe51102f98f5955cc088ae81ec',1,'double_cart_pole::Config::gravity()']]]
 ];

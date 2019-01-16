@@ -21,8 +21,8 @@ var searchData=
   ['description',['description',['../classcore_1_1_property.html#a64dc8f283bd8cb506cb1fa6024f1eb05',1,'core::Property']]],
   ['details',['details',['../structdarwin_1_1_db_generation.html#acdd4fffe381c4623009c87af1b208174',1,'darwin::DbGeneration']]],
   ['detectavx2',['detectAvx2',['../namespacepal.html#a4776d611f7d0ffa59a2f38067f49b7df',1,'pal']]],
-  ['discrete_5fcontrols',['discrete_controls',['../structcart__pole_1_1_config.html#a2d03dab28a7ae5e1de5cd1a624d24652',1,'cart_pole::Config']]],
-  ['discrete_5fforce_5fmagnitude',['discrete_force_magnitude',['../structcart__pole_1_1_config.html#ae0484a18590d2e2f1f9c0bf6fe032baa',1,'cart_pole::Config']]],
+  ['discrete_5fcontrols',['discrete_controls',['../structcart__pole_1_1_config.html#a2d03dab28a7ae5e1de5cd1a624d24652',1,'cart_pole::Config::discrete_controls()'],['../structdouble__cart__pole_1_1_config.html#ab547f7352f1a7e86d747a318179f8ff7',1,'double_cart_pole::Config::discrete_controls()']]],
+  ['discrete_5fforce_5fmagnitude',['discrete_force_magnitude',['../structcart__pole_1_1_config.html#ae0484a18590d2e2f1f9c0bf6fe032baa',1,'cart_pole::Config::discrete_force_magnitude()'],['../structdouble__cart__pole_1_1_config.html#a16a6f2f642cd9a6355d7147c8017979e',1,'double_cart_pole::Config::discrete_force_magnitude()']]],
   ['domain',['Domain',['../classdarwin_1_1_domain.html',1,'darwin::Domain'],['../structdarwin_1_1_evolution_1_1_snapshot.html#acd3cea67c20b93203b479e9ffebdd71f',1,'darwin::Evolution::Snapshot::domain()']]],
   ['domain_5fhint',['domain_hint',['../structdarwin_1_1_experiment_setup.html#a141e9135c435b9d37b1ad39361ca4db9',1,'darwin::ExperimentSetup']]],
   ['domain_5fname',['domain_name',['../structdarwin_1_1_experiment_setup.html#a6c4bf33c671292376febf46778b1b202',1,'darwin::ExperimentSetup']]],
@@ -31,5 +31,6 @@ var searchData=
   ['domains',['domains',['../structdarwin_1_1_registry.html#a977c7cb6eb1c65679a6d3bf8bf00e476',1,'darwin::Registry']]],
   ['domains_5fui',['domains_ui',['../structdarwin_1_1_registry.html#a8f87dc1f11012512fde65b639fb46b6f',1,'darwin::Registry']]],
   ['domainuifactory',['DomainUiFactory',['../classdarwin_1_1_domain_ui_factory.html',1,'darwin::DomainUiFactory'],['../classdarwin_1_1_experiment.html#ad50fa6639d87a99cdb517a1b5d01849d',1,'darwin::Experiment::domainUiFactory()']]],
+  ['doublecartpole',['DoubleCartPole',['../classdouble__cart__pole_1_1_double_cart_pole.html',1,'double_cart_pole']]],
   ['draw',['Draw',['../namespacetournament.html#afb2d89307ef2ac4c6e727eb2c88b304ca2d03c2d5a7ec65ef4619e0582c272ec2',1,'tournament']]]
 ];
