@@ -16,6 +16,9 @@
 
 #include <core/math_2d.h>
 
+#include <iterator>
+using namespace std;
+
 namespace unicycle {
 
 b2Body* World::createGround(float target_position) {
@@ -34,8 +37,16 @@ b2Body* World::createGround(float target_position) {
   ground_fixture_def.friction = kGroundFriction;
   ground->CreateFixture(&ground_fixture_def);
 
-  ground_shape.Set(b2Vec2(target_position, 0), b2Vec2(target_position, -kGroundY));
-  ground->CreateFixture(&ground_shape, 0.0f);
+  // create an "arrow" fixture to point to the target position
+  constexpr float kArrowHalfSize = kGroundY / 4;
+  const b2Vec2 arrow_vertices[] = {
+    b2Vec2(target_position, -kArrowHalfSize),
+    b2Vec2(target_position + kArrowHalfSize, -3 * kArrowHalfSize),
+    b2Vec2(target_position - kArrowHalfSize, -3 * kArrowHalfSize)
+  };
+  b2PolygonShape arrow_shape;
+  arrow_shape.Set(arrow_vertices, int(std::size(arrow_vertices)));
+  ground->CreateFixture(&arrow_shape, 0.0f);
 
   return ground;
 }

@@ -54,40 +54,50 @@ struct Config : public core::PropertySet {
 
 //! Domain: Unicycle
 //!
-//! A variation of the cart-pole domain (cart_pole::CartPole), with two
-//! independent poles attached to the cart.
-//!
+//! Yet another inverted pendulum variation: this time the pole is attached to a wheel
+//! and the agent tries to keep the pole balanced by applying torque to the wheel, similar
+//! to riding an unicycle.
+//! 
 //! ![](images/unicycle_sandbox.png)
 //!
-//! The cart starts in the middle (x = 0) and the initial pole angles is a random value in
-//! `[-max_initial_angle, +max_initial_angle]` range. An episode is successful if both
-//! poles remain between `-max_angle` and `+max_angle` for at least `max_steps`. The cart
-//! position must also stay between [-max_distance, +max_distance].
+//! The unicycle starts in the middle (x = 0) and the initial pole angles is a random 
+//! value in the `[-max_initial_angle, +max_initial_angle]` range. The pole is considered
+//! balanced if it remains between `-max_angle` and `+max_angle`. The unicycle's wheel 
+//! must stay between `-max_distance` and `+max_distance`.
+//! 
+//! This problem introduces an additional goal: keep the unicycle close to a random target
+//! position. This is rewarded by a fitness bonus inversely proportional to the absolute
+//! distance from the target (but only if the pole is balanced for the whole episode)
+//!
+//! \sa cart_pole::CartPole
+//! \sa double_cart_pole::DoubleCartPole
 //!
 //! ### Inputs
 //!
 //! The inputs are configurable by individually selecting at least one of:
-//! - pole_angle(1,2) (from vertical)
-//! - angular_velocity(1,2)
-//! - cart_distance (from the center)
-//! - cart_velocity
+//! - pole_angle (from vertical)
+//! - pole angular_velocity
+//! - wheel_distance (from the center)
+//! - wheel_velocity (horizontal velocity component)
+//! - distance_from_target
 //!
 //! Input | Value
 //! -----:|------
-//!   0,1 | pole_angle(1,2)
-//!   2,3 | angular_velocity(1,2)
-//!     4 | cart_distance
-//!     5 | cart_velocity
+//!     0 | pole_angle
+//!     1 | angular_velocity
+//!     2 | wheel_distance
+//!     3 | wheel_velocity
+//!     4 | distance_from_target
 //!
 //! ### Outputs
 //!
-//! The single output indicates the horizontal force to be applied to the cart. This can
-//! be discrete (fixed +/-discrete_force_magnitude depending on the sign of the output) or
-//! can be continuous (the output value maps directly to the force magnitude)
+//! The single output indicates the torque to be applied to the wheel. This can
+//! be discrete (fixed +/-discrete_torque_magnitude depending on the sign of the output) 
+//! or can be continuous (the output value maps directly to the torque magnitude)
 //!
 //! Output | Value
 //! ------:|------
-//!      0 | force
+//!      0 | torque
 //!
 class Unicycle : public darwin::Domain {
  public:
