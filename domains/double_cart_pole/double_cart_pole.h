@@ -60,9 +60,9 @@ struct Config : public core::PropertySet {
 //! ![](images/double_cart_pole_sandbox.png)
 //!
 //! The cart starts in the middle (x = 0) and the initial pole angles is a random value in
-//! `[-max_initial_angle, +max_initial_angle]` range. An episode is successful if both
+//! the `[-max_initial_angle, +max_initial_angle]` range. An episode is successful if both
 //! poles remain between `-max_angle` and `+max_angle` for at least `max_steps`. The cart
-//! position must also stay between [-max_distance, +max_distance].
+//! position must also stay between `[-max_distance, +max_distance]`.
 //!
 //! ### Inputs
 //!
