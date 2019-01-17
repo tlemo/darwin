@@ -61,23 +61,32 @@ bool Unicycle::evaluatePopulation(darwin::Population* population) const {
       World world(initial_angle, target_position, this);
       Agent agent(genotype, &world);
 
+      // extra reward for staying close to the target position
+      float fitness_bonus = 0;
+
       // simulation loop
       int step = 0;
       for (; step < config_.max_steps; ++step) {
         agent.simStep();
         if (!world.simStep())
           break;
+
+        // update the "close-to-target" fitness bonus
+        const float wheel_position = world.wheelDistance();
+        const float distance_from_target = fabs(wheel_position - target_position);
+        const float score = 1 - fmin(distance_from_target / config_.max_distance, 1);
+        fitness_bonus += (score * score) / config_.max_steps;
       }
       CHECK(step > 0);
 
-      // the fitness is the average number of steps over all test worlds
-      float fitness_value = float(step) / config_.max_steps;
+      // fitness value: 
+      // 1. the number of steps keeping the pole balanced, normalized to [0..1]
+      // 2. iff the pole was balanced for the whole episode, add the fitness bonus
+      float episode_fitness = float(step) / config_.max_steps;
       if (step == config_.max_steps) {
-        const float position = world.wheelDistance();
-        const float delta = fabs(position - target_position) / config_.max_distance;
-        fitness_value += 1 - fmin(delta, 1);
+        episode_fitness += fitness_bonus;
       }
-      genotype->fitness += fitness_value / config_.test_worlds;
+      genotype->fitness += episode_fitness / config_.test_worlds;
 
       darwin::ProgressManager::reportProgress();
     });
