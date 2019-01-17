@@ -100,6 +100,7 @@ class Unicycle : public darwin::Domain {
   const Config& config() const { return config_; }
   
   float randomInitialAngle() const;
+  float randomTargetPosition() const;
   
  private:
   void validateConfiguration();

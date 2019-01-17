@@ -55,9 +55,10 @@ bool Unicycle::evaluatePopulation(darwin::Population* population) const {
     core::log(" ... world %d\n", world_index);
 
     const float initial_angle = randomInitialAngle();
+    const float target_position = randomTargetPosition();
 
     pp::for_each(*population, [&](int, darwin::Genotype* genotype) {
-      World world(initial_angle, this);
+      World world(initial_angle, target_position, this);
       Agent agent(genotype, &world);
 
       // simulation loop
@@ -70,7 +71,13 @@ bool Unicycle::evaluatePopulation(darwin::Population* population) const {
       CHECK(step > 0);
 
       // the fitness is the average number of steps over all test worlds
-      genotype->fitness += float(step) / config_.test_worlds;
+      float fitness_value = float(step) / config_.max_steps;
+      if (step == config_.max_steps) {
+        const float position = world.wheelDistance();
+        const float delta = fabs(position - target_position) / config_.max_distance;
+        fitness_value += 1 - fmin(delta, 1);
+      }
+      genotype->fitness += fitness_value / config_.test_worlds;
 
       darwin::ProgressManager::reportProgress();
     });
@@ -85,6 +92,13 @@ float Unicycle::randomInitialAngle() const {
   default_random_engine rnd(rd());
   uniform_real_distribution<float> dist(-config_.max_initial_angle,
                                         config_.max_initial_angle);
+  return dist(rnd);
+}
+
+float Unicycle::randomTargetPosition() const {
+  random_device rd;
+  default_random_engine rnd(rd());
+  uniform_real_distribution<float> dist(-config_.max_distance, config_.max_distance);
   return dist(rnd);
 }
 

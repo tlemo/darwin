@@ -26,7 +26,7 @@ class World {
   static constexpr float kGroundFriction = 10.0f;
 
  public:
-  World(float initial_angle, const Unicycle* domain);
+  World(float initial_angle, float target_position, const Unicycle* domain);
 
   // advances the physical simulation one step, returning false
   // if the state reaches one of the termination conditions
@@ -42,20 +42,23 @@ class World {
   void turnWheel(float torque);
   
   const Unicycle* domain() const { return domain_; }
+  
+  float targetPosition() const { return target_position_; }
 
   b2World* box2dWorld() { return &b2_world_; }
   
  private:
-  b2Body* createGround();
+  b2Body* createGround(float target_position);
   b2Body* createPole(float initial_angle);
   b2Body* createWheel();
   void createHinge(b2Body* wheel, b2Body* pole);
   
  private:
   b2World b2_world_;
-
   b2Body* wheel_ = nullptr;
   b2Body* pole_ = nullptr;
+  
+  const float target_position_ = 0;
   
   const Unicycle* domain_ = nullptr;
 };

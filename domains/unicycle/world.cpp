@@ -18,7 +18,7 @@
 
 namespace unicycle {
 
-b2Body* World::createGround() {
+b2Body* World::createGround(float target_position) {
   const auto& config = domain_->config();
 
   b2BodyDef ground_body_def;
@@ -33,6 +33,9 @@ b2Body* World::createGround() {
   ground_fixture_def.density = 0;
   ground_fixture_def.friction = kGroundFriction;
   ground->CreateFixture(&ground_fixture_def);
+
+  ground_shape.Set(b2Vec2(target_position, 0), b2Vec2(target_position, -kGroundY));
+  ground->CreateFixture(&ground_shape, 0.0f);
 
   return ground;
 }
@@ -90,9 +93,11 @@ void World::createHinge(b2Body* wheel, b2Body* pole) {
   b2_world_.CreateJoint(&hinge_def);
 }
 
-World::World(float initial_angle, const Unicycle* domain)
-    : b2_world_(b2Vec2(0, -domain->config().gravity)), domain_(domain) {
-  createGround();
+World::World(float initial_angle, float target_position, const Unicycle* domain)
+    : b2_world_(b2Vec2(0, -domain->config().gravity)),
+      target_position_(target_position),
+      domain_(domain) {
+  createGround(target_position);
   wheel_ = createWheel();
   pole_ = createPole(initial_angle);
   createHinge(wheel_, pole_);
