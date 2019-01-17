@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <domains/cart_pole/cart_pole.h>
-#include <domains/cart_pole/world.h>
+#include <domains/unicycle/unicycle.h>
+#include <domains/unicycle/world.h>
 
 #include <core/darwin.h>
 #include <tests/domains/test_brain.h>
@@ -23,41 +23,39 @@
 #include <vector>
 using namespace std;
 
-namespace cart_pole_tests {
+namespace unicycle_tests {
 
 struct TestBrain : public core_test::TestBrain {
-  const float force_value = 0;
+  const float torque_value = 0;
 
-  TestBrain(float force_value, size_t inputs_count, size_t outputs_count)
-      : core_test::TestBrain(inputs_count, outputs_count), force_value(force_value) {}
-      
+  TestBrain(float torque_value, size_t inputs_count, size_t outputs_count)
+      : core_test::TestBrain(inputs_count, outputs_count), torque_value(torque_value) {}
+
   void setTestOutputs() override {
     EXPECT_EQ(outputs.size(), 1);
-    outputs[0] = force_value;
+    outputs[0] = torque_value;
   }
 };
 
 struct TestGenotype : public darwin::Genotype {
-  float force_value = 0;
-  const cart_pole::CartPole* domain = nullptr;
+  float torque_value = 0;
+  const unicycle::Unicycle* domain = nullptr;
 
   unique_ptr<darwin::Brain> grow() const override {
-    return make_unique<TestBrain>(force_value, domain->inputs(), domain->outputs());
+    return make_unique<TestBrain>(torque_value, domain->inputs(), domain->outputs());
   }
 
   unique_ptr<darwin::Genotype> clone() const override { FATAL("Not implemented"); }
-
   json save() const override { FATAL("Not implemented"); }
-
   void load(const json&) override { FATAL("Not implemented"); }
 };
 
 struct TestPopulation : public darwin::Population {
-  TestPopulation(const cart_pole::CartPole* domain, const vector<float>& force_values) {
-    CHECK(!force_values.empty());
-    genotypes_.resize(force_values.size());
+  TestPopulation(const unicycle::Unicycle* domain, const vector<float>& torque_values) {
+    CHECK(!torque_values.empty());
+    genotypes_.resize(torque_values.size());
     for (size_t i = 0; i < genotypes_.size(); ++i) {
-      genotypes_[i].force_value = force_values[i];
+      genotypes_[i].torque_value = torque_values[i];
       genotypes_[i].domain = domain;
     }
   }
@@ -80,15 +78,15 @@ struct TestPopulation : public darwin::Population {
   vector<TestGenotype> genotypes_;
 };
 
-TEST(CartPoleTest, World_PoleGravity) {
-  cart_pole::Config config;
+TEST(UnicycleTest, World_PoleGravity) {
+  unicycle::Config config;
   config.max_initial_angle = 15.0f;
-  config.max_angle = 60.0f;
+  config.max_angle = 45.0f;
   config.max_steps = 100;
-  cart_pole::CartPole cart_pole(config);
+  unicycle::Unicycle unicycle(config);
 
   auto simulation = [&](float initial_angle) -> int {
-    cart_pole::World world(initial_angle, &cart_pole);
+    unicycle::World world(initial_angle, 0.0f, &unicycle);
     int step = 0;
     for (; step < config.max_steps; ++step) {
       if (!world.simStep())
@@ -103,19 +101,19 @@ TEST(CartPoleTest, World_PoleGravity) {
   EXPECT_LT(simulation(-config.max_initial_angle), config.max_steps);
 }
 
-TEST(CartPoleTest, World_PoleInertia) {
-  cart_pole::Config config;
+TEST(UnicycleTest, World_PoleInertia) {
+  unicycle::Config config;
   config.discrete_controls = false;
-  config.max_angle = 60.0f;
+  config.max_angle = 45.0f;
   config.max_steps = 250;
-  config.max_distance = 1.0e10f;
-  cart_pole::CartPole cart_pole(config);
+  config.max_distance = 1024.0f;
+  unicycle::Unicycle unicycle(config);
 
-  auto simulation = [&](float force) -> int {
-    cart_pole::World world(0.0f, &cart_pole);
+  auto simulation = [&](float torque) -> int {
+    unicycle::World world(0.0f, unicycle.randomTargetPosition(), &unicycle);
     int step = 0;
     for (; step < config.max_steps; ++step) {
-      world.moveCart(force);
+      world.turnWheel(torque);
       if (!world.simStep())
         break;
     }
@@ -128,22 +126,23 @@ TEST(CartPoleTest, World_PoleInertia) {
   EXPECT_LT(simulation(-1.0f), config.max_steps);
 }
 
-TEST(CartPoleTest, EvaluatePopulation_SingleInput) {
+TEST(UnicycleTest, EvaluatePopulation_SingleInput) {
   constexpr int kMaxSteps = 100;
 
-  cart_pole::Config config;
+  unicycle::Config config;
   config.max_steps = kMaxSteps;
-  config.max_force = 5.0f;
+  config.max_torque = 5.0f;
   config.test_worlds = 2;
   config.discrete_controls = true;
   config.input_pole_angle = false;
-  config.input_angular_velocity = true;
-  config.input_cart_distance = false;
-  config.input_cart_velocity = false;
+  config.input_angular_velocity = false;
+  config.input_wheel_distance = false;
+  config.input_wheel_velocity = false;
+  config.input_distance_from_target = true;
 
-  cart_pole::CartPole cart_pole(config);
-  TestPopulation population(&cart_pole, { 0.0f, +100.0f, -0.01f, 1.123e30f, -1.0e-40f });
-  cart_pole.evaluatePopulation(&population);
+  unicycle::Unicycle unicycle(config);
+  TestPopulation population(&unicycle, { 0.0f, +100.0f, -0.01f, 1.123e30f, -1.0e-40f });
+  unicycle.evaluatePopulation(&population);
 
   for (size_t i = 0; i < population.size(); ++i) {
     EXPECT_GT(population[i]->fitness, 0);
@@ -151,42 +150,43 @@ TEST(CartPoleTest, EvaluatePopulation_SingleInput) {
   }
 }
 
-TEST(CartPoleTest, EvaluatePopulation_EveryInput) {
+TEST(UnicycleTest, EvaluatePopulation_EveryInput) {
   constexpr int kMaxSteps = 250;
 
-  cart_pole::Config config;
+  unicycle::Config config;
   config.max_initial_angle = 0.0f;
   config.max_steps = kMaxSteps;
-  config.max_force = 5.0f;
+  config.max_torque = 5.0f;
   config.test_worlds = 3;
   config.discrete_controls = false;
   config.input_pole_angle = true;
   config.input_angular_velocity = true;
-  config.input_cart_distance = true;
-  config.input_cart_velocity = true;
+  config.input_wheel_distance = true;
+  config.input_wheel_velocity = true;
+  config.input_distance_from_target = true;
   
-  vector<float> force_values(5);
-  force_values[0] = 0.0f;
-  force_values[1] = +1.0f;
-  force_values[2] = -1.0f;
-  force_values[3] = +2.0f;
-  force_values[4] = -2.0f;
+  vector<float> torque_values(5);
+  torque_values[0] = 0.0f;
+  torque_values[1] = +0.5f;
+  torque_values[2] = -0.5f;
+  torque_values[3] = +1.0f;
+  torque_values[4] = -1.0f;
 
-  cart_pole::CartPole cart_pole(config);
-  TestPopulation population(&cart_pole, force_values);
-  cart_pole.evaluatePopulation(&population);
+  unicycle::Unicycle unicycle(config);
+  TestPopulation population(&unicycle, torque_values);
+  unicycle.evaluatePopulation(&population);
 
-  // force = 0.0f
-  EXPECT_EQ(population[0]->fitness, kMaxSteps);
+  // torque = 0.0f
+  EXPECT_GE(population[0]->fitness, 1.0f);
   
-  // force = +/-1.0f
+  // torque = +/-0.5f
   EXPECT_GT(population[0]->fitness, population[1]->fitness);
   EXPECT_EQ(population[1]->fitness, population[2]->fitness);
 
-  // force = +/-2.0f
+  // torque = +/-1.0f
   EXPECT_GT(population[2]->fitness, population[3]->fitness);
   EXPECT_EQ(population[3]->fitness, population[4]->fitness);
   EXPECT_GT(population[4]->fitness, 0);
 }
 
-}  // namespace cart_pole_tests
+}  // namespace unicycle_tests

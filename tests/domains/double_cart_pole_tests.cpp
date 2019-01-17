@@ -21,7 +21,6 @@
 
 #include <memory>
 #include <vector>
-#include <unordered_set>
 using namespace std;
 
 namespace double_cart_pole_tests {
