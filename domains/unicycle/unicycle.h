@@ -36,6 +36,7 @@ struct Config : public core::PropertySet {
   PROPERTY(input_angular_velocity, bool, false, "Use the angular velocity as input");
   PROPERTY(input_wheel_distance, bool, true, "Use the wheel distance as input");
   PROPERTY(input_wheel_velocity, bool, false, "Use the wheel linear velocity as input");
+  PROPERTY(input_distance_from_target, bool, true, "Distance from target position");
 
   PROPERTY(test_worlds, int, 5, "Number of test worlds per generation");
   PROPERTY(max_steps, int, 1000, "Maximum number of steps per episode");

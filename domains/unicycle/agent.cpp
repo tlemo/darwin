@@ -33,6 +33,8 @@ void Agent::simStep() {
     brain_->setInput(input_index++, world_->wheelDistance());
   if (config.input_wheel_velocity)
     brain_->setInput(input_index++, world_->wheelVelocity());
+  if (config.input_distance_from_target)
+    brain_->setInput(input_index++, world_->wheelDistance() - world_->targetPosition());
 
   brain_->think();
 
@@ -49,6 +51,8 @@ int Agent::inputs(const Config& config) {
   if (config.input_wheel_distance)
     ++inputs_count;
   if (config.input_wheel_velocity)
+    ++inputs_count;
+  if (config.input_distance_from_target)
     ++inputs_count;
   return inputs_count;
 }
