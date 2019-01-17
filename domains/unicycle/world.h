@@ -23,7 +23,7 @@ namespace unicycle {
 class World {
   static constexpr float kPoleHalfWidth = 0.02f;
   static constexpr float kGroundY = 0.1f;
-  static constexpr float kGroundFriction = 10.0f;
+  static constexpr float kGroundFriction = 100.0f;
 
  public:
   World(float initial_angle, float target_position, const Unicycle* domain);
