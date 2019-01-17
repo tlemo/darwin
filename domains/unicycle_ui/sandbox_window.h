@@ -34,16 +34,15 @@ class SandboxWindow : public core_ui::Box2dSandboxWindow {
     // configuration
     core_ui::PropertyItem* generation = nullptr;
     core_ui::PropertyItem* max_steps = nullptr;
+    core_ui::PropertyItem* initial_angle = nullptr;
 
     // simulation state
     core_ui::PropertyItem* state = nullptr;
     core_ui::PropertyItem* step = nullptr;
-    core_ui::PropertyItem* pos = nullptr;
+    core_ui::PropertyItem* position = nullptr;
     core_ui::PropertyItem* velocity = nullptr;
-    core_ui::PropertyItem* angle_1 = nullptr;
-    core_ui::PropertyItem* angular_velocity_1 = nullptr;
-    core_ui::PropertyItem* angle_2 = nullptr;
-    core_ui::PropertyItem* angular_velocity_2 = nullptr;
+    core_ui::PropertyItem* angle = nullptr;
+    core_ui::PropertyItem* angular_velocity = nullptr;
   };
 
  public:

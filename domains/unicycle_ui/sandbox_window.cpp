@@ -72,19 +72,18 @@ void SandboxWindow::newScene() {
   CHECK(domain_ != nullptr);
   CHECK(max_steps_ > 0);
 
-  const float initial_angle_1 = domain_->randomInitialAngle();
-  const float initial_angle_2 = domain_->randomInitialAngle();
-  world_ =
-      make_unique<unicycle::World>(initial_angle_1, initial_angle_2, domain_);
+  const float initial_angle = domain_->randomInitialAngle();
+  world_ = make_unique<unicycle::World>(initial_angle, domain_);
   agent_ = make_unique<unicycle::Agent>(genotype_.get(), world_.get());
   step_ = 0;
 
+  variables_.initial_angle->setValue(QString::asprintf("%.2f", initial_angle));
+
   // calculate viewport extents based on the configuration values
   const auto& config = domain_->config();
-  constexpr float kMargin = 0.5f;
-  const auto max_length = fmax(config.pole_1_length, config.pole_2_length);
-  const auto half_width = fmax(config.max_distance + kMargin, max_length);
-  const auto height = max_length + kMargin;
+  constexpr float kMargin = 0.3f;
+  const auto half_width = fmax(config.max_distance + kMargin, config.pole_length);
+  const auto height = config.pole_length + config.wheel_radius + kMargin;
   QRectF viewport(-half_width, height, 2 * half_width, -height);
 
   setWorld(world_->box2dWorld(), viewport);
@@ -109,21 +108,17 @@ void SandboxWindow::singleStep() {
 }
 
 void SandboxWindow::updateUI() {
-  const float cart_distance = world_->cartDistance();
-  const float cart_velocity = world_->cartVelocity();
-  const float pole_angle_1 = math::radiansToDegrees(world_->pole1Angle());
-  const float angular_velocity_1 = math::radiansToDegrees(world_->pole1AngularVelocity());
-  const float pole_angle_2 = math::radiansToDegrees(world_->pole2Angle());
-  const float angular_velocity_2 = math::radiansToDegrees(world_->pole2AngularVelocity());
+  const float wheel_distance = world_->wheelDistance();
+  const float wheel_velocity = world_->wheelVelocity();
+  const float pole_angle = math::radiansToDegrees(world_->poleAngle());
+  const float angular_velocity = math::radiansToDegrees(world_->poleAngularVelocity());
 
   variables_.state->setValue(stateDescription());
   variables_.step->setValue(step_);
-  variables_.pos->setValue(QString::asprintf("%.3f", cart_distance));
-  variables_.velocity->setValue(QString::asprintf("%.3f", cart_velocity));
-  variables_.angle_1->setValue(QString::asprintf("%.2f", pole_angle_1));
-  variables_.angular_velocity_1->setValue(QString::asprintf("%.3f", angular_velocity_1));
-  variables_.angle_2->setValue(QString::asprintf("%.2f", pole_angle_2));
-  variables_.angular_velocity_2->setValue(QString::asprintf("%.3f", angular_velocity_2));
+  variables_.position->setValue(QString::asprintf("%.3f", wheel_distance));
+  variables_.velocity->setValue(QString::asprintf("%.3f", wheel_velocity));
+  variables_.angle->setValue(QString::asprintf("%.2f", pole_angle));
+  variables_.angular_velocity->setValue(QString::asprintf("%.3f", angular_velocity));
 
   update();
 }
@@ -132,16 +127,15 @@ void SandboxWindow::setupVariables() {
   auto config_section = variablesWidget()->addSection("Configuration");
   variables_.generation = config_section->addProperty("Generation");
   variables_.max_steps = config_section->addProperty("Max steps");
+  variables_.initial_angle = config_section->addProperty("Initial angle");
 
   auto game_state_section = variablesWidget()->addSection("Game state");
   variables_.state = game_state_section->addProperty("State");
   variables_.step = game_state_section->addProperty("Simulation step");
-  variables_.pos = game_state_section->addProperty("Cart position");
-  variables_.velocity = game_state_section->addProperty("Cart velocity");
-  variables_.angle_1 = game_state_section->addProperty("Pole 1 angle");
-  variables_.angular_velocity_1 = game_state_section->addProperty("Angular velocity 1");
-  variables_.angle_2 = game_state_section->addProperty("Pole 2 angle");
-  variables_.angular_velocity_2 = game_state_section->addProperty("Angular velocity 2");
+  variables_.position = game_state_section->addProperty("Wheel position");
+  variables_.velocity = game_state_section->addProperty("Wheel velocity");
+  variables_.angle = game_state_section->addProperty("Pole angle");
+  variables_.angular_velocity = game_state_section->addProperty("Angular velocity");
 }
 
 }  // namespace unicycle_ui
