@@ -75,7 +75,7 @@ void Box2dRenderer::DrawSolidCircle(const b2Vec2& center,
   QColor brush_color;
   brush_color.setRgbF(color.r, color.g, color.b, color.a * kAlphaScale);
 
-  painter_->setPen(QPen(Qt::blue, 0));
+  painter_->setPen(QPen(Qt::darkGray, 0));
   painter_->setBrush(QBrush(brush_color));
   painter_->drawEllipse(QPointF(center.x, center.y), radius, radius);
 
