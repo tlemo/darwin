@@ -12,6 +12,6 @@ var searchData=
   ['genotype',['Genotype',['../classdarwin_1_1_genotype.html',1,'darwin::Genotype'],['../classdarwin_1_1_population.html#aa9ccea5f7a593ef84484dbaabc1b506f',1,'darwin::Population::genotype(size_t index)=0'],['../classdarwin_1_1_population.html#a76220e50bd4a8e539c79e75f52519dda',1,'darwin::Population::genotype(size_t index) const =0']]],
   ['genotypes',['genotypes',['../structdarwin_1_1_db_generation.html#abed564224705f83d2a0f54a5a88ab202',1,'darwin::DbGeneration']]],
   ['good_5ffruit_5fhealth',['good_fruit_health',['../structharvester_1_1_config.html#ad666f7b3cc1b59899fe4879bb21d7af2',1,'harvester::Config']]],
-  ['gravity',['gravity',['../structcart__pole_1_1_config.html#a6d5d4720c7e77775a579dc035d7c1c12',1,'cart_pole::Config::gravity()'],['../structdouble__cart__pole_1_1_config.html#a08ab04fe51102f98f5955cc088ae81ec',1,'double_cart_pole::Config::gravity()']]],
+  ['gravity',['gravity',['../structcart__pole_1_1_config.html#a6d5d4720c7e77775a579dc035d7c1c12',1,'cart_pole::Config::gravity()'],['../structdouble__cart__pole_1_1_config.html#a08ab04fe51102f98f5955cc088ae81ec',1,'double_cart_pole::Config::gravity()'],['../structunicycle_1_1_config.html#a83450f8a0832b8c431aca60e65f0e089',1,'unicycle::Config::gravity()']]],
   ['grow',['grow',['../classdarwin_1_1_genotype.html#ae55b9a8507d5688b7f6d46385cf5e976',1,'darwin::Genotype']]]
 ];
