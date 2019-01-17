@@ -1,4 +1,16 @@
 
+## Jan 17th, 2019
+
+Yet another take on inverted pendulums: this time the pole is attached to a wheel
+and the agent tries to keep the pole balanced by applying torque to the wheel, similar
+to riding an unicycle.
+
+It also introduces an additional goal: keep the unicycle close to a random target
+position. This is rewarded by a fitness bonus inversely proportional to the absolute
+distance from the target (but only if the pole is balanced for the whole episode)
+
+![Unicycle screenshot](docs/images/unicycle_sandbox.png)
+
 ## Jan 16th, 2019
 
 New domain: [double-cart-pole][4]. This is a more difficult variation of the single-pole
