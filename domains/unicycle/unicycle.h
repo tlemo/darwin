@@ -22,22 +22,21 @@ namespace unicycle {
 //! Unicycle domain configuration
 struct Config : public core::PropertySet {
   PROPERTY(gravity, float, 9.8f, "Gravitational acceleration");
-  PROPERTY(max_distance, float, 2.4f, "Maximum distance from the center");
+  PROPERTY(max_distance, float, 3.0f, "Maximum distance from the center");
   PROPERTY(max_angle, float, 60.0f, "Maximum angle from vertical");
   PROPERTY(max_initial_angle, float, 10.0f, "Maximum starting angle from vertical");
-  PROPERTY(pole_1_length, float, 1.5f, "First pole length");
-  PROPERTY(pole_1_density, float, 1.0f, "First pole density");
-  PROPERTY(pole_2_length, float, 0.3f, "Second pole length");
-  PROPERTY(pole_2_density, float, 1.0f, "Second pole density");
-  PROPERTY(cart_density, float, 0.0f, "Cart density");
-  PROPERTY(cart_friction, float, 0.0f, "Cart friction");
-  PROPERTY(max_force, float, 10.0f, "Maximum force which can be applied to the cart");
-  
+  PROPERTY(pole_length, float, 1.5f, "Pole length");
+  PROPERTY(pole_density, float, 1.0f, "Pole density");
+  PROPERTY(wheel_radius, float, 0.2f, "Wheel size (radius)");
+  PROPERTY(wheel_density, float, 1.0f, "Wheel density");
+  PROPERTY(wheel_friction, float, 10.0f, "Wheel friction");
+  PROPERTY(max_torque, float, 5.0f, "Maximum torque which can be applied to the wheel");
+
   PROPERTY(input_pole_angle, bool, true, "Use the pole angle as input");
   PROPERTY(input_angular_velocity, bool, false, "Use the angular velocity as input");
-  PROPERTY(input_cart_distance, bool, true, "Use the cart distance as input");
-  PROPERTY(input_cart_velocity, bool, false, "Use the cart velocity as input");
-  
+  PROPERTY(input_wheel_distance, bool, true, "Use the wheel distance as input");
+  PROPERTY(input_wheel_velocity, bool, false, "Use the wheel linear velocity as input");
+
   PROPERTY(test_worlds, int, 5, "Number of test worlds per generation");
   PROPERTY(max_steps, int, 1000, "Maximum number of steps per episode");
 
@@ -46,9 +45,9 @@ struct Config : public core::PropertySet {
            false,
            "Force the actuator force to fixed +/-discrete_force_magnitude");
 
-  PROPERTY(discrete_force_magnitude,
+  PROPERTY(discrete_torque_magnitude,
            float,
-           2.5f,
+           0.5f,
            "The fixed force magnitude used if discrete_controls is true");
 };
 

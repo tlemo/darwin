@@ -54,11 +54,10 @@ bool Unicycle::evaluatePopulation(darwin::Population* population) const {
     darwin::StageScope stage("Evaluate one world", population->size());
     core::log(" ... world %d\n", world_index);
 
-    const float initial_angle_1 = randomInitialAngle();
-    const float initial_angle_2 = randomInitialAngle();
+    const float initial_angle = randomInitialAngle();
 
     pp::for_each(*population, [&](int, darwin::Genotype* genotype) {
-      World world(initial_angle_1, initial_angle_2, this);
+      World world(initial_angle, this);
       Agent agent(genotype, &world);
 
       // simulation loop
@@ -99,16 +98,16 @@ void Unicycle::validateConfiguration() {
     throw core::Exception("Invalid configuration: max_angle >= 90");
   if (config_.max_initial_angle >= config_.max_angle)
     throw core::Exception("Invalid configuration: max_initial_angle >= max_angle");
-  if (config_.pole_1_length <= 0)
-    throw core::Exception("Invalid configuration: pole_1_length must be positive");
-  if (config_.pole_1_density <= 0)
-    throw core::Exception("Invalid configuration: pole_1_density must be positive");
-  if (config_.pole_2_length <= 0)
-    throw core::Exception("Invalid configuration: pole_2_length must be positive");
-  if (config_.pole_2_density <= 0)
-    throw core::Exception("Invalid configuration: pole_2_density must be positive");
-  if (config_.cart_density < 0)
-    throw core::Exception("Invalid configuration: cart_density must be positive or 0");
+  if (config_.pole_length <= 0)
+    throw core::Exception("Invalid configuration: pole_length must be positive");
+  if (config_.pole_density <= 0)
+    throw core::Exception("Invalid configuration: pole_density must be positive");
+  if (config_.wheel_radius <= 0)
+    throw core::Exception("Invalid configuration: wheel_radius must be positive");
+  if (config_.wheel_density < 0)
+    throw core::Exception("Invalid configuration: wheel_density must be positive or 0");
+  if (config_.wheel_friction <= 0)
+    throw core::Exception("Invalid configuration: wheel_friction must be positive");
 
   if (inputs() < 1)
     throw core::Exception("Invalid configuration: at least one input must be selected");

@@ -21,44 +21,41 @@
 namespace unicycle {
 
 class World {
-  static constexpr float kCartHalfWidth = 0.2f;
-  static constexpr float kCartHalfHeight = 0.05f;
   static constexpr float kPoleHalfWidth = 0.02f;
   static constexpr float kGroundY = 0.1f;
+  static constexpr float kGroundFriction = 10.0f;
 
  public:
-  World(float initial_angle_1, float initial_angle_2, const Unicycle* domain);
-  
+  World(float initial_angle, const Unicycle* domain);
+
   // advances the physical simulation one step, returning false
   // if the state reaches one of the termination conditions
   bool simStep();
 
   // world features
-  float cartDistance() const { return cart_->GetPosition().x; }
-  float cartVelocity() const { return cart_->GetLinearVelocity().x; }
-  float pole1Angle() const { return pole_1_->GetAngle(); }
-  float pole1AngularVelocity() const { return pole_1_->GetAngularVelocity(); }
-  float pole2Angle() const { return pole_2_->GetAngle(); }
-  float pole2AngularVelocity() const { return pole_2_->GetAngularVelocity(); }
+  float wheelDistance() const { return wheel_->GetPosition().x; }
+  float wheelVelocity() const { return wheel_->GetLinearVelocity().x; }
+  float poleAngle() const { return pole_->GetAngle(); }
+  float poleAngularVelocity() const { return pole_->GetAngularVelocity(); }
   
   // actuators
-  void moveCart(float force);
+  void turnWheel(float torque);
   
   const Unicycle* domain() const { return domain_; }
 
   b2World* box2dWorld() { return &b2_world_; }
   
  private:
-  b2Body* createPole(float length, float density, float initial_angle);
-  b2Body* createCart(float density, float friction);
-  void createHinge(b2Body* cart, b2Body* pole);
+  b2Body* createGround();
+  b2Body* createPole(float initial_angle);
+  b2Body* createWheel();
+  void createHinge(b2Body* wheel, b2Body* pole);
   
  private:
   b2World b2_world_;
 
-  b2Body* cart_ = nullptr;
-  b2Body* pole_1_ = nullptr;
-  b2Body* pole_2_ = nullptr;
+  b2Body* wheel_ = nullptr;
+  b2Body* pole_ = nullptr;
   
   const Unicycle* domain_ = nullptr;
 };
