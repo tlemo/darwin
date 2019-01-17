@@ -65,8 +65,8 @@ PropertiesWidget::PropertiesWidget(QWidget* parent) : QTreeWidget(parent) {
 
   setAlternatingRowColors(true);
   setUniformRowHeights(true);
-  setColumnWidth(0, 150);
-  setColumnWidth(1, 100);
+  setColumnWidth(0, 175);
+  setColumnWidth(1, 150);
 
   setEditTriggers(QAbstractItemView::AllEditTriggers);
   setItemDelegate(new PropertyItemDelegate(this));
