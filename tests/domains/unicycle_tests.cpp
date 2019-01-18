@@ -93,6 +93,10 @@ TEST(UnicycleTest, World_PoleGravity) {
         break;
     }
     EXPECT_GT(step, 0);
+    EXPECT_GT(world.fitnessBonus(), 0);
+    if (initial_angle == 0.0f) {
+      EXPECT_EQ(world.fitnessBonus(), config.max_steps);
+    }
     return step;
   };
 

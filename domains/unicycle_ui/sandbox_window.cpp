@@ -115,9 +115,11 @@ void SandboxWindow::updateUI() {
   const float pole_angle = math::radiansToDegrees(world_->poleAngle());
   const float angular_velocity = math::radiansToDegrees(world_->poleAngularVelocity());
   const float dist_from_target = fabs(wheel_distance - world_->targetPosition());
+  const float fitness_bonus = world_->fitnessBonus() / max_steps_;
 
   variables_.state->setValue(stateDescription());
   variables_.step->setValue(step_);
+  variables_.fitness_bonus->setValue(QString::asprintf("%.3f", fitness_bonus));
   variables_.position->setValue(QString::asprintf("%.3f", wheel_distance));
   variables_.velocity->setValue(QString::asprintf("%.3f", wheel_velocity));
   variables_.angle->setValue(QString::asprintf("%.2f", pole_angle));
@@ -137,6 +139,7 @@ void SandboxWindow::setupVariables() {
   auto game_state_section = variablesWidget()->addSection("Game state");
   variables_.state = game_state_section->addProperty("State");
   variables_.step = game_state_section->addProperty("Simulation step");
+  variables_.fitness_bonus = game_state_section->addProperty("Fitness bonus");
   variables_.position = game_state_section->addProperty("Wheel position");
   variables_.velocity = game_state_section->addProperty("Wheel velocity");
   variables_.angle = game_state_section->addProperty("Pole angle");

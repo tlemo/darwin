@@ -45,6 +45,9 @@ class World {
   
   float targetPosition() const { return target_position_; }
 
+  // extra reward for staying close to the target position
+  float fitnessBonus() const { return fitness_bonus_; }
+
   b2World* box2dWorld() { return &b2_world_; }
   
  private:
@@ -57,6 +60,8 @@ class World {
   b2World b2_world_;
   b2Body* wheel_ = nullptr;
   b2Body* pole_ = nullptr;
+  
+  float fitness_bonus_ = 0;
   
   const float target_position_ = 0;
   

@@ -135,6 +135,11 @@ bool World::simStep() {
   if (pole_angle < -max_angle || pole_angle > max_angle)
     return false;
 
+  // update the "close-to-target" fitness bonus
+  const float distance_from_target = fabs(wheelDistance() - target_position_);
+  const float score = 1 - fmin(distance_from_target / config.max_distance, 1);
+  fitness_bonus_ += score * score;
+
   return true;
 }
 
