@@ -30,12 +30,12 @@ struct Config : public core::PropertySet {
   PROPERTY(wheel_radius, float, 0.2f, "Wheel size (radius)");
   PROPERTY(wheel_density, float, 1.0f, "Wheel density");
   PROPERTY(wheel_friction, float, 10.0f, "Wheel friction");
-  PROPERTY(max_torque, float, 5.0f, "Maximum torque which can be applied to the wheel");
+  PROPERTY(max_torque, float, 1.0f, "Maximum torque which can be applied to the wheel");
 
   PROPERTY(input_pole_angle, bool, true, "Use the pole angle as input");
-  PROPERTY(input_angular_velocity, bool, false, "Use the angular velocity as input");
+  PROPERTY(input_angular_velocity, bool, true, "Use the angular velocity as input");
   PROPERTY(input_wheel_distance, bool, true, "Use the wheel distance as input");
-  PROPERTY(input_wheel_velocity, bool, false, "Use the wheel linear velocity as input");
+  PROPERTY(input_wheel_velocity, bool, true, "Use the wheel linear velocity as input");
   PROPERTY(input_distance_from_target, bool, true, "Distance from target position");
 
   PROPERTY(test_worlds, int, 5, "Number of test worlds per generation");
