@@ -40,6 +40,7 @@ class SandboxWindow : public core_ui::Box2dSandboxWindow {
     // simulation state
     core_ui::PropertyItem* state = nullptr;
     core_ui::PropertyItem* step = nullptr;
+    core_ui::PropertyItem* fitness_bonus = nullptr;
     core_ui::PropertyItem* position = nullptr;
     core_ui::PropertyItem* velocity = nullptr;
     core_ui::PropertyItem* angle = nullptr;
