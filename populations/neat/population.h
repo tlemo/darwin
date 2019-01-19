@@ -18,6 +18,11 @@
 
 #include <core/darwin.h>
 
+#include <atomic>
+#include <vector>
+#include <memory>
+using namespace std;
+
 namespace neat {
 
 struct Species {
@@ -52,7 +57,7 @@ class Population : public darwin::Population {
   void speciate();
   void assignSpecies(int index);
 
- protected:
+ private:
   vector<Genotype> genotypes_;
   vector<Species> species_;
   atomic<Innovation> next_innovation_ = 0;
