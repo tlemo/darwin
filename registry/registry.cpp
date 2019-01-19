@@ -14,6 +14,7 @@
 
 #include "registry.h"
 
+#include <populations/cgp/cgp.h>
 #include <populations/classic/classic.h>
 #include <populations/neat/neat.h>
 
@@ -40,8 +41,9 @@ void init() {
   unicycle::init();
 
   // populations
-  neat::init();
+  cgp::init();
   classic::init();
+  neat::init();
 }
 
 }  // namespace registry

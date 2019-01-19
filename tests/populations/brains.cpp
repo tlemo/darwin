@@ -18,6 +18,7 @@
 #include <core/darwin.h>
 #include <core/parallel_for_each.h>
 
+#include <populations/cgp/cgp.h>
 #include <populations/classic/classic.h>
 #include <populations/neat/neat.h>
 
@@ -47,6 +48,8 @@ struct BrainsTest : public testing::TestWithParam<string> {
       updateConfig(neat_config);
     } else if (auto classic_config = dynamic_cast<classic::Config*>(config.get())) {
       updateConfig(classic_config);
+    } else if (auto cgp_config = dynamic_cast<cgp::Config*>(config.get())) {
+      updateConfig(cgp_config);
     } else {
       FATAL("Unexpected population type");
     }
@@ -55,6 +58,10 @@ struct BrainsTest : public testing::TestWithParam<string> {
     CHECK(population);
 
     population->createPrimordialGeneration(kPopulationSize);
+  }
+
+  void updateConfig(cgp::Config* config) {
+    // TODO
   }
 
   void updateConfig(neat::Config* config) {

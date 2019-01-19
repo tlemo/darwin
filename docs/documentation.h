@@ -47,6 +47,10 @@
 //! \namespace registry_ui
 //! \brief Support for registering domain UIs
 
+//! \namespace cgp
+//! \brief [Cartesian Genetic Programming (CGP)]
+//!     (https://en.wikipedia.org/wiki/Cartesian_genetic_programming)
+
 //! \namespace classic
 //! \brief Classic Neuroevolution populations
 
