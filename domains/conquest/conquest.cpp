@@ -115,7 +115,7 @@ unique_ptr<core::PropertySet> Factory::defaultConfig(darwin::ComplexityHint hint
       config->tournament_type.default_tournament.rematches = true;
       config->tournament_type.selectCase(tournament::TournamentType::Default);
       config->calibration_matches = 2;
-      config->max_steps = 1000;
+      config->max_steps = 100;
       break;
 
     case darwin::ComplexityHint::Balanced:

@@ -112,7 +112,7 @@ unique_ptr<core::PropertySet> Factory::defaultConfig(darwin::ComplexityHint hint
       config->tournament_type.default_tournament.rematches = false;
       config->tournament_type.selectCase(tournament::TournamentType::Default);
       config->calibration_games = 3;
-      config->max_steps = 1000;
+      config->max_steps = 500;
       config->sets_per_game = 2;
       config->sets_required_to_win = 2;
       break;
