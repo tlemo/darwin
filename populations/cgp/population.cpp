@@ -54,23 +54,4 @@ void Population::createNextGeneration() {
   ranked_ = false;
 }
 
-unique_ptr<darwin::Population> Factory::create(const core::PropertySet& config,
-                                               const darwin::Domain& domain) {
-  // TODO
-  return make_unique<Population>();
-}
-
-unique_ptr<core::PropertySet> Factory::defaultConfig(darwin::ComplexityHint hint) const {
-  auto config = make_unique<Config>();
-  switch (hint) {
-    case darwin::ComplexityHint::Minimal:
-      break;
-    case darwin::ComplexityHint::Balanced:
-      break;
-    case darwin::ComplexityHint::Extra:
-      break;
-  }
-  return config;
-}
-
 }  // namespace cgp

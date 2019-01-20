@@ -68,11 +68,4 @@ class Population : public darwin::Population {
   vector<size_t> order_;
 };
 
-class Factory : public darwin::PopulationFactory {
-  unique_ptr<darwin::Population> create(const core::PropertySet& config,
-                                        const darwin::Domain& domain) override;
-
-  unique_ptr<core::PropertySet> defaultConfig(darwin::ComplexityHint hint) const override;
-};
-
 }  // namespace neat

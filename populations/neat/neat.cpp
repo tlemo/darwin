@@ -24,6 +24,46 @@ Config g_config;
 int g_inputs = 0;
 int g_outputs = 0;
 
+class Factory : public darwin::PopulationFactory {
+  unique_ptr<darwin::Population> create(const core::PropertySet& config,
+                                        const darwin::Domain& domain) override {
+    g_config.copyFrom(config);
+    g_inputs = int(domain.inputs());
+    g_outputs = int(domain.outputs());
+    CHECK(g_inputs > 0);
+    CHECK(g_outputs > 0);
+    ann::setActivationFunction(g_config.activation_function);
+    ann::setGateActivationFunction(g_config.gate_activation_function);
+    return make_unique<Population>();
+  }
+
+  unique_ptr<core::PropertySet> defaultConfig(
+      darwin::ComplexityHint hint) const override {
+    auto config = make_unique<Config>();
+    switch (hint) {
+      case darwin::ComplexityHint::Minimal:
+        config->use_lstm_nodes = false;
+        config->recurrent_output_nodes = false;
+        config->recurrent_hidden_nodes = false;
+        config->larva_age = 1;
+        config->old_age = 3;
+        config->min_species_size = 5;
+        break;
+
+      case darwin::ComplexityHint::Balanced:
+        config->use_lstm_nodes = false;
+        break;
+
+      case darwin::ComplexityHint::Extra:
+        config->use_lstm_nodes = true;
+        config->recurrent_output_nodes = true;
+        config->recurrent_hidden_nodes = true;
+        break;
+    }
+    return config;
+  }
+};
+
 void init() {
   darwin::registry()->populations.add<Factory>("neat");
 }

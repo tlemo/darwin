@@ -164,38 +164,4 @@ class Population : public darwin::Population {
   bool ranked_ = false;
 };
 
-template <class GENOTYPE>
-class Factory : public darwin::PopulationFactory {
-  unique_ptr<darwin::Population> create(const core::PropertySet& config,
-                                        const darwin::Domain& domain) override {
-    g_config.copyFrom(config);
-    g_inputs = domain.inputs();
-    g_outputs = domain.outputs();
-    CHECK(g_inputs > 0);
-    CHECK(g_outputs > 0);
-    ann::setActivationFunction(g_config.activation_function);
-    ann::setGateActivationFunction(g_config.gate_activation_function);
-    return make_unique<Population<GENOTYPE>>();
-  }
-
-  unique_ptr<core::PropertySet> defaultConfig(
-      darwin::ComplexityHint hint) const override {
-    auto config = make_unique<Config>();
-    switch (hint) {
-      case darwin::ComplexityHint::Minimal:
-        config->hidden_layers = {};
-        break;
-
-      case darwin::ComplexityHint::Balanced:
-        config->hidden_layers = { 8 };
-        break;
-
-      case darwin::ComplexityHint::Extra:
-        config->hidden_layers = { 12, 8, 5};
-        break;
-    }
-    return config;
-  }
-};
-
 }  // namespace classic
