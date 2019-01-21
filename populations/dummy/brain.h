@@ -59,8 +59,8 @@ class Brain : public darwin::Brain {
   vector<float> outputs_;
   
   // make sure all the inputs and outputs are used
-  mutable vector<bool> used_inputs_;
-  mutable vector<bool> used_outputs_;
+  mutable vector<char> used_inputs_;
+  mutable vector<char> used_outputs_;
 };
 
 }  // namespace dummy
