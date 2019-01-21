@@ -56,7 +56,7 @@ struct Config : public core::PropertySet {
            1.0f / int_unit_scale,
            "Minimum units required to deploy an attack");
   PROPERTY(deploy_resolution, float, deploy_min, "Deployment resolution");
-  PROPERTY(units_speed, float, 2.0f, "Units move speed");
+  PROPERTY(units_speed, float, 1.0f, "Units move speed");
   PROPERTY(deploy_percent, float, 0.99f, "What % of units are deployed? (0..1]");
 
   VARIANT(tournament_type,

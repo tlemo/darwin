@@ -30,8 +30,8 @@ class Factory : public darwin::PopulationFactory {
     auto config = make_unique<Config>();
     switch (hint) {
       case darwin::ComplexityHint::Minimal:
-        config->input_range = 1000.0f;
-        config->output_range = 1000.0f;
+        config->input_range = 10.0f;
+        config->output_range = 100.0f;
         config->random_outputs = true;
         break;
       case darwin::ComplexityHint::Balanced:

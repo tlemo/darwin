@@ -22,7 +22,7 @@ void init();
 
 struct Config : public core::PropertySet {
   PROPERTY(input_range, float, 10.0f, "The expected inputs range (checked at runtime)");
-  PROPERTY(output_range, float, 10.0f, "The range of (random) output values");
+  PROPERTY(output_range, float, 2.0f, "The range of (random) output values");
   PROPERTY(random_outputs, bool, true, "Generate random outputs");
   PROPERTY(const_output, float, 0.0f, "Used for all outputs if random_outputs is false");
   
