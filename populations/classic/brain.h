@@ -28,7 +28,7 @@ class Brain : public darwin::Brain {
   using OutputLayer = typename TRAITS::OutputLayer;
 
  public:
-  Brain(const Genotype* genotype) : output_layer_(genotype->output_layer) {
+  explicit Brain(const Genotype* genotype) : output_layer_(genotype->output_layer) {
     CHECK(g_inputs > 0);
     inputs_.resize(g_inputs);
     for (const auto& layer : genotype->hidden_layers)

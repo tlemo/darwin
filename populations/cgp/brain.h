@@ -24,7 +24,7 @@ namespace cgp {
 
 class Brain : public darwin::Brain {
  public:
-  Brain(const Genotype* genotype);
+  explicit Brain(const Genotype* genotype);
 
   void setInput(int index, float value) override {
     // TODO

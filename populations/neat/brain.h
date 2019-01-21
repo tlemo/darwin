@@ -42,7 +42,7 @@ struct Node {
 };
 
 struct LstmNode : public Node {
-  LstmNode(const array<float, Nlstm>& lw) : lw(lw) {}
+  explicit LstmNode(const array<float, Nlstm>& lw) : lw(lw) {}
 
   // LSTM weights (points directly into the genotype)
   const array<float, Nlstm>& lw;
@@ -61,7 +61,7 @@ class Brain : public darwin::Brain {
   constexpr static int kFirstInput = 1;
 
  public:
-  Brain(const Genotype* genotype);
+  explicit Brain(const Genotype* genotype);
 
   // index is the input index [0, INPUTS)
   void setInput(int index, float value) override {
