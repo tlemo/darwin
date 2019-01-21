@@ -103,7 +103,7 @@ struct BrainsTest : public testing::TestWithParam<string> {
 
       // consume outputs
       for (size_t i = 0; i < domain->outputs(); ++i) {
-        [[maybe_unused]] float value = brain->output(i);
+        [[maybe_unused]] float value = brain->output(int(i));
       }
     });
   }
