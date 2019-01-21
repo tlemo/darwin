@@ -13,42 +13,38 @@
 // limitations under the License.
 
 #include "population.h"
-#include "dummy.h"
 
-#include <core/evolution.h>
-#include <core/logging.h>
-#include <core/parallel_for_each.h>
+#include <core/exception.h>
 
 namespace dummy {
 
+Population::Population(const core::PropertySet& config, const darwin::Domain& domain) {
+  config_.copyFrom(config);
+  domain_ = &domain;
+  
+  // validate configuration
+  if (config_.input_range < 0)
+    throw core::Exception("Invalid configuration: input_range < 0");
+  if (config_.output_range < 0)
+    throw core::Exception("Invalid configuration: output_range < 0");
+}
+
 void Population::createPrimordialGeneration(int population_size) {
-  // TODO
   generation_ = 0;
   ranked_ = false;
-  genotypes_.resize(population_size);
+  genotypes_.resize(population_size, Genotype(this));
 }
 
 void Population::rankGenotypes() {
   CHECK(!ranked_);
-
   // sort results by fitness (descending order)
   std::sort(genotypes_.begin(),
             genotypes_.end(),
             [](const Genotype& a, const Genotype& b) { return a.fitness > b.fitness; });
-
-  // log best fitness values
-  core::log("Fitness values: ");
-  const size_t sample_size = min(size_t(16), genotypes_.size());
-  for (size_t i = 0; i < sample_size; ++i) {
-    core::log(" %.3f", genotypes_[i].fitness);
-  }
-  core::log(" ...\n");
-
   ranked_ = true;
 }
 
 void Population::createNextGeneration() {
-  // TODO
   CHECK(ranked_);
   ++generation_;
   ranked_ = false;

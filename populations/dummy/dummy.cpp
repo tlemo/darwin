@@ -22,8 +22,7 @@ namespace dummy {
 class Factory : public darwin::PopulationFactory {
   unique_ptr<darwin::Population> create(const core::PropertySet& config,
                                         const darwin::Domain& domain) override {
-    // TODO
-    return make_unique<Population>();
+    return make_unique<Population>(config, domain);
   }
 
   unique_ptr<core::PropertySet> defaultConfig(
@@ -31,6 +30,9 @@ class Factory : public darwin::PopulationFactory {
     auto config = make_unique<Config>();
     switch (hint) {
       case darwin::ComplexityHint::Minimal:
+        config->input_range = 1000.0f;
+        config->output_range = 1000.0f;
+        config->random_outputs = true;
         break;
       case darwin::ComplexityHint::Balanced:
         break;

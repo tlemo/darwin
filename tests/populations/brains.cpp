@@ -93,12 +93,18 @@ struct BrainsTest : public testing::TestWithParam<string> {
       auto genotype = population->genotype(index);
       brain = genotype->grow();
 
+      // set inputs
       for (size_t i = 0; i < domain->inputs(); ++i) {
         const float value = i % 2 ? 1.0f : -1.0f;
         brain->setInput(int(i), value);
       }
 
       brain->think();
+
+      // consume outputs
+      for (size_t i = 0; i < domain->outputs(); ++i) {
+        [[maybe_unused]] float value = brain->output(i);
+      }
     });
   }
 

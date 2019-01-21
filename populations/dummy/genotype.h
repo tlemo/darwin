@@ -18,19 +18,30 @@
 
 #include <core/darwin.h>
 
+#include <random>
+using namespace std;
+
 namespace dummy {
+
+class Population;
 
 class Genotype : public darwin::Genotype {
  public:
-  Genotype();
+  explicit Genotype(const Population* population);
 
   unique_ptr<darwin::Brain> grow() const override;
   unique_ptr<darwin::Genotype> clone() const override;
 
   json save() const override;
   void load(const json& json_obj) override;
-
   void reset() override;
+
+  auto population() const { return population_; }
+  auto seed() const { return seed_; }
+
+ private:
+  const Population* population_ = nullptr;
+  random_device::result_type seed_ = 0;
 };
 
 }  // namespace dummy

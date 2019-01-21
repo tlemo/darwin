@@ -12,19 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "dummy.h"
 #include "genotype.h"
 #include "brain.h"
+#include "dummy.h"
 
 namespace dummy {
 
-Genotype::Genotype() {
+Genotype::Genotype(const Population* population) : population_(population) {
   reset();
 }
 
 void Genotype::reset() {
   darwin::Genotype::reset();
-  // TODO
+  seed_ = random_device{}();
 }
 
 unique_ptr<darwin::Brain> Genotype::grow() const {
@@ -37,13 +37,13 @@ unique_ptr<darwin::Genotype> Genotype::clone() const {
 
 json Genotype::save() const {
   json json_obj;
-  // TODO
+  json_obj["seed"] = seed_;
   return json_obj;
 }
 
 void Genotype::load(const json& json_obj) {
-  Genotype tmp_genotype;
-  // TODO
+  Genotype tmp_genotype(population_);
+  tmp_genotype.seed_ = json_obj.at("seed");
   std::swap(*this, tmp_genotype);
 }
 

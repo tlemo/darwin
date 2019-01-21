@@ -15,31 +15,52 @@
 #pragma once
 
 #include "genotype.h"
-#include "dummy.h"
 
-#include <core/ann_activation_functions.h>
 #include <core/darwin.h>
+
+#include <random>
+#include <vector>
+using namespace std;
 
 namespace dummy {
 
 class Brain : public darwin::Brain {
+  // model and check the expected usage pattern:
+  //
+  // for_each(episode_step):
+  //    1. for_each(input_index): setInput(input_index, value)
+  //    2. think()
+  //    3. for_each(ouput_index): output(output_index)
+  //
+  enum class State { WaitingForInputs, OutputsReady };
+
  public:
-  Brain(const Genotype* genotype);
+  explicit Brain(const Genotype* genotype);
+  ~Brain();
 
-  void setInput(int index, float value) override {
-    // TODO
-  }
-
-  float output(int index) const override {
-    // TODO
-    return 0;
-  }
-
+  void setInput(int index, float value) override;
+  float output(int index) const override;
   void think() override;
-
   void resetState() override;
 
  private:
+  void resetUsedFlags();
+  void checkInputsSet();
+  void checkOutputsConsumed();
+  
+ private:
+  const Genotype* genotype_ = nullptr;
+  default_random_engine rnd_;
+
+  State state_ = State::WaitingForInputs;
+  
+  // input & output values
+  vector<float> inputs_;
+  vector<float> outputs_;
+  
+  // make sure all the inputs and outputs are used
+  mutable vector<bool> used_inputs_;
+  mutable vector<bool> used_outputs_;
 };
 
 }  // namespace dummy
