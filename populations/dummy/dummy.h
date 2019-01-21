@@ -25,6 +25,9 @@ struct Config : public core::PropertySet {
   PROPERTY(output_range, float, 10.0f, "The range of (random) output values");
   PROPERTY(random_outputs, bool, true, "Generate random outputs");
   PROPERTY(const_output, float, 0.0f, "Used for all outputs if random_outputs is false");
+  
+  PROPERTY(elite_percentage, float, 0.1f, "Elite percentage");
+  PROPERTY(elite_min_fitness, float, 0.0f, "Elite minimum fitness");
 };
 
 }  // namespace dummy

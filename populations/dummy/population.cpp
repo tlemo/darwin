@@ -30,6 +30,7 @@ Population::Population(const core::PropertySet& config, const darwin::Domain& do
 }
 
 void Population::createPrimordialGeneration(int population_size) {
+  CHECK(population_size > 0);
   generation_ = 0;
   ranked_ = false;
   genotypes_.resize(population_size, Genotype(this));
@@ -46,6 +47,17 @@ void Population::rankGenotypes() {
 
 void Population::createNextGeneration() {
   CHECK(ranked_);
+  CHECK(!genotypes_.empty());
+
+  const int elite_limit = max(2, int(genotypes_.size() * config_.elite_percentage));
+  for (int index = int(genotypes_.size()) - 1; index >= 0; --index) {
+    Genotype& genotype = genotypes_[index];
+    if (index < elite_limit && genotype.fitness >= config_.elite_min_fitness) {
+      break;
+    }
+    genotype.reset();
+  }
+
   ++generation_;
   ranked_ = false;
 }

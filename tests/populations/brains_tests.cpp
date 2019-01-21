@@ -64,7 +64,9 @@ struct BrainsTest : public testing::TestWithParam<string> {
   }
 
   void updateConfig(dummy::Config* config) {
-    // TODO
+    config->input_range = 5.0f;
+    config->output_range = 10.0f;
+    config->random_outputs = true;
   }
 
   void updateConfig(cgp::Config* config) {
