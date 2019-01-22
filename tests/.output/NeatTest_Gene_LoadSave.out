@@ -1,0 +1,8 @@
+{
+  "enabled": false,
+  "in": 0,
+  "innovation": 100,
+  "out": 1,
+  "recurrent": true,
+  "weight": 0.5
+}

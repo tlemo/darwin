@@ -58,7 +58,7 @@ struct LstmNode : public Node {
 // Phenotype
 class Brain : public darwin::Brain {
   // see the genotype comments regarding the node numbering
-  constexpr static int kFirstInput = 1;
+  static constexpr int kFirstInput = 1;
 
  public:
   explicit Brain(const Genotype* genotype);

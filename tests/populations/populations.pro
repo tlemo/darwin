@@ -7,7 +7,8 @@ SOURCES += \
     classic_genes_tests.cpp \
     brains_tests.cpp \
     classic_crossover_tests.cpp \
-    classic_mutation_tests.cpp
+    classic_mutation_tests.cpp \
+    neat_tests.cpp
     
 HEADERS += \
     dummy_domain.h
