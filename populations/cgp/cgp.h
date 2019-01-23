@@ -23,6 +23,10 @@ void init();
 struct Config : public core::PropertySet {
   PROPERTY(normalize_input, bool, false, "Normalize input values");
   PROPERTY(normalize_output, bool, false, "Normalize output values");
+  
+  PROPERTY(rows, int, 4, "Number of node rows");
+  PROPERTY(columns, int, 8, "Number of node columns");
+  PROPERTY(levels_back, int, 2, "Levels-back");
 };
 
 }  // namespace cgp
