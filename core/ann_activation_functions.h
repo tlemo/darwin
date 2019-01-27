@@ -22,12 +22,15 @@ using namespace std;
 namespace ann {
 
 //! The types of supported activation functions
+//! 
+//! \note Consider adding new activation functions to cgp::FunctionId as well
+//! 
 enum class ActivationFunction {
   Identity,     //!< Identity
   Logistic,     //!< Logistic
   Tanh,         //!< Hyperbolic tangent (tanh)
   ReLU,         //!< ReLU
-  Neat,         //!< Neat activation function
+  Neat,         //!< NEAT activation function
   ReExp,        //!< Experimental
   LogisticEx    //!< Experimental
 };
@@ -67,6 +70,44 @@ inline float activate(float x) {
 //! \sa setGateActivationFunction
 inline float activateGate(float x) {
   return (*g_gate_activation_function)(x);
+}
+
+//! Identity function
+inline float afnIdentity(float x) {
+  return x;
+}
+
+//! Standard logistic function
+inline float afnLogistic(float x) {
+  return 1 / (1 + exp(-x));
+}
+
+//! tanh
+inline float afnTanh(float x) {
+  return tanh(x);
+}
+
+//! ReLU
+inline float afnReLU(float x) {
+  return x > 0 ? x : 0;
+}
+
+//! Classic NEAT activation function
+inline float afnNeat(float x) {
+  constexpr float kSlope = 4.924273f;  // NEAT magic constant
+  return 1 / (1 + exp(-x * kSlope));
+}
+
+//! Experimental: ReExp
+//! \todo review/evaluate
+inline float afnReExp(float x) {
+  return x > 0 ? (1 - exp(-x)) : 0;
+}
+
+//! Experimental: Yet another sigmoid function
+//! \todo review/evaluate
+inline float afnLogisticEx(float x) {
+  return 1 / (1 + exp(-2 * (x - 2)));
 }
 
 }  // namespace ann
