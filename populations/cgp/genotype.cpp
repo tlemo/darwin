@@ -15,17 +15,15 @@
 #include "cgp.h"
 #include "genotype.h"
 #include "brain.h"
+#include "population.h"
+
+#include <random>
+#include <limits>
+using namespace std;
 
 namespace cgp {
 
-Genotype::Genotype() {
-  reset();
-}
-
-void Genotype::reset() {
-  darwin::Genotype::reset();
-  // TODO
-}
+Genotype::Genotype(const Population* population) : population_(population) {}
 
 unique_ptr<darwin::Brain> Genotype::grow() const {
   return make_unique<Brain>(this);
@@ -42,9 +40,82 @@ json Genotype::save() const {
 }
 
 void Genotype::load(const json& json_obj) {
-  Genotype tmp_genotype;
+  Genotype tmp_genotype(population_);
   // TODO
   std::swap(*this, tmp_genotype);
+}
+
+void Genotype::reset() {
+  darwin::Genotype::reset();
+  function_genes_.clear();
+  output_genes_.clear();
+}
+
+void Genotype::createPrimordialSeed() {
+  const auto& config = population_->config();
+  CHECK(config.rows > 0);
+  CHECK(config.columns > 0);
+  
+  function_genes_.resize(config.rows * config.columns);
+  output_genes_.resize(population_->domain()->outputs());
+
+  // randomize all connections and functions  
+  mutate(1.0f, 1.0f);
+}
+
+void Genotype::mutate(float connection_mutation_chance, float function_mutation_chance) {
+  const auto& config = population_->config();
+  const int rows_count = config.rows;
+  const int columns_count = config.columns;
+
+  random_device rd;
+  default_random_engine rnd(rd());
+  bernoulli_distribution dist_mutate_connection(connection_mutation_chance);
+  bernoulli_distribution dist_mutate_function(function_mutation_chance);
+
+  // function genes
+  uniform_int_distribution<int> dist_function_id(0, kFunctionCount - 1);
+  for (int col = 0; col < columns_count; ++col) {
+    auto range = connectionRange(col + 1);
+    uniform_int_distribution<IndexType> dist_connection(range.first, range.second);
+    for (int row = 0; row < rows_count; ++row) {
+      auto& gene = function_genes_[row + col * rows_count];
+      if (dist_mutate_function(rnd)) {
+        gene.function = FunctionId(dist_function_id(rnd));
+      }
+      for (auto& connection : gene.connections) {
+        if (dist_mutate_connection(rnd)) {
+          connection = dist_connection(rnd);
+        }
+      }
+    }
+  }
+
+  // output genes
+  auto range = connectionRange(columns_count + 1);
+  uniform_int_distribution<IndexType> dist_connection(range.first, range.second);
+  for (OutputGene& gene : output_genes_) {
+    if (dist_mutate_connection(rnd)) {
+      gene.connection = dist_connection(rnd);
+    }
+  }
+}
+
+pair<IndexType, IndexType> Genotype::connectionRange(int layer) const {
+  const auto& config = population_->config();
+  const size_t inputs_count = population_->domain()->inputs();
+  CHECK(layer > 0 && layer <= config.columns + 1);
+  CHECK(config.levels_back > 0);
+
+  auto layerBaseIndex = [&](int layer) {
+    return layer == 0 ? 0 : inputs_count + (layer - 1) * config.rows;
+  };
+
+  const int min_connection_layer = max(layer - config.levels_back, 0);
+  const size_t min_index = layerBaseIndex(min_connection_layer);
+  const size_t max_index = layerBaseIndex(layer) - 1;
+  CHECK(max_index <= numeric_limits<IndexType>::max());
+  return { IndexType(min_index), IndexType(max_index) };
 }
 
 }  // namespace cgp

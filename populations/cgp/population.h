@@ -14,11 +14,12 @@
 
 #pragma once
 
+#include "cgp.h"
 #include "genotype.h"
 
 #include <core/darwin.h>
+#include <core/properties.h>
 
-#include <memory>
 #include <vector>
 using namespace std;
 
@@ -26,6 +27,8 @@ namespace cgp {
 
 class Population : public darwin::Population {
  public:
+  Population(const core::PropertySet& config, const darwin::Domain& domain);
+
   size_t size() const override { return genotypes_.size(); }
   int generation() const override { return generation_; }
 
@@ -36,7 +39,13 @@ class Population : public darwin::Population {
   void rankGenotypes() override;
   void createNextGeneration() override;
 
+  const Config& config() const { return config_; }
+  const darwin::Domain* domain() const { return domain_; }
+
  private:
+  Config config_;
+  const darwin::Domain* domain_ = nullptr;
+
   vector<Genotype> genotypes_;
   int generation_ = 0;
   bool ranked_ = false;

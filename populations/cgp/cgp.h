@@ -21,12 +21,18 @@ namespace cgp {
 void init();
 
 struct Config : public core::PropertySet {
-  PROPERTY(normalize_input, bool, false, "Normalize input values");
-  PROPERTY(normalize_output, bool, false, "Normalize output values");
-  
-  PROPERTY(rows, int, 4, "Number of node rows");
-  PROPERTY(columns, int, 8, "Number of node columns");
+  PROPERTY(rows, int, 8, "Number of node rows");
+  PROPERTY(columns, int, 16, "Number of node columns");
   PROPERTY(levels_back, int, 2, "Levels-back");
+
+  PROPERTY(connection_mutation_chance,
+           float,
+           0.02f,
+           "Probability of mutating a connection");
+  PROPERTY(function_mutation_chance,
+           float,
+           0.01f,
+           "Probability of mutating a node's function");
 };
 
 }  // namespace cgp

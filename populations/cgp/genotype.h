@@ -18,19 +18,102 @@
 
 #include <core/darwin.h>
 
+#include <vector>
+#include <array>
+#include <cstdint>
+#include <utility>
+using namespace std;
+
 namespace cgp {
+
+class Population;
+
+using IndexType = uint16_t;
+
+constexpr int kMaxFunctionArity = 2;
+
+enum class FunctionId : IndexType {
+  // constants
+  ConstZero,
+  ConstOne,
+  ConstTwo,
+  ConstPi,
+  ConstE,
+  
+  // arithmetic functions
+  Add,
+  Subtract,
+  Multiply,
+  Divide,
+  
+  // common math functions
+  Abs,
+  Average,
+  Min,
+  Max,
+  Sin,
+  Cos,
+  Tan,
+  Log,
+  Sqrt,
+  Square,
+  Power,
+  Exponential,
+  
+  // ANN activation functions
+  Identity,     //!< Identity
+  Logistic,     //!< Logistic
+  Tanh,         //!< Hyperbolic tangent (tanh)
+  ReLU,         //!< ReLU
+  Neat,         //!< NEAT activation function
+  
+  // logic gates
+  And,
+  Or,
+  Not,
+  Xor,
+  
+  // last value marker
+  LastEntry
+};
+
+constexpr int kFunctionCount = static_cast<int>(FunctionId::LastEntry);
+
+struct FunctionGene {
+  FunctionId function;
+  array<IndexType, kMaxFunctionArity> connections;
+};
+
+struct OutputGene {
+  IndexType connection;
+};
 
 class Genotype : public darwin::Genotype {
  public:
-  Genotype();
+  explicit Genotype(const Population* population);
 
   unique_ptr<darwin::Brain> grow() const override;
   unique_ptr<darwin::Genotype> clone() const override;
 
   json save() const override;
   void load(const json& json_obj) override;
-
   void reset() override;
+
+  void createPrimordialSeed();
+  void mutate(float connection_mutation_chance, float function_mutation_chance);
+
+  auto population() const { return population_; }
+  auto functionGenes() const { return function_genes_; }
+  auto outputGenes() const { return output_genes_; }
+  
+ private:
+  pair<IndexType, IndexType> connectionRange(int layer) const;
+
+ private:
+  const Population* population_ = nullptr;
+
+  vector<FunctionGene> function_genes_;
+  vector<OutputGene> output_genes_;
 };
 
 }  // namespace cgp
