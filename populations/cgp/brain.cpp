@@ -14,18 +14,167 @@
 
 #include "brain.h"
 
+#include <core/ann_activation_functions.h>
+
+#include <cmath>
+using namespace std;
+
 namespace cgp {
 
-Brain::Brain(const Genotype* genotype) {
-  // TODO
+Brain::Brain(const Genotype* genotype) : genotype_(genotype) {
+  auto domain = genotype_->population()->domain();
+
+  // start with the inputs set
+  registers_.resize(domain->inputs());
+  
+  // stores the output register index if the node was visited, otherwise 0
+  vector<IndexType> nodes_map(genotype_->functionGenes().size());
+
+  for (const auto& output_gene : genotype_->outputGenes()) {
+    auto register_index = dfsNodeEval(output_gene.connection, nodes_map);
+    outputs_map_.push_back(register_index);
+  }
+}
+
+IndexType Brain::dfsNodeEval(IndexType node_index, vector<IndexType>& nodes_map) {
+  auto domain = genotype_->population()->domain();
+  const size_t inputs_count = domain->inputs();
+
+  // input node?
+  if (node_index < inputs_count) {
+    return node_index;
+  }
+
+  const auto function_node_index = IndexType(node_index - inputs_count);
+  CHECK(function_node_index < nodes_map.size());
+  
+  auto register_index = nodes_map[function_node_index];
+  if (register_index != 0) {
+    CHECK(register_index >= inputs_count);
+    CHECK(register_index < registers_.size());
+    return register_index;
+  }
+
+  // if not yet visited, do a post-order dfs traversal
+  const auto& gene = genotype_->functionGenes()[function_node_index];
+  Instruction instruction;
+  instruction.function = gene.function;
+  for (size_t i = 0; i < gene.connections.size(); ++i) {
+    instruction.sources[i] = dfsNodeEval(gene.connections[i], nodes_map);
+  }
+  instruction.dst = IndexType(registers_.size());
+  instructions_.push_back(instruction);
+  registers_.emplace_back(0.0f);
+
+  nodes_map[function_node_index] = instruction.dst;
+  return instruction.dst;
 }
 
 void Brain::think() {
-  // TODO
+  for (size_t instr_index = 0; instr_index < instructions_.size(); ++instr_index) {
+    const auto& instr = instructions_[instr_index];
+    float& result = registers_[instr.dst];
+    const float& first_arg = registers_[instr.sources[0]];
+    const float& second_arg = registers_[instr.sources[1]];
+    switch (instr.function) {
+      case FunctionId::ConstZero:
+        result = 0.0f;
+        break;
+      case FunctionId::ConstOne:
+        result = 1.0f;
+        break;
+      case FunctionId::ConstTwo:
+        result = 2.0f;
+        break;
+      case FunctionId::ConstPi:
+        result = 3.141592653589f;
+        break;
+      case FunctionId::ConstE:
+        result = 2.718281828459f;
+        break;
+      case FunctionId::Add:
+        result = first_arg + second_arg;
+        break;
+      case FunctionId::Subtract:
+        result = first_arg - second_arg;
+        break;
+      case FunctionId::Multiply:
+        result = first_arg * second_arg;
+        break;
+      case FunctionId::Divide:
+        result = first_arg / second_arg;
+        break;
+      case FunctionId::Abs:
+        result = fabs(first_arg);
+        break;
+      case FunctionId::Average:
+        result = (first_arg + second_arg) / 2;
+        break;
+      case FunctionId::Min:
+        result = fmin(first_arg, second_arg);
+        break;
+      case FunctionId::Max:
+        result = fmax(first_arg, second_arg);
+        break;
+      case FunctionId::Sin:
+        result = sin(first_arg);
+        break;
+      case FunctionId::Cos:
+        result = cos(first_arg);
+        break;
+      case FunctionId::Tan:
+        result = tan(first_arg);
+        break;
+      case FunctionId::Log:
+        result = log(first_arg);
+        break;
+      case FunctionId::Sqrt:
+        result = sqrt(first_arg);
+        break;
+      case FunctionId::Square:
+        result = first_arg * first_arg;
+        break;
+      case FunctionId::Power:
+        result = pow(first_arg, second_arg);
+        break;
+      case FunctionId::Exponential:
+        result = exp(first_arg);
+        break;
+      case FunctionId::Identity:
+        result = ann::afnIdentity(first_arg);
+        break;
+      case FunctionId::Logistic:
+        result = ann::afnLogistic(first_arg);
+        break;
+      case FunctionId::Tanh:
+        result = ann::afnTanh(first_arg);
+        break;
+      case FunctionId::ReLU:
+        result = ann::afnReLU(first_arg);
+        break;
+      case FunctionId::Neat:
+        result = ann::afnNeat(first_arg);
+        break;
+      case FunctionId::And:
+        result = bool(first_arg) && bool(second_arg);
+        break;
+      case FunctionId::Or:
+        result = bool(first_arg) || bool(second_arg);
+        break;
+      case FunctionId::Not:
+        result = !bool(first_arg);
+        break;
+      case FunctionId::Xor:
+        result = bool(first_arg) != bool(second_arg);
+        break;
+      default:
+        FATAL("Unexpected function id");
+    }
+  }
 }
 
 void Brain::resetState() {
-  // TODO
+  // nothing to do
 }
 
 }  // namespace cgp

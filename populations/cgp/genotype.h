@@ -32,7 +32,7 @@ using IndexType = uint16_t;
 
 constexpr int kMaxFunctionArity = 2;
 
-enum class FunctionId : IndexType {
+enum class FunctionId : uint16_t {
   // constants
   ConstZero,
   ConstOne,
@@ -47,6 +47,7 @@ enum class FunctionId : IndexType {
   Divide,
   
   // common math functions
+  // TODO: fmod, reminder, fdim, delta, exp2, asin, acos, atan, sinh, cosh, ceil, floor, log2
   Abs,
   Average,
   Min,
@@ -102,9 +103,9 @@ class Genotype : public darwin::Genotype {
   void createPrimordialSeed();
   void mutate(float connection_mutation_chance, float function_mutation_chance);
 
-  auto population() const { return population_; }
-  auto functionGenes() const { return function_genes_; }
-  auto outputGenes() const { return output_genes_; }
+  const Population* population() const { return population_; }
+  const vector<FunctionGene>& functionGenes() const { return function_genes_; }
+  const vector<OutputGene>& outputGenes() const { return output_genes_; }
   
  private:
   pair<IndexType, IndexType> connectionRange(int layer) const;

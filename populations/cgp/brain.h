@@ -14,32 +14,52 @@
 
 #pragma once
 
-#include "genotype.h"
 #include "cgp.h"
+#include "genotype.h"
+#include "population.h"
 
 #include <core/ann_activation_functions.h>
 #include <core/darwin.h>
 
+#include <array>
+#include <vector>
+#include <assert.h>
+using namespace std;
+
 namespace cgp {
 
 class Brain : public darwin::Brain {
+  struct Instruction {
+    FunctionId function;
+    array<IndexType, kMaxFunctionArity> sources;
+    IndexType dst;
+  };
+
  public:
   explicit Brain(const Genotype* genotype);
 
   void setInput(int index, float value) override {
-    // TODO
+    assert(index >= 0 && index < genotype_->population()->domain()->inputs());
+    registers_[index] = value;
   }
 
   float output(int index) const override {
-    // TODO
-    return 0;
+    assert(index >= 0 && index < int(outputs_map_.size()));
+    return registers_[outputs_map_[index]];
   }
 
   void think() override;
-
   void resetState() override;
 
  private:
+  IndexType dfsNodeEval(IndexType node_index, vector<IndexType>& nodes_map);
+
+ private:
+  const Genotype* genotype_ = nullptr;
+
+  vector<Instruction> instructions_;
+  vector<float> registers_;
+  vector<int> outputs_map_;
 };
 
 }  // namespace cgp
