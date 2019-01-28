@@ -33,6 +33,9 @@ struct Config : public core::PropertySet {
            float,
            0.01f,
            "Probability of mutating a node's function");
+
+  PROPERTY(elite_percentage, float, 0.1f, "Elite percentage");
+  PROPERTY(elite_min_fitness, float, 0.0f, "Elite minimum fitness");
 };
 
 }  // namespace cgp
