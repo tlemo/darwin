@@ -74,7 +74,8 @@ For more information see the official Qt Creator's [Autotests][7] documentation.
     [Visual Studio 2017 or newer][2]. The free Community Edition will suffice.
 
 > NOTE: Darwin should build fine with MinGW 7.x+, although this configuration is not
-> currently supported. MinGW ships with a [broken][8] std::random_device implementation
+> currently supported (and does not work). MinGW ships with a [broken][8] std::random_device
+> implementation, which is critical for stochastic algorithms like Neuroevolution. 
 
 ### Linux
 
