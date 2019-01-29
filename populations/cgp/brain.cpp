@@ -17,6 +17,8 @@
 #include <core/ann_activation_functions.h>
 
 #include <cmath>
+#include <assert.h>
+#include <limits>
 using namespace std;
 
 namespace cgp {
@@ -36,6 +38,22 @@ Brain::Brain(const Genotype* genotype) : genotype_(genotype) {
   }
 }
 
+void Brain::setInput(int index, float value) {
+  assert(index >= 0 && index < int(genotype_->population()->domain()->inputs()));
+  registers_[index] = value;
+}
+
+float Brain::output(int index) const {
+  assert(index >= 0 && index < int(outputs_map_.size()));
+
+  // NaNs results are likely in a brain based on a random genotype,
+  // so gracefully map NaNs to +infinity (a valid, but unusual output value, which is
+  // likely to result in poor fitness - so the corresponding genotype is penalized)
+  const float value = registers_[outputs_map_[index]];
+  return isnan(value) ? numeric_limits<float>::infinity() : value;
+}
+
+// CONSIDER: switch to an explicit stack to avoid stack overflows
 IndexType Brain::dfsNodeEval(IndexType node_index, vector<IndexType>& nodes_map) {
   auto domain = genotype_->population()->domain();
   const size_t inputs_count = domain->inputs();

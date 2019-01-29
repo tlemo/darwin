@@ -48,14 +48,17 @@ int AnnPlayer::order() {
 
   // pick the max output signal
   int max_index = 0;
-  for (int i = 1; i < board->arcs.size(); ++i) {
-    if (brain->output(i) > brain->output(max_index))
+  float max_signal = brain->output(max_index);
+  for (int i = 1; i < int(board->arcs.size()); ++i) {
+    const float signal = brain->output(i);
+    if (signal > max_signal) {
       max_index = i;
+      max_signal = signal;
+    }
   }
 
   constexpr float kOutputThreshold = 0.1f;
-
-  if (brain->output(max_index) > kOutputThreshold &&
+  if (max_signal > kOutputThreshold &&
       game_->nodeUnits(board->arcs[max_index].src) * color_lens_ > 0) {
     return max_index;
   }

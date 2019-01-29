@@ -79,6 +79,7 @@ class Brain {
   virtual void setInput(int index, float value) = 0;
   
   //! Returns the value of one of the outputs
+  //! \note Outputs can be any floating-point value except for NaNs.
   virtual float output(int index) const = 0;
   
   //! Evaluates the outputs from the intput values

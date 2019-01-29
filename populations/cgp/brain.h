@@ -18,12 +18,10 @@
 #include "genotype.h"
 #include "population.h"
 
-#include <core/ann_activation_functions.h>
 #include <core/darwin.h>
 
 #include <array>
 #include <vector>
-#include <assert.h>
 using namespace std;
 
 namespace cgp {
@@ -38,16 +36,8 @@ class Brain : public darwin::Brain {
  public:
   explicit Brain(const Genotype* genotype);
 
-  void setInput(int index, float value) override {
-    assert(index >= 0 && index < genotype_->population()->domain()->inputs());
-    registers_[index] = value;
-  }
-
-  float output(int index) const override {
-    assert(index >= 0 && index < int(outputs_map_.size()));
-    return registers_[outputs_map_[index]];
-  }
-
+  void setInput(int index, float value) override;
+  float output(int index) const override;
   void think() override;
   void resetState() override;
 

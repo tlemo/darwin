@@ -92,7 +92,7 @@ int AnnPlayer::policyBrainMove() {
   int best_move = -1;
   for (int i = 0; i < Board::kSize; ++i) {
     const float signal = brain_->output(i);
-    if (signal > best_move_signal && board[i] == Board::Piece::Empty) {
+    if (signal >= best_move_signal && board[i] == Board::Piece::Empty) {
       best_move_signal = signal;
       best_move = i;
     }
@@ -118,7 +118,7 @@ int AnnPlayer::valueBrainMove() {
       brain_->think();
 
       const float move_value = brain_->output(0);
-      if (move_value > best_move_value) {
+      if (move_value >= best_move_value) {
         best_move_value = move_value;
         best_move = square;
       }
