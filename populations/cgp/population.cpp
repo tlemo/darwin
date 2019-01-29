@@ -35,8 +35,6 @@ Population::Population(const core::PropertySet& config, const darwin::Domain& do
     throw core::Exception("Invalid configuration: columns < 1");
   if (config_.levels_back < 1)
     throw core::Exception("Invalid configuration: levels_back < 1");
-  if (config_.levels_back > config_.columns)
-    throw core::Exception("Invalid configuration: levels_back > columns");
   if (config_.elite_percentage < 0 || config_.elite_percentage > 100)
     throw core::Exception("Invalid configuration: elite_percentage");
 }
@@ -83,7 +81,7 @@ void Population::createNextGeneration() {
 
   // TODO (pp too)
   const int elite_limit = max(1, int(genotypes_.size() * config_.elite_percentage));
-  const int parents_count = int(genotypes_.size()) / 5;
+  const int parents_count = int(genotypes_.size()) / 10;
   
   random_device rd;
   default_random_engine rnd(rd());
