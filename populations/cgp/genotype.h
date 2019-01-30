@@ -47,7 +47,6 @@ enum class FunctionId : uint16_t {
   Divide,
   
   // common math functions
-  // TODO: fmod, reminder, fdim, delta, exp2, asin, acos, atan, sinh, cosh, ceil, floor, log2
   Abs,
   Average,
   Min,
@@ -59,7 +58,19 @@ enum class FunctionId : uint16_t {
   Sqrt,
   Square,
   Power,
-  Exponential,
+  Exp,
+  Fmod,
+  Reminder,
+  Fdim,
+  Exp2,
+  Asin,
+  Acos,
+  Atan,
+  Sinh,
+  Cosh,
+  Ceil,
+  Floor,
+  Log2,
   
   // ANN activation functions
   Identity,     //!< Identity
@@ -68,11 +79,22 @@ enum class FunctionId : uint16_t {
   ReLU,         //!< ReLU
   Neat,         //!< NEAT activation function
   
+  // comparisons
+  CmpEq,
+  CmpNe,
+  CmpGt,
+  CmpGe,
+  CmpLt,
+  CmpLe,
+  
   // logic gates
   And,
   Or,
   Not,
   Xor,
+  
+  // conditional
+  IfOrZero,
   
   // last value marker
   LastEntry

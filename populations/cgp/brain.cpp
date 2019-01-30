@@ -155,8 +155,44 @@ void Brain::think() {
       case FunctionId::Power:
         result = pow(first_arg, second_arg);
         break;
-      case FunctionId::Exponential:
+      case FunctionId::Exp:
         result = exp(first_arg);
+        break;
+      case FunctionId::Fmod:
+        result = fmod(first_arg, second_arg);
+        break;
+      case FunctionId::Reminder:
+        result = remainder(first_arg, second_arg);
+        break;
+      case FunctionId::Fdim:
+        result = fdim(first_arg, second_arg);
+        break;
+      case FunctionId::Exp2:
+        result = exp2(first_arg);
+        break;
+      case FunctionId::Asin:
+        result = asin(first_arg);
+        break;
+      case FunctionId::Acos:
+        result = acos(first_arg);
+        break;
+      case FunctionId::Atan:
+        result = atan(first_arg);
+        break;
+      case FunctionId::Sinh:
+        result = sinh(first_arg);
+        break;
+      case FunctionId::Cosh:
+        result = cosh(first_arg);
+        break;
+      case FunctionId::Ceil:
+        result = ceil(first_arg);
+        break;
+      case FunctionId::Floor:
+        result = floor(first_arg);
+        break;
+      case FunctionId::Log2:
+        result = log2(first_arg);
         break;
       case FunctionId::Identity:
         result = ann::afnIdentity(first_arg);
@@ -173,6 +209,24 @@ void Brain::think() {
       case FunctionId::Neat:
         result = ann::afnNeat(first_arg);
         break;
+      case FunctionId::CmpEq:
+        result = first_arg == second_arg;
+        break;
+      case FunctionId::CmpNe:
+        result = first_arg != second_arg;
+        break;
+      case FunctionId::CmpGt:
+        result = first_arg > second_arg;
+        break;
+      case FunctionId::CmpGe:
+        result = first_arg >= second_arg;
+        break;
+      case FunctionId::CmpLt:
+        result = first_arg < second_arg;
+        break;
+      case FunctionId::CmpLe:
+        result = first_arg <= second_arg;
+        break;
       case FunctionId::And:
         result = bool(first_arg) && bool(second_arg);
         break;
@@ -184,6 +238,9 @@ void Brain::think() {
         break;
       case FunctionId::Xor:
         result = bool(first_arg) != bool(second_arg);
+        break;
+      case FunctionId::IfOrZero:
+        result = bool(first_arg) ? second_arg : 0;
         break;
       default:
         FATAL("Unexpected function id");
