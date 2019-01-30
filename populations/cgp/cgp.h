@@ -25,6 +25,11 @@ struct Config : public core::PropertySet {
   PROPERTY(columns, int, 16, "Number of node columns");
   PROPERTY(levels_back, int, 2, "Levels-back");
 
+  PROPERTY(outputs_use_levels_back,
+           bool,
+           false,
+           "Use levels-back value for the output genes?");
+
   PROPERTY(connection_mutation_chance,
            float,
            0.02f,

@@ -130,7 +130,7 @@ class Genotype : public darwin::Genotype {
   const vector<OutputGene>& outputGenes() const { return output_genes_; }
   
  private:
-  pair<IndexType, IndexType> connectionRange(int layer) const;
+  pair<IndexType, IndexType> connectionRange(int layer, int levels_back) const;
 
  private:
   const Population* population_ = nullptr;
