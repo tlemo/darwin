@@ -32,6 +32,9 @@ using IndexType = uint16_t;
 
 constexpr int kMaxFunctionArity = 2;
 
+// NOTE: removal/reordering of function IDs will break the
+//  serialization format compatibility!
+//
 enum class FunctionId : uint16_t {
   // basic constants
   ConstZero,
@@ -118,10 +121,18 @@ constexpr int kFunctionCount = static_cast<int>(FunctionId::LastEntry);
 struct FunctionGene {
   FunctionId function;
   array<IndexType, kMaxFunctionArity> connections;
+  
+  friend void to_json(json& json_obj, const FunctionGene& gene);
+  friend void from_json(const json& json_obj, FunctionGene& gene);
+  friend bool operator==(const FunctionGene& a, const FunctionGene& b);
 };
 
 struct OutputGene {
   IndexType connection;
+  
+  friend void to_json(json& json_obj, const OutputGene& gene);
+  friend void from_json(const json& json_obj, OutputGene& gene);
+  friend bool operator==(const OutputGene& a, const OutputGene& b);
 };
 
 class Genotype : public darwin::Genotype {
@@ -141,6 +152,8 @@ class Genotype : public darwin::Genotype {
   const Population* population() const { return population_; }
   const vector<FunctionGene>& functionGenes() const { return function_genes_; }
   const vector<OutputGene>& outputGenes() const { return output_genes_; }
+
+  friend bool operator==(const Genotype& a, const Genotype& b);
   
  private:
   pair<IndexType, IndexType> connectionRange(int layer, int levels_back) const;

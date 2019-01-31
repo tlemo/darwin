@@ -33,15 +33,50 @@ unique_ptr<darwin::Genotype> Genotype::clone() const {
   return make_unique<Genotype>(*this);
 }
 
+bool operator==(const FunctionGene& a, const FunctionGene& b) {
+  return a.function == b.function && a.connections == b.connections;
+}
+
+bool operator==(const OutputGene& a, const OutputGene& b) {
+  return a.connection == b.connection;
+}
+
+bool operator==(const Genotype& a, const Genotype& b) {
+  return a.function_genes_ == b.function_genes_ && a.output_genes_ == b.output_genes_;
+}
+
+void to_json(json& json_obj, const FunctionGene& gene) {
+  json_obj["fn"] = gene.function;
+  json_obj["c"] = gene.connections;
+}
+
+void from_json(const json& json_obj, FunctionGene& gene) {
+  gene.function = json_obj.at("fn");
+  gene.connections = json_obj.at("c");
+  CHECK(gene.function >= FunctionId(0));
+  CHECK(gene.function < FunctionId::LastEntry);
+}
+
+void to_json(json& json_obj, const OutputGene& gene) {
+  json_obj["c"] = gene.connection;
+}
+
+void from_json(const json& json_obj, OutputGene& gene) {
+  gene.connection = json_obj.at("c");
+}
+
 json Genotype::save() const {
   json json_obj;
-  // TODO
+  json_obj["function_genes"] = function_genes_;
+  json_obj["output_genes"] = output_genes_;
   return json_obj;
 }
 
 void Genotype::load(const json& json_obj) {
   Genotype tmp_genotype(population_);
-  // TODO
+  tmp_genotype.function_genes_ =
+      json_obj.at("function_genes").get<vector<FunctionGene>>();
+  tmp_genotype.output_genes_ = json_obj.at("output_genes").get<vector<OutputGene>>();
   std::swap(*this, tmp_genotype);
 }
 
