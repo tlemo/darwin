@@ -41,14 +41,21 @@ class Population : public darwin::Population {
 
   const Config& config() const { return config_; }
   const darwin::Domain* domain() const { return domain_; }
+  
+  const vector<FunctionId>& availableFunctions() const { return available_functions_; }
+  
+ private:
+  void setupAvailableFunctions();
 
  private:
   Config config_;
   const darwin::Domain* domain_ = nullptr;
-
+  
   vector<Genotype> genotypes_;
   int generation_ = 0;
   bool ranked_ = false;
+  
+  vector<FunctionId> available_functions_;
 };
 
 }  // namespace cgp

@@ -72,14 +72,15 @@ void Genotype::mutate(float connection_mutation_chance, float function_mutation_
   bernoulli_distribution dist_mutate_function(function_mutation_chance);
 
   // function genes
-  uniform_int_distribution<int> dist_function_id(0, kFunctionCount - 1);
+  const auto& available_functions = population_->availableFunctions();
+  uniform_int_distribution<size_t> dist_function(0, available_functions.size() - 1);
   for (int col = 0; col < config.columns; ++col) {
     const auto range = connectionRange(col + 1, config.levels_back);
     uniform_int_distribution<IndexType> dist_connection(range.first, range.second);
     for (int row = 0; row < config.rows; ++row) {
       auto& gene = function_genes_[row + col * config.rows];
       if (dist_mutate_function(rnd)) {
-        gene.function = FunctionId(dist_function_id(rnd));
+        gene.function = available_functions[dist_function(rnd)];
       }
       for (auto& connection : gene.connections) {
         if (dist_mutate_connection(rnd)) {

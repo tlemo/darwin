@@ -33,51 +33,63 @@ using IndexType = uint16_t;
 constexpr int kMaxFunctionArity = 2;
 
 enum class FunctionId : uint16_t {
-  // constants
+  // basic constants
   ConstZero,
   ConstOne,
   ConstTwo,
+  
+  // transcendental constants
   ConstPi,
   ConstE,
   
-  // arithmetic functions
+  // basic arithmetic functions
   Add,
   Subtract,
   Multiply,
   Divide,
+  Negate,
+  
+  // extra arithmetic functions
+  Fmod,
+  Reminder,
+  Fdim,
+  Ceil,
+  Floor,
   
   // common math functions
   Abs,
   Average,
   Min,
   Max,
+  Square,
+  
+  // extra (mostly transcendental) math functions
+  Log,
+  Log2,
+  Sqrt,
+  Power,
+  Exp,
+  Exp2,
+  
+  // trigonometric functions
   Sin,
   Cos,
   Tan,
-  Log,
-  Sqrt,
-  Square,
-  Power,
-  Exp,
-  Fmod,
-  Reminder,
-  Fdim,
-  Exp2,
   Asin,
   Acos,
   Atan,
+  
+  // hyperbolic functions
   Sinh,
   Cosh,
-  Ceil,
-  Floor,
-  Log2,
+  Tanh,
   
   // ANN activation functions
-  Identity,     //!< Identity
-  Logistic,     //!< Logistic
-  Tanh,         //!< Hyperbolic tangent (tanh)
-  ReLU,         //!< ReLU
-  Neat,         //!< NEAT activation function
+  AfnIdentity,
+  AfnLogistic,
+  AfnTanh,
+  AfnReLU,
+  AfnNeat,
   
   // comparisons
   CmpEq,
@@ -87,7 +99,7 @@ enum class FunctionId : uint16_t {
   CmpLt,
   CmpLe,
   
-  // logic gates
+  // boolean logic gates
   And,
   Or,
   Not,

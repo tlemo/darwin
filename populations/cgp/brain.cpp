@@ -122,6 +122,24 @@ void Brain::think() {
       case FunctionId::Divide:
         result = first_arg / second_arg;
         break;
+      case FunctionId::Negate:
+        result = -first_arg;
+        break;
+      case FunctionId::Fmod:
+        result = fmod(first_arg, second_arg);
+        break;
+      case FunctionId::Reminder:
+        result = remainder(first_arg, second_arg);
+        break;
+      case FunctionId::Fdim:
+        result = fdim(first_arg, second_arg);
+        break;
+      case FunctionId::Ceil:
+        result = ceil(first_arg);
+        break;
+      case FunctionId::Floor:
+        result = floor(first_arg);
+        break;
       case FunctionId::Abs:
         result = fabs(first_arg);
         break;
@@ -134,6 +152,27 @@ void Brain::think() {
       case FunctionId::Max:
         result = fmax(first_arg, second_arg);
         break;
+      case FunctionId::Square:
+        result = first_arg * first_arg;
+        break;
+      case FunctionId::Log:
+        result = log(first_arg);
+        break;
+      case FunctionId::Log2:
+        result = log2(first_arg);
+        break;
+      case FunctionId::Sqrt:
+        result = sqrt(first_arg);
+        break;
+      case FunctionId::Power:
+        result = pow(first_arg, second_arg);
+        break;
+      case FunctionId::Exp:
+        result = exp(first_arg);
+        break;
+      case FunctionId::Exp2:
+        result = exp2(first_arg);
+        break;
       case FunctionId::Sin:
         result = sin(first_arg);
         break;
@@ -142,33 +181,6 @@ void Brain::think() {
         break;
       case FunctionId::Tan:
         result = tan(first_arg);
-        break;
-      case FunctionId::Log:
-        result = log(first_arg);
-        break;
-      case FunctionId::Sqrt:
-        result = sqrt(first_arg);
-        break;
-      case FunctionId::Square:
-        result = first_arg * first_arg;
-        break;
-      case FunctionId::Power:
-        result = pow(first_arg, second_arg);
-        break;
-      case FunctionId::Exp:
-        result = exp(first_arg);
-        break;
-      case FunctionId::Fmod:
-        result = fmod(first_arg, second_arg);
-        break;
-      case FunctionId::Reminder:
-        result = remainder(first_arg, second_arg);
-        break;
-      case FunctionId::Fdim:
-        result = fdim(first_arg, second_arg);
-        break;
-      case FunctionId::Exp2:
-        result = exp2(first_arg);
         break;
       case FunctionId::Asin:
         result = asin(first_arg);
@@ -185,28 +197,22 @@ void Brain::think() {
       case FunctionId::Cosh:
         result = cosh(first_arg);
         break;
-      case FunctionId::Ceil:
-        result = ceil(first_arg);
+      case FunctionId::Tanh:
+        result = tanh(first_arg);
         break;
-      case FunctionId::Floor:
-        result = floor(first_arg);
-        break;
-      case FunctionId::Log2:
-        result = log2(first_arg);
-        break;
-      case FunctionId::Identity:
+      case FunctionId::AfnIdentity:
         result = ann::afnIdentity(first_arg);
         break;
-      case FunctionId::Logistic:
+      case FunctionId::AfnLogistic:
         result = ann::afnLogistic(first_arg);
         break;
-      case FunctionId::Tanh:
+      case FunctionId::AfnTanh:
         result = ann::afnTanh(first_arg);
         break;
-      case FunctionId::ReLU:
+      case FunctionId::AfnReLU:
         result = ann::afnReLU(first_arg);
         break;
-      case FunctionId::Neat:
+      case FunctionId::AfnNeat:
         result = ann::afnNeat(first_arg);
         break;
       case FunctionId::CmpEq:

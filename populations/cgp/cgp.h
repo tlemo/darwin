@@ -39,6 +39,19 @@ struct Config : public core::PropertySet {
            0.01f,
            "Probability of mutating a node's function");
 
+  PROPERTY(fn_basic_constants, bool, true, "0, 1, 2");
+  PROPERTY(fn_transcendental_constants, bool, true, "pi, e");
+  PROPERTY(fn_basic_arithmetic, bool, true, "+, -, *, /, negate");
+  PROPERTY(fn_extra_arithmetic, bool, false, "fmod, reminder, ceil, floor, fdim");
+  PROPERTY(fn_common_math, bool, true, "abs, avg, min, max, square");
+  PROPERTY(fn_extra_math, bool, false, "log, log2, sqrt, power, exp, exp2");
+  PROPERTY(fn_trigonometric, bool, false, "sin, cos, tan, asin, acos, atan");
+  PROPERTY(fn_hyperbolic, bool, false, "sinh, cosh, tanh");
+  PROPERTY(fn_ann_activation, bool, false, "All of Darwin's activation functions");
+  PROPERTY(fn_comparisons, bool, false, "eq, ne, gt, ge, lt, le");
+  PROPERTY(fn_logic_gates, bool, false, "and, or, not, xor");
+  PROPERTY(fn_conditional, bool, false, "if/else_zero");
+
   PROPERTY(elite_percentage, float, 0.1f, "Elite percentage");
   PROPERTY(elite_min_fitness, float, 0.0f, "Elite minimum fitness");
 };
