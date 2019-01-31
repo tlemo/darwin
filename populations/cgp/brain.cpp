@@ -110,6 +110,9 @@ void Brain::think() {
       case FunctionId::ConstE:
         result = 2.718281828459f;
         break;
+      case FunctionId::Identity:
+        result = first_arg;
+        break;
       case FunctionId::Add:
         result = first_arg + second_arg;
         break;

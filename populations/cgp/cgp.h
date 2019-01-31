@@ -41,7 +41,7 @@ struct Config : public core::PropertySet {
 
   PROPERTY(fn_basic_constants, bool, true, "0, 1, 2");
   PROPERTY(fn_transcendental_constants, bool, true, "pi, e");
-  PROPERTY(fn_basic_arithmetic, bool, true, "+, -, *, /, negate");
+  PROPERTY(fn_basic_arithmetic, bool, true, "identity, +, -, *, /, negate");
   PROPERTY(fn_extra_arithmetic, bool, false, "fmod, reminder, ceil, floor, fdim");
   PROPERTY(fn_common_math, bool, true, "abs, avg, min, max, square");
   PROPERTY(fn_extra_math, bool, false, "log, log2, sqrt, power, exp, exp2");

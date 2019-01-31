@@ -43,6 +43,7 @@ enum class FunctionId : uint16_t {
   ConstE,
   
   // basic arithmetic functions
+  Identity,
   Add,
   Subtract,
   Multiply,
