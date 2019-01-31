@@ -70,7 +70,22 @@ struct BrainsTest : public testing::TestWithParam<string> {
   }
 
   void updateConfig(cgp::Config* config) {
-    // TODO
+    config->rows = 32;
+    config->columns = 17;
+    config->levels_back = 8;
+    config->outputs_use_levels_back = false;
+    config->fn_basic_constants = true;
+    config->fn_transcendental_constants = true;
+    config->fn_basic_arithmetic = true;
+    config->fn_extra_arithmetic = true;
+    config->fn_common_math = true;
+    config->fn_extra_math = true;
+    config->fn_trigonometric = true;
+    config->fn_hyperbolic = true;
+    config->fn_ann_activation = true;
+    config->fn_comparisons = true;
+    config->fn_logic_gates = true;
+    config->fn_conditional = true;
   }
 
   void updateConfig(neat::Config* config) {
