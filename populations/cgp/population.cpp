@@ -21,6 +21,8 @@
 
 #include <random>
 #include <initializer_list>
+#include <algorithm>
+#include <iterator>
 using namespace std;
 
 namespace cgp {
@@ -80,26 +82,48 @@ void Population::rankGenotypes() {
 
 void Population::createNextGeneration() {
   CHECK(ranked_);
-  CHECK(!genotypes_.empty());
 
-  // TODO (pp too)
-  const int elite_limit = max(1, int(genotypes_.size() * config_.elite_percentage));
-  const int parents_count = int(genotypes_.size()) / 10;
-  
-  random_device rd;
-  default_random_engine rnd(rd());
-  uniform_int_distribution<int> dist_parent(0, parents_count - 1);
-  
-  for (int index = int(genotypes_.size()) - 1; index >= 0; --index) {
-    Genotype& genotype = genotypes_[index];
-    if (index < elite_limit && genotype.fitness >= config_.elite_min_fitness) {
-      break;
-    }
-    genotype = genotypes_[dist_parent(rnd)];
-    genotype.mutate(config_.connection_mutation_chance, config_.function_mutation_chance);
-  }
+  darwin::StageScope stage("Create next generation");
 
   ++generation_;
+
+  // roulette wheel selection (aka fitness-proportionate selection)
+  // (supports negative fitness values too)
+
+  const size_t population_size = genotypes_.size();
+  CHECK(population_size > 0);
+
+  constexpr float kMinFitness = 0.0f;
+  vector<double> prefix_sum(population_size);
+  double sum = 0;
+  for (size_t i = 0; i < population_size; ++i) {
+    const double fitness_value = genotypes_[i].fitness;
+    sum += (fitness_value >= kMinFitness) ? fitness_value : 0.0f;
+    prefix_sum[i] = sum;
+  }
+
+  const int elite_limit = max(1, int(genotypes_.size() * config_.elite_percentage));
+
+  vector<Genotype> next_generation(population_size, Genotype(this));
+  pp::for_each(next_generation, [&](int index, Genotype& genotype) {
+    if (index < elite_limit && genotypes_[index].fitness >= config_.elite_min_fitness) {
+      genotype = genotypes_[index];
+      genotype.genealogy = darwin::Genealogy("e", { index });
+    } else {
+      random_device rd;
+      default_random_engine rnd(rd());
+      uniform_real_distribution<double> dist_sample(0, sum);
+      const double sample = dist_sample(rnd);
+      const auto interval = lower_bound(prefix_sum.begin(), prefix_sum.end(), sample);
+      CHECK(interval != prefix_sum.end());
+      const int parent_index = std::distance(prefix_sum.begin(), interval);
+      genotype = genotypes_[parent_index];
+      genotype.mutate(config_.connection_mutation_chance,
+                      config_.function_mutation_chance);
+      genotype.genealogy = darwin::Genealogy("m", { parent_index });
+    }
+  });
+  std::swap(genotypes_, next_generation);
   ranked_ = false;
 }
 
