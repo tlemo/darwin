@@ -87,7 +87,7 @@ class Population : public darwin::Population {
 
       // keep the elite population
       const int elite_limit = max(2, int(genotypes_.size() * g_config.elite_percentage));
-      if (index < elite_limit && old_genotype.fitness > g_config.elite_min_fitness) {
+      if (index < elite_limit && old_genotype.fitness >= g_config.elite_min_fitness) {
         // direct reproduction
         genotype = old_genotype;
         if (dist_mutate_elite(rnd)) {

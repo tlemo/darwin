@@ -323,8 +323,8 @@ void Population::classicSelection() {
                   old_genotype.fitness >= g_config.min_viable_fitness;
 
     // keep the elite population
-    int elite_limit = max(2, int(genotypes_.size() * g_config.elite_percentage));
-    if (index < elite_limit && old_genotype.fitness > g_config.elite_min_fitness) {
+    const int elite_limit = max(2, int(genotypes_.size() * g_config.elite_percentage));
+    if (index < elite_limit && old_genotype.fitness >= g_config.elite_min_fitness) {
       // direct reproduction
       genotype = old_genotype;
       genotype.genealogy = darwin::Genealogy("e", { index });
@@ -387,13 +387,13 @@ void Population::createNextGeneration() {
 
   darwin::StageScope stage("Create next generation");
 
+  ++generation_;
+
   if (g_config.use_classic_selection) {
     classicSelection();
   } else {
     neatSelection();
   }
-
-  ++generation_;
 
   resetOrder();
 }
