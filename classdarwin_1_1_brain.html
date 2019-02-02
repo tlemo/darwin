@@ -78,7 +78,7 @@ $(function() {
 
 <p><code>#include &lt;<a class="el" href="darwin_8h_source.html">darwin.h</a>&gt;</code></p>
 
-<p>Inherited by classic::Brain&lt; TRAITS &gt;, and neat::Brain.</p>
+<p>Inherited by cgp::Brain, classic::Brain&lt; TRAITS &gt;, dummy::Brain, and neat::Brain.</p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -86,9 +86,8 @@ Public Member Functions</h2></td></tr>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdarwin_1_1_brain.html#a2ff543fb3eab1eed2338bef7bf906a91">setInput</a> (int index, float value)=0</td></tr>
 <tr class="memdesc:a2ff543fb3eab1eed2338bef7bf906a91"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the value for one of the brain's inputs. <br /></td></tr>
 <tr class="separator:a2ff543fb3eab1eed2338bef7bf906a91"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa9a8ac865f4c15f5af77f81fb8800087"><td class="memItemLeft" align="right" valign="top"><a id="aa9a8ac865f4c15f5af77f81fb8800087"></a>
-virtual float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdarwin_1_1_brain.html#aa9a8ac865f4c15f5af77f81fb8800087">output</a> (int index) const =0</td></tr>
-<tr class="memdesc:aa9a8ac865f4c15f5af77f81fb8800087"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the value of one of the outputs. <br /></td></tr>
+<tr class="memitem:aa9a8ac865f4c15f5af77f81fb8800087"><td class="memItemLeft" align="right" valign="top">virtual float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdarwin_1_1_brain.html#aa9a8ac865f4c15f5af77f81fb8800087">output</a> (int index) const =0</td></tr>
+<tr class="memdesc:aa9a8ac865f4c15f5af77f81fb8800087"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the value of one of the outputs.  <a href="#aa9a8ac865f4c15f5af77f81fb8800087">More...</a><br /></td></tr>
 <tr class="separator:aa9a8ac865f4c15f5af77f81fb8800087"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a71c8a242a3397e25c2ba0c8c80dda106"><td class="memItemLeft" align="right" valign="top"><a id="a71c8a242a3397e25c2ba0c8c80dda106"></a>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdarwin_1_1_brain.html#a71c8a242a3397e25c2ba0c8c80dda106">think</a> ()=0</td></tr>
@@ -101,9 +100,39 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>The interface to the <a href="https://en.wikipedia.org/wiki/Phenotype">Phenotype</a> </p>
-<p>A brain is the phenotype, "grown" from a <a class="el" href="classdarwin_1_1_genotype.html" title="The interface to the population-specific &quot;genetic material&quot;, the Genotype ">Genotype</a>. It is the functional entity used to evaluate a phenotype's fitness.</p>
+<p>A brain is the phenotype, "grown" from a <a class="el" href="classdarwin_1_1_genotype.html" title="The interface to the population-specific &quot;genetic material&quot;, the Genotype ">Genotype</a>. It is the functional model used to evaluate a phenotype's fitness.</p>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="classdarwin_1_1_genotype.html" title="The interface to the population-specific &quot;genetic material&quot;, the Genotype ">Genotype</a> </dd></dl>
-</div><hr/>The documentation for this class was generated from the following file:<ul>
+</div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="aa9a8ac865f4c15f5af77f81fb8800087"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa9a8ac865f4c15f5af77f81fb8800087">&#9670;&nbsp;</a></span>output()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual float darwin::Brain::output </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>index</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Returns the value of one of the outputs. </p>
+<dl class="section note"><dt>Note</dt><dd>Outputs can be any floating-point value except for NaNs. </dd></dl>
+
+</div>
+</div>
+<hr/>The documentation for this class was generated from the following file:<ul>
 <li>C:/Users/lemo/work/darwin/core/<a class="el" href="darwin_8h_source.html">darwin.h</a></li>
 </ul>
 </div><!-- contents -->

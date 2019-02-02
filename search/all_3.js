@@ -33,5 +33,6 @@ var searchData=
   ['domains_5fui',['domains_ui',['../structdarwin_1_1_registry.html#a8f87dc1f11012512fde65b639fb46b6f',1,'darwin::Registry']]],
   ['domainuifactory',['DomainUiFactory',['../classdarwin_1_1_domain_ui_factory.html',1,'darwin::DomainUiFactory'],['../classdarwin_1_1_experiment.html#ad50fa6639d87a99cdb517a1b5d01849d',1,'darwin::Experiment::domainUiFactory()']]],
   ['doublecartpole',['DoubleCartPole',['../classdouble__cart__pole_1_1_double_cart_pole.html',1,'double_cart_pole']]],
-  ['draw',['Draw',['../namespacetournament.html#afb2d89307ef2ac4c6e727eb2c88b304ca2d03c2d5a7ec65ef4619e0582c272ec2',1,'tournament']]]
+  ['draw',['Draw',['../namespacetournament.html#afb2d89307ef2ac4c6e727eb2c88b304ca2d03c2d5a7ec65ef4619e0582c272ec2',1,'tournament']]],
+  ['dummy',['dummy',['../namespacedummy.html',1,'']]]
 ];

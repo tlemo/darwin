@@ -122,7 +122,9 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struc
 </div><div class="memdoc">
 
 <p>The associated <a class="el" href="classdarwin_1_1_domain.html" title="Interface to a domain implementation. ">darwin::Domain</a> instance. </p>
-<dl class="section warning"><dt>Warning</dt><dd>This is a non-owning pointer and will be invalidated if the <a class="el" href="structdarwin_1_1_evolution_1_1_snapshot.html" title="State snapshot of an evolution run. ">Snapshot</a> instance outlives the <a class="el" href="classdarwin_1_1_domain.html" title="Interface to a domain implementation. ">Domain</a> instance </dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>This is a non-owning pointer and will be invalidated if the <a class="el" href="structdarwin_1_1_evolution_1_1_snapshot.html" title="State snapshot of an evolution run. ">Snapshot</a> instance outlives the <a class="el" href="classdarwin_1_1_domain.html" title="Interface to a domain implementation. ">Domain</a> instance </dd>
+<dd>
+This points to the "live" <a class="el" href="classdarwin_1_1_domain.html" title="Interface to a domain implementation. ">Domain</a> instance (not a copy) so accessing it without external syncronization will likely introduce a data race </dd></dl>
 
 </div>
 </div>
@@ -156,7 +158,9 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struc
 </div><div class="memdoc">
 
 <p>The associated <a class="el" href="classdarwin_1_1_population.html" title="A population implementation encapsulates the fixed-size set of genotypes, together with the rules for...">darwin::Population</a> instance. </p>
-<dl class="section warning"><dt>Warning</dt><dd>This is a non-owning pointer and will be invalidated if the <a class="el" href="structdarwin_1_1_evolution_1_1_snapshot.html" title="State snapshot of an evolution run. ">Snapshot</a> instance outlives the <a class="el" href="classdarwin_1_1_population.html" title="A population implementation encapsulates the fixed-size set of genotypes, together with the rules for...">Population</a> instance </dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>This is a non-owning pointer and will be invalidated if the <a class="el" href="structdarwin_1_1_evolution_1_1_snapshot.html" title="State snapshot of an evolution run. ">Snapshot</a> instance outlives the <a class="el" href="classdarwin_1_1_population.html" title="A population implementation encapsulates the fixed-size set of genotypes, together with the rules for...">Population</a> instance </dd>
+<dd>
+This points to the "live" <a class="el" href="classdarwin_1_1_population.html" title="A population implementation encapsulates the fixed-size set of genotypes, together with the rules for...">Population</a> instance (not a copy) so accessing it without external syncronization will likely introduce a data race </dd></dl>
 
 </div>
 </div>

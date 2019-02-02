@@ -79,7 +79,7 @@ $(function() {
 
 <p><code>#include &lt;<a class="el" href="darwin_8h_source.html">darwin.h</a>&gt;</code></p>
 
-<p>Inherited by classic::Genotype&lt; TRAITS &gt;, and neat::Genotype.</p>
+<p>Inherited by cgp::Genotype, classic::Genotype&lt; TRAITS &gt;, dummy::Genotype, and neat::Genotype.</p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -113,7 +113,8 @@ float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>The interface to the population-specific "genetic material", the <a href="https://en.wikipedia.org/wiki/Genotype">Genotype</a> </p>
-<p>This is one of the central concepts in Neuroevolution (and Genetic Algorithms in general). A population is a collection of geneotypes, each describing a particular variation of genetic material. Which in turn is used to "grow" phenotypes, the concrete and functional units used as processing units, transforming a particular set of domain specific inputs into outputs with the goal of reaching a domain specific goal.</p>
+<p>This is one of the central concepts in Neuroevolution (and Genetic Algorithms in general). A population is a collection of geneotypes, each describing a particular configuration of genetic material. The genotype is the "recipe" for creating <a class="el" href="classdarwin_1_1_brain.html" title="The interface to the Phenotype ">Brain</a> instances (the phenotype), which are the actual functional units mapping domain inputs to output values.</p>
+<p>Each genotype's fitness is evaluated indirectly through the phenotype (brain) counterpart: the better the brain performance, relative to a domain specific criteria, the higher the fitness value.</p>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="classdarwin_1_1_brain.html" title="The interface to the Phenotype ">Brain</a> </dd></dl>
 </div><hr/>The documentation for this class was generated from the following file:<ul>
 <li>C:/Users/lemo/work/darwin/core/<a class="el" href="darwin_8h_source.html">darwin.h</a></li>
