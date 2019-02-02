@@ -11,6 +11,8 @@ for post-processing recorded evolution traces.
 
 ## Getting Started
 
+> Read the setup instructions before cloning the repository
+
 - [Setup Instructions](docs/setup.md)
 - [Implementation Reference][1]
 - [Scripts](scripts/docs/scripts.md)
