@@ -20,7 +20,7 @@
 
 #include <populations/cgp/cgp.h>
 #include <populations/classic/classic.h>
-#include <populations/dummy/dummy.h>
+#include <populations/test_population/test_population.h>
 #include <populations/neat/neat.h>
 
 #include <third_party/gtest/gtest.h>
@@ -51,8 +51,8 @@ struct BrainsTest : public testing::TestWithParam<string> {
       updateConfig(classic_config);
     } else if (auto cgp_config = dynamic_cast<cgp::Config*>(config.get())) {
       updateConfig(cgp_config);
-    } else if (auto dummy_config = dynamic_cast<dummy::Config*>(config.get())) {
-      updateConfig(dummy_config);
+    } else if (auto test_config = dynamic_cast<test_population::Config*>(config.get())) {
+      updateConfig(test_config);
     } else {
       FATAL("Unexpected population type");
     }
@@ -63,7 +63,7 @@ struct BrainsTest : public testing::TestWithParam<string> {
     population->createPrimordialGeneration(kPopulationSize);
   }
 
-  void updateConfig(dummy::Config* config) {
+  void updateConfig(test_population::Config* config) {
     config->input_range = 5.0f;
     config->output_range = 10.0f;
     config->random_outputs = true;

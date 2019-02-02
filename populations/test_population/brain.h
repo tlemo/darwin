@@ -22,7 +22,7 @@
 #include <vector>
 using namespace std;
 
-namespace dummy {
+namespace test_population {
 
 class Brain : public darwin::Brain {
   // model and check the expected usage pattern:
@@ -63,4 +63,4 @@ class Brain : public darwin::Brain {
   mutable vector<char> used_outputs_;
 };
 
-}  // namespace dummy
+}  // namespace test_population

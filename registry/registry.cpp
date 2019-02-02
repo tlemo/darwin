@@ -16,7 +16,7 @@
 
 #include <populations/cgp/cgp.h>
 #include <populations/classic/classic.h>
-#include <populations/dummy/dummy.h>
+#include <populations/test_population/test_population.h>
 #include <populations/neat/neat.h>
 
 #include <domains/conquest/conquest.h>
@@ -44,7 +44,7 @@ void init() {
   // populations
   cgp::init();
   classic::init();
-  dummy::init();
+  test_population::init();
   neat::init();
 }
 

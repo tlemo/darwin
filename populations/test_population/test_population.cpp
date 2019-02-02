@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "dummy.h"
+#include "test_population.h"
 #include "population.h"
 
 #include <core/darwin.h>
 
-namespace dummy {
+namespace test_population {
 
 class Factory : public darwin::PopulationFactory {
   unique_ptr<darwin::Population> create(const core::PropertySet& config,
@@ -44,7 +44,7 @@ class Factory : public darwin::PopulationFactory {
 };
 
 void init() {
-  darwin::registry()->populations.add<Factory>("dummy");
+  darwin::registry()->populations.add<Factory>("test_population");
 }
 
-}  // namespace dummy
+}  // namespace test_population

@@ -73,7 +73,7 @@
 //! \namespace classic::lstm_lite
 //! \brief A drastically simplified LSTM variation
 
-//! \namespace dummy
+//! \namespace test_population
 //! \brief A dummy population implementation, used for testing and/or as a baseline
 
 //! \namespace neat

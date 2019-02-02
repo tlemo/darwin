@@ -4,5 +4,5 @@ TEMPLATE = subdirs
 SUBDIRS += \
     cgp \
     classic \
-    dummy \
-    neat
+    neat \
+    test_population

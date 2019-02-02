@@ -16,7 +16,7 @@
 
 #include <core/properties.h>
 
-namespace dummy {
+namespace test_population {
 
 void init();
 
@@ -30,4 +30,4 @@ struct Config : public core::PropertySet {
   PROPERTY(elite_min_fitness, float, 0.0f, "Elite minimum fitness");
 };
 
-}  // namespace dummy
+}  // namespace test_population

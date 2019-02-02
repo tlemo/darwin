@@ -14,9 +14,9 @@
 
 #include "genotype.h"
 #include "brain.h"
-#include "dummy.h"
+#include "test_population.h"
 
-namespace dummy {
+namespace test_population {
 
 Genotype::Genotype(const Population* population) : population_(population) {
   reset();
@@ -47,4 +47,4 @@ void Genotype::load(const json& json_obj) {
   std::swap(*this, tmp_genotype);
 }
 
-}  // namespace dummy
+}  // namespace test_population

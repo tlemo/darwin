@@ -14,14 +14,14 @@
 
 #pragma once
 
-#include "dummy.h"
+#include "test_population.h"
 
 #include <core/darwin.h>
 
 #include <random>
 using namespace std;
 
-namespace dummy {
+namespace test_population {
 
 class Population;
 
@@ -44,4 +44,4 @@ class Genotype : public darwin::Genotype {
   random_device::result_type seed_ = 0;
 };
 
-}  // namespace dummy
+}  // namespace test_population

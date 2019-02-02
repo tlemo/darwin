@@ -3,18 +3,18 @@ include(../../common.pri)
 
 QT -= core gui
 
-TARGET = dummy
+TARGET = test_population
 TEMPLATE = lib
 CONFIG += staticlib
 
 SOURCES += \
-    dummy.cpp \
+    test_population.cpp \
     population.cpp \
     genotype.cpp \
     brain.cpp
 
 HEADERS += \
-    dummy.h \
+    test_population.h \
     population.h \
     genotype.h \
     brain.h

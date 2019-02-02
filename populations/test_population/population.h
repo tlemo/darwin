@@ -14,7 +14,7 @@
 
 #pragma once
 
-#include "dummy.h"
+#include "test_population.h"
 #include "genotype.h"
 
 #include <core/darwin.h>
@@ -23,7 +23,7 @@
 #include <vector>
 using namespace std;
 
-namespace dummy {
+namespace test_population {
 
 class Population : public darwin::Population {
  public:
@@ -51,4 +51,4 @@ class Population : public darwin::Population {
   bool ranked_ = false;
 };
 
-}  // namespace dummy
+}  // namespace test_population

@@ -16,7 +16,7 @@
 
 #include <core/exception.h>
 
-namespace dummy {
+namespace test_population {
 
 Population::Population(const core::PropertySet& config, const darwin::Domain& domain) {
   config_.copyFrom(config);
@@ -62,4 +62,4 @@ void Population::createNextGeneration() {
   ranked_ = false;
 }
 
-}  // namespace dummy
+}  // namespace test_population

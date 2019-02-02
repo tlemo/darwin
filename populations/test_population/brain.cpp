@@ -13,13 +13,13 @@
 // limitations under the License.
 
 #include "brain.h"
-#include "dummy.h"
+#include "test_population.h"
 #include "population.h"
 
 #include <algorithm>
 using namespace std;
 
-namespace dummy {
+namespace test_population {
 
 Brain::Brain(const Genotype* genotype) : genotype_(genotype) {
   auto domain = genotype_->population()->domain();
@@ -103,4 +103,4 @@ void Brain::checkOutputsConsumed() {
   }
 }
 
-}  // namespace dummy
+}  // namespace test_population
