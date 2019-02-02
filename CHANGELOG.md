@@ -1,4 +1,9 @@
 
+## Feb 1st, 2019
+
+New population: a basic [Cartesian Genetic Programming (CGP)](https://www.cartesiangp.com)
+implementation.
+
 ## Jan 17th, 2019
 
 Yet another take on inverted pendulums: this time the pole is attached to a wheel
