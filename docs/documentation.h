@@ -79,4 +79,3 @@
 //! \namespace neat
 //! \brief [NeuroEvolution of Augmenting Topologies (NEAT)]
 //!     (https://en.wikipedia.org/wiki/Neuroevolution_of_augmenting_topologies)
-

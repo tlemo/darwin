@@ -28,13 +28,40 @@ class Factory : public darwin::PopulationFactory {
   unique_ptr<core::PropertySet> defaultConfig(
       darwin::ComplexityHint hint) const override {
     auto config = make_unique<Config>();
-    // TODO
     switch (hint) {
       case darwin::ComplexityHint::Minimal:
+        config->rows = 3;
+        config->columns = 5;
+        config->levels_back = 2;
+        config->outputs_use_levels_back = false;
+        config->fn_basic_constants = true;
+        config->fn_transcendental_constants = false;
+        config->fn_basic_arithmetic = true;
+        config->fn_extra_arithmetic = false;
+        config->fn_common_math = true;
+        config->fn_extra_math = false;
+        config->fn_trigonometric = false;
+        config->fn_hyperbolic = false;
+        config->fn_ann_activation = false;
+        config->fn_comparisons = false;
+        config->fn_logic_gates = false;
+        config->fn_conditional = false;
         break;
       case darwin::ComplexityHint::Balanced:
         break;
       case darwin::ComplexityHint::Extra:
+        config->fn_basic_constants = true;
+        config->fn_transcendental_constants = true;
+        config->fn_basic_arithmetic = true;
+        config->fn_extra_arithmetic = true;
+        config->fn_common_math = true;
+        config->fn_extra_math = true;
+        config->fn_trigonometric = true;
+        config->fn_hyperbolic = true;
+        config->fn_ann_activation = true;
+        config->fn_comparisons = true;
+        config->fn_logic_gates = true;
+        config->fn_conditional = true;
         break;
     }
     return config;
