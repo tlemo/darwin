@@ -102,7 +102,7 @@ void Population::createNextGeneration() {
     prefix_sum[i] = sum;
   }
 
-  const int elite_limit = max(1, int(genotypes_.size() * config_.elite_percentage));
+  const int elite_limit = max(1, int(population_size * config_.elite_percentage));
 
   vector<Genotype> next_generation(population_size, Genotype(this));
   pp::for_each(next_generation, [&](int index, Genotype& genotype) {
