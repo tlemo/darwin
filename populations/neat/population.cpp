@@ -323,8 +323,8 @@ void Population::classicSelection() {
                   old_genotype.fitness >= g_config.min_viable_fitness;
 
     // keep the elite population
-    int elite_limit = max(2, int(genotypes_.size() * g_config.elite_percentage));
-    if (index < elite_limit && old_genotype.fitness > g_config.elite_min_fitness) {
+    const int elite_limit = max(2, int(genotypes_.size() * g_config.elite_percentage));
+    if (index < elite_limit && old_genotype.fitness >= g_config.elite_min_fitness) {
       // direct reproduction
       genotype = old_genotype;
       genotype.genealogy = darwin::Genealogy("e", { index });
@@ -387,52 +387,15 @@ void Population::createNextGeneration() {
 
   darwin::StageScope stage("Create next generation");
 
+  ++generation_;
+
   if (g_config.use_classic_selection) {
     classicSelection();
   } else {
     neatSelection();
   }
 
-  ++generation_;
-
   resetOrder();
-}
-
-unique_ptr<darwin::Population> Factory::create(const core::PropertySet& config,
-                                               const darwin::Domain& domain) {
-  g_config.copyFrom(config);
-  g_inputs = int(domain.inputs());
-  g_outputs = int(domain.outputs());
-  CHECK(g_inputs > 0);
-  CHECK(g_outputs > 0);
-  ann::setActivationFunction(g_config.activation_function);
-  ann::setGateActivationFunction(g_config.gate_activation_function);
-  return make_unique<Population>();
-}
-
-unique_ptr<core::PropertySet> Factory::defaultConfig(darwin::ComplexityHint hint) const {
-  auto config = make_unique<Config>();
-  switch (hint) {
-    case darwin::ComplexityHint::Minimal:
-      config->use_lstm_nodes = false;
-      config->recurrent_output_nodes = false;
-      config->recurrent_hidden_nodes = false;
-      config->larva_age = 1;
-      config->old_age = 3;
-      config->min_species_size = 5;
-      break;
-
-    case darwin::ComplexityHint::Balanced:
-      config->use_lstm_nodes = false;
-      break;
-
-    case darwin::ComplexityHint::Extra:
-      config->use_lstm_nodes = true;
-      config->recurrent_output_nodes = true;
-      config->recurrent_hidden_nodes = true;
-      break;
-  }
-  return config;
 }
 
 }  // namespace neat

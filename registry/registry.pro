@@ -32,7 +32,9 @@ addLibrary(../domains/tic_tac_toe)
 addLibrary(../domains/unicycle_ui)
 addLibrary(../domains/unicycle)
 
+addLibrary(../populations/cgp)
 addLibrary(../populations/classic)
+addLibrary(../populations/dummy)
 addLibrary(../populations/neat)
 
 addLibrary(../core)

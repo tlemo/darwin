@@ -30,8 +30,6 @@
 #include <vector>
 using namespace std;
 
-using core::log;
-
 namespace classic {
 
 template <class GENOTYPE>
@@ -46,7 +44,7 @@ class Population : public darwin::Population {
   const GENOTYPE* genotype(size_t index) const override { return &genotypes_[index]; }
 
   void createPrimordialGeneration(int population_size) override {
-    log("Resetting evolution ...\n");
+    core::log("Resetting evolution ...\n");
 
     darwin::StageScope stage("Create primordial generation");
 
@@ -57,7 +55,7 @@ class Population : public darwin::Population {
     pp::for_each(genotypes_,
                  [](int, GENOTYPE& genotype) { genotype.createPrimordialSeed(); });
 
-    log("Ready.\n");
+    core::log("Ready.\n");
   }
 
   void createNextGeneration() override {
@@ -89,7 +87,7 @@ class Population : public darwin::Population {
 
       // keep the elite population
       const int elite_limit = max(2, int(genotypes_.size() * g_config.elite_percentage));
-      if (index < elite_limit && old_genotype.fitness > g_config.elite_min_fitness) {
+      if (index < elite_limit && old_genotype.fitness >= g_config.elite_min_fitness) {
         // direct reproduction
         genotype = old_genotype;
         if (dist_mutate_elite(rnd)) {
@@ -133,10 +131,10 @@ class Population : public darwin::Population {
 
     const double population_size = genotypes_.size();
 
-    log("Next gen stats: %.2f%% elite, %.2f%% babies, %.2f%% mutate\n",
-        (elite_count / population_size) * 100,
-        (babies_count / population_size) * 100,
-        (mutate_count / population_size) * 100);
+    core::log("Next gen stats: %.2f%% elite, %.2f%% babies, %.2f%% mutate\n",
+              (elite_count / population_size) * 100,
+              (babies_count / population_size) * 100,
+              (mutate_count / population_size) * 100);
 
     ranked_ = false;
   }
@@ -153,9 +151,9 @@ class Population : public darwin::Population {
     core::log("Fitness values: ");
     const size_t sample_size = min(size_t(16), genotypes_.size());
     for (size_t i = 0; i < sample_size; ++i) {
-      log(" %.3f", genotypes_[i].fitness);
+      core::log(" %.3f", genotypes_[i].fitness);
     }
-    log(" ...\n");
+    core::log(" ...\n");
 
     ranked_ = true;
   }
@@ -164,40 +162,6 @@ class Population : public darwin::Population {
   vector<GENOTYPE> genotypes_;
   int generation_ = 0;
   bool ranked_ = false;
-};
-
-template <class GENOTYPE>
-class Factory : public darwin::PopulationFactory {
-  unique_ptr<darwin::Population> create(const core::PropertySet& config,
-                                        const darwin::Domain& domain) override {
-    g_config.copyFrom(config);
-    g_inputs = domain.inputs();
-    g_outputs = domain.outputs();
-    CHECK(g_inputs > 0);
-    CHECK(g_outputs > 0);
-    ann::setActivationFunction(g_config.activation_function);
-    ann::setGateActivationFunction(g_config.gate_activation_function);
-    return make_unique<Population<GENOTYPE>>();
-  }
-
-  unique_ptr<core::PropertySet> defaultConfig(
-      darwin::ComplexityHint hint) const override {
-    auto config = make_unique<Config>();
-    switch (hint) {
-      case darwin::ComplexityHint::Minimal:
-        config->hidden_layers = {};
-        break;
-
-      case darwin::ComplexityHint::Balanced:
-        config->hidden_layers = { 8 };
-        break;
-
-      case darwin::ComplexityHint::Extra:
-        config->hidden_layers = { 12, 8, 5};
-        break;
-    }
-    return config;
-  }
 };
 
 }  // namespace classic

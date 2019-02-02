@@ -340,11 +340,15 @@ class Evolution : public core::NonCopyable,
     //! The associated darwin::Population instance
     //! \warning This is a non-owning pointer and will be invalidated if the
     //!   Snapshot instance outlives the Population instance
+    //! \warning This points to the "live" Population instance (not a copy) so
+    //!   accessing it without external syncronization will likely introduce a data race
     const Population* population = nullptr;
 
     //! The associated darwin::Domain instance
     //! \warning This is a non-owning pointer and will be invalidated if the
     //!   Snapshot instance outlives the Domain instance
+    //! \warning This points to the "live" Domain instance (not a copy) so
+    //!   accessing it without external syncronization will likely introduce a data race
     const Domain* domain = nullptr;
   };
 

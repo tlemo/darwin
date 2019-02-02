@@ -9,6 +9,14 @@ The current implementation is a combination of portable C++ (running on Linux,
 Windows and macOS), augmented by a collection of Python [scripts](scripts/docs/scripts.md)
 for post-processing recorded evolution traces.
 
+## Getting Started
+
+- [Setup Instructions](docs/setup.md)
+- [Implementation Reference][1]
+- [Scripts](scripts/docs/scripts.md)
+- [Contributing](CONTRIBUTING.md)
+- [Changelog](CHANGELOG.md)
+
 ## Evolutionary Algorithms and Neuroevolution
 
 [Evolutionary Algorithms][3] are a class of nature-inspired algorithms based on the idea
@@ -134,15 +142,6 @@ The database schema models the structural relationships, while the actual config
 values and results are stored as JSON strings (the fields highlighted in green):
 
 ![Darwin Data Model](docs/images/darwin_data_model.svg)
-
-## Getting Started
-
-- [Setup Instructions](docs/setup.md)
-- [Implementation Reference][1]
-- [Scripts](scripts/docs/scripts.md)
-- [Coding Style](docs/coding_style.md)
-- [Contributing](CONTRIBUTING.md)
-- [Changelog](CHANGELOG.md)
 
 ## Related projects
 

@@ -2,5 +2,7 @@
 TEMPLATE = subdirs
 
 SUBDIRS += \
+    cgp \
     classic \
-    neat \
+    dummy \
+    neat

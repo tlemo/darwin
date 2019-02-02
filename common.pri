@@ -1,7 +1,7 @@
 
 # compiler switches
 win32-msvc {
-    QMAKE_CXXFLAGS += /permissive- /std:c++17
+    QMAKE_CXXFLAGS += /permissive-
     QMAKE_CXXFLAGS += /wd4244 # conversion from 'double' to 'float', possible loss of data
     QMAKE_CXXFLAGS += /wd5030 # attribute is not recognized
 } else {

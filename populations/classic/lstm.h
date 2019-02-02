@@ -48,7 +48,7 @@ struct Gene : public feedforward::Gene {
 };
 
 struct Layer : public classic::AnnLayer {
-  Layer(const Gene& gene);
+  explicit Layer(const Gene& gene);
 
   vector<float> cells;
 

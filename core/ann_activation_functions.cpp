@@ -19,44 +19,6 @@ namespace ann {
 ActivationFunctionPfn g_activation_function = nullptr;
 ActivationFunctionPfn g_gate_activation_function = nullptr;
 
-// identity function
-float afnIdentity(float x) {
-  return x;
-}
-
-// standard logistic function
-float afnLogistic(float x) {
-  return 1 / (1 + exp(-x));
-}
-
-// tanh
-float afnTanh(float x) {
-  return tanh(x);
-}
-
-// ReLU
-float afnReLU(float x) {
-  return x > 0 ? x : 0;
-}
-
-// classic NEAT activation function
-float afnNeat(float x) {
-  constexpr float kSlope = 4.924273f;  // NEAT magic constant
-  return 1 / (1 + exp(-x * kSlope));
-}
-
-// experimental: ReExp
-// TODO: review/evaluate
-float afnReExp(float x) {
-  return x > 0 ? (1 - exp(-x)) : 0;
-}
-
-// experimental
-// TODO: review/evaluate
-float afnLogisticEx(float x) {
-  return 1 / (1 + exp(-2 * (x - 2)));
-}
-
 static ActivationFunctionPfn activationFunctionPfn(ActivationFunction afn) {
   switch (afn) {
     case ActivationFunction::Identity:

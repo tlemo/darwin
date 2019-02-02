@@ -50,7 +50,7 @@ struct Gene : public feedforward::Gene {
 };
 
 struct Layer : public classic::AnnLayer {
-  Layer(const Gene& gene);
+  explicit Layer(const Gene& gene);
 
   // points directly to the weights in the genotype
   const ann::Matrix& w;

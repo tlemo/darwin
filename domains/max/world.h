@@ -52,7 +52,7 @@ struct World {
 
  private:
   vector<int> map_;
-  vector<bool> visited_;
+  vector<char> visited_;
   int goal_ = 0;
 
   Robot* robot_;

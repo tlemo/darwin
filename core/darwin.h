@@ -67,7 +67,7 @@ inline auto customStringify(core::TypeTag<ComplexityHint>) {
 //! The interface to the [Phenotype](https://en.wikipedia.org/wiki/Phenotype)
 //!
 //! A brain is the phenotype, "grown" from a Genotype. It is the functional
-//! entity used to evaluate a phenotype's fitness.
+//! model used to evaluate a phenotype's fitness.
 //! 
 //! \sa Genotype
 //!
@@ -79,6 +79,7 @@ class Brain {
   virtual void setInput(int index, float value) = 0;
   
   //! Returns the value of one of the outputs
+  //! \note Outputs can be any floating-point value except for NaNs.
   virtual float output(int index) const = 0;
   
   //! Evaluates the outputs from the intput values
@@ -117,10 +118,13 @@ struct Genealogy {
 //! 
 //! This is one of the central concepts in Neuroevolution (and Genetic Algorithms in
 //! general). A population is a collection of geneotypes, each describing a particular
-//! variation of genetic material. Which in turn is used to "grow" phenotypes, the
-//! concrete and functional units used as processing units, transforming a particular
-//! set of domain specific inputs into outputs with the goal of reaching a domain specific
-//! goal.
+//! configuration of genetic material. The genotype is the "recipe" for creating Brain
+//! instances (the phenotype), which are the actual functional units mapping domain inputs
+//! to output values.
+//! 
+//! Each genotype's fitness is evaluated indirectly through the phenotype (brain) 
+//! counterpart: the better the brain performance, relative to a domain specific criteria,
+//! the higher the fitness value.
 //! 
 //! \sa Brain
 //! 

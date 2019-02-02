@@ -18,7 +18,9 @@
 #include <core/darwin.h>
 #include <core/parallel_for_each.h>
 
+#include <populations/cgp/cgp.h>
 #include <populations/classic/classic.h>
+#include <populations/dummy/dummy.h>
 #include <populations/neat/neat.h>
 
 #include <third_party/gtest/gtest.h>
@@ -47,6 +49,10 @@ struct BrainsTest : public testing::TestWithParam<string> {
       updateConfig(neat_config);
     } else if (auto classic_config = dynamic_cast<classic::Config*>(config.get())) {
       updateConfig(classic_config);
+    } else if (auto cgp_config = dynamic_cast<cgp::Config*>(config.get())) {
+      updateConfig(cgp_config);
+    } else if (auto dummy_config = dynamic_cast<dummy::Config*>(config.get())) {
+      updateConfig(dummy_config);
     } else {
       FATAL("Unexpected population type");
     }
@@ -55,6 +61,31 @@ struct BrainsTest : public testing::TestWithParam<string> {
     CHECK(population);
 
     population->createPrimordialGeneration(kPopulationSize);
+  }
+
+  void updateConfig(dummy::Config* config) {
+    config->input_range = 5.0f;
+    config->output_range = 10.0f;
+    config->random_outputs = true;
+  }
+
+  void updateConfig(cgp::Config* config) {
+    config->rows = 32;
+    config->columns = 17;
+    config->levels_back = 8;
+    config->outputs_use_levels_back = false;
+    config->fn_basic_constants = true;
+    config->fn_transcendental_constants = true;
+    config->fn_basic_arithmetic = true;
+    config->fn_extra_arithmetic = true;
+    config->fn_common_math = true;
+    config->fn_extra_math = true;
+    config->fn_trigonometric = true;
+    config->fn_hyperbolic = true;
+    config->fn_ann_activation = true;
+    config->fn_comparisons = true;
+    config->fn_logic_gates = true;
+    config->fn_conditional = true;
   }
 
   void updateConfig(neat::Config* config) {
@@ -79,12 +110,18 @@ struct BrainsTest : public testing::TestWithParam<string> {
       auto genotype = population->genotype(index);
       brain = genotype->grow();
 
+      // set inputs
       for (size_t i = 0; i < domain->inputs(); ++i) {
         const float value = i % 2 ? 1.0f : -1.0f;
         brain->setInput(int(i), value);
       }
 
       brain->think();
+
+      // consume outputs
+      for (size_t i = 0; i < domain->outputs(); ++i) {
+        [[maybe_unused]] float value = brain->output(int(i));
+      }
     });
   }
 

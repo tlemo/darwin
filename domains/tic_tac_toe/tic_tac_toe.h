@@ -97,8 +97,20 @@ class Factory : public darwin::DomainFactory {
   }
 
   unique_ptr<core::PropertySet> defaultConfig(
-      darwin::ComplexityHint /*hint*/) const override {
+      darwin::ComplexityHint hint) const override {
     auto config = make_unique<Config>();
+    switch (hint) {
+      case darwin::ComplexityHint::Minimal:
+        config->tournament_type.default_tournament.eval_games = 2;
+        config->tournament_type.default_tournament.rematches = false;
+        config->tournament_type.selectCase(tournament::TournamentType::Default);
+        config->calibration_matches = 3;
+        break;
+
+      case darwin::ComplexityHint::Balanced:
+      case darwin::ComplexityHint::Extra:
+        break;
+    }
     return config;
   }
 };

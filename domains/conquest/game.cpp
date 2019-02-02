@@ -109,8 +109,9 @@ bool Game::gameStep() {
     if (deployment.size == 0)
       continue;
 
-    deployment.position += g_config.units_speed;
-    if (deployment.position >= arc.length) {
+    constexpr float kUnitSpeedFactor = 0.02f;
+    deployment.position += g_config.units_speed * kUnitSpeedFactor;
+    if (deployment.position >= 1.0f) {
       node_units_[arc.dst] += deployment.size;
       deployment = {};
       check_stats = true;

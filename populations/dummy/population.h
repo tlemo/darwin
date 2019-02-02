@@ -1,4 +1,4 @@
-// Copyright 2018 The Darwin Neuroevolution Framework Authors.
+// Copyright 2019 The Darwin Neuroevolution Framework Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,58 +14,41 @@
 
 #pragma once
 
+#include "dummy.h"
 #include "genotype.h"
 
 #include <core/darwin.h>
+#include <core/properties.h>
 
-#include <atomic>
 #include <vector>
-#include <memory>
 using namespace std;
 
-namespace neat {
-
-struct Species {
-  vector<int> genotypes;
-  Genotype origin;
-};
+namespace dummy {
 
 class Population : public darwin::Population {
  public:
-  size_t size() const override { return genotypes_.size(); }
+  Population(const core::PropertySet& config, const darwin::Domain& domain);
 
+  size_t size() const override { return genotypes_.size(); }
   int generation() const override { return generation_; }
 
-  Genotype* genotype(size_t index) override { return &genotypes_[order_[index]]; }
-
-  const Genotype* genotype(size_t index) const override {
-    return &genotypes_[order_[index]];
-  }
+  Genotype* genotype(size_t index) override { return &genotypes_[index]; }
+  const Genotype* genotype(size_t index) const override { return &genotypes_[index]; }
 
   void createPrimordialGeneration(int population_size) override;
-
   void rankGenotypes() override;
-
   void createNextGeneration() override;
+  
+  const Config& config() const { return config_; }
+  const darwin::Domain* domain() const { return domain_; }
 
  private:
-  void classicSelection();
-  void neatSelection();
-  void resetOrder();
+  Config config_;
+  const darwin::Domain* domain_ = nullptr;
 
-  // separate the genomes into species
-  void speciate();
-  void assignSpecies(int index);
-
- private:
   vector<Genotype> genotypes_;
-  vector<Species> species_;
-  atomic<Innovation> next_innovation_ = 0;
-
   int generation_ = 0;
-
   bool ranked_ = false;
-  vector<size_t> order_;
 };
 
-}  // namespace neat
+}  // namespace dummy

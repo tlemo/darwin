@@ -230,10 +230,7 @@ void BoardWidget::paintDeployment(QPainter& painter, int arc_index) const {
 
   float size = game_->deployment(arc_index).size;
   float pos = game_->deployment(arc_index).position;
-
-  // adjust the pos to [0, 1]
-  Q_ASSERT(pos >= 0 && pos <= arc.length);
-  pos /= arc.length;
+  Q_ASSERT(pos >= 0 && pos <= 1.0f);
 
   if (size == 0)
     return;

@@ -47,8 +47,12 @@
 //! \namespace registry_ui
 //! \brief Support for registering domain UIs
 
+//! \namespace cgp
+//! \brief [Cartesian Genetic Programming (CGP)]
+//!     (https://en.wikipedia.org/wiki/Cartesian_genetic_programming)
+
 //! \namespace classic
-//! \brief Classic Neuroevolution populations
+//! \brief Classic (Conventional) Neuroevolution populations
 
 //! \namespace classic::feedforward
 //! \brief [Feedforward ANN]
@@ -69,7 +73,9 @@
 //! \namespace classic::lstm_lite
 //! \brief A drastically simplified LSTM variation
 
+//! \namespace dummy
+//! \brief A dummy population implementation, used for testing and/or as a baseline
+
 //! \namespace neat
 //! \brief [NeuroEvolution of Augmenting Topologies (NEAT)]
 //!     (https://en.wikipedia.org/wiki/Neuroevolution_of_augmenting_topologies)
-
