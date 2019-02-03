@@ -14,6 +14,8 @@
 
 #pragma once
 
+#include "scene_ui.h"
+
 #include <core_ui/box2d_sandbox_window.h>
 #include <core_ui/properties_widget.h>
 #include <domains/unicycle/agent.h>
@@ -66,6 +68,7 @@ class SandboxWindow : public core_ui::Box2dSandboxWindow {
   shared_ptr<const darwin::Genotype> genotype_;
   unique_ptr<unicycle::World> world_;
   unique_ptr<unicycle::Agent> agent_;
+  unique_ptr<SceneUi> scene_ui_;
   int step_ = -1;
   int max_steps_ = -1;
 };

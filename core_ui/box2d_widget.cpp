@@ -22,6 +22,7 @@
 #include <QPainter>
 #include <QPen>
 #include <QPointF>
+#include <QMouseEvent>
 
 #include <math.h>
 
@@ -38,6 +39,25 @@ void Box2dWidget::setWorld(b2World* world, const QRectF& viewport) {
   world_ = world;
   setViewport(viewport);
   update();
+}
+
+void Box2dWidget::setSceneUi(Box2dSceneUi* scene_ui) {
+  if (scene_ui_ != nullptr) {
+    disconnect(scene_ui_, &Box2dSceneUi::sigPlayPause, this, &Box2dWidget::sigPlayPause);
+  }
+  CHECK(scene_ui != nullptr);
+  scene_ui_ = scene_ui;
+  connect(scene_ui, &Box2dSceneUi::sigPlayPause, this, &Box2dWidget::sigPlayPause);
+  update();
+}
+
+void Box2dWidget::debugRender(QPainter& painter) const {
+  core_ui::Box2dRenderer box2d_renderer(&painter);
+  box2d_renderer.SetFlags(b2Draw::e_shapeBit | b2Draw::e_centerOfMassBit);
+
+  world_->SetDebugDraw(&box2d_renderer);
+  world_->DrawDebugData();
+  world_->SetDebugDraw(nullptr);
 }
 
 void Box2dWidget::paintEvent(QPaintEvent*) {
@@ -58,17 +78,55 @@ void Box2dWidget::paintEvent(QPaintEvent*) {
   painter.drawRect(viewport());
 
   if (world_ != nullptr) {
-    core_ui::Box2dRenderer box2d_renderer(&painter);
-    box2d_renderer.SetFlags(b2Draw::e_shapeBit | b2Draw::e_centerOfMassBit);
-
-    world_->SetDebugDraw(&box2d_renderer);
-    world_->DrawDebugData();
-    world_->SetDebugDraw(nullptr);
+    // custom rendering (optional)
+    if (scene_ui_ != nullptr) {
+      scene_ui_->render(painter);
+    }
+    
+    // debug rendering layer
+    if (enable_debug_render_) {
+      debugRender(painter);
+    }
   }
 }
 
-void Box2dWidget::mousePressEvent(QMouseEvent*) {
-  emit sigPlayPause();
+void Box2dWidget::mousePressEvent(QMouseEvent* event) {
+  if (scene_ui_ != nullptr) {
+    auto pos = transformToViewport().map(event->localPos());
+    scene_ui_->mousePressEvent(pos, event);
+  } else {
+    emit sigPlayPause();
+  }
+  update();
+}
+
+void Box2dWidget::mouseReleaseEvent(QMouseEvent* event) {
+  if (scene_ui_ != nullptr) {
+    auto pos = transformToViewport().map(event->localPos());
+    scene_ui_->mouseReleaseEvent(pos, event);
+  }
+  update();
+}
+
+void Box2dWidget::mouseMoveEvent(QMouseEvent* event) {
+  if (scene_ui_ != nullptr) {
+    auto pos = transformToViewport().map(event->localPos());
+    scene_ui_->mouseMoveEvent(pos, event);
+  }
+  update();
+}
+
+void Box2dWidget::keyPressEvent(QKeyEvent* event) {
+  if (scene_ui_ != nullptr) {
+    scene_ui_->keyPressEvent(event);
+  }
+  update();
+}
+
+void Box2dWidget::keyReleaseEvent(QKeyEvent* event) {
+  if (scene_ui_ != nullptr) {
+    scene_ui_->keyReleaseEvent(event);
+  }
   update();
 }
 

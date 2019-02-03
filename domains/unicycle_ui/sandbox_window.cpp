@@ -28,6 +28,7 @@ bool SandboxWindow::setup() {
   CHECK(!domain_);
   CHECK(!world_);
   CHECK(!agent_);
+  CHECK(!scene_ui_);
   CHECK(state() == State::None);
 
   auto snapshot = darwin::evolution()->snapshot();
@@ -89,6 +90,9 @@ void SandboxWindow::newScene() {
   QRectF viewport(-half_width, height, 2 * half_width, -height);
 
   setWorld(world_->box2dWorld(), viewport);
+  
+  scene_ui_ = make_unique<SceneUi>(world_.get());
+  setSceneUi(scene_ui_.get());
 }
 
 void SandboxWindow::singleStep() {
