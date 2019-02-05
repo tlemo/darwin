@@ -38,12 +38,12 @@ GenerationSummary::GenerationSummary(const Population* population,
   const size_t size = population->size();
   CHECK(size > 0);
   
-  const auto& ranked_index = population->rankedIndex();
+  const auto& ranking_index = population->rankingIndex();
   generation = population->generation();
-  best_fitness = population->genotype(ranked_index[0])->fitness;
-  median_fitness = population->genotype(ranked_index[size / 2])->fitness;
-  worst_fitness = population->genotype(ranked_index[size - 1])->fitness;
-  champion = population->genotype(ranked_index[0])->clone();
+  best_fitness = population->genotype(ranking_index[0])->fitness;
+  median_fitness = population->genotype(ranking_index[size / 2])->fitness;
+  worst_fitness = population->genotype(ranking_index[size - 1])->fitness;
+  champion = population->genotype(ranking_index[0])->clone();
 }
 
 EvolutionTrace::EvolutionTrace(const Evolution* evolution) : evolution_(evolution) {
@@ -71,12 +71,12 @@ vector<CompressedFitnessValue> compressFitness(const Population* population) {
 
   vector<CompressedFitnessValue> compressed_values;
 
-  const auto& ranked_index = population->rankedIndex();
+  const auto& ranking_index = population->rankingIndex();
   auto rankedGenotype = [&](size_t index) {
-    return population->genotype(ranked_index[index]);
+    return population->genotype(ranking_index[index]);
   };
 
-  const int raw_size = int(ranked_index.size());
+  const int raw_size = int(ranking_index.size());
   CHECK(raw_size > 0);
 
   int last_sample_index = 0;
@@ -170,7 +170,7 @@ GenerationSummary EvolutionTrace::addGeneration(
     case FitnessInfoKind::FullRaw: {
       // capture all fitness values (ranked)
       json json_full_fitness;
-      for (auto genotype_index : population->rankedIndex()) {
+      for (auto genotype_index : population->rankingIndex()) {
         json_full_fitness.push_back(population->genotype(genotype_index)->fitness);
       }
       json_details["full_fitness"] = json_full_fitness;
@@ -366,7 +366,7 @@ void Evolution::evolutionCycle() {
     }
 
     // extra fitness values (optional)
-    const auto champion_index = population_->rankedIndex()[0];
+    const auto champion_index = population_->rankingIndex()[0];
     const Genotype* champion = population_->genotype(champion_index);
     shared_ptr<core::PropertySet> calibration_fitness =
         domain_->calibrateGenotype(champion);

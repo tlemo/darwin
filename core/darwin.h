@@ -183,7 +183,7 @@ class Population : public core::NonCopyable {
   //! and potentially other criteria internal to the population (for example a population
   //! may break the fitness ties by favoring less complex genotypes)
   //! 
-  virtual vector<size_t> rankedIndex() const = 0;
+  virtual vector<size_t> rankingIndex() const = 0;
 
   //! The current generation number
   virtual int generation() const = 0;

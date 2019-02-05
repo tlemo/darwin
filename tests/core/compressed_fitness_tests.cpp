@@ -51,16 +51,16 @@ class TestPopulation : public darwin::Population {
     return &genotypes_[index];
   }
 
-  vector<size_t> rankedIndex() const override {
-    vector<size_t> ranked_index(genotypes_.size());
-    for (size_t i = 0; i < ranked_index.size(); ++i) {
-      ranked_index[i] = i;
+  vector<size_t> rankingIndex() const override {
+    vector<size_t> ranking_index(genotypes_.size());
+    for (size_t i = 0; i < ranking_index.size(); ++i) {
+      ranking_index[i] = i;
     }
     // sort results by fitness (descending order)
-    std::sort(ranked_index.begin(), ranked_index.end(), [&](size_t a, size_t b) {
+    std::sort(ranking_index.begin(), ranking_index.end(), [&](size_t a, size_t b) {
       return genotypes_[a].fitness > genotypes_[b].fitness;
     });
-    return ranked_index;
+    return ranking_index;
   }
 
   int generation() const override { FATAL("Not implemented"); }

@@ -35,7 +35,7 @@ class Population : public darwin::Population {
   Genotype* genotype(size_t index) override { return &genotypes_[index]; }
   const Genotype* genotype(size_t index) const override { return &genotypes_[index]; }
 
-  vector<size_t> rankedIndex() const override;
+  vector<size_t> rankingIndex() const override;
   void createPrimordialGeneration(int population_size) override;
   void createNextGeneration() override;
 

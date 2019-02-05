@@ -72,7 +72,7 @@ struct TestPopulation : public darwin::Population {
 
   int generation() const override { return 0; }
 
-  vector<size_t> rankedIndex() const override { FATAL("Not implemented"); }
+  vector<size_t> rankingIndex() const override { FATAL("Not implemented"); }
   void createPrimordialGeneration(int) override { FATAL("Not implemented"); }
   void createNextGeneration() override { FATAL("Not implemented"); }
 

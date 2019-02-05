@@ -48,7 +48,7 @@ void Population::createPrimordialGeneration(int population_size) {
   core::log("Ready.\n");
 }
 
-vector<size_t> Population::rankedIndex() const {
+vector<size_t> Population::rankingIndex() const {
   vector<size_t> rank_to_index(genotypes_.size());
   for (size_t i = 0; i < rank_to_index.size(); ++i) {
     rank_to_index[i] = i;
@@ -97,7 +97,7 @@ void Population::neatSelection() {
   // build the reverse mapping (direct index -> rank)
   // (this is needed for recording genealogy information, which
   // uses the ranked genotype indexes)
-  const vector<size_t> rank_to_index = rankedIndex();
+  const vector<size_t> rank_to_index = rankingIndex();
   vector<int> index_to_rank(rank_to_index.size());
   for (int i = 0; i < rank_to_index.size(); ++i)
     index_to_rank[rank_to_index[i]] = i;
@@ -292,7 +292,7 @@ void Population::classicSelection() {
   atomic<size_t> max_nodes_count = 0;
   atomic<size_t> max_genes_count = 0;
   
-  const vector<size_t> rank_to_index = rankedIndex();
+  const vector<size_t> rank_to_index = rankingIndex();
 
   pp::for_each(next_generation, [&](int index, Genotype& genotype) {
     std::random_device rd;
