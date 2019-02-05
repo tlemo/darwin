@@ -49,7 +49,6 @@ class Population : public darwin::Population {
     darwin::StageScope stage("Create primordial generation");
 
     generation_ = 0;
-    ranked_ = false;
 
     genotypes_.resize(population_size);
     pp::for_each(genotypes_,
@@ -59,8 +58,6 @@ class Population : public darwin::Population {
   }
 
   void createNextGeneration() override {
-    CHECK(ranked_);
-
     darwin::StageScope stage("Create next generation");
 
     ++generation_;
@@ -135,33 +132,23 @@ class Population : public darwin::Population {
               (elite_count / population_size) * 100,
               (babies_count / population_size) * 100,
               (mutate_count / population_size) * 100);
-
-    ranked_ = false;
   }
 
-  void rankGenotypes() override {
-    CHECK(!ranked_);
-
-    // sort results by fitness (descending order)
-    std::sort(genotypes_.begin(),
-              genotypes_.end(),
-              [](const GENOTYPE& a, const GENOTYPE& b) { return a.fitness > b.fitness; });
-
-    // log best fitness values
-    core::log("Fitness values: ");
-    const size_t sample_size = min(size_t(16), genotypes_.size());
-    for (size_t i = 0; i < sample_size; ++i) {
-      core::log(" %.3f", genotypes_[i].fitness);
+  vector<size_t> rankedIndex() const {
+    vector<size_t> ranked_index(genotypes_.size());
+    for (size_t i = 0; i < ranked_index.size(); ++i) {
+      ranked_index[i] = i;
     }
-    core::log(" ...\n");
-
-    ranked_ = true;
+    // sort results by fitness (descending order)
+    std::sort(ranked_index.begin(), ranked_index.end(), [&](size_t a, size_t b) {
+      return genotypes_[a].fitness > genotypes_[b].fitness;
+    });
+    return ranked_index;
   }
 
  private:
   vector<GENOTYPE> genotypes_;
   int generation_ = 0;
-  bool ranked_ = false;
 };
 
 }  // namespace classic

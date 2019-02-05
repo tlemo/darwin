@@ -177,27 +177,29 @@ class Population : public core::NonCopyable {
   //! Indexed access to a genotype in the population
   virtual const Genotype* genotype(size_t index) const = 0;
 
-  //! Sort (descending) the genotypes by fitness
-  virtual void rankGenotypes() = 0;
+  //! Return the indexes of the ranked genotypes (sorted from best to worst)
+  //! 
+  //! The rankings are calculated based on the fitness values assigned to each genotype,
+  //! and potentially other criteria internal to the population (for example a population
+  //! may break the fitness ties by favoring less complex genotypes)
+  //! 
+  virtual vector<size_t> rankedIndex() const = 0;
 
   //! The current generation number
   virtual int generation() const = 0;
 
   //! Initialize an initial generation
   virtual void createPrimordialGeneration(int population_size) = 0;
-  
+
   //! Creates a new generation based on the current one
-  //! 
-  //! It assumes that:
-  //! 1. The fitness values are assigned for all genotypes in the population,
-  //!   as evaluated by the domain implementation (see Domain::evaluatePopulation())
-  //! 2. The genotypes are ranked (see Population::rankGenotypes())
-  //! 
+  //!
+  //! It assumes that all the genotypes have been evaluated
+  //! (see Domain::evaluatePopulation())
+  //!
   //! \sa Domain::evaluatePopulation()
-  //! \sa Population::rankGenotypes()
   //!
   virtual void createNextGeneration() = 0;
-  
+
   //! Array subscript operator (required for pp::for_each)
   Genotype* operator[](size_t index) { return genotype(index); }
   const Genotype* operator[](size_t index) const { return genotype(index); }

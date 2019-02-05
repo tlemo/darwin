@@ -36,9 +36,6 @@ void Population::createPrimordialGeneration(int population_size) {
   next_innovation_ = 0;
 
   genotypes_.resize(population_size);
-  order_.resize(population_size);
-
-  resetOrder();
 
   pp::for_each(genotypes_, [this](int, Genotype& genotype) {
     auto innovation = genotype.createPrimordialSeed();
@@ -51,32 +48,16 @@ void Population::createPrimordialGeneration(int population_size) {
   core::log("Ready.\n");
 }
 
-void Population::rankGenotypes() {
-  CHECK(!ranked_);
-  CHECK(order_.size() == genotypes_.size());
-
-  // rank the genotypes by fitness (without touching the genotypes array)
-  std::sort(order_.begin(), order_.end(), [&](size_t a, size_t b) {
+vector<size_t> Population::rankedIndex() const {
+  vector<size_t> rank_to_index(genotypes_.size());
+  for (size_t i = 0; i < rank_to_index.size(); ++i) {
+    rank_to_index[i] = i;
+  }
+  // sort results by fitness (descending order)
+  std::sort(rank_to_index.begin(), rank_to_index.end(), [&](size_t a, size_t b) {
     return genotypes_[a].fitness > genotypes_[b].fitness;
   });
-
-  // log best fitness values
-  core::log("Fitness values: ");
-  const size_t sample_size = min(size_t(16), genotypes_.size());
-  for (size_t i = 0; i < sample_size; ++i) {
-    core::log(" %.3f", genotypes_[order_[i]].fitness);
-  }
-  core::log(" ...\n");
-
-  ranked_ = true;
-}
-
-void Population::resetOrder() {
-  CHECK(!order_.empty());
-  CHECK(order_.size() == genotypes_.size());
-  for (size_t i = 0; i < order_.size(); ++i)
-    order_[i] = i;
-  ranked_ = false;
+  return rank_to_index;
 }
 
 void Population::assignSpecies(int index) {
@@ -116,14 +97,15 @@ void Population::neatSelection() {
   // build the reverse mapping (direct index -> rank)
   // (this is needed for recording genealogy information, which
   // uses the ranked genotype indexes)
-  vector<int> index_to_rank(order_.size());
-  for (int i = 0; i < order_.size(); ++i)
-    index_to_rank[order_[i]] = i;
+  const vector<size_t> rank_to_index = rankedIndex();
+  vector<int> index_to_rank(rank_to_index.size());
+  for (int i = 0; i < rank_to_index.size(); ++i)
+    index_to_rank[rank_to_index[i]] = i;
 
   const size_t population_size = genotypes_.size();
   const float min_species_size = (float(population_size) / species_.size()) / 2.0f;
 
-  const float worst_fitness = genotypes_[order_.back()].fitness;
+  const float worst_fitness = genotypes_[rank_to_index.back()].fitness;
 
   // NEAT requires non-negative fitness values, rebase now if needed
   // (adjust fitness values for all genotypes so worst fitness == 0)
@@ -309,6 +291,8 @@ void Population::classicSelection() {
   atomic<size_t> total_genes_count = 0;
   atomic<size_t> max_nodes_count = 0;
   atomic<size_t> max_genes_count = 0;
+  
+  const vector<size_t> rank_to_index = rankedIndex();
 
   pp::for_each(next_generation, [&](int index, Genotype& genotype) {
     std::random_device rd;
@@ -316,7 +300,7 @@ void Population::classicSelection() {
     std::uniform_int_distribution<int> dist_parent;
     std::uniform_real_distribution<double> dist_survive(0, 1);
 
-    auto old_genotype = genotypes_[order_[index]];
+    auto old_genotype = genotypes_[rank_to_index[index]];
     double time_left = (g_config.old_age - old_genotype.age) / double(g_config.old_age);
 
     bool viable = old_genotype.age < g_config.larva_age ||
@@ -335,8 +319,8 @@ void Population::classicSelection() {
       int parent1 = dist_parent(rnd) % (index / 2);
       int parent2 = dist_parent(rnd) % (index / 2);
 
-      const auto& g1 = genotypes_[order_[parent1]];
-      const auto& g2 = genotypes_[order_[parent2]];
+      const auto& g1 = genotypes_[rank_to_index[parent1]];
+      const auto& g2 = genotypes_[rank_to_index[parent2]];
 
       float f1 = fmaxf(g1.fitness, 0);
       float f2 = fmaxf(g2.fitness, 0);
@@ -383,8 +367,6 @@ void Population::classicSelection() {
 }
 
 void Population::createNextGeneration() {
-  CHECK(ranked_);
-
   darwin::StageScope stage("Create next generation");
 
   ++generation_;
@@ -394,8 +376,6 @@ void Population::createNextGeneration() {
   } else {
     neatSelection();
   }
-
-  resetOrder();
 }
 
 }  // namespace neat

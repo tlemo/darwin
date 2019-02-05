@@ -57,18 +57,36 @@ struct SmokeTest : public testing::TestWithParam<ExperimentConfig> {
     auto evolution = darwin::evolution();
     const auto& experiment_conf = GetParam();
 
+    auto validateGenerationSummary = [&](const darwin::GenerationSummary& summary) {
+      EXPECT_GE(summary.generation, 0);
+      EXPECT_LT(summary.generation, experiment_conf.max_generations);
+      EXPECT_GE(summary.best_fitness, summary.median_fitness);
+      EXPECT_GE(summary.median_fitness, summary.worst_fitness);
+      EXPECT_EQ(summary.best_fitness, summary.champion->fitness);
+    };
+
     // the event callback will pause the evolution
     // when it reaches the target generation
     // (unless the evolution terminates normally first)
     auto events_subscription = evolution->events.subscribe([&](uint32_t hints) {
       if ((hints & darwin::Evolution::EventFlag::EndGeneration) != 0) {
         auto snapshot = evolution->snapshot();
-        if (snapshot.generation >= experiment_conf.max_generations)
+        if (snapshot.generation == experiment_conf.max_generations - 1) {
           evolution->pause();
+        }
       }
     });
 
     SCOPE_EXIT { evolution->events.unsubscribe(events_subscription); };
+
+    auto generation_summary_subscription = evolution->generation_summary.subscribe(
+        [&](const darwin::GenerationSummary& summary) {
+          validateGenerationSummary(summary);
+        });
+
+    SCOPE_EXIT {
+      evolution->generation_summary.unsubscribe(generation_summary_subscription);
+    };
 
     darwin::ExperimentSetup experiment_setup;
     experiment_setup.population_size = experiment_conf.population_size;
@@ -92,6 +110,15 @@ struct SmokeTest : public testing::TestWithParam<ExperimentConfig> {
 
     // wait for termination
     evolution->waitForState(termination_state);
+
+    // final snapshot
+    const auto final_snapshot = evolution->snapshot();
+    const auto& trace = final_snapshot.trace;
+    EXPECT_EQ(trace->size(),
+              min(experiment_conf.max_generations, evolution_config.max_generations));
+    for (int i = 0; i < trace->size(); ++i) {
+      validateGenerationSummary(trace->generationSummary(i));
+    }
 
     // reset the experiment
     ASSERT_TRUE(evolution->reset());
