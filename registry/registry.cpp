@@ -27,6 +27,7 @@
 #include <domains/cart_pole/cart_pole.h>
 #include <domains/double_cart_pole/double_cart_pole.h>
 #include <domains/unicycle/unicycle.h>
+#include <domains/test_domain/test_domain.h>
 
 namespace registry {
 
@@ -40,6 +41,7 @@ void init() {
   cart_pole::init();
   double_cart_pole::init();
   unicycle::init();
+  test_domain::init();
 
   // populations
   cgp::init();
