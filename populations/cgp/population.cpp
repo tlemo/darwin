@@ -93,12 +93,15 @@ void Population::createNextGeneration() {
   }
 
   const int elite_limit = max(1, int(population_size * config_.elite_percentage));
+  const auto& ranking_index = rankingIndex();
 
   vector<Genotype> next_generation(population_size, Genotype(this));
   pp::for_each(next_generation, [&](int index, Genotype& genotype) {
-    if (index < elite_limit && genotypes_[index].fitness >= config_.elite_min_fitness) {
-      genotype = genotypes_[index];
-      genotype.genealogy = darwin::Genealogy("e", { index });
+    const int old_genotype_index = int(ranking_index[index]);
+    const auto& old_genotype = genotypes_[old_genotype_index];
+    if (index < elite_limit && old_genotype.fitness >= config_.elite_min_fitness) {
+      genotype = old_genotype;
+      genotype.genealogy = darwin::Genealogy("e", { old_genotype_index });
     } else {
       random_device rd;
       default_random_engine rnd(rd());

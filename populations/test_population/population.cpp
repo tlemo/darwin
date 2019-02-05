@@ -52,9 +52,10 @@ void Population::createNextGeneration() {
 
   ++generation_;
 
+  const auto& ranking_index = rankingIndex();
   const int elite_limit = max(0, int(genotypes_.size() * config_.elite_percentage));
   for (int index = int(genotypes_.size()) - 1; index >= 0; --index) {
-    Genotype& genotype = genotypes_[index];
+    Genotype& genotype = genotypes_[ranking_index[index]];
     if (index < elite_limit && genotype.fitness >= config_.elite_min_fitness) {
       break;
     }

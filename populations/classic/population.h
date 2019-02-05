@@ -63,6 +63,8 @@ class Population : public darwin::Population {
     ++generation_;
 
     vector<GENOTYPE> next_generation(genotypes_.size());
+    
+    const auto& ranking_index = rankingIndex();
 
     atomic<size_t> elite_count = 0;
     atomic<size_t> babies_count = 0;
@@ -75,7 +77,8 @@ class Population : public darwin::Population {
       std::uniform_real_distribution<double> dist_survive(0, 1);
       std::bernoulli_distribution dist_mutate_elite(g_config.elite_mutation_chance);
   
-      auto old_genotype = genotypes_[index];
+      const int old_genotype_index = int(ranking_index[index]);
+      const auto& old_genotype = genotypes_[old_genotype_index];
       const double old_age = g_config.old_age;
       const double time_left = old_age > 0 ? (old_age - old_genotype.age) / old_age : 0;
 
@@ -89,16 +92,16 @@ class Population : public darwin::Population {
         genotype = old_genotype;
         if (dist_mutate_elite(rnd)) {
           genotype.mutate();
-          genotype.genealogy = darwin::Genealogy("em", { index });
+          genotype.genealogy = darwin::Genealogy("em", { old_genotype_index });
         } else {
-          genotype.genealogy = darwin::Genealogy("e", { index });
+          genotype.genealogy = darwin::Genealogy("e", { old_genotype_index });
         }
         ++genotype.age;
         ++elite_count;
       } else if (index >= 2 && (!viable || dist_survive(rnd) > time_left)) {
         // pick two parents and produce the offspring
-        int parent1 = dist_parent(rnd) % (index / 2);
-        int parent2 = dist_parent(rnd) % (index / 2);
+        const int parent1 = int(ranking_index[dist_parent(rnd) % (index / 2)]);
+        const int parent2 = int(ranking_index[dist_parent(rnd) % (index / 2)]);
 
         const auto& g1 = genotypes_[parent1];
         const auto& g2 = genotypes_[parent2];
@@ -117,7 +120,7 @@ class Population : public darwin::Population {
       } else {
         // last resort, mutate the old genotype
         genotype = old_genotype;
-        genotype.genealogy = darwin::Genealogy("m", { index });
+        genotype.genealogy = darwin::Genealogy("m", { old_genotype_index });
         genotype.mutate();
         ++genotype.age;
         ++mutate_count;
