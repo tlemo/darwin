@@ -27,6 +27,49 @@ using namespace std;
 
 namespace cgp {
 
+class Population::GenotypeFactory : public selection::GenotypeFactory {
+ public:
+  void init(Population* population, Genotype* genotype) {
+    population_ = population;
+    genotype_ = genotype;
+  }
+
+  void replicate(int parent_index) override {
+    *genotype_ = population_->genotypes_[parent_index];
+    genotype_->genealogy = darwin::Genealogy("m", { parent_index });
+  }
+
+  void crossover(int /*parent1*/, int /*parent2*/) override {
+    FATAL("Crossover not supported");
+  }
+
+  void mutate() override {
+    genotype_->mutate(population_->config_.connection_mutation_chance,
+                      population_->config_.function_mutation_chance);
+    genotype_->genealogy.genetic_operator += "m";
+  }
+
+ private:
+  Population* population_ = nullptr;
+  Genotype* genotype_ = nullptr;
+};
+
+class Population::GenerationFactory : public selection::GenerationFactory {
+ public:
+  GenerationFactory(Population* population, vector<Genotype>& next_generation) {
+    factories_.resize(next_generation.size());
+    for (size_t i = 0; i < factories_.size(); ++i) {
+      factories_[i].init(population, &next_generation[i]);
+    }
+  }
+
+  size_t size() const override { return factories_.size(); }
+  GenotypeFactory* operator[](size_t index) override { return &factories_[index]; }
+
+ private:
+  vector<GenotypeFactory> factories_;
+};
+
 Population::Population(const core::PropertySet& config, const darwin::Domain& domain) {
   config_.copyFrom(config);
   domain_ = &domain;
@@ -38,10 +81,17 @@ Population::Population(const core::PropertySet& config, const darwin::Domain& do
     throw core::Exception("Invalid configuration: columns < 1");
   if (config_.levels_back < 1)
     throw core::Exception("Invalid configuration: levels_back < 1");
-  if (config_.elite_percentage < 0 || config_.elite_percentage > 100)
-    throw core::Exception("Invalid configuration: elite_percentage");
     
   setupAvailableFunctions();
+
+  switch (config_.selection_algorithm.tag()) {
+    case SelectionAlgorithmType::RouletteWheel:
+      selection_algorithm_ =
+          make_unique<RouletteSelection>(config_.selection_algorithm.roulette_wheel);
+      break;
+    default:
+      FATAL("Unexpected selection algorithm type");
+  }
 }
 
 void Population::createPrimordialGeneration(int population_size) {
@@ -57,6 +107,8 @@ void Population::createPrimordialGeneration(int population_size) {
   pp::for_each(genotypes_,
                [](int, Genotype& genotype) { genotype.createPrimordialSeed(); });
 
+  selection_algorithm_->newPopulation(this);
+  
   core::log("Ready.\n");
 }
 
@@ -76,46 +128,9 @@ void Population::createNextGeneration() {
   darwin::StageScope stage("Create next generation");
 
   ++generation_;
-
-  // roulette wheel selection (aka fitness-proportionate selection)
-  // (supports negative fitness values too)
-
-  const size_t population_size = genotypes_.size();
-  CHECK(population_size > 0);
-
-  constexpr float kMinFitness = 0.0f;
-  vector<double> prefix_sum(population_size);
-  double sum = 0;
-  for (size_t i = 0; i < population_size; ++i) {
-    const double fitness_value = genotypes_[i].fitness;
-    sum += (fitness_value >= kMinFitness) ? fitness_value : 0.0f;
-    prefix_sum[i] = sum;
-  }
-
-  const int elite_limit = max(1, int(population_size * config_.elite_percentage));
-  const auto& ranking_index = rankingIndex();
-
-  vector<Genotype> next_generation(population_size, Genotype(this));
-  pp::for_each(next_generation, [&](int index, Genotype& genotype) {
-    const int old_genotype_index = int(ranking_index[index]);
-    const auto& old_genotype = genotypes_[old_genotype_index];
-    if (index < elite_limit && old_genotype.fitness >= config_.elite_min_fitness) {
-      genotype = old_genotype;
-      genotype.genealogy = darwin::Genealogy("e", { old_genotype_index });
-    } else {
-      random_device rd;
-      default_random_engine rnd(rd());
-      uniform_real_distribution<double> dist_sample(0, sum);
-      const double sample = dist_sample(rnd);
-      const auto interval = lower_bound(prefix_sum.begin(), prefix_sum.end(), sample);
-      CHECK(interval != prefix_sum.end());
-      const int parent_index = std::distance(prefix_sum.begin(), interval);
-      genotype = genotypes_[parent_index];
-      genotype.mutate(config_.connection_mutation_chance,
-                      config_.function_mutation_chance);
-      genotype.genealogy = darwin::Genealogy("m", { parent_index });
-    }
-  });
+  vector<Genotype> next_generation(genotypes_.size(), Genotype(this));
+  GenerationFactory generation_factory(this, next_generation);
+  selection_algorithm_->createNextGeneration(&generation_factory);
   std::swap(genotypes_, next_generation);
 }
 

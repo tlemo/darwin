@@ -16,16 +16,21 @@
 
 #include "cgp.h"
 #include "genotype.h"
+#include "selection_algorithm.h"
 
 #include <core/darwin.h>
 #include <core/properties.h>
 
+#include <memory>
 #include <vector>
 using namespace std;
 
 namespace cgp {
 
 class Population : public darwin::Population {
+  class GenotypeFactory;
+  class GenerationFactory;
+
  public:
   Population(const core::PropertySet& config, const darwin::Domain& domain);
 
@@ -41,19 +46,20 @@ class Population : public darwin::Population {
 
   const Config& config() const { return config_; }
   const darwin::Domain* domain() const { return domain_; }
-  
+
   const vector<FunctionId>& availableFunctions() const { return available_functions_; }
-  
+
  private:
   void setupAvailableFunctions();
 
  private:
   Config config_;
   const darwin::Domain* domain_ = nullptr;
-  
+  unique_ptr<selection::SelectionAlgorithm> selection_algorithm_;
+
   vector<Genotype> genotypes_;
   int generation_ = 0;
-  
+
   vector<FunctionId> available_functions_;
 };
 

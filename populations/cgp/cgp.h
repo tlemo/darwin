@@ -14,11 +14,29 @@
 
 #pragma once
 
+#include "roulette_selection.h"
+
 #include <core/properties.h>
 
 namespace cgp {
 
 void init();
+
+enum class SelectionAlgorithmType {
+  RouletteWheel,
+};
+
+inline auto customStringify(core::TypeTag<SelectionAlgorithmType>) {
+  static auto stringify = new core::StringifyKnownValues<SelectionAlgorithmType>{
+    { SelectionAlgorithmType::RouletteWheel, "roulette_wheel" },
+  };
+  return stringify;
+}
+
+struct SelectionAlgorithmVariant
+    : public core::PropertySetVariant<SelectionAlgorithmType> {
+  CASE(SelectionAlgorithmType::RouletteWheel, roulette_wheel, RouletteSelectionConfig);
+};
 
 struct Config : public core::PropertySet {
   PROPERTY(rows, int, 8, "Number of node rows");
@@ -52,8 +70,10 @@ struct Config : public core::PropertySet {
   PROPERTY(fn_logic_gates, bool, false, "and, or, not, xor");
   PROPERTY(fn_conditional, bool, false, "if/else_zero");
 
-  PROPERTY(elite_percentage, float, 0.1f, "Elite percentage");
-  PROPERTY(elite_min_fitness, float, 0.0f, "Elite minimum fitness");
+  VARIANT(selection_algorithm,
+          cgp::SelectionAlgorithmVariant,
+          cgp::SelectionAlgorithmType::RouletteWheel,
+          "Selecton algorithm");
 };
 
 }  // namespace cgp
