@@ -137,12 +137,9 @@ void World::setTargetPosition(float target_position) {
 }
 
 void World::turnWheel(float torque) {
-  const auto& config = domain_->config();
+  CHECK(!isnan(torque));
 
-  // guard against NaNs
-  if (isnan(torque)) {
-    return;
-  }
+  const auto& config = domain_->config();
 
   // discrete control forces?
   if (config.discrete_controls && torque != 0) {
