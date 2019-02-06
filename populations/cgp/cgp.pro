@@ -19,7 +19,6 @@ HEADERS += \
     population.h \
     genotype.h \
     brain.h \
-    roulette_selection.h \
-    selection_algorithm.h
+    roulette_selection.h
 
 addLibrary(../../core)

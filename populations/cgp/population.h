@@ -16,8 +16,8 @@
 
 #include "cgp.h"
 #include "genotype.h"
-#include "selection_algorithm.h"
 
+#include <core/selection_algorithm.h>
 #include <core/darwin.h>
 #include <core/properties.h>
 

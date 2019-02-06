@@ -14,8 +14,7 @@
 
 #pragma once
 
-#include "selection_algorithm.h"
-
+#include <core/selection_algorithm.h>
 #include <core/properties.h>
 
 namespace cgp {
