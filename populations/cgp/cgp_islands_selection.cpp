@@ -30,39 +30,34 @@ CgpIslandsSelection::CgpIslandsSelection(const core::PropertySet& config) {
 void CgpIslandsSelection::newPopulation(darwin::Population* population) {
   CHECK(population != nullptr);
   population_ = population;
-
-  const int island_size = config_.island_size;
-  const int islands_count = (population_->size() + island_size - 1) / island_size;
-  island_parent_.resize(islands_count);
-  for (int& parent : island_parent_) {
-    parent = kNoParent;
-  }
 }
 
 void CgpIslandsSelection::createNextGeneration(GenerationFactory* next_generation) {
-  // identify each island's next generation parent
-  for (size_t island = 0; island < island_parent_.size(); ++island) {
-    const int island_base = island * config_.island_size;
-    const int prev_parent = island_parent_[island];
-    int parent = prev_parent;
-    for (int i = 0; i < config_.island_size; ++i) {
-      if (i != prev_parent) {
-        if (population_->genotype(island_base + i)->fitness >=
-            population_->genotype(island_base + parent)->fitness) {
-          parent = i;
-        }
+  // identify the parent for each island's next generation
+  const int island_size = config_.island_size;
+  const int population_size = int(population_->size());
+  const int islands_count = (population_size + island_size - 1) / island_size;
+  vector<int> island_parent(islands_count);
+  for(int island = 0; island < islands_count; ++island) {
+    const int island_base = island * island_size;
+    int parent = 0;
+    for (int i = 1; i < island_size && island_base + i < population_size; ++i) {
+      if (population_->genotype(island_base + i)->fitness >=
+          population_->genotype(island_base + parent)->fitness) {
+        parent = i;
       }
     }
-    island_parent_[island] = parent;
+    island_parent[island] = island_base + parent;
   }
 
   // generate the next generation
+  // (island parents are placed first within the island)
   pp::for_each(*next_generation, [&](int index, GenotypeFactory* genotype_factory) {
-    const int island = index / config_.island_size;
-    const int island_base = island * config_.island_size;
-    const int island_parent = island_base + island_parent_[island];
-    genotype_factory->replicate(island_parent);
-    if (index != island_parent) {
+    const int island = index / island_size;
+    const int parent = island_parent[island];
+    CHECK(parent / island_size == island);
+    genotype_factory->replicate(parent);
+    if ((index % island_size) != 0) {
       genotype_factory->mutate();
     }
   });

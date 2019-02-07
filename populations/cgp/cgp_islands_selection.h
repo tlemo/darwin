@@ -27,8 +27,6 @@ struct CgpIslandsSelectionConfig : public core::PropertySet {
 };
 
 class CgpIslandsSelection : public selection::SelectionAlgorithm {
-  static constexpr int kNoParent = -1;
-  
  public:
   explicit CgpIslandsSelection(const core::PropertySet& config);
 
@@ -38,10 +36,6 @@ class CgpIslandsSelection : public selection::SelectionAlgorithm {
  private:
   darwin::Population* population_ = nullptr;
   CgpIslandsSelectionConfig config_;
-
-  // the island-relative index of each island's parent
-  // (if empty it indicates that there are no parents yet - ie. primordial generation)
-  vector<int> island_parent_;
 };
 
 }  // namespace cgp
