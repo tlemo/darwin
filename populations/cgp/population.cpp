@@ -89,6 +89,10 @@ Population::Population(const core::PropertySet& config, const darwin::Domain& do
       selection_algorithm_ =
           make_unique<RouletteSelection>(config_.selection_algorithm.roulette_wheel);
       break;
+    case SelectionAlgorithmType::CgpIslands:
+      selection_algorithm_ =
+          make_unique<CgpIslandsSelection>(config_.selection_algorithm.cgp_islands);
+      break;
     default:
       FATAL("Unexpected selection algorithm type");
   }

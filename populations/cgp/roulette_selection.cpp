@@ -13,10 +13,11 @@
 // limitations under the License.
 
 #include "roulette_selection.h"
-using namespace selection;
 
 #include <core/exception.h>
 #include <core/parallel_for_each.h>
+
+using namespace selection;
 
 namespace cgp {
 

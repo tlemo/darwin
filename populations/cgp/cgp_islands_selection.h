@@ -1,0 +1,47 @@
+// Copyright 2019 The Darwin Neuroevolution Framework Authors.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+#pragma once
+
+#include <core/properties.h>
+#include <core/selection_algorithm.h>
+
+#include <vector>
+using namespace std;
+
+namespace cgp {
+
+struct CgpIslandsSelectionConfig : public core::PropertySet {
+  PROPERTY(island_size, int, 5, "Size of the population islands");
+};
+
+class CgpIslandsSelection : public selection::SelectionAlgorithm {
+  static constexpr int kNoParent = -1;
+  
+ public:
+  explicit CgpIslandsSelection(const core::PropertySet& config);
+
+  void newPopulation(darwin::Population* population) override;
+  void createNextGeneration(selection::GenerationFactory* next_generation) override;
+
+ private:
+  darwin::Population* population_ = nullptr;
+  CgpIslandsSelectionConfig config_;
+
+  // the island-relative index of each island's parent
+  // (if empty it indicates that there are no parents yet - ie. primordial generation)
+  vector<int> island_parent_;
+};
+
+}  // namespace cgp
