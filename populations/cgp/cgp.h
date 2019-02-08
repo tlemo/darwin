@@ -16,6 +16,7 @@
 
 #include "roulette_selection.h"
 #include "cgp_islands_selection.h"
+#include "genotype.h"
 
 #include <core/properties.h>
 
@@ -52,15 +53,6 @@ struct Config : public core::PropertySet {
            false,
            "Use levels-back value for the output genes?");
 
-  PROPERTY(connection_mutation_chance,
-           float,
-           0.02f,
-           "Probability of mutating a connection");
-  PROPERTY(function_mutation_chance,
-           float,
-           0.01f,
-           "Probability of mutating a node's function");
-
   PROPERTY(fn_basic_constants, bool, true, "0, 1, 2");
   PROPERTY(fn_transcendental_constants, bool, true, "pi, e");
   PROPERTY(fn_basic_arithmetic, bool, true, "identity, +, -, *, /, negate");
@@ -73,6 +65,11 @@ struct Config : public core::PropertySet {
   PROPERTY(fn_comparisons, bool, false, "eq, ne, gt, ge, lt, le");
   PROPERTY(fn_logic_gates, bool, false, "and, or, not, xor");
   PROPERTY(fn_conditional, bool, false, "if/else_zero");
+
+  VARIANT(mutation_strategy,
+          MutationVariant,
+          MutationStrategy::FixedCount,
+          "Mutation strategy");
 
   VARIANT(selection_algorithm,
           cgp::SelectionAlgorithmVariant,

@@ -44,8 +44,20 @@ class Population::GenotypeFactory : public selection::GenotypeFactory {
   }
 
   void mutate() override {
-    genotype_->mutate(population_->config_.connection_mutation_chance,
-                      population_->config_.function_mutation_chance);
+    const auto& config = population_->config_;
+    switch (config.mutation_strategy.tag()) {
+      case MutationStrategy::FixedCount: {
+        const auto& mutation_config = config.mutation_strategy.fixed_count;
+        genotype_->fixedCountMutation(mutation_config.mutation_count);
+      } break;
+      case MutationStrategy::Probabilistic: {
+        const auto& mutation_config = config.mutation_strategy.probabilistic;
+        genotype_->probabilisticMutation(mutation_config.connection_mutation_chance,
+                                         mutation_config.function_mutation_chance);
+      } break;
+      default:
+        FATAL("Unexpected mutation strategy");
+    }
     genotype_->genealogy.genetic_operator += "m";
   }
 
@@ -81,7 +93,10 @@ Population::Population(const core::PropertySet& config, const darwin::Domain& do
     throw core::Exception("Invalid configuration: columns < 1");
   if (config_.levels_back < 1)
     throw core::Exception("Invalid configuration: levels_back < 1");
-    
+  if (config_.mutation_strategy.fixed_count.mutation_count < 0)
+    throw core::Exception(
+        "Invalid configuration: fixed_mutation_count.mutation_count < 0");
+
   setupAvailableFunctions();
 
   switch (config_.selection_algorithm.tag()) {

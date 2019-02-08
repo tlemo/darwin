@@ -27,6 +27,7 @@ using nlohmann::json;
 #include <third_party/gtest/gtest.h>
 
 #include <vector>
+#include <limits>
 using namespace std;
 
 namespace cgp_tests {
@@ -96,7 +97,8 @@ TEST_F(CgpTest, Genotype) {
 
   constexpr int kTestMutationCount = 1000;
   for (int i = 0; i < kTestMutationCount; ++i) {
-    genotype.mutate(1.0f, 1.0f);
+    genotype.probabilisticMutation(1.0f, 1.0f);
+    genotype.fixedCountMutation(numeric_limits<int>::max());
   }
 
   json json_obj = genotype.save();

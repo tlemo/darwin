@@ -86,25 +86,11 @@ void Genotype::reset() {
   output_genes_.clear();
 }
 
-void Genotype::createPrimordialSeed() {
+template <class RND, class CM, class FM>
+void Genotype::mutationHelper(RND& rnd,
+                              const CM& mutateConnectionPredicate,
+                              const FM& mutateFunctionPredicate) {
   const auto& config = population_->config();
-  CHECK(config.rows > 0);
-  CHECK(config.columns > 0);
-  
-  function_genes_.resize(config.rows * config.columns);
-  output_genes_.resize(population_->domain()->outputs());
-
-  // randomize all connections and functions  
-  mutate(1.0f, 1.0f);
-}
-
-void Genotype::mutate(float connection_mutation_chance, float function_mutation_chance) {
-  const auto& config = population_->config();
-
-  random_device rd;
-  default_random_engine rnd(rd());
-  bernoulli_distribution dist_mutate_connection(connection_mutation_chance);
-  bernoulli_distribution dist_mutate_function(function_mutation_chance);
 
   // function genes
   const auto& available_functions = population_->availableFunctions();
@@ -114,11 +100,11 @@ void Genotype::mutate(float connection_mutation_chance, float function_mutation_
     uniform_int_distribution<IndexType> dist_connection(range.first, range.second);
     for (int row = 0; row < config.rows; ++row) {
       auto& gene = function_genes_[row + col * config.rows];
-      if (dist_mutate_function(rnd)) {
+      if (mutateFunctionPredicate()) {
         gene.function = available_functions[dist_function(rnd)];
       }
       for (auto& connection : gene.connections) {
-        if (dist_mutate_connection(rnd)) {
+        if (mutateConnectionPredicate()) {
           connection = dist_connection(rnd);
         }
       }
@@ -132,10 +118,60 @@ void Genotype::mutate(float connection_mutation_chance, float function_mutation_
   const auto range = connectionRange(output_layer, output_levels_back);
   uniform_int_distribution<IndexType> dist_connection(range.first, range.second);
   for (OutputGene& gene : output_genes_) {
-    if (dist_mutate_connection(rnd)) {
+    if (mutateConnectionPredicate()) {
       gene.connection = dist_connection(rnd);
     }
   }
+}
+
+void Genotype::createPrimordialSeed() {
+  const auto& config = population_->config();
+  CHECK(config.rows > 0);
+  CHECK(config.columns > 0);
+  
+  function_genes_.resize(config.rows * config.columns);
+  output_genes_.resize(population_->domain()->outputs());
+
+  // randomize all connections and functions
+  random_device rd;
+  default_random_engine rnd(rd());
+  mutationHelper(rnd, [] { return true; }, [] { return true; });
+}
+
+void Genotype::probabilisticMutation(float connection_mutation_chance,
+                                     float function_mutation_chance) {
+  random_device rd;
+  default_random_engine rnd(rd());
+  bernoulli_distribution dist_mutate_connection(connection_mutation_chance);
+  bernoulli_distribution dist_mutate_function(function_mutation_chance);
+
+  mutationHelper(rnd,
+                 [&] { return dist_mutate_connection(rnd); },
+                 [&] { return dist_mutate_function(rnd); });
+}
+
+void Genotype::fixedCountMutation(int mutation_count) {
+  random_device rd;
+  default_random_engine rnd(rd());
+
+  size_t remaining_genes =
+      function_genes_.size() * (1 + kMaxFunctionArity) + output_genes_.size();
+  size_t remaining_mutations = min(size_t(mutation_count), remaining_genes);
+
+  auto mutateGenePredicate = [&] {
+    bernoulli_distribution dist_mutate(double(remaining_mutations) / remaining_genes);
+    --remaining_genes;
+    if (dist_mutate(rnd)) {
+      --remaining_mutations;
+      return true;
+    }
+    return false;
+  };
+
+  mutationHelper(rnd, mutateGenePredicate, mutateGenePredicate);
+
+  CHECK(remaining_genes == 0);
+  CHECK(remaining_mutations == 0);
 }
 
 pair<IndexType, IndexType> Genotype::connectionRange(int layer, int levels_back) const {
