@@ -42,7 +42,9 @@ bool operator==(const OutputGene& a, const OutputGene& b) {
 }
 
 bool operator==(const Genotype& a, const Genotype& b) {
-  return a.function_genes_ == b.function_genes_ && a.output_genes_ == b.output_genes_;
+  return a.function_genes_ == b.function_genes_ &&
+         a.output_genes_ == b.output_genes_ &&
+         a.constants_ == b.constants_;
 }
 
 void to_json(json& json_obj, const FunctionGene& gene) {
@@ -53,7 +55,6 @@ void to_json(json& json_obj, const FunctionGene& gene) {
 void from_json(const json& json_obj, FunctionGene& gene) {
   gene.function = json_obj.at("fn");
   gene.connections = json_obj.at("c");
-  CHECK(gene.function >= FunctionId(0));
   CHECK(gene.function < FunctionId::LastEntry);
 }
 
@@ -69,6 +70,7 @@ json Genotype::save() const {
   json json_obj;
   json_obj["function_genes"] = function_genes_;
   json_obj["output_genes"] = output_genes_;
+  json_obj["constants_genes"] = constants_;
   return json_obj;
 }
 
@@ -77,6 +79,7 @@ void Genotype::load(const json& json_obj) {
   tmp_genotype.function_genes_ =
       json_obj.at("function_genes").get<vector<FunctionGene>>();
   tmp_genotype.output_genes_ = json_obj.at("output_genes").get<vector<OutputGene>>();
+  tmp_genotype.constants_ = json_obj.at("constants_genes").get<vector<float>>();
   std::swap(*this, tmp_genotype);
 }
 
@@ -86,26 +89,31 @@ void Genotype::reset() {
   output_genes_.clear();
 }
 
-template <class RND, class CM, class FM>
-void Genotype::mutationHelper(RND& rnd,
-                              const CM& mutateConnectionPredicate,
-                              const FM& mutateFunctionPredicate) {
+template <class PRED>
+void Genotype::mutationHelper(PRED& predicates) {
   const auto& config = population_->config();
 
-  // function genes
   const auto& available_functions = population_->availableFunctions();
-  uniform_int_distribution<size_t> dist_function(0, available_functions.size() - 1);
+  CHECK(!available_functions.empty());
+
+  // function genes
+  //  positive values: regular functions
+  //  negative values: evolvable constants
+  const int evolvable_constants_base = -int(constants_.size());
+  uniform_int_distribution<int> dist_function(evolvable_constants_base,
+                                              int(available_functions.size()) - 1);
   for (int col = 0; col < config.columns; ++col) {
     const auto range = connectionRange(col + 1, config.levels_back);
     uniform_int_distribution<IndexType> dist_connection(range.first, range.second);
     for (int row = 0; row < config.rows; ++row) {
       auto& gene = function_genes_[row + col * config.rows];
-      if (mutateFunctionPredicate()) {
-        gene.function = available_functions[dist_function(rnd)];
+      if (predicates.mutateFunction()) {
+        const int index = dist_function(predicates.rnd);
+        gene.function = index >= 0 ? available_functions[index] : FunctionId(index);
       }
       for (auto& connection : gene.connections) {
-        if (mutateConnectionPredicate()) {
-          connection = dist_connection(rnd);
+        if (predicates.mutateConnection()) {
+          connection = dist_connection(predicates.rnd);
         }
       }
     }
@@ -118,8 +126,17 @@ void Genotype::mutationHelper(RND& rnd,
   const auto range = connectionRange(output_layer, output_levels_back);
   uniform_int_distribution<IndexType> dist_connection(range.first, range.second);
   for (OutputGene& gene : output_genes_) {
-    if (mutateConnectionPredicate()) {
-      gene.connection = dist_connection(rnd);
+    if (predicates.mutateConnection()) {
+      gene.connection = dist_connection(predicates.rnd);
+    }
+  }
+
+  // evolvable constants
+  for (float& value : constants_) {
+    if (predicates.mutateConstant()) {
+      const float resolution = config.evolvable_constants_resolution;
+      normal_distribution<float> dist_value(value, config.evolvable_constants_std_dev);
+      value = int(dist_value(predicates.rnd) / resolution) * resolution;
     }
   }
 }
@@ -128,50 +145,96 @@ void Genotype::createPrimordialSeed() {
   const auto& config = population_->config();
   CHECK(config.rows > 0);
   CHECK(config.columns > 0);
-  
+
   function_genes_.resize(config.rows * config.columns);
   output_genes_.resize(population_->domain()->outputs());
+  constants_.resize(config.evolvable_constants_count);
 
-  // randomize all connections and functions
-  random_device rd;
-  default_random_engine rnd(rd());
-  mutationHelper(rnd, [] { return true; }, [] { return true; });
+  struct Predicates {
+    default_random_engine rnd{ random_device{}() };
+    bool mutateConnection() { return true; }
+    bool mutateFunction() { return true; }
+    bool mutateConstant() { return false; }
+  } predicates;
+
+  // evolvable constants
+  const float resolution = config.evolvable_constants_resolution;
+  uniform_real_distribution<float> dist_const_value(-config.evolvable_constants_range,
+                                                    +config.evolvable_constants_range);
+  for (float& value : constants_) {
+    value = int(dist_const_value(predicates.rnd) / resolution) * resolution;
+  }
+
+  // mutate everything else
+  mutationHelper(predicates);
 }
 
-void Genotype::probabilisticMutation(float connection_mutation_chance,
-                                     float function_mutation_chance) {
-  random_device rd;
-  default_random_engine rnd(rd());
-  bernoulli_distribution dist_mutate_connection(connection_mutation_chance);
-  bernoulli_distribution dist_mutate_function(function_mutation_chance);
+void Genotype::probabilisticMutation(const ProbabilisticMutation& config) {
+  struct Predicates {
+    default_random_engine rnd{ random_device{}() };
+    bernoulli_distribution dist_mutate_connection;
+    bernoulli_distribution dist_mutate_function;
+    bernoulli_distribution dist_mutate_constant;
 
-  mutationHelper(rnd,
-                 [&] { return dist_mutate_connection(rnd); },
-                 [&] { return dist_mutate_function(rnd); });
+    Predicates(const ProbabilisticMutation& config)
+        : dist_mutate_connection(config.connection_mutation_chance),
+          dist_mutate_function(config.function_mutation_chance),
+          dist_mutate_constant(config.constant_mutation_chance) {}
+
+    bool mutateConnection() { return dist_mutate_connection(rnd); }
+    bool mutateFunction() { return dist_mutate_function(rnd); }
+    bool mutateConstant() { return dist_mutate_constant(rnd); }
+  } predicates(config);
+
+  mutationHelper(predicates);
 }
 
-void Genotype::fixedCountMutation(int mutation_count) {
-  random_device rd;
-  default_random_engine rnd(rd());
+void Genotype::fixedCountMutation(const FixedCountMutation& config) {
+  // calculate total number of genes in this genotype
+  const size_t function_genes_count = function_genes_.size();
+  const size_t connection_genes_count = function_genes_.size() * kMaxFunctionArity;
+  const size_t output_genes_count = output_genes_.size();
+  const size_t constant_genes_count = constants_.size();
+  const size_t total_genes_count = function_genes_count + connection_genes_count +
+                                   output_genes_count + constant_genes_count;
 
-  size_t remaining_genes =
-      function_genes_.size() * (1 + kMaxFunctionArity) + output_genes_.size();
-  size_t remaining_mutations = min(size_t(mutation_count), remaining_genes);
+  struct Predicates {
+    default_random_engine rnd{ random_device{}() };
+    double remaining_genes;
+    double remaining_mutations;
 
-  auto mutateGenePredicate = [&] {
-    bernoulli_distribution dist_mutate(double(remaining_mutations) / remaining_genes);
-    --remaining_genes;
-    if (dist_mutate(rnd)) {
-      --remaining_mutations;
-      return true;
+    Predicates(size_t total_genes_count, const FixedCountMutation& config) {
+      remaining_genes = double(total_genes_count);
+      remaining_mutations = min(double(config.mutation_count), remaining_genes);
     }
-    return false;
-  };
 
-  mutationHelper(rnd, mutateGenePredicate, mutateGenePredicate);
+    ~Predicates() {
+      CHECK(remaining_genes == 0);
+      CHECK(remaining_mutations == 0);
+    }
 
-  CHECK(remaining_genes == 0);
-  CHECK(remaining_mutations == 0);
+    bool mutateGene() {
+      bernoulli_distribution dist_mutate(remaining_mutations / remaining_genes);
+      --remaining_genes;
+      if (dist_mutate(rnd)) {
+        --remaining_mutations;
+        return true;
+      }
+      return false;
+    }
+
+    bool mutateConnection() { return mutateGene(); }
+    bool mutateFunction() { return mutateGene(); }
+    bool mutateConstant() { return mutateGene(); }
+  } predicates(total_genes_count, config);
+  
+  mutationHelper(predicates);
+}
+
+float Genotype::getEvolvableConstant(int function_id) const {
+  const int evolvable_constants_base = -int(constants_.size());
+  CHECK(function_id >= evolvable_constants_base && function_id < 0);
+  return constants_[function_id - evolvable_constants_base];
 }
 
 pair<IndexType, IndexType> Genotype::connectionRange(int layer, int levels_back) const {

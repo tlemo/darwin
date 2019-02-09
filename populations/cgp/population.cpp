@@ -46,15 +46,12 @@ class Population::GenotypeFactory : public selection::GenotypeFactory {
   void mutate() override {
     const auto& config = population_->config_;
     switch (config.mutation_strategy.tag()) {
-      case MutationStrategy::FixedCount: {
-        const auto& mutation_config = config.mutation_strategy.fixed_count;
-        genotype_->fixedCountMutation(mutation_config.mutation_count);
-      } break;
-      case MutationStrategy::Probabilistic: {
-        const auto& mutation_config = config.mutation_strategy.probabilistic;
-        genotype_->probabilisticMutation(mutation_config.connection_mutation_chance,
-                                         mutation_config.function_mutation_chance);
-      } break;
+      case MutationStrategy::FixedCount:
+        genotype_->fixedCountMutation(config.mutation_strategy.fixed_count);
+        break;
+      case MutationStrategy::Probabilistic:
+        genotype_->probabilisticMutation(config.mutation_strategy.probabilistic);
+        break;
       default:
         FATAL("Unexpected mutation strategy");
     }

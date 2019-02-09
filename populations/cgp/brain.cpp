@@ -252,6 +252,11 @@ void Brain::think() {
         result = bool(first_arg) ? second_arg : 0;
         break;
       default:
+        // evolvable constant?
+        if (instr.function < 0) {
+          result = genotype_->getEvolvableConstant(instr.function);
+          break;
+        }
         FATAL("Unexpected function id");
     }
   }

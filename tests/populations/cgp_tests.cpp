@@ -48,6 +48,8 @@ struct CgpTest : public testing::Test {
     config->levels_back = 4;
     config->fn_basic_constants = true;
     config->fn_basic_arithmetic = true;
+    config->fn_conditional = true;
+    config->evolvable_constants_count = 10;
 
     population = factory->create(*config, *domain);
     CHECK(population);
@@ -97,8 +99,17 @@ TEST_F(CgpTest, Genotype) {
 
   constexpr int kTestMutationCount = 1000;
   for (int i = 0; i < kTestMutationCount; ++i) {
-    genotype.probabilisticMutation(1.0f, 1.0f);
-    genotype.fixedCountMutation(numeric_limits<int>::max());
+    // probabilistic mutation
+    cgp::ProbabilisticMutation probabilistic_mutation_config;
+    probabilistic_mutation_config.connection_mutation_chance = 1.0f;
+    probabilistic_mutation_config.function_mutation_chance = 1.0f;
+    probabilistic_mutation_config.constant_mutation_chance = 1.0f;
+    genotype.probabilisticMutation(probabilistic_mutation_config);
+
+    // fixed count mutation
+    cgp::FixedCountMutation fixed_count_mutation_config;
+    fixed_count_mutation_config.mutation_count = numeric_limits<int>::max();
+    genotype.fixedCountMutation(fixed_count_mutation_config);
   }
 
   json json_obj = genotype.save();

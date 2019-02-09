@@ -66,6 +66,14 @@ struct Config : public core::PropertySet {
   PROPERTY(fn_logic_gates, bool, false, "and, or, not, xor");
   PROPERTY(fn_conditional, bool, false, "if/else_zero");
 
+  PROPERTY(evolvable_constants_count, int, 4, "The number of evolvable constants");
+  PROPERTY(evolvable_constants_range, float, 64, "Initial connection values range");
+  PROPERTY(evolvable_constants_resolution, float, 0.001f, "Connection values resolution");
+  PROPERTY(evolvable_constants_std_dev,
+           float,
+           2.0f,
+           "Mutation standard deviation, used for evolvable constants");
+
   VARIANT(mutation_strategy,
           MutationVariant,
           MutationStrategy::FixedCount,

@@ -55,6 +55,10 @@ struct ProbabilisticMutation : public core::PropertySet {
            float,
            0.05f,
            "Probability of mutating a node's function");
+  PROPERTY(constant_mutation_chance,
+           float,
+           0.1f,
+           "Probability of mutating an evolvable constant");
 };
 
 struct MutationVariant : public core::PropertySetVariant<MutationStrategy> {
@@ -69,7 +73,7 @@ constexpr int kMaxFunctionArity = 2;
 // NOTE: removal/reordering of function IDs will break the
 //  serialization format compatibility!
 //
-enum class FunctionId : uint16_t {
+enum FunctionId : int16_t {
   // basic constants
   ConstZero,
   ConstOne,
@@ -181,21 +185,20 @@ class Genotype : public darwin::Genotype {
   void reset() override;
 
   void createPrimordialSeed();
-  void probabilisticMutation(float connection_mutation_chance,
-                             float function_mutation_chance);
-  void fixedCountMutation(int mutation_count);
+  void probabilisticMutation(const ProbabilisticMutation& config);
+  void fixedCountMutation(const FixedCountMutation& config);
 
   const Population* population() const { return population_; }
   const vector<FunctionGene>& functionGenes() const { return function_genes_; }
   const vector<OutputGene>& outputGenes() const { return output_genes_; }
+  
+  float getEvolvableConstant(int function_id) const;
 
   friend bool operator==(const Genotype& a, const Genotype& b);
 
  private:
-  template <class RND, class CM, class FM>
-  void mutationHelper(RND& rnd,
-                      const CM& mutateConnectionPredicate,
-                      const FM& mutateFunctionPredicate);
+  template <class PRED>
+  void mutationHelper(PRED& predicates);
 
   pair<IndexType, IndexType> connectionRange(int layer, int levels_back) const;
 
@@ -204,6 +207,7 @@ class Genotype : public darwin::Genotype {
 
   vector<FunctionGene> function_genes_;
   vector<OutputGene> output_genes_;
+  vector<float> constants_;
 };
 
 }  // namespace cgp
