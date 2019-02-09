@@ -19,6 +19,7 @@
 #include <cmath>
 #include <assert.h>
 #include <limits>
+#include <algorithm>
 using namespace std;
 
 namespace cgp {
@@ -36,6 +37,9 @@ Brain::Brain(const Genotype* genotype) : genotype_(genotype) {
     auto register_index = dfsNodeEval(output_gene.connection, nodes_map);
     outputs_map_.push_back(register_index);
   }
+  CHECK(registers_.size() == instructions_.size() + domain->inputs());
+  
+  memory_.resize(instructions_.size());
 }
 
 void Brain::setInput(int index, float value) {
@@ -80,18 +84,24 @@ IndexType Brain::dfsNodeEval(IndexType node_index, vector<IndexType>& nodes_map)
   for (size_t i = 0; i < gene.connections.size(); ++i) {
     instruction.sources[i] = dfsNodeEval(gene.connections[i], nodes_map);
   }
-  instruction.dst = IndexType(registers_.size());
+  const IndexType dst = IndexType(registers_.size());
   instructions_.push_back(instruction);
   registers_.emplace_back(0.0f);
 
-  nodes_map[function_node_index] = instruction.dst;
-  return instruction.dst;
+  nodes_map[function_node_index] = dst;
+  return dst;
 }
 
 void Brain::think() {
+  auto domain = genotype_->population()->domain();
+  const size_t instr_reg_base = domain->inputs();
   for (size_t instr_index = 0; instr_index < instructions_.size(); ++instr_index) {
+    const size_t result_index = instr_reg_base + instr_index;
     const auto& instr = instructions_[instr_index];
-    float& result = registers_[instr.dst];
+    assert(instr.sources[0] < result_index);
+    assert(instr.sources[1] < result_index);
+    float& result = registers_[result_index];
+    float& memory = memory_[instr_index];
     const float& first_arg = registers_[instr.sources[0]];
     const float& second_arg = registers_[instr.sources[1]];
     switch (instr.function) {
@@ -251,6 +261,33 @@ void Brain::think() {
       case FunctionId::IfOrZero:
         result = bool(first_arg) ? second_arg : 0;
         break;
+      case FunctionId::Velocity:
+        result = first_arg - memory;
+        memory = first_arg;
+        break;
+      case FunctionId::HighWatermark:
+        memory = max(memory, first_arg);
+        result = memory;
+        break;
+      case FunctionId::LowWatermark:
+        memory = min(memory, first_arg);
+        result = memory;
+        break;
+      case FunctionId::MemoryCell:
+        if (second_arg >= 0) {
+          memory = first_arg;
+        }
+        result = memory;
+        break;
+      case FunctionId::SoftMemoryCell: {
+        const float gate = ann::afnLogistic(second_arg);
+        memory = first_arg * gate + memory * (1 - gate);
+        result = memory;
+      } break;
+      case FunctionId::TimeDelay:
+        result = memory;
+        memory = first_arg;
+        break;
       default:
         // evolvable constant?
         if (instr.function < 0) {
@@ -263,7 +300,7 @@ void Brain::think() {
 }
 
 void Brain::resetState() {
-  // nothing to do
+  std::fill(memory_.begin(), memory_.end(), 0.0f);
 }
 
 }  // namespace cgp

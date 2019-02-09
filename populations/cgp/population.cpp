@@ -270,6 +270,17 @@ void Population::setupAvailableFunctions() {
         FunctionId::IfOrZero,
     });
   }
+  if (config_.fn_stateful) {
+    core::log("CGP: adding stateful functions...\n");
+    addFunctions({
+        FunctionId::Velocity,
+        FunctionId::HighWatermark,
+        FunctionId::LowWatermark,
+        FunctionId::MemoryCell,
+        FunctionId::SoftMemoryCell,
+        FunctionId::TimeDelay,
+    });
+  }
   
   core::log("CGP: %zu available functions\n\n", available_functions_.size());
 

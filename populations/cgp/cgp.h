@@ -56,15 +56,16 @@ struct Config : public core::PropertySet {
   PROPERTY(fn_basic_constants, bool, true, "0, 1, 2");
   PROPERTY(fn_transcendental_constants, bool, true, "pi, e");
   PROPERTY(fn_basic_arithmetic, bool, true, "identity, +, -, *, /, negate");
-  PROPERTY(fn_extra_arithmetic, bool, false, "fmod, reminder, ceil, floor, fdim");
+  PROPERTY(fn_extra_arithmetic, bool, true, "fmod, reminder, ceil, floor, fdim");
   PROPERTY(fn_common_math, bool, true, "abs, avg, min, max, square");
-  PROPERTY(fn_extra_math, bool, false, "log, log2, sqrt, power, exp, exp2");
-  PROPERTY(fn_trigonometric, bool, false, "sin, cos, tan, asin, acos, atan");
-  PROPERTY(fn_hyperbolic, bool, false, "sinh, cosh, tanh");
-  PROPERTY(fn_ann_activation, bool, false, "All of Darwin's activation functions");
-  PROPERTY(fn_comparisons, bool, false, "eq, ne, gt, ge, lt, le");
-  PROPERTY(fn_logic_gates, bool, false, "and, or, not, xor");
-  PROPERTY(fn_conditional, bool, false, "if/else_zero");
+  PROPERTY(fn_extra_math, bool, true, "log, log2, sqrt, power, exp, exp2");
+  PROPERTY(fn_trigonometric, bool, true, "sin, cos, tan, asin, acos, atan");
+  PROPERTY(fn_hyperbolic, bool, true, "sinh, cosh, tanh");
+  PROPERTY(fn_ann_activation, bool, true, "All of Darwin's activation functions");
+  PROPERTY(fn_comparisons, bool, true, "eq, ne, gt, ge, lt, le");
+  PROPERTY(fn_logic_gates, bool, true, "and, or, not, xor");
+  PROPERTY(fn_conditional, bool, true, "if/else_zero");
+  PROPERTY(fn_stateful, bool, true, "functions maintaining an internal state");
 
   PROPERTY(evolvable_constants_count, int, 4, "The number of evolvable constants");
   PROPERTY(evolvable_constants_range, float, 64, "Initial connection values range");

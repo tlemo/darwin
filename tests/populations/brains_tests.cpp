@@ -86,6 +86,7 @@ struct BrainsTest : public testing::TestWithParam<string> {
     config->fn_comparisons = true;
     config->fn_logic_gates = true;
     config->fn_conditional = true;
+    config->fn_stateful = true;
   }
 
   void updateConfig(neat::Config* config) {

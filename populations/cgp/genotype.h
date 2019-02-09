@@ -43,7 +43,7 @@ inline auto customStringify(core::TypeTag<MutationStrategy>) {
 }
 
 struct FixedCountMutation : public core::PropertySet {
-  PROPERTY(mutation_count, int, 10, "Number of mutations per genotype");
+  PROPERTY(mutation_count, int, 30, "Number of mutations per genotype");
 };
 
 struct ProbabilisticMutation : public core::PropertySet {
@@ -149,6 +149,14 @@ enum FunctionId : int16_t {
 
   // conditional
   IfOrZero,
+  
+  // stateful functions
+  Velocity,
+  HighWatermark,
+  LowWatermark,
+  MemoryCell,
+  SoftMemoryCell,
+  TimeDelay,
 
   // last value marker
   LastEntry

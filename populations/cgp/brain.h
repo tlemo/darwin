@@ -30,7 +30,6 @@ class Brain : public darwin::Brain {
   struct Instruction {
     FunctionId function;
     array<IndexType, kMaxFunctionArity> sources;
-    IndexType dst;
   };
 
  public:
@@ -49,6 +48,7 @@ class Brain : public darwin::Brain {
 
   vector<Instruction> instructions_;
   vector<float> registers_;
+  vector<float> memory_;
   vector<int> outputs_map_;
 };
 

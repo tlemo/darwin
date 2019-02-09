@@ -46,9 +46,11 @@ struct CgpTest : public testing::Test {
     config->rows = 7;
     config->columns = 8;
     config->levels_back = 4;
+    config->outputs_use_levels_back = true;
     config->fn_basic_constants = true;
     config->fn_basic_arithmetic = true;
     config->fn_conditional = true;
+    config->fn_stateful = true;
     config->evolvable_constants_count = 10;
 
     population = factory->create(*config, *domain);

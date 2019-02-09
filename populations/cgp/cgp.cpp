@@ -63,6 +63,7 @@ class Factory : public darwin::PopulationFactory {
         config->fn_comparisons = true;
         config->fn_logic_gates = true;
         config->fn_conditional = true;
+        config->fn_stateful = true;
         config->evolvable_constants_count = 16;
         config->mutation_strategy.selectCase(MutationStrategy::FixedCount);
         config->mutation_strategy.fixed_count.mutation_count = 100;
