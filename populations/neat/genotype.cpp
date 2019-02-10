@@ -116,9 +116,9 @@ void Genotype::load(const json& json_obj) {
   tmp_genotype.lw = json_obj.at("lw");
 
   // check inputs & outputs count
-  int tmp_inputs = json_obj.at("inputs");
-  int tmp_outpus = json_obj.at("outputs");
-  if (tmp_inputs != g_inputs || tmp_outpus != g_outputs)
+  const int tmp_inputs = json_obj.at("inputs");
+  const int tmp_outputs = json_obj.at("outputs");
+  if (tmp_inputs != g_inputs || tmp_outputs != g_outputs)
     throw core::Exception("Can't load genotype, mismatched inputs or outputs count");
   if (tmp_genotype.nodes_count < kFirstInput + g_inputs + g_outputs)
     throw core::Exception("Can't load genotype, invalid nodes count");

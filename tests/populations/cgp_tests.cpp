@@ -92,6 +92,17 @@ TEST_F(CgpTest, OutputGene_LoadSave) {
   EXPECT_EQ(gene_clone.connection, gene.connection);
 }
 
+TEST_F(CgpTest, Genotype_Save) {
+  core_test::TestCaseOutput output;
+  
+  const auto cgp_population = dynamic_cast<const cgp::Population*>(population.get());
+  ASSERT_NE(cgp_population, nullptr);
+
+  cgp::Genotype genotype(cgp_population);
+  json json_obj = genotype.save();
+  fprintf(output, "%s", json_obj.dump(2).c_str());
+}
+
 TEST_F(CgpTest, Genotype) {
   const auto cgp_population = dynamic_cast<const cgp::Population*>(population.get());
   ASSERT_NE(cgp_population, nullptr);

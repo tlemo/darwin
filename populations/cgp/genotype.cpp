@@ -68,6 +68,8 @@ void from_json(const json& json_obj, OutputGene& gene) {
 
 json Genotype::save() const {
   json json_obj;
+  json_obj["inputs"] = population_->domain()->inputs();
+  json_obj["outputs"] = population_->domain()->outputs();
   json_obj["function_genes"] = function_genes_;
   json_obj["output_genes"] = output_genes_;
   json_obj["constants_genes"] = constants_;
@@ -75,6 +77,15 @@ json Genotype::save() const {
 }
 
 void Genotype::load(const json& json_obj) {
+  // check inputs & outputs count
+  const size_t inputs = json_obj.at("inputs");
+  const size_t outputs = json_obj.at("outputs");
+  if (inputs != population_->domain()->inputs())
+    throw core::Exception("Can't load genotype, mismatched inputs count");
+  if (outputs != population_->domain()->outputs())
+    throw core::Exception("Can't load genotype, mismatched outputs count");
+
+  // load the genotype
   Genotype tmp_genotype(population_);
   tmp_genotype.function_genes_ =
       json_obj.at("function_genes").get<vector<FunctionGene>>();
