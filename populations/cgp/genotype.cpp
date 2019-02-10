@@ -68,11 +68,21 @@ void from_json(const json& json_obj, OutputGene& gene) {
 
 json Genotype::save() const {
   json json_obj;
+  
+  // shared values
+  //
+  // TODO: save these only once per population
+  //
   json_obj["inputs"] = population_->domain()->inputs();
   json_obj["outputs"] = population_->domain()->outputs();
+  json_obj["rows"] = population_->config().rows;
+  json_obj["columns"] = population_->config().columns;
+  
+  // genotype encoding
   json_obj["function_genes"] = function_genes_;
   json_obj["output_genes"] = output_genes_;
   json_obj["constants_genes"] = constants_;
+  
   return json_obj;
 }
 
@@ -84,6 +94,14 @@ void Genotype::load(const json& json_obj) {
     throw core::Exception("Can't load genotype, mismatched inputs count");
   if (outputs != population_->domain()->outputs())
     throw core::Exception("Can't load genotype, mismatched outputs count");
+
+  // check rows & columns count
+  const int rows = json_obj.at("rows");
+  const int columns = json_obj.at("columns");
+  if (rows != population_->config().rows)
+    throw core::Exception("Can't load genotype, mismatched rows count");
+  if (columns != population_->config().columns)
+    throw core::Exception("Can't load genotype, mismatched columns count");
 
   // load the genotype
   Genotype tmp_genotype(population_);
