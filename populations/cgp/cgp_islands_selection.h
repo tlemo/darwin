@@ -23,10 +23,27 @@ using namespace std;
 namespace cgp {
 
 struct CgpIslandsSelectionConfig : public core::PropertySet {
-  PROPERTY(island_size, int, 5, "Size of the population islands");
+  PROPERTY(island_size, int, 10, "Size of the population islands");
+
+  PROPERTY(protected_age,
+           int,
+           25,
+           "The number of generations a new island is protected from extinction");
+
+  PROPERTY(extinction_percentage,
+           float,
+           0.25f,
+           "Percentage of low performing islands to go extinct");
 };
 
 class CgpIslandsSelection : public selection::SelectionAlgorithm {
+  static constexpr int kPrimordialSeed = -1;
+  
+  struct Island {
+    int age = 0;
+    int parent = kPrimordialSeed;
+  };
+
  public:
   explicit CgpIslandsSelection(const core::PropertySet& config);
 
@@ -36,6 +53,8 @@ class CgpIslandsSelection : public selection::SelectionAlgorithm {
  private:
   darwin::Population* population_ = nullptr;
   CgpIslandsSelectionConfig config_;
+  
+  vector<Island> islands_;
 };
 
 }  // namespace cgp

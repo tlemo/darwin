@@ -33,6 +33,11 @@ class Population::GenotypeFactory : public selection::GenotypeFactory {
     population_ = population;
     genotype_ = genotype;
   }
+  
+  void createPrimordialSeed() override {
+    genotype_->createPrimordialSeed();
+    genotype_->genealogy = darwin::Genealogy("p", {});
+  }
 
   void replicate(int parent_index) override {
     *genotype_ = population_->genotypes_[parent_index];

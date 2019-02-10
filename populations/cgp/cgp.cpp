@@ -47,6 +47,9 @@ class Factory : public darwin::PopulationFactory {
         config->fn_logic_gates = false;
         config->fn_conditional = false;
         config->evolvable_constants_count = 1;
+        config->selection_algorithm.cgp_islands.island_size = 5;
+        config->selection_algorithm.cgp_islands.protected_age = 2;
+        config->selection_algorithm.cgp_islands.extinction_percentage = 0.5f;
         break;
       case darwin::ComplexityHint::Balanced:
         break;
