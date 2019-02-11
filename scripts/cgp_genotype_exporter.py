@@ -155,6 +155,7 @@ for i in range(len(function_genes)):
     node = indexToNode(kInputs + i)
     src0 = indexToNode(gene['c'][0])
     src1 = indexToNode(gene['c'][1])
+    graph += '  %s [label="[%d]"]\n' % (node, gene['fn'])
     graph += '  %s->{%s,%s} [constraint=false; dir=back]\n' % (node, src0, src1)
 
 # output genes
