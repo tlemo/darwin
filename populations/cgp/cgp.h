@@ -44,9 +44,9 @@ struct SelectionAlgorithmVariant
 };
 
 struct Config : public core::PropertySet {
-  PROPERTY(rows, int, 8, "Number of node rows");
-  PROPERTY(columns, int, 16, "Number of node columns");
-  PROPERTY(levels_back, int, 2, "Levels-back");
+  PROPERTY(rows, int, 2, "Number of node rows");
+  PROPERTY(columns, int, 8, "Number of node columns");
+  PROPERTY(levels_back, int, 4, "Levels-back");
 
   PROPERTY(outputs_use_levels_back,
            bool,
@@ -67,9 +67,9 @@ struct Config : public core::PropertySet {
   PROPERTY(fn_conditional, bool, true, "if/else_zero");
   PROPERTY(fn_stateful, bool, true, "functions maintaining an internal state");
 
-  PROPERTY(evolvable_constants_count, int, 4, "The number of evolvable constants");
-  PROPERTY(evolvable_constants_range, float, 64, "Initial connection values range");
-  PROPERTY(evolvable_constants_resolution, float, 0.001f, "Connection values resolution");
+  PROPERTY(evolvable_constants_count, int, 2, "The number of evolvable constants");
+  PROPERTY(evolvable_constants_range, float, 10, "Initial connection values range");
+  PROPERTY(evolvable_constants_resolution, float, 0.01f, "Connection values resolution");
   PROPERTY(evolvable_constants_std_dev,
            float,
            2.0f,
