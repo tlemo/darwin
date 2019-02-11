@@ -55,6 +55,10 @@ struct ProbabilisticMutation : public core::PropertySet {
            float,
            0.05f,
            "Probability of mutating a node's function");
+  PROPERTY(output_mutation_chance,
+           float,
+           0.1f,
+           "Probability of mutating an output gene");
   PROPERTY(constant_mutation_chance,
            float,
            0.1f,

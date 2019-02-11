@@ -116,6 +116,7 @@ TEST_F(CgpTest, Genotype) {
     cgp::ProbabilisticMutation probabilistic_mutation_config;
     probabilistic_mutation_config.connection_mutation_chance = 1.0f;
     probabilistic_mutation_config.function_mutation_chance = 1.0f;
+    probabilistic_mutation_config.output_mutation_chance = 1.0f;
     probabilistic_mutation_config.constant_mutation_chance = 1.0f;
     genotype.probabilisticMutation(probabilistic_mutation_config);
 

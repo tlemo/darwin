@@ -155,7 +155,7 @@ void Genotype::mutationHelper(PRED& predicates) {
   const auto range = connectionRange(output_layer, output_levels_back);
   uniform_int_distribution<IndexType> dist_connection(range.first, range.second);
   for (OutputGene& gene : output_genes_) {
-    if (predicates.mutateConnection()) {
+    if (predicates.mutateOutput()) {
       gene.connection = dist_connection(predicates.rnd);
     }
   }
@@ -183,6 +183,7 @@ void Genotype::createPrimordialSeed() {
     default_random_engine rnd{ random_device{}() };
     bool mutateConnection() { return true; }
     bool mutateFunction() { return true; }
+    bool mutateOutput() { return true; }
     bool mutateConstant() { return false; }
   } predicates;
 
@@ -203,15 +204,18 @@ void Genotype::probabilisticMutation(const ProbabilisticMutation& config) {
     default_random_engine rnd{ random_device{}() };
     bernoulli_distribution dist_mutate_connection;
     bernoulli_distribution dist_mutate_function;
+    bernoulli_distribution dist_mutate_output;
     bernoulli_distribution dist_mutate_constant;
 
     Predicates(const ProbabilisticMutation& config)
         : dist_mutate_connection(config.connection_mutation_chance),
           dist_mutate_function(config.function_mutation_chance),
+          dist_mutate_output(config.output_mutation_chance),
           dist_mutate_constant(config.constant_mutation_chance) {}
 
     bool mutateConnection() { return dist_mutate_connection(rnd); }
     bool mutateFunction() { return dist_mutate_function(rnd); }
+    bool mutateOutput() { return dist_mutate_output(rnd); }
     bool mutateConstant() { return dist_mutate_constant(rnd); }
   } predicates(config);
 
@@ -254,6 +258,7 @@ void Genotype::fixedCountMutation(const FixedCountMutation& config) {
 
     bool mutateConnection() { return mutateGene(); }
     bool mutateFunction() { return mutateGene(); }
+    bool mutateOutput() { return mutateGene(); }
     bool mutateConstant() { return mutateGene(); }
   } predicates(total_genes_count, config);
   
