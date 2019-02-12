@@ -25,7 +25,7 @@ class GenotypeFactory {
 
   virtual void createPrimordialSeed() = 0;
   virtual void replicate(int parent_index) = 0;
-  virtual void crossover(int parent1, int parent2) = 0;
+  virtual void crossover(int parent1, int parent2, float preference) = 0;
   virtual void mutate() = 0;
 };
 

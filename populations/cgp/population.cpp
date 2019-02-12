@@ -44,8 +44,10 @@ class Population::GenotypeFactory : public selection::GenotypeFactory {
     genotype_->genealogy = darwin::Genealogy("m", { parent_index });
   }
 
-  void crossover(int /*parent1*/, int /*parent2*/) override {
-    FATAL("Crossover not supported");
+  void crossover(int parent1, int parent2, float preference) override {
+    genotype_->inherit(
+        population_->genotypes_[parent1], population_->genotypes_[parent2], preference);
+    genotype_->genealogy = darwin::Genealogy("c", { parent1, parent2 });
   }
 
   void mutate() override {
@@ -109,6 +111,10 @@ Population::Population(const core::PropertySet& config, const darwin::Domain& do
     case SelectionAlgorithmType::CgpIslands:
       selection_algorithm_ =
           make_unique<CgpIslandsSelection>(config_.selection_algorithm.cgp_islands);
+      break;
+    case SelectionAlgorithmType::Truncation:
+      selection_algorithm_ =
+          make_unique<TruncationSelection>(config_.selection_algorithm.truncation);
       break;
     default:
       FATAL("Unexpected selection algorithm type");

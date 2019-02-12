@@ -199,6 +199,7 @@ class Genotype : public darwin::Genotype {
   void createPrimordialSeed();
   void probabilisticMutation(const ProbabilisticMutation& config);
   void fixedCountMutation(const FixedCountMutation& config);
+  void inherit(const Genotype& parent1, const Genotype& parent2, float preference);
 
   const Population* population() const { return population_; }
   const vector<FunctionGene>& functionGenes() const { return function_genes_; }
@@ -219,7 +220,7 @@ class Genotype : public darwin::Genotype {
 
   vector<FunctionGene> function_genes_;
   vector<OutputGene> output_genes_;
-  vector<float> constants_;
+  vector<float> constants_genes_;
 };
 
 }  // namespace cgp

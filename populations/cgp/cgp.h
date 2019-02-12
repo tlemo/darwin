@@ -14,9 +14,10 @@
 
 #pragma once
 
+#include "genotype.h"
 #include "roulette_selection.h"
 #include "cgp_islands_selection.h"
-#include "genotype.h"
+#include "truncation_selection.h"
 
 #include <core/properties.h>
 
@@ -27,12 +28,14 @@ void init();
 enum class SelectionAlgorithmType {
   RouletteWheel,
   CgpIslands,
+  Truncation,
 };
 
 inline auto customStringify(core::TypeTag<SelectionAlgorithmType>) {
   static auto stringify = new core::StringifyKnownValues<SelectionAlgorithmType>{
     { SelectionAlgorithmType::RouletteWheel, "roulette_wheel" },
     { SelectionAlgorithmType::CgpIslands, "cgp_islands" },
+    { SelectionAlgorithmType::Truncation, "truncation" },
   };
   return stringify;
 }
@@ -41,6 +44,7 @@ struct SelectionAlgorithmVariant
     : public core::PropertySetVariant<SelectionAlgorithmType> {
   CASE(SelectionAlgorithmType::RouletteWheel, roulette_wheel, RouletteSelectionConfig);
   CASE(SelectionAlgorithmType::CgpIslands, cgp_islands, CgpIslandsSelectionConfig);
+  CASE(SelectionAlgorithmType::Truncation, truncation, TrunctationSelectionConfig);
 };
 
 struct Config : public core::PropertySet {

@@ -13,7 +13,8 @@ SOURCES += \
     genotype.cpp \
     brain.cpp \
     roulette_selection.cpp \
-    cgp_islands_selection.cpp
+    cgp_islands_selection.cpp \
+    truncation_selection.cpp
 
 HEADERS += \
     cgp.h \
@@ -21,6 +22,7 @@ HEADERS += \
     genotype.h \
     brain.h \
     roulette_selection.h \
-    cgp_islands_selection.h
+    cgp_islands_selection.h \
+    truncation_selection.h
 
 addLibrary(../../core)

@@ -19,6 +19,7 @@
 
 #include <random>
 #include <limits>
+#include <algorithm>
 using namespace std;
 
 namespace cgp {
@@ -44,7 +45,7 @@ bool operator==(const OutputGene& a, const OutputGene& b) {
 bool operator==(const Genotype& a, const Genotype& b) {
   return a.function_genes_ == b.function_genes_ &&
          a.output_genes_ == b.output_genes_ &&
-         a.constants_ == b.constants_;
+         a.constants_genes_ == b.constants_genes_;
 }
 
 void to_json(json& json_obj, const FunctionGene& gene) {
@@ -81,7 +82,7 @@ json Genotype::save() const {
   // genotype encoding
   json_obj["function_genes"] = function_genes_;
   json_obj["output_genes"] = output_genes_;
-  json_obj["constants_genes"] = constants_;
+  json_obj["constants_genes"] = constants_genes_;
   
   return json_obj;
 }
@@ -108,7 +109,7 @@ void Genotype::load(const json& json_obj) {
   tmp_genotype.function_genes_ =
       json_obj.at("function_genes").get<vector<FunctionGene>>();
   tmp_genotype.output_genes_ = json_obj.at("output_genes").get<vector<OutputGene>>();
-  tmp_genotype.constants_ = json_obj.at("constants_genes").get<vector<float>>();
+  tmp_genotype.constants_genes_ = json_obj.at("constants_genes").get<vector<float>>();
   std::swap(*this, tmp_genotype);
 }
 
@@ -116,6 +117,7 @@ void Genotype::reset() {
   darwin::Genotype::reset();
   function_genes_.clear();
   output_genes_.clear();
+  constants_genes_.clear();
 }
 
 template <class PRED>
@@ -124,11 +126,15 @@ void Genotype::mutationHelper(PRED& predicates) {
 
   const auto& available_functions = population_->availableFunctions();
   CHECK(!available_functions.empty());
+  
+  CHECK(!function_genes_.empty());
+  CHECK(!output_genes_.empty());
+  CHECK(!constants_genes_.empty());
 
   // function genes
   //  positive values: regular functions
   //  negative values: evolvable constants
-  const int evolvable_constants_base = -int(constants_.size());
+  const int evolvable_constants_base = -int(constants_genes_.size());
   uniform_int_distribution<int> dist_function(evolvable_constants_base,
                                               int(available_functions.size()) - 1);
   for (int col = 0; col < config.columns; ++col) {
@@ -161,7 +167,7 @@ void Genotype::mutationHelper(PRED& predicates) {
   }
 
   // evolvable constants
-  for (float& value : constants_) {
+  for (float& value : constants_genes_) {
     if (predicates.mutateConstant()) {
       const float resolution = config.evolvable_constants_resolution;
       normal_distribution<float> dist_value(value, config.evolvable_constants_std_dev);
@@ -177,7 +183,7 @@ void Genotype::createPrimordialSeed() {
 
   function_genes_.resize(config.rows * config.columns);
   output_genes_.resize(population_->domain()->outputs());
-  constants_.resize(config.evolvable_constants_count);
+  constants_genes_.resize(config.evolvable_constants_count);
 
   struct Predicates {
     default_random_engine rnd{ random_device{}() };
@@ -191,7 +197,7 @@ void Genotype::createPrimordialSeed() {
   const float resolution = config.evolvable_constants_resolution;
   uniform_real_distribution<float> dist_const_value(-config.evolvable_constants_range,
                                                     +config.evolvable_constants_range);
-  for (float& value : constants_) {
+  for (float& value : constants_genes_) {
     value = int(dist_const_value(predicates.rnd) / resolution) * resolution;
   }
 
@@ -227,7 +233,7 @@ void Genotype::fixedCountMutation(const FixedCountMutation& config) {
   const size_t function_genes_count = function_genes_.size();
   const size_t connection_genes_count = function_genes_.size() * kMaxFunctionArity;
   const size_t output_genes_count = output_genes_.size();
-  const size_t constant_genes_count = constants_.size();
+  const size_t constant_genes_count = constants_genes_.size();
   const size_t total_genes_count = function_genes_count + connection_genes_count +
                                    output_genes_count + constant_genes_count;
 
@@ -265,10 +271,46 @@ void Genotype::fixedCountMutation(const FixedCountMutation& config) {
   mutationHelper(predicates);
 }
 
+template <class T, class RND>
+static vector<T> singlePointCrossoverHelper(const vector<T>& a,
+                                            const vector<T>& b,
+                                            RND& rnd) {
+  CHECK(a.size() == b.size());
+
+  vector<T> c(a.size());
+  uniform_int_distribution<size_t> dist_split_point(0, c.size() - 1);
+  bernoulli_distribution dist_coin;
+
+  size_t split_point = dist_split_point(rnd);
+  if (dist_coin(rnd)) {
+    auto it = std::copy(a.begin(), a.begin() + split_point, c.begin());
+    std::copy(b.begin() + split_point, b.end(), it);
+  } else {
+    auto it = std::copy(b.begin(), b.begin() + split_point, c.begin());
+    std::copy(a.begin() + split_point, a.end(), it);
+  }
+
+  return a;
+}
+
+void Genotype::inherit(const Genotype& parent1,
+                       const Genotype& parent2,
+                       float /*preference*/) {
+  random_device rd;
+  default_random_engine rnd(rd());
+
+  function_genes_ =
+      singlePointCrossoverHelper(parent1.function_genes_, parent2.function_genes_, rnd);
+  output_genes_ =
+      singlePointCrossoverHelper(parent1.output_genes_, parent2.output_genes_, rnd);
+  constants_genes_ =
+      singlePointCrossoverHelper(parent1.constants_genes_, parent2.constants_genes_, rnd);
+}
+
 float Genotype::getEvolvableConstant(int function_id) const {
-  const int evolvable_constants_base = -int(constants_.size());
+  const int evolvable_constants_base = -int(constants_genes_.size());
   CHECK(function_id >= evolvable_constants_base && function_id < 0);
-  return constants_[function_id - evolvable_constants_base];
+  return constants_genes_[function_id - evolvable_constants_base];
 }
 
 pair<IndexType, IndexType> Genotype::connectionRange(int layer, int levels_back) const {
