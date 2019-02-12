@@ -29,37 +29,38 @@ Population::Population(const core::PropertySet& config, const darwin::Domain& do
     throw core::Exception("Invalid configuration: output_range < 0");
 }
 
+vector<size_t> Population::rankingIndex() const {
+  vector<size_t> ranking_index(genotypes_.size());
+  for (size_t i = 0; i < ranking_index.size(); ++i) {
+    ranking_index[i] = i;
+  }
+  // sort results by fitness (descending order)
+  std::sort(ranking_index.begin(), ranking_index.end(), [&](size_t a, size_t b) {
+    return genotypes_[a].fitness > genotypes_[b].fitness;
+  });
+  return ranking_index;
+}
+
 void Population::createPrimordialGeneration(int population_size) {
   CHECK(population_size > 0);
   generation_ = 0;
-  ranked_ = false;
   genotypes_.resize(population_size, Genotype(this));
 }
 
-void Population::rankGenotypes() {
-  CHECK(!ranked_);
-  // sort results by fitness (descending order)
-  std::sort(genotypes_.begin(),
-            genotypes_.end(),
-            [](const Genotype& a, const Genotype& b) { return a.fitness > b.fitness; });
-  ranked_ = true;
-}
-
 void Population::createNextGeneration() {
-  CHECK(ranked_);
   CHECK(!genotypes_.empty());
 
+  ++generation_;
+
+  const auto& ranking_index = rankingIndex();
   const int elite_limit = max(0, int(genotypes_.size() * config_.elite_percentage));
   for (int index = int(genotypes_.size()) - 1; index >= 0; --index) {
-    Genotype& genotype = genotypes_[index];
+    Genotype& genotype = genotypes_[ranking_index[index]];
     if (index < elite_limit && genotype.fitness >= config_.elite_min_fitness) {
       break;
     }
     genotype.reset();
   }
-
-  ++generation_;
-  ranked_ = false;
 }
 
 }  // namespace test_population

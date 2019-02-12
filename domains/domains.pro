@@ -16,7 +16,8 @@ SUBDIRS += \
     double_cart_pole \
     double_cart_pole_ui \
     unicycle \
-    unicycle_ui
+    unicycle_ui \
+    test_domain
 
 pong_ui.depends = pong
 tic_tac_toe_ui.depends = tic_tac_toe

@@ -61,7 +61,7 @@ void Brain::think() {
   // generate output values
   const auto& config = genotype_->population()->config();
   for (float& value : outputs_) {
-    uniform_real_distribution<float> dist(-config.output_range, config.output_range);
+    uniform_real_distribution<float> dist(-config.output_range, +config.output_range);
     value = config.random_outputs ? dist(rnd_) : config.const_output;
   }
 

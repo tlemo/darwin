@@ -30,6 +30,7 @@ class Box2dSandboxWindow;
 }
 
 class PropertiesWidget;
+class Box2dSceneUi;
 
 //! A reusable sandbox window for domains based on Box2D physics simulations
 class Box2dSandboxWindow : public QFrame {
@@ -67,6 +68,9 @@ class Box2dSandboxWindow : public QFrame {
 
   //! Sets the associated Box2D world
   void setWorld(b2World* world, const QRectF& viewport);
+
+  //! Sets a custom scene UI  
+  void setSceneUi(Box2dSceneUi* scene_ui);
 
   //! Play/resume simulation
   void play();

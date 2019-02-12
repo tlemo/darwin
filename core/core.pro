@@ -47,7 +47,8 @@ HEADERS += \
     utils.h \
     pp_utils.h \
     modules.h \
-    tournament.h
+    tournament.h \
+    selection_algorithm.h
     
 addLibrary(../third_party/sqlite)
 addLibrary(../third_party/box2d)

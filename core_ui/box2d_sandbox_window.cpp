@@ -80,6 +80,10 @@ void Box2dSandboxWindow::setWorld(b2World* world, const QRectF& viewport) {
   state_ = State::Paused;
 }
 
+void Box2dSandboxWindow::setSceneUi(Box2dSceneUi* scene_ui) {
+  ui->world_widget->setSceneUi(scene_ui);
+}
+
 void Box2dSandboxWindow::play() {
   if (state_ == State::Paused) {
     timer_.start();

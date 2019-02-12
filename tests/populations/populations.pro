@@ -9,7 +9,8 @@ SOURCES += \
     classic_crossover_tests.cpp \
     classic_mutation_tests.cpp \
     neat_tests.cpp \
-    cgp_tests.cpp
+    cgp_tests.cpp \
+    populations_smoke_tests.cpp
     
 HEADERS += \
     dummy_domain.h

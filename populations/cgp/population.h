@@ -17,15 +17,20 @@
 #include "cgp.h"
 #include "genotype.h"
 
+#include <core/selection_algorithm.h>
 #include <core/darwin.h>
 #include <core/properties.h>
 
+#include <memory>
 #include <vector>
 using namespace std;
 
 namespace cgp {
 
 class Population : public darwin::Population {
+  class GenotypeFactory;
+  class GenerationFactory;
+
  public:
   Population(const core::PropertySet& config, const darwin::Domain& domain);
 
@@ -35,26 +40,26 @@ class Population : public darwin::Population {
   Genotype* genotype(size_t index) override { return &genotypes_[index]; }
   const Genotype* genotype(size_t index) const override { return &genotypes_[index]; }
 
+  vector<size_t> rankingIndex() const override;
   void createPrimordialGeneration(int population_size) override;
-  void rankGenotypes() override;
   void createNextGeneration() override;
 
   const Config& config() const { return config_; }
   const darwin::Domain* domain() const { return domain_; }
-  
+
   const vector<FunctionId>& availableFunctions() const { return available_functions_; }
-  
+
  private:
   void setupAvailableFunctions();
 
  private:
   Config config_;
   const darwin::Domain* domain_ = nullptr;
-  
+  unique_ptr<selection::SelectionAlgorithm> selection_algorithm_;
+
   vector<Genotype> genotypes_;
   int generation_ = 0;
-  bool ranked_ = false;
-  
+
   vector<FunctionId> available_functions_;
 };
 

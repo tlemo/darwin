@@ -46,6 +46,10 @@ class Factory : public darwin::PopulationFactory {
         config->fn_comparisons = false;
         config->fn_logic_gates = false;
         config->fn_conditional = false;
+        config->evolvable_constants_count = 1;
+        config->selection_algorithm.cgp_islands.island_size = 5;
+        config->selection_algorithm.cgp_islands.protected_age = 2;
+        config->selection_algorithm.cgp_islands.extinction_percentage = 0.5f;
         break;
       case darwin::ComplexityHint::Balanced:
         break;
@@ -62,6 +66,12 @@ class Factory : public darwin::PopulationFactory {
         config->fn_comparisons = true;
         config->fn_logic_gates = true;
         config->fn_conditional = true;
+        config->fn_stateful = true;
+        config->evolvable_constants_count = 16;
+        config->mutation_strategy.selectCase(MutationStrategy::FixedCount);
+        config->mutation_strategy.fixed_count.mutation_count = 100;
+        config->selection_algorithm.selectCase(SelectionAlgorithmType::CgpIslands);
+        config->selection_algorithm.cgp_islands.island_size = 50;
         break;
     }
     return config;

@@ -114,7 +114,7 @@ struct EvolutionConfig : public core::PropertySet {
 
   PROPERTY(fitness_information,
            FitnessInfoKind,
-           FitnessInfoKind::SamplesOnly,
+           FitnessInfoKind::FullCompressed,
            "What kind of fitness information to save");
 
   PROPERTY(save_genealogy,

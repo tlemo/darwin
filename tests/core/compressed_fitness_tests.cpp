@@ -51,18 +51,20 @@ class TestPopulation : public darwin::Population {
     return &genotypes_[index];
   }
 
-  void rankGenotypes() override {
-    std::sort(genotypes_.begin(),
-              genotypes_.end(),
-              [](const TestGenotype& a, const TestGenotype& b) {
-                return a.fitness > b.fitness;
-              });
+  vector<size_t> rankingIndex() const override {
+    vector<size_t> ranking_index(genotypes_.size());
+    for (size_t i = 0; i < ranking_index.size(); ++i) {
+      ranking_index[i] = i;
+    }
+    // sort results by fitness (descending order)
+    std::sort(ranking_index.begin(), ranking_index.end(), [&](size_t a, size_t b) {
+      return genotypes_[a].fitness > genotypes_[b].fitness;
+    });
+    return ranking_index;
   }
 
   int generation() const override { FATAL("Not implemented"); }
-
   void createPrimordialGeneration(int) override { FATAL("Not implemented"); }
-
   void createNextGeneration() override { FATAL("Not implemented"); }
 
  private:
@@ -146,7 +148,6 @@ TEST(CompressedFitnessTest, SparseValues) {
     fitness_values[i] = pow(2.0f, i);
 
   TestPopulation population(fitness_values);
-  population.rankGenotypes();
   auto compressed = darwin::compressFitness(&population);
   EXPECT_EQ(compressed.size(), kSize);
 }
@@ -159,7 +160,6 @@ TEST(CompressedFitnessTest, StepValues) {
     fitness_values[i] = i / kStepSize;
 
   TestPopulation population(fitness_values);
-  population.rankGenotypes();
   auto compressed = darwin::compressFitness(&population);
   EXPECT_EQ(compressed.size(), 2 * (kSize / kStepSize));
 }
@@ -171,7 +171,6 @@ TEST(CompressedFitnessTest, GradientValues) {
     fitness_values[i] = i;
 
   TestPopulation population(fitness_values);
-  population.rankGenotypes();
   auto compressed = darwin::compressFitness(&population);
   EXPECT_EQ(compressed.size(), 2);
 }

@@ -21,7 +21,7 @@ using namespace std;
 
 namespace unicycle {
 
-b2Body* World::createGround(float target_position) {
+b2Body* World::createGround() {
   const auto& config = domain_->config();
 
   b2BodyDef ground_body_def;
@@ -36,17 +36,6 @@ b2Body* World::createGround(float target_position) {
   ground_fixture_def.density = 0;
   ground_fixture_def.friction = kGroundFriction;
   ground->CreateFixture(&ground_fixture_def);
-
-  // create an "arrow" fixture to point to the target position
-  constexpr float kArrowHalfSize = kGroundY / 4;
-  const b2Vec2 arrow_vertices[] = {
-    b2Vec2(target_position, -kArrowHalfSize),
-    b2Vec2(target_position + kArrowHalfSize, -3 * kArrowHalfSize),
-    b2Vec2(target_position - kArrowHalfSize, -3 * kArrowHalfSize)
-  };
-  b2PolygonShape arrow_shape;
-  arrow_shape.Set(arrow_vertices, int(std::size(arrow_vertices)));
-  ground->CreateFixture(&arrow_shape, 0.0f);
 
   return ground;
 }
@@ -108,7 +97,7 @@ World::World(float initial_angle, float target_position, const Unicycle* domain)
     : b2_world_(b2Vec2(0, -domain->config().gravity)),
       target_position_(target_position),
       domain_(domain) {
-  createGround(target_position);
+  createGround();
   wheel_ = createWheel();
   pole_ = createPole(initial_angle);
   createHinge(wheel_, pole_);
@@ -143,13 +132,14 @@ bool World::simStep() {
   return true;
 }
 
-void World::turnWheel(float torque) {
-  const auto& config = domain_->config();
+void World::setTargetPosition(float target_position) {
+  target_position_ = target_position;
+}
 
-  // guard against NaNs
-  if (isnan(torque)) {
-    return;
-  }
+void World::turnWheel(float torque) {
+  CHECK(!isnan(torque));
+
+  const auto& config = domain_->config();
 
   // discrete control forces?
   if (config.discrete_controls && torque != 0) {

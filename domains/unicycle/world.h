@@ -21,6 +21,7 @@
 namespace unicycle {
 
 class World {
+ public:
   static constexpr float kPoleHalfWidth = 0.02f;
   static constexpr float kGroundY = 0.1f;
   static constexpr float kGroundFriction = 100.0f;
@@ -37,13 +38,14 @@ class World {
   float wheelVelocity() const { return wheel_->GetLinearVelocity().x; }
   float poleAngle() const { return pole_->GetAngle(); }
   float poleAngularVelocity() const { return pole_->GetAngularVelocity(); }
-  
+
+  float targetPosition() const { return target_position_; }
+  void setTargetPosition(float target_position);
+
   // actuators
   void turnWheel(float torque);
   
   const Unicycle* domain() const { return domain_; }
-  
-  float targetPosition() const { return target_position_; }
 
   // extra reward for staying close to the target position
   float fitnessBonus() const { return fitness_bonus_; }
@@ -51,7 +53,7 @@ class World {
   b2World* box2dWorld() { return &b2_world_; }
   
  private:
-  b2Body* createGround(float target_position);
+  b2Body* createGround();
   b2Body* createPole(float initial_angle);
   b2Body* createWheel();
   void createHinge(b2Body* wheel, b2Body* pole);
@@ -62,9 +64,7 @@ class World {
   b2Body* pole_ = nullptr;
   
   float fitness_bonus_ = 0;
-  
-  const float target_position_ = 0;
-  
+  float target_position_ = 0;
   const Unicycle* domain_ = nullptr;
 };
 

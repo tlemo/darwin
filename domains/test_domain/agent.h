@@ -14,42 +14,24 @@
 
 #pragma once
 
-#include "cgp.h"
-#include "genotype.h"
-#include "population.h"
+#include "test_domain.h"
 
 #include <core/darwin.h>
 
-#include <array>
-#include <vector>
+#include <memory>
 using namespace std;
 
-namespace cgp {
+namespace test_domain {
 
-class Brain : public darwin::Brain {
-  struct Instruction {
-    FunctionId function;
-    array<IndexType, kMaxFunctionArity> sources;
-  };
-
+class Agent {
  public:
-  explicit Brain(const Genotype* genotype);
+  Agent(const darwin::Genotype* genotype, const TestDomain* domain);
 
-  void setInput(int index, float value) override;
-  float output(int index) const override;
-  void think() override;
-  void resetState() override;
+  float evaluate();
 
  private:
-  IndexType dfsNodeEval(IndexType node_index, vector<IndexType>& nodes_map);
-
- private:
-  const Genotype* genotype_ = nullptr;
-
-  vector<Instruction> instructions_;
-  vector<float> registers_;
-  vector<float> memory_;
-  vector<int> outputs_map_;
+  unique_ptr<darwin::Brain> brain_;
+  const TestDomain* domain_ = nullptr;
 };
 
-}  // namespace cgp
+}  // namespace test_domain

@@ -25,6 +25,7 @@
 #include <sstream>
 #include <system_error>
 #include <thread>
+#include <algorithm>
 using namespace std;
 
 namespace darwin {
@@ -34,14 +35,15 @@ ProgressMonitor* ProgressManager::progress_monitor_ = nullptr;
 GenerationSummary::GenerationSummary(const Population* population,
                                      shared_ptr<core::PropertySet> calibration_fitness)
     : calibration_fitness(calibration_fitness) {
-  size_t size = population->size();
+  const size_t size = population->size();
   CHECK(size > 0);
-
+  
+  const auto& ranking_index = population->rankingIndex();
   generation = population->generation();
-  best_fitness = population->genotype(0)->fitness;
-  median_fitness = population->genotype(size / 2)->fitness;
-  worst_fitness = population->genotype(size - 1)->fitness;
-  champion = population->genotype(0)->clone();
+  best_fitness = population->genotype(ranking_index[0])->fitness;
+  median_fitness = population->genotype(ranking_index[size / 2])->fitness;
+  worst_fitness = population->genotype(ranking_index[size - 1])->fitness;
+  champion = population->genotype(ranking_index[0])->clone();
 }
 
 EvolutionTrace::EvolutionTrace(const Evolution* evolution) : evolution_(evolution) {
@@ -69,21 +71,26 @@ vector<CompressedFitnessValue> compressFitness(const Population* population) {
 
   vector<CompressedFitnessValue> compressed_values;
 
-  const int raw_size = int(population->size());
+  const auto& ranking_index = population->rankingIndex();
+  auto rankedGenotype = [&](size_t index) {
+    return population->genotype(ranking_index[index]);
+  };
+
+  const int raw_size = int(ranking_index.size());
   CHECK(raw_size > 0);
 
   int last_sample_index = 0;
-  float last_sample_value = population->genotype(last_sample_index)->fitness;
+  float last_sample_value = rankedGenotype(last_sample_index)->fitness;
   compressed_values.emplace_back(last_sample_index, last_sample_value);
 
   for (int i = 2; i < raw_size; ++i) {
-    const float value = population->genotype(i)->fitness;
+    const float value = rankedGenotype(i)->fitness;
 
     // can we extend the current compressed set with the new value?
     // (only if the straight line between it and the last sample is a valid
     //  aproximation of all the intermediate values)
     const int prev_index = i - 1;
-    const float prev_value = population->genotype(prev_index)->fitness;
+    const float prev_value = rankedGenotype(prev_index)->fitness;
 
     const float m = float(value - last_sample_value) / (i - last_sample_index);
     CHECK(m <= 0);
@@ -102,7 +109,7 @@ vector<CompressedFitnessValue> compressFitness(const Population* population) {
   if (raw_size > 1) {
     // append the last real value
     last_sample_index = raw_size - 1;
-    last_sample_value = population->genotype(last_sample_index)->fitness;
+    last_sample_value = rankedGenotype(last_sample_index)->fitness;
     compressed_values.emplace_back(last_sample_index, last_sample_value);
   }
 
@@ -163,8 +170,9 @@ GenerationSummary EvolutionTrace::addGeneration(
     case FitnessInfoKind::FullRaw: {
       // capture all fitness values (ranked)
       json json_full_fitness;
-      for (size_t i = 0; i < population->size(); ++i)
-        json_full_fitness.push_back(population->genotype(i)->fitness);
+      for (auto genotype_index : population->rankingIndex()) {
+        json_full_fitness.push_back(population->genotype(genotype_index)->fitness);
+      }
       json_details["full_fitness"] = json_full_fitness;
     } break;
 
@@ -337,8 +345,6 @@ void Evolution::evolutionCycle() {
 
   // main evolution loop
   for (int generation = 0; generation < config_.max_generations; ++generation) {
-    shared_ptr<core::PropertySet> calibration_fitness;
-
     // explicit scope for the top generation stage
     {
       StageScope stage(
@@ -350,21 +356,20 @@ void Evolution::evolutionCycle() {
       } else {
         population_->createNextGeneration();
       }
-      
-      // TODO: remove generation tracking from darwin::Population
+
+      // TODO: remove generation tracking from darwin::Population?
       CHECK(population_->generation() == generation);
 
       // domain specific evaluation of the genotypes
       if (domain_->evaluatePopulation(population_.get()))
         break;
-
-      // rank the genotypes
-      population_->rankGenotypes();
-
-      // extra fitness values (optional)
-      const Genotype* champion = population_->genotype(0);
-      calibration_fitness = domain_->calibrateGenotype(champion);
     }
+
+    // extra fitness values (optional)
+    const auto champion_index = population_->rankingIndex()[0];
+    const Genotype* champion = population_->genotype(champion_index);
+    shared_ptr<core::PropertySet> calibration_fitness =
+        domain_->calibrateGenotype(champion);
 
     // record the generation
     auto summary =

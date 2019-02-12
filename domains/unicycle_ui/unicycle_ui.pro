@@ -9,11 +9,13 @@ CONFIG += staticlib
 
 SOURCES += \
     unicycle_ui.cpp \
-    sandbox_window.cpp
+    sandbox_window.cpp \
+    scene_ui.cpp
 
 HEADERS += \
     unicycle_ui.h \
-    sandbox_window.h
+    sandbox_window.h \
+    scene_ui.h
 
 addLibrary(../unicycle)
 addLibrary(../../core_ui)

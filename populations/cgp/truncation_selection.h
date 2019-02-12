@@ -14,42 +14,30 @@
 
 #pragma once
 
-#include "cgp.h"
-#include "genotype.h"
-#include "population.h"
+#include <core/properties.h>
+#include <core/selection_algorithm.h>
 
-#include <core/darwin.h>
-
-#include <array>
 #include <vector>
 using namespace std;
 
 namespace cgp {
 
-class Brain : public darwin::Brain {
-  struct Instruction {
-    FunctionId function;
-    array<IndexType, kMaxFunctionArity> sources;
-  };
+struct TrunctationSelectionConfig : public core::PropertySet {
+  PROPERTY(elite_percentage, float, 0.1f, "Elite percentage");
+  PROPERTY(elite_min_fitness, float, 0.0f, "Elite minimum fitness");
+  PROPERTY(elite_mutation_chance, float, 0.0f, "Elite mutation chance");
+};
 
+class TruncationSelection : public selection::SelectionAlgorithm {
  public:
-  explicit Brain(const Genotype* genotype);
+  explicit TruncationSelection(const core::PropertySet& config);
 
-  void setInput(int index, float value) override;
-  float output(int index) const override;
-  void think() override;
-  void resetState() override;
+  void newPopulation(darwin::Population* population) override;
+  void createNextGeneration(selection::GenerationFactory* next_generation) override;
 
  private:
-  IndexType dfsNodeEval(IndexType node_index, vector<IndexType>& nodes_map);
-
- private:
-  const Genotype* genotype_ = nullptr;
-
-  vector<Instruction> instructions_;
-  vector<float> registers_;
-  vector<float> memory_;
-  vector<int> outputs_map_;
+  darwin::Population* population_ = nullptr;
+  TrunctationSelectionConfig config_;
 };
 
 }  // namespace cgp

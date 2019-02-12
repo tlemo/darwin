@@ -19,6 +19,10 @@
 #include <core/darwin.h>
 #include <core/ann_dynamic.h>
 
+#include <cmath>
+#include <limits>
+using namespace std;
+
 namespace classic {
 
 template <class TRAITS>
@@ -58,6 +62,14 @@ class Brain : public darwin::Brain {
 
     if (g_config.normalize_output)
       ann::activateLayer(output_layer_.values);
+
+    // finally, map any NaNs to +Inf
+    // (since NaNs are not valid output values)
+    for (float& output_value : output_layer_.values) {
+      if (isnan(output_value)) {
+        output_value = numeric_limits<float>::infinity();
+      }
+    }
   }
 
   void resetState() override {

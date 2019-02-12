@@ -31,6 +31,7 @@ addLibrary(../domains/tic_tac_toe_ui)
 addLibrary(../domains/tic_tac_toe)
 addLibrary(../domains/unicycle_ui)
 addLibrary(../domains/unicycle)
+addLibrary(../domains/test_domain)
 
 addLibrary(../populations/cgp)
 addLibrary(../populations/classic)

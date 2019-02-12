@@ -27,6 +27,65 @@ using namespace std;
 
 namespace cgp {
 
+class Population::GenotypeFactory : public selection::GenotypeFactory {
+ public:
+  void init(Population* population, Genotype* genotype) {
+    population_ = population;
+    genotype_ = genotype;
+  }
+  
+  void createPrimordialSeed() override {
+    genotype_->createPrimordialSeed();
+    genotype_->genealogy = darwin::Genealogy("p", {});
+  }
+
+  void replicate(int parent_index) override {
+    *genotype_ = population_->genotypes_[parent_index];
+    genotype_->genealogy = darwin::Genealogy("m", { parent_index });
+  }
+
+  void crossover(int parent1, int parent2, float preference) override {
+    genotype_->inherit(
+        population_->genotypes_[parent1], population_->genotypes_[parent2], preference);
+    genotype_->genealogy = darwin::Genealogy("c", { parent1, parent2 });
+  }
+
+  void mutate() override {
+    const auto& config = population_->config_;
+    switch (config.mutation_strategy.tag()) {
+      case MutationStrategy::FixedCount:
+        genotype_->fixedCountMutation(config.mutation_strategy.fixed_count);
+        break;
+      case MutationStrategy::Probabilistic:
+        genotype_->probabilisticMutation(config.mutation_strategy.probabilistic);
+        break;
+      default:
+        FATAL("Unexpected mutation strategy");
+    }
+    genotype_->genealogy.genetic_operator += "m";
+  }
+
+ private:
+  Population* population_ = nullptr;
+  Genotype* genotype_ = nullptr;
+};
+
+class Population::GenerationFactory : public selection::GenerationFactory {
+ public:
+  GenerationFactory(Population* population, vector<Genotype>& next_generation) {
+    factories_.resize(next_generation.size());
+    for (size_t i = 0; i < factories_.size(); ++i) {
+      factories_[i].init(population, &next_generation[i]);
+    }
+  }
+
+  size_t size() const override { return factories_.size(); }
+  GenotypeFactory* operator[](size_t index) override { return &factories_[index]; }
+
+ private:
+  vector<GenotypeFactory> factories_;
+};
+
 Population::Population(const core::PropertySet& config, const darwin::Domain& domain) {
   config_.copyFrom(config);
   domain_ = &domain;
@@ -38,10 +97,28 @@ Population::Population(const core::PropertySet& config, const darwin::Domain& do
     throw core::Exception("Invalid configuration: columns < 1");
   if (config_.levels_back < 1)
     throw core::Exception("Invalid configuration: levels_back < 1");
-  if (config_.elite_percentage < 0 || config_.elite_percentage > 100)
-    throw core::Exception("Invalid configuration: elite_percentage");
-    
+  if (config_.mutation_strategy.fixed_count.mutation_count < 0)
+    throw core::Exception(
+        "Invalid configuration: fixed_mutation_count.mutation_count < 0");
+
   setupAvailableFunctions();
+
+  switch (config_.selection_algorithm.tag()) {
+    case SelectionAlgorithmType::RouletteWheel:
+      selection_algorithm_ =
+          make_unique<RouletteSelection>(config_.selection_algorithm.roulette_wheel);
+      break;
+    case SelectionAlgorithmType::CgpIslands:
+      selection_algorithm_ =
+          make_unique<CgpIslandsSelection>(config_.selection_algorithm.cgp_islands);
+      break;
+    case SelectionAlgorithmType::Truncation:
+      selection_algorithm_ =
+          make_unique<TruncationSelection>(config_.selection_algorithm.truncation);
+      break;
+    default:
+      FATAL("Unexpected selection algorithm type");
+  }
 }
 
 void Population::createPrimordialGeneration(int population_size) {
@@ -52,79 +129,36 @@ void Population::createPrimordialGeneration(int population_size) {
   darwin::StageScope stage("Create primordial generation");
 
   generation_ = 0;
-  ranked_ = false;
 
   genotypes_.resize(population_size, Genotype(this));
   pp::for_each(genotypes_,
                [](int, Genotype& genotype) { genotype.createPrimordialSeed(); });
 
+  selection_algorithm_->newPopulation(this);
+  
   core::log("Ready.\n");
 }
 
-void Population::rankGenotypes() {
-  CHECK(!ranked_);
-
-  // sort results by fitness (descending order)
-  std::sort(genotypes_.begin(),
-            genotypes_.end(),
-            [](const Genotype& a, const Genotype& b) { return a.fitness > b.fitness; });
-
-  // log best fitness values
-  core::log("Fitness values: ");
-  const size_t sample_size = min(size_t(16), genotypes_.size());
-  for (size_t i = 0; i < sample_size; ++i) {
-    core::log(" %.3f", genotypes_[i].fitness);
+vector<size_t> Population::rankingIndex() const {
+  vector<size_t> ranking_index(genotypes_.size());
+  for (size_t i = 0; i < ranking_index.size(); ++i) {
+    ranking_index[i] = i;
   }
-  core::log(" ...\n");
-
-  ranked_ = true;
+  // sort results by fitness (descending order)
+  std::sort(ranking_index.begin(), ranking_index.end(), [&](size_t a, size_t b) {
+    return genotypes_[a].fitness > genotypes_[b].fitness;
+  });
+  return ranking_index;
 }
 
 void Population::createNextGeneration() {
-  CHECK(ranked_);
-
   darwin::StageScope stage("Create next generation");
 
   ++generation_;
-
-  // roulette wheel selection (aka fitness-proportionate selection)
-  // (supports negative fitness values too)
-
-  const size_t population_size = genotypes_.size();
-  CHECK(population_size > 0);
-
-  constexpr float kMinFitness = 0.0f;
-  vector<double> prefix_sum(population_size);
-  double sum = 0;
-  for (size_t i = 0; i < population_size; ++i) {
-    const double fitness_value = genotypes_[i].fitness;
-    sum += (fitness_value >= kMinFitness) ? fitness_value : 0.0f;
-    prefix_sum[i] = sum;
-  }
-
-  const int elite_limit = max(1, int(population_size * config_.elite_percentage));
-
-  vector<Genotype> next_generation(population_size, Genotype(this));
-  pp::for_each(next_generation, [&](int index, Genotype& genotype) {
-    if (index < elite_limit && genotypes_[index].fitness >= config_.elite_min_fitness) {
-      genotype = genotypes_[index];
-      genotype.genealogy = darwin::Genealogy("e", { index });
-    } else {
-      random_device rd;
-      default_random_engine rnd(rd());
-      uniform_real_distribution<double> dist_sample(0, sum);
-      const double sample = dist_sample(rnd);
-      const auto interval = lower_bound(prefix_sum.begin(), prefix_sum.end(), sample);
-      CHECK(interval != prefix_sum.end());
-      const int parent_index = std::distance(prefix_sum.begin(), interval);
-      genotype = genotypes_[parent_index];
-      genotype.mutate(config_.connection_mutation_chance,
-                      config_.function_mutation_chance);
-      genotype.genealogy = darwin::Genealogy("m", { parent_index });
-    }
-  });
+  vector<Genotype> next_generation(genotypes_.size(), Genotype(this));
+  GenerationFactory generation_factory(this, next_generation);
+  selection_algorithm_->createNextGeneration(&generation_factory);
   std::swap(genotypes_, next_generation);
-  ranked_ = false;
 }
 
 void Population::setupAvailableFunctions() {
@@ -245,6 +279,17 @@ void Population::setupAvailableFunctions() {
     core::log("CGP: adding conditional functions...\n");
     addFunctions({
         FunctionId::IfOrZero,
+    });
+  }
+  if (config_.fn_stateful) {
+    core::log("CGP: adding stateful functions...\n");
+    addFunctions({
+        FunctionId::Velocity,
+        FunctionId::HighWatermark,
+        FunctionId::LowWatermark,
+        FunctionId::MemoryCell,
+        FunctionId::SoftMemoryCell,
+        FunctionId::TimeDelay,
     });
   }
   

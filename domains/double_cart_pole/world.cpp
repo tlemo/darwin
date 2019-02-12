@@ -118,12 +118,9 @@ bool World::simStep() {
 }
 
 void World::moveCart(float force) {
+  CHECK(!isnan(force));
+
   const auto& config = domain_->config();
-  
-  // guard against NaNs
-  if (isnan(force)) {
-    return;
-  }
 
   // discrete control forces?
   if (config.discrete_controls && force != 0) {

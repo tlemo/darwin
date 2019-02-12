@@ -36,22 +36,16 @@ class Population : public darwin::Population {
 
   int generation() const override { return generation_; }
 
-  Genotype* genotype(size_t index) override { return &genotypes_[order_[index]]; }
+  Genotype* genotype(size_t index) override { return &genotypes_[index]; }
+  const Genotype* genotype(size_t index) const override { return &genotypes_[index]; }
 
-  const Genotype* genotype(size_t index) const override {
-    return &genotypes_[order_[index]];
-  }
-
+  vector<size_t> rankingIndex() const override;
   void createPrimordialGeneration(int population_size) override;
-
-  void rankGenotypes() override;
-
   void createNextGeneration() override;
 
  private:
   void classicSelection();
   void neatSelection();
-  void resetOrder();
 
   // separate the genomes into species
   void speciate();
@@ -61,11 +55,7 @@ class Population : public darwin::Population {
   vector<Genotype> genotypes_;
   vector<Species> species_;
   atomic<Innovation> next_innovation_ = 0;
-
   int generation_ = 0;
-
-  bool ranked_ = false;
-  vector<size_t> order_;
 };
 
 }  // namespace neat

@@ -27,6 +27,7 @@ using nlohmann::json;
 #include <third_party/gtest/gtest.h>
 
 #include <vector>
+#include <limits>
 using namespace std;
 
 namespace cgp_tests {
@@ -45,8 +46,12 @@ struct CgpTest : public testing::Test {
     config->rows = 7;
     config->columns = 8;
     config->levels_back = 4;
+    config->outputs_use_levels_back = true;
     config->fn_basic_constants = true;
     config->fn_basic_arithmetic = true;
+    config->fn_conditional = true;
+    config->fn_stateful = true;
+    config->evolvable_constants_count = 10;
 
     population = factory->create(*config, *domain);
     CHECK(population);
@@ -87,6 +92,17 @@ TEST_F(CgpTest, OutputGene_LoadSave) {
   EXPECT_EQ(gene_clone.connection, gene.connection);
 }
 
+TEST_F(CgpTest, Genotype_Save) {
+  core_test::TestCaseOutput output;
+  
+  const auto cgp_population = dynamic_cast<const cgp::Population*>(population.get());
+  ASSERT_NE(cgp_population, nullptr);
+
+  cgp::Genotype genotype(cgp_population);
+  json json_obj = genotype.save();
+  fprintf(output, "%s", json_obj.dump(2).c_str());
+}
+
 TEST_F(CgpTest, Genotype) {
   const auto cgp_population = dynamic_cast<const cgp::Population*>(population.get());
   ASSERT_NE(cgp_population, nullptr);
@@ -96,7 +112,18 @@ TEST_F(CgpTest, Genotype) {
 
   constexpr int kTestMutationCount = 1000;
   for (int i = 0; i < kTestMutationCount; ++i) {
-    genotype.mutate(1.0f, 1.0f);
+    // probabilistic mutation
+    cgp::ProbabilisticMutation probabilistic_mutation_config;
+    probabilistic_mutation_config.connection_mutation_chance = 1.0f;
+    probabilistic_mutation_config.function_mutation_chance = 1.0f;
+    probabilistic_mutation_config.output_mutation_chance = 1.0f;
+    probabilistic_mutation_config.constant_mutation_chance = 1.0f;
+    genotype.probabilisticMutation(probabilistic_mutation_config);
+
+    // fixed count mutation
+    cgp::FixedCountMutation fixed_count_mutation_config;
+    fixed_count_mutation_config.mutation_count = numeric_limits<int>::max();
+    genotype.fixedCountMutation(fixed_count_mutation_config);
   }
 
   json json_obj = genotype.save();
