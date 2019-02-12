@@ -87,7 +87,7 @@ void TruncationSelection::createNextGeneration(GenerationFactory* next_generatio
 
   const double population_size = population_->size();
 
-  core::log("Truncation selection stats: %.2f%% elite, %.2f%% mutate\n",
+  core::log("Truncation selection stats: %.2f%% elite, %.2f%% mutate_only\n",
             (elite_count / population_size) * 100,
             (mutate_only_count / population_size) * 100);
 }

@@ -86,7 +86,7 @@ struct Config : public core::PropertySet {
 
   VARIANT(selection_algorithm,
           cgp::SelectionAlgorithmVariant,
-          cgp::SelectionAlgorithmType::CgpIslands,
+          cgp::SelectionAlgorithmType::RouletteWheel,
           "Selecton algorithm");
 };
 
