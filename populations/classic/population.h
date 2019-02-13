@@ -23,18 +23,86 @@
 #include <core/logging.h>
 #include <core/parallel_for_each.h>
 
-#include <assert.h>
 #include <algorithm>
 #include <atomic>
 #include <random>
 #include <vector>
+#include <memory>
 using namespace std;
 
 namespace classic {
 
 template <class GENOTYPE>
 class Population : public darwin::Population {
+  class GenotypeFactory : public selection::GenotypeFactory {
+   public:
+    void init(Population* population, GENOTYPE* genotype) {
+      population_ = population;
+      genotype_ = genotype;
+    }
+
+    void createPrimordialSeed() override {
+      genotype_->createPrimordialSeed();
+      genotype_->genealogy = darwin::Genealogy("p", {});
+    }
+
+    void replicate(int parent_index) override {
+      *genotype_ = population_->genotypes_[parent_index];
+      genotype_->genealogy = darwin::Genealogy("r", { parent_index });
+    }
+
+    void crossover(int parent1, int parent2, float preference) override {
+      genotype_->inherit(
+          population_->genotypes_[parent1], population_->genotypes_[parent2], preference);
+      genotype_->genealogy = darwin::Genealogy("c", { parent1, parent2 });
+    }
+
+    void mutate() override {
+      genotype_->mutate();
+      genotype_->genealogy.genetic_operator += "m";
+    }
+
+   private:
+    Population* population_ = nullptr;
+    GENOTYPE* genotype_ = nullptr;
+  };
+
+  class GenerationFactory : public selection::GenerationFactory {
+   public:
+    GenerationFactory(Population* population, vector<GENOTYPE>& next_generation) {
+      factories_.resize(next_generation.size());
+      for (size_t i = 0; i < factories_.size(); ++i) {
+        factories_[i].init(population, &next_generation[i]);
+      }
+    }
+
+    size_t size() const override { return factories_.size(); }
+    GenotypeFactory* operator[](size_t index) override { return &factories_[index]; }
+
+   private:
+    vector<GenotypeFactory> factories_;
+  };
+
  public:
+  Population() {
+    switch (g_config.selection_algorithm.tag()) {
+      case SelectionAlgorithmType::RouletteWheel:
+        selection_algorithm_ = make_unique<selection::RouletteSelection>(
+            g_config.selection_algorithm.roulette_wheel);
+        break;
+      case SelectionAlgorithmType::CgpIslands:
+        selection_algorithm_ = make_unique<selection::CgpIslandsSelection>(
+            g_config.selection_algorithm.cgp_islands);
+        break;
+      case SelectionAlgorithmType::Truncation:
+        selection_algorithm_ = make_unique<selection::TruncationSelection>(
+            g_config.selection_algorithm.truncation);
+        break;
+      default:
+        FATAL("Unexpected selection algorithm type");
+    }
+  }
+
   size_t size() const override { return genotypes_.size(); }
 
   int generation() const override { return generation_; }
@@ -54,6 +122,7 @@ class Population : public darwin::Population {
     pp::for_each(genotypes_,
                  [](int, GENOTYPE& genotype) { genotype.createPrimordialSeed(); });
 
+    selection_algorithm_->newPopulation(this);
     core::log("Ready.\n");
   }
 
@@ -61,80 +130,10 @@ class Population : public darwin::Population {
     darwin::StageScope stage("Create next generation");
 
     ++generation_;
-
     vector<GENOTYPE> next_generation(genotypes_.size());
-    
-    const auto& ranking_index = rankingIndex();
-
-    atomic<size_t> elite_count = 0;
-    atomic<size_t> babies_count = 0;
-    atomic<size_t> mutate_count = 0;
-
-    pp::for_each(next_generation, [&](int index, GENOTYPE& genotype) {
-      std::random_device rd;
-      std::default_random_engine rnd(rd());
-      std::uniform_int_distribution<int> dist_parent;
-      std::uniform_real_distribution<double> dist_survive(0, 1);
-      std::bernoulli_distribution dist_mutate_elite(g_config.elite_mutation_chance);
-  
-      const int old_genotype_index = int(ranking_index[index]);
-      const auto& old_genotype = genotypes_[old_genotype_index];
-      const double old_age = g_config.old_age;
-      const double time_left = old_age > 0 ? (old_age - old_genotype.age) / old_age : 0;
-
-      const bool viable = old_genotype.age < g_config.larva_age ||
-                    old_genotype.fitness >= g_config.min_viable_fitness;
-
-      // keep the elite population
-      const int elite_limit = max(2, int(genotypes_.size() * g_config.elite_percentage));
-      if (index < elite_limit && old_genotype.fitness >= g_config.elite_min_fitness) {
-        // direct reproduction
-        genotype = old_genotype;
-        if (dist_mutate_elite(rnd)) {
-          genotype.mutate();
-          genotype.genealogy = darwin::Genealogy("em", { old_genotype_index });
-        } else {
-          genotype.genealogy = darwin::Genealogy("e", { old_genotype_index });
-        }
-        ++genotype.age;
-        ++elite_count;
-      } else if (index >= 2 && (!viable || dist_survive(rnd) > time_left)) {
-        // pick two parents and produce the offspring
-        const int parent1 = int(ranking_index[dist_parent(rnd) % (index / 2)]);
-        const int parent2 = int(ranking_index[dist_parent(rnd) % (index / 2)]);
-
-        const auto& g1 = genotypes_[parent1];
-        const auto& g2 = genotypes_[parent2];
-
-        float f1 = fmaxf(g1.fitness, 0);
-        float f2 = fmaxf(g2.fitness, 0);
-
-        float preference = f1 / (f1 + f2);
-        if (isnan(preference))
-          preference = 0.5f;
-
-        genotype.inherit(g1, g2, preference);
-        genotype.genealogy = darwin::Genealogy("c", { parent1, parent2 });
-        genotype.mutate();
-        ++babies_count;
-      } else {
-        // last resort, mutate the old genotype
-        genotype = old_genotype;
-        genotype.genealogy = darwin::Genealogy("m", { old_genotype_index });
-        genotype.mutate();
-        ++genotype.age;
-        ++mutate_count;
-      }
-    });
-
+    GenerationFactory generation_factory(this, next_generation);
+    selection_algorithm_->createNextGeneration(&generation_factory);
     std::swap(genotypes_, next_generation);
-
-    const double population_size = genotypes_.size();
-
-    core::log("Next gen stats: %.2f%% elite, %.2f%% babies, %.2f%% mutate\n",
-              (elite_count / population_size) * 100,
-              (babies_count / population_size) * 100,
-              (mutate_count / population_size) * 100);
   }
 
   vector<size_t> rankingIndex() const {
@@ -152,6 +151,8 @@ class Population : public darwin::Population {
  private:
   vector<GENOTYPE> genotypes_;
   int generation_ = 0;
+  
+  unique_ptr<selection::SelectionAlgorithm> selection_algorithm_;
 };
 
 }  // namespace classic

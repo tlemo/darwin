@@ -91,9 +91,9 @@ struct Config : public core::PropertySet {
           "Mutation strategy");
 
   VARIANT(selection_algorithm,
-          cgp::SelectionAlgorithmVariant,
-          cgp::SelectionAlgorithmType::RouletteWheel,
-          "Selecton algorithm");
+          SelectionAlgorithmVariant,
+          SelectionAlgorithmType::RouletteWheel,
+          "Selection algorithm");
 };
 
 }  // namespace cgp

@@ -41,7 +41,7 @@ class Population::GenotypeFactory : public selection::GenotypeFactory {
 
   void replicate(int parent_index) override {
     *genotype_ = population_->genotypes_[parent_index];
-    genotype_->genealogy = darwin::Genealogy("m", { parent_index });
+    genotype_->genealogy = darwin::Genealogy("r", { parent_index });
   }
 
   void crossover(int parent1, int parent2, float preference) override {
@@ -135,7 +135,6 @@ void Population::createPrimordialGeneration(int population_size) {
                [](int, Genotype& genotype) { genotype.createPrimordialSeed(); });
 
   selection_algorithm_->newPopulation(this);
-  
   core::log("Ready.\n");
 }
 

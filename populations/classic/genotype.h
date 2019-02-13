@@ -26,8 +26,6 @@ class Genotype : public darwin::Genotype {
   using OutputLayerGene = typename TRAITS::OutputLayerGene;
 
  public:
-  int age = 0;
-
   vector<HiddenLayerGene> hidden_layers;
   OutputLayerGene output_layer;
 
@@ -45,7 +43,6 @@ class Genotype : public darwin::Genotype {
 
   void reset() override {
     darwin::Genotype::reset();
-    age = 0;
   }
 
   unique_ptr<darwin::Genotype> clone() const override {

@@ -19,6 +19,9 @@
 #include <core/darwin.h>
 #include <core/properties.h>
 #include <core/stringify.h>
+#include <core/roulette_selection.h>
+#include <core/cgp_islands_selection.h>
+#include <core/truncation_selection.h>
 
 #include <memory>
 #include <vector>
@@ -86,6 +89,34 @@ inline auto customStringify(core::TypeTag<MutationOp>) {
   return stringify;
 }
 
+enum class SelectionAlgorithmType {
+  RouletteWheel,
+  CgpIslands,
+  Truncation,
+};
+
+inline auto customStringify(core::TypeTag<SelectionAlgorithmType>) {
+  static auto stringify = new core::StringifyKnownValues<SelectionAlgorithmType>{
+    { SelectionAlgorithmType::RouletteWheel, "roulette_wheel" },
+    { SelectionAlgorithmType::CgpIslands, "cgp_islands" },
+    { SelectionAlgorithmType::Truncation, "truncation" },
+  };
+  return stringify;
+}
+
+struct SelectionAlgorithmVariant
+    : public core::PropertySetVariant<SelectionAlgorithmType> {
+  CASE(SelectionAlgorithmType::RouletteWheel,
+       roulette_wheel,
+       selection::RouletteSelectionConfig);
+  CASE(SelectionAlgorithmType::CgpIslands,
+       cgp_islands,
+       selection::CgpIslandsSelectionConfig);
+  CASE(SelectionAlgorithmType::Truncation,
+       truncation,
+       selection::TrunctationSelectionConfig);
+};
+
 struct Config : public core::PropertySet {
   PROPERTY(activation_function,
            ann::ActivationFunction,
@@ -96,20 +127,6 @@ struct Config : public core::PropertySet {
            ann::ActivationFunction,
            ann::ActivationFunction::Logistic,
            "Activation function used for cell gates (ex. LSTM)");
-
-  // elite (direct) reproduction
-  PROPERTY(elite_percentage, float, 0.1f, "Elite percentage");
-  PROPERTY(elite_min_fitness, float, 0.0f, "Elite minimum fitness");
-  PROPERTY(elite_mutation_chance, float, 0.0f, "Elite mutation chance");
-
-  // genotypes under larva age (in generations) are protected from replacement
-  PROPERTY(larva_age, int, 0, "Larva age");
-
-  // age limit until genotypes are protected from replacement
-  PROPERTY(old_age, int, 0, "Old age");
-
-  // minimum fitness value to be a candidate for direct mutation
-  PROPERTY(min_viable_fitness, float, 1.0f, "Minimum viable fitness value");
 
   // mutation parameters
   PROPERTY(mutation_chance, float, 0.01f, "Mutation chance");
@@ -126,6 +143,11 @@ struct Config : public core::PropertySet {
 
   PROPERTY(normalize_input, bool, false, "Normalize input values");
   PROPERTY(normalize_output, bool, false, "Normalize output values");
+
+  VARIANT(selection_algorithm,
+          SelectionAlgorithmVariant,
+          SelectionAlgorithmType::RouletteWheel,
+          "Selection algorithm");
 };
 
 extern Config g_config;
