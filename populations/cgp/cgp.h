@@ -50,7 +50,7 @@ struct SelectionAlgorithmVariant
        selection::CgpIslandsSelectionConfig);
   CASE(SelectionAlgorithmType::Truncation,
        truncation,
-       selection::TrunctationSelectionConfig);
+       selection::TruncationSelectionConfig);
 };
 
 struct Config : public core::PropertySet {

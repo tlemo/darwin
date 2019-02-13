@@ -22,7 +22,7 @@ using namespace std;
 
 namespace selection {
 
-struct TrunctationSelectionConfig : public core::PropertySet {
+struct TruncationSelectionConfig : public core::PropertySet {
   PROPERTY(elite_percentage, float, 0.1f, "Elite percentage");
   PROPERTY(elite_min_fitness, float, 0.0f, "Elite minimum fitness");
   PROPERTY(elite_mutation_chance, float, 0.0f, "Elite mutation chance");
@@ -37,7 +37,7 @@ class TruncationSelection : public selection::SelectionAlgorithm {
 
  private:
   darwin::Population* population_ = nullptr;
-  TrunctationSelectionConfig config_;
+  TruncationSelectionConfig config_;
 };
 
 }  // namespace selection
