@@ -23,7 +23,7 @@ using namespace std;
 
 using namespace selection;
 
-namespace cgp {
+namespace selection {
 
 CgpIslandsSelection::CgpIslandsSelection(const core::PropertySet& config) {
   config_.copyFrom(config);
@@ -107,4 +107,4 @@ void CgpIslandsSelection::createNextGeneration(GenerationFactory* next_generatio
   });
 }
 
-}  // namespace cgp
+}  // namespace selection

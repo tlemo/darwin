@@ -14,47 +14,33 @@
 
 #pragma once
 
-#include <core/properties.h>
 #include <core/selection_algorithm.h>
+#include <core/properties.h>
 
-#include <vector>
-using namespace std;
+namespace selection {
 
-namespace cgp {
-
-struct CgpIslandsSelectionConfig : public core::PropertySet {
-  PROPERTY(island_size, int, 10, "Size of the population islands");
-
-  PROPERTY(protected_age,
-           int,
-           25,
-           "The number of generations a new island is protected from extinction");
-
-  PROPERTY(extinction_percentage,
+struct RouletteSelectionConfig : public core::PropertySet {
+  PROPERTY(min_fitness,
            float,
-           0.25f,
-           "Percentage of low performing islands to go extinct");
+           0.0f,
+           "Minimum fitness for the genotypes participating the selection");
+
+  PROPERTY(elite_percentage, float, 0.1f, "Elite percentage");
+  PROPERTY(elite_min_fitness, float, 0.0f, "Elite minimum fitness");
+
+  PROPERTY(mutation_only, bool, false, "Use only mutation (no crossover)");
 };
 
-class CgpIslandsSelection : public selection::SelectionAlgorithm {
-  static constexpr int kPrimordialSeed = -1;
-  
-  struct Island {
-    int age = 0;
-    int parent = kPrimordialSeed;
-  };
-
+class RouletteSelection : public selection::SelectionAlgorithm {
  public:
-  explicit CgpIslandsSelection(const core::PropertySet& config);
+  explicit RouletteSelection(const core::PropertySet& config);
 
   void newPopulation(darwin::Population* population) override;
   void createNextGeneration(selection::GenerationFactory* next_generation) override;
 
  private:
   darwin::Population* population_ = nullptr;
-  CgpIslandsSelectionConfig config_;
-  
-  vector<Island> islands_;
+  RouletteSelectionConfig config_;
 };
 
-}  // namespace cgp
+}  // namespace selection

@@ -21,7 +21,10 @@ SOURCES += \
     thread_pool.cpp \
     ann_dynamic.cpp \
     utils.cpp \
-    tournament.cpp
+    tournament.cpp \
+    roulette_selection.cpp \
+    cgp_islands_selection.cpp \
+    truncation_selection.cpp
 
 HEADERS += \
     ann_utils.h \
@@ -48,7 +51,10 @@ HEADERS += \
     pp_utils.h \
     modules.h \
     tournament.h \
-    selection_algorithm.h
+    selection_algorithm.h \
+    roulette_selection.h \
+    cgp_islands_selection.h \
+    truncation_selection.h
     
 addLibrary(../third_party/sqlite)
 addLibrary(../third_party/box2d)

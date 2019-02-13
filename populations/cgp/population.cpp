@@ -89,7 +89,7 @@ class Population::GenerationFactory : public selection::GenerationFactory {
 Population::Population(const core::PropertySet& config, const darwin::Domain& domain) {
   config_.copyFrom(config);
   domain_ = &domain;
-  
+
   // validate configuration
   if (config_.rows < 1)
     throw core::Exception("Invalid configuration: rows < 1");
@@ -105,16 +105,16 @@ Population::Population(const core::PropertySet& config, const darwin::Domain& do
 
   switch (config_.selection_algorithm.tag()) {
     case SelectionAlgorithmType::RouletteWheel:
-      selection_algorithm_ =
-          make_unique<RouletteSelection>(config_.selection_algorithm.roulette_wheel);
+      selection_algorithm_ = make_unique<selection::RouletteSelection>(
+          config_.selection_algorithm.roulette_wheel);
       break;
     case SelectionAlgorithmType::CgpIslands:
-      selection_algorithm_ =
-          make_unique<CgpIslandsSelection>(config_.selection_algorithm.cgp_islands);
+      selection_algorithm_ = make_unique<selection::CgpIslandsSelection>(
+          config_.selection_algorithm.cgp_islands);
       break;
     case SelectionAlgorithmType::Truncation:
-      selection_algorithm_ =
-          make_unique<TruncationSelection>(config_.selection_algorithm.truncation);
+      selection_algorithm_ = make_unique<selection::TruncationSelection>(
+          config_.selection_algorithm.truncation);
       break;
     default:
       FATAL("Unexpected selection algorithm type");

@@ -15,11 +15,11 @@
 #pragma once
 
 #include "genotype.h"
-#include "roulette_selection.h"
-#include "cgp_islands_selection.h"
-#include "truncation_selection.h"
 
 #include <core/properties.h>
+#include <core/roulette_selection.h>
+#include <core/cgp_islands_selection.h>
+#include <core/truncation_selection.h>
 
 namespace cgp {
 
@@ -42,9 +42,15 @@ inline auto customStringify(core::TypeTag<SelectionAlgorithmType>) {
 
 struct SelectionAlgorithmVariant
     : public core::PropertySetVariant<SelectionAlgorithmType> {
-  CASE(SelectionAlgorithmType::RouletteWheel, roulette_wheel, RouletteSelectionConfig);
-  CASE(SelectionAlgorithmType::CgpIslands, cgp_islands, CgpIslandsSelectionConfig);
-  CASE(SelectionAlgorithmType::Truncation, truncation, TrunctationSelectionConfig);
+  CASE(SelectionAlgorithmType::RouletteWheel,
+       roulette_wheel,
+       selection::RouletteSelectionConfig);
+  CASE(SelectionAlgorithmType::CgpIslands,
+       cgp_islands,
+       selection::CgpIslandsSelectionConfig);
+  CASE(SelectionAlgorithmType::Truncation,
+       truncation,
+       selection::TrunctationSelectionConfig);
 };
 
 struct Config : public core::PropertySet {

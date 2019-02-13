@@ -25,7 +25,7 @@ using namespace std;
 
 using namespace selection;
 
-namespace cgp {
+namespace selection {
 
 TruncationSelection::TruncationSelection(const core::PropertySet& config) {
   config_.copyFrom(config);
@@ -92,4 +92,4 @@ void TruncationSelection::createNextGeneration(GenerationFactory* next_generatio
             (mutate_only_count / population_size) * 100);
 }
 
-}  // namespace cgp
+}  // namespace selection

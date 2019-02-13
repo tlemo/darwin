@@ -20,7 +20,7 @@
 #include <vector>
 using namespace std;
 
-namespace cgp {
+namespace selection {
 
 struct TrunctationSelectionConfig : public core::PropertySet {
   PROPERTY(elite_percentage, float, 0.1f, "Elite percentage");
@@ -40,4 +40,4 @@ class TruncationSelection : public selection::SelectionAlgorithm {
   TrunctationSelectionConfig config_;
 };
 
-}  // namespace cgp
+}  // namespace selection

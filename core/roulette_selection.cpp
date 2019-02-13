@@ -19,7 +19,7 @@
 
 using namespace selection;
 
-namespace cgp {
+namespace selection {
 
 RouletteSelection::RouletteSelection(const core::PropertySet& config) {
   config_.copyFrom(config);
@@ -91,4 +91,4 @@ void RouletteSelection::createNextGeneration(GenerationFactory* next_generation)
   });
 }
 
-}  // namespace cgp
+}  // namespace selection
