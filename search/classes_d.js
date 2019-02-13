@@ -1,6 +1,7 @@
 var searchData=
 [
   ['scores',['Scores',['../structtournament_1_1_scores.html',1,'tournament']]],
+  ['selectionalgorithm',['SelectionAlgorithm',['../classselection_1_1_selection_algorithm.html',1,'selection']]],
   ['snapshot',['Snapshot',['../structdarwin_1_1_evolution_1_1_snapshot.html',1,'darwin::Evolution']]],
   ['stagescope',['StageScope',['../classdarwin_1_1_stage_scope.html',1,'darwin']]],
   ['statement',['Statement',['../classdb_1_1_statement.html',1,'db']]],

@@ -2,7 +2,7 @@ var searchData=
 [
   ['radianstodegrees',['radiansToDegrees',['../namespacemath.html#a1c4edc2296102d638579d6e8a69c4915',1,'math']]],
   ['randomize',['randomize',['../namespaceann.html#a4947d519e002b1111c62d95fc4877ed4',1,'ann']]],
-  ['rankgenotypes',['rankGenotypes',['../classdarwin_1_1_population.html#a855f3c44d92a3af4597ad2620c5bfc95',1,'darwin::Population']]],
+  ['rankingindex',['rankingIndex',['../classdarwin_1_1_population.html#aaacc9200c65550ab3c3c6918b46789dc',1,'darwin::Population']]],
   ['registermonitor',['registerMonitor',['../classdarwin_1_1_progress_manager.html#aae0bf568662fcfc5bf1d3dd02d1a7b0e',1,'darwin::ProgressManager']]],
   ['registry',['registry',['../namespacedarwin.html#a38b95032ce2bce955453b3be5a81b223',1,'darwin']]],
   ['reportprogress',['reportProgress',['../classdarwin_1_1_progress_monitor.html#ae9a9b4c8cf9e43edabfa4bb9c346717b',1,'darwin::ProgressMonitor::reportProgress()'],['../classdarwin_1_1_progress_manager.html#a9e272e5d253c53062347ac036ea528a9',1,'darwin::ProgressManager::reportProgress()']]],

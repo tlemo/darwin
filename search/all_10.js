@@ -2,7 +2,7 @@ var searchData=
 [
   ['radianstodegrees',['radiansToDegrees',['../namespacemath.html#a1c4edc2296102d638579d6e8a69c4915',1,'math']]],
   ['randomize',['randomize',['../namespaceann.html#a4947d519e002b1111c62d95fc4877ed4',1,'ann']]],
-  ['rankgenotypes',['rankGenotypes',['../classdarwin_1_1_population.html#a855f3c44d92a3af4597ad2620c5bfc95',1,'darwin::Population']]],
+  ['rankingindex',['rankingIndex',['../classdarwin_1_1_population.html#aaacc9200c65550ab3c3c6918b46789dc',1,'darwin::Population']]],
   ['reexp',['ReExp',['../namespaceann.html#a1075b962a0c710dcafad8d7b7e9a1da3a40b7b292a4f039fc9ff3c91e1b1774f6',1,'ann']]],
   ['registermonitor',['registerMonitor',['../classdarwin_1_1_progress_manager.html#aae0bf568662fcfc5bf1d3dd02d1a7b0e',1,'darwin::ProgressManager']]],
   ['registry',['Registry',['../structdarwin_1_1_registry.html',1,'darwin::Registry'],['../namespaceregistry.html',1,'registry'],['../namespacedarwin.html#a38b95032ce2bce955453b3be5a81b223',1,'darwin::registry()']]],
@@ -18,6 +18,8 @@ var searchData=
   ['robot_5fsize',['robot_size',['../structharvester_1_1_config.html#a437ae0c0dfc50133c532f474accce252',1,'harvester::Config']]],
   ['rollback',['rollback',['../classdb_1_1_connection.html#ae687fcf5819db06b84e19731702705c8',1,'db::Connection::rollback()'],['../classdb_1_1_transaction_scope.html#a9e7ee96e0ebd0169ca073ea1ab9bdaf6',1,'db::TransactionScope::rollback()']]],
   ['rotation_5fspeed',['rotation_speed',['../structharvester_1_1_config.html#a59641f3ba387d107fbfcad3e11589668',1,'harvester::Config']]],
+  ['rouletteselection',['RouletteSelection',['../classselection_1_1_roulette_selection.html',1,'selection']]],
+  ['rouletteselectionconfig',['RouletteSelectionConfig',['../structselection_1_1_roulette_selection_config.html',1,'selection']]],
   ['roundweight',['roundWeight',['../namespaceann.html#adc05226e652e098f6ca919e6f37307f5',1,'ann']]],
   ['row',['Row',['../classdb_1_1_result_set.html#a011ed7b0d774e173fcf4c0d6d030b95c',1,'db::ResultSet']]],
   ['rowid',['RowId',['../namespacedb.html#a0845f2bb472b4e673de2d2f977fb1da8',1,'db']]],

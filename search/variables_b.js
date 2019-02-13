@@ -17,8 +17,10 @@ var searchData=
   ['max_5ftorque',['max_torque',['../structunicycle_1_1_config.html#a2a0fbd2b0ecb1b29a89dab820991b2b4',1,'unicycle::Config']]],
   ['max_5fvalue',['max_value',['../structfind__max__value_1_1_config.html#a8c919bd88730cdd99d8ccfc62e430690',1,'find_max_value::Config']]],
   ['median_5ffitness',['median_fitness',['../structdarwin_1_1_generation_summary.html#a8b2b3ce6c1d3f2a1a2165c81474404a6',1,'darwin::GenerationSummary']]],
+  ['min_5ffitness',['min_fitness',['../structselection_1_1_roulette_selection_config.html#a4e1159b34a870082080b2bb8e54515f9',1,'selection::RouletteSelectionConfig']]],
   ['min_5fsize',['min_size',['../structfind__max__value_1_1_config.html#ac5e7369d8d76f9e4de15f009c3e22b7e',1,'find_max_value::Config']]],
   ['move_5fspeed',['move_speed',['../structharvester_1_1_config.html#a80118724375aef169d163d8dc0c016c8',1,'harvester::Config']]],
   ['mutation_5fnormal_5fdistribution',['mutation_normal_distribution',['../structann_1_1_config.html#a0611b3a3c5c0be1b2d160f0decb65ef8',1,'ann::Config']]],
+  ['mutation_5fonly',['mutation_only',['../structselection_1_1_roulette_selection_config.html#a2a422abec3284370a5fd9a7a3794980d',1,'selection::RouletteSelectionConfig']]],
   ['mutation_5fstd_5fdev',['mutation_std_dev',['../structann_1_1_config.html#a0da32672465d509d3209b18d704309c6',1,'ann::Config']]]
 ];

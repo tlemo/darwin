@@ -1,14 +1,7 @@
 var searchData=
 [
-  ['save_5fchampion_5fgenotype',['save_champion_genotype',['../structdarwin_1_1_evolution_config.html#a51a9827127ba7d8722a438614f0a22b3',1,'darwin::EvolutionConfig']]],
-  ['save_5fgenealogy',['save_genealogy',['../structdarwin_1_1_evolution_config.html#ad47b308fc8ea84cecb9e38573e830e2e',1,'darwin::EvolutionConfig']]],
-  ['serve_5fspeed',['serve_speed',['../structpong_1_1_config.html#aafdc8c76be52b4446a43327ed05b8d4e',1,'pong::Config']]],
-  ['sets_5fper_5fgame',['sets_per_game',['../structpong_1_1_config.html#a839a65b148040016f798a5c2461e1077',1,'pong::Config']]],
-  ['sets_5frequired_5fto_5fwin',['sets_required_to_win',['../structpong_1_1_config.html#a02feacd86496c28cd4e5e6864e8f50fe',1,'pong::Config']]],
-  ['setup',['setup',['../structdarwin_1_1_db_experiment.html#ad199a9347eebcdc7cb3dfdc04781271b',1,'darwin::DbExperiment']]],
-  ['simple_5fserve',['simple_serve',['../structpong_1_1_config.html#ae13362bf1880fb1d42e91322faed31c1',1,'pong::Config']]],
-  ['sparse_5fweights',['sparse_weights',['../structann_1_1_config.html#a0f5287b072de10d3db7496ded13b42a0',1,'ann::Config']]],
-  ['stage',['stage',['../structdarwin_1_1_evolution_1_1_snapshot.html#af8abc674a37f98a63da4976f459bc236',1,'darwin::Evolution::Snapshot']]],
-  ['state',['state',['../structdarwin_1_1_evolution_1_1_snapshot.html#a7cc3afa1edd62bb5996ac26226525a06',1,'darwin::Evolution::Snapshot']]],
-  ['summary',['summary',['../structdarwin_1_1_db_generation.html#a2db250960faa47e8d967daacaa97fee8',1,'darwin::DbGeneration']]]
+  ['rematches',['rematches',['../structtournament_1_1_tournament_config.html#a7fdf29fa0fb3c4b3be46b9c87e9ebcb4',1,'tournament::TournamentConfig']]],
+  ['reverse_5fmove_5fdrain',['reverse_move_drain',['../structharvester_1_1_config.html#a3322d0b3565210378fae4b3e4f8414b1',1,'harvester::Config']]],
+  ['robot_5fsize',['robot_size',['../structharvester_1_1_config.html#a437ae0c0dfc50133c532f474accce252',1,'harvester::Config']]],
+  ['rotation_5fspeed',['rotation_speed',['../structharvester_1_1_config.html#a59641f3ba387d107fbfcad3e11589668',1,'harvester::Config']]]
 ];

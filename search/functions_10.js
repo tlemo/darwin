@@ -13,6 +13,7 @@ var searchData=
   ['setmodified',['setModified',['../classdarwin_1_1_experiment.html#a9a860a34d6c74e5f68c80b5e4be98843',1,'darwin::Experiment']]],
   ['setrotation',['setRotation',['../structmath_1_1_h_matrix2d.html#abd27122f8d47f23df5fbe8981ff47d06',1,'math::HMatrix2d']]],
   ['setscale',['setScale',['../structmath_1_1_h_matrix2d.html#ad4fee2257507697011b5523c1f67dda4',1,'math::HMatrix2d']]],
+  ['setsceneui',['setSceneUi',['../classcore__ui_1_1_box2d_sandbox_window.html#a85e65d3a64d872bef30be5d5dba528f7',1,'core_ui::Box2dSandboxWindow']]],
   ['settranslate',['setTranslate',['../structmath_1_1_h_matrix2d.html#added63980afc0ec64cc91e3675872db0',1,'math::HMatrix2d']]],
   ['setup',['setup',['../classdarwin_1_1_experiment.html#a63ca577b81e680d9f4c50ad0083877d8',1,'darwin::Experiment']]],
   ['setvalue',['setValue',['../classcore_1_1_property.html#ad3d2da7211eacf8efbfe99ec44462099',1,'core::Property::setValue()'],['../classcore__ui_1_1_property_item.html#a6a489cf3dc89f8d96cb5d2ecc6b50b55',1,'core_ui::PropertyItem::setValue(const T &amp;value, EXTRA &amp;&amp;... extra)'],['../classcore__ui_1_1_property_item.html#a6b91e23908f7ca45a56df057426e2ea4',1,'core_ui::PropertyItem::setValue(const string &amp;value)']]],

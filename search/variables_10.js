@@ -1,10 +1,14 @@
 var searchData=
 [
-  ['test_5fmaps',['test_maps',['../structharvester_1_1_config.html#a58b400ddb6e07a55bfb4546963f11a5f',1,'harvester::Config']]],
-  ['test_5fworlds',['test_worlds',['../structcart__pole_1_1_config.html#a6b70521938db09d87091d30a140a2b01',1,'cart_pole::Config::test_worlds()'],['../structdouble__cart__pole_1_1_config.html#ac1b8472def4c34cfcb26a637a7e276ac',1,'double_cart_pole::Config::test_worlds()'],['../structfind__max__value_1_1_config.html#a3b65178e14ff6842efe5ec1c5cb8287f',1,'find_max_value::Config::test_worlds()'],['../structunicycle_1_1_config.html#a6c09112e75b33b863c9fe77feab7c8f4',1,'unicycle::Config::test_worlds()']]],
-  ['timestamp',['timestamp',['../structdarwin_1_1_db_universe_object.html#acf4b27bc41bed946d036752fd9333347',1,'darwin::DbUniverseObject']]],
-  ['top_5fstages',['top_stages',['../classdarwin_1_1_evolution.html#adcb316853badd6916d0691ff13c3c98a',1,'darwin::Evolution']]],
-  ['tournament_5ftype',['tournament_type',['../structconquest_1_1_config.html#afdc7518c3e97acdb6eda5b489b82629a',1,'conquest::Config::tournament_type()'],['../structpong_1_1_config.html#ab9c7d698f4e06c483e64cc680353ec1a',1,'pong::Config::tournament_type()'],['../structtic__tac__toe_1_1_config.html#ac58f5ac47a593ebb8f8a756687a2578b',1,'tic_tac_toe::Config::tournament_type()']]],
-  ['trace',['trace',['../structdarwin_1_1_evolution_1_1_snapshot.html#a1669d6bc32756924d304b6145c0b87e7',1,'darwin::Evolution::Snapshot']]],
-  ['trace_5fid',['trace_id',['../structdarwin_1_1_db_generation.html#a2df393e25a3626ef4e98d4697985d51c',1,'darwin::DbGeneration']]]
+  ['save_5fchampion_5fgenotype',['save_champion_genotype',['../structdarwin_1_1_evolution_config.html#a51a9827127ba7d8722a438614f0a22b3',1,'darwin::EvolutionConfig']]],
+  ['save_5fgenealogy',['save_genealogy',['../structdarwin_1_1_evolution_config.html#ad47b308fc8ea84cecb9e38573e830e2e',1,'darwin::EvolutionConfig']]],
+  ['serve_5fspeed',['serve_speed',['../structpong_1_1_config.html#aafdc8c76be52b4446a43327ed05b8d4e',1,'pong::Config']]],
+  ['sets_5fper_5fgame',['sets_per_game',['../structpong_1_1_config.html#a839a65b148040016f798a5c2461e1077',1,'pong::Config']]],
+  ['sets_5frequired_5fto_5fwin',['sets_required_to_win',['../structpong_1_1_config.html#a02feacd86496c28cd4e5e6864e8f50fe',1,'pong::Config']]],
+  ['setup',['setup',['../structdarwin_1_1_db_experiment.html#ad199a9347eebcdc7cb3dfdc04781271b',1,'darwin::DbExperiment']]],
+  ['simple_5fserve',['simple_serve',['../structpong_1_1_config.html#ae13362bf1880fb1d42e91322faed31c1',1,'pong::Config']]],
+  ['sparse_5fweights',['sparse_weights',['../structann_1_1_config.html#a0f5287b072de10d3db7496ded13b42a0',1,'ann::Config']]],
+  ['stage',['stage',['../structdarwin_1_1_evolution_1_1_snapshot.html#af8abc674a37f98a63da4976f459bc236',1,'darwin::Evolution::Snapshot']]],
+  ['state',['state',['../structdarwin_1_1_evolution_1_1_snapshot.html#a7cc3afa1edd62bb5996ac26226525a06',1,'darwin::Evolution::Snapshot']]],
+  ['summary',['summary',['../structdarwin_1_1_db_generation.html#a2db250960faa47e8d967daacaa97fee8',1,'darwin::DbGeneration']]]
 ];

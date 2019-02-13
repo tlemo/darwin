@@ -101,10 +101,9 @@ virtual <a class="el" href="classdarwin_1_1_genotype.html">Genotype</a> *&#160;<
 virtual const <a class="el" href="classdarwin_1_1_genotype.html">Genotype</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdarwin_1_1_population.html#a76220e50bd4a8e539c79e75f52519dda">genotype</a> (size_t index) const =0</td></tr>
 <tr class="memdesc:a76220e50bd4a8e539c79e75f52519dda"><td class="mdescLeft">&#160;</td><td class="mdescRight">Indexed access to a genotype in the population. <br /></td></tr>
 <tr class="separator:a76220e50bd4a8e539c79e75f52519dda"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a855f3c44d92a3af4597ad2620c5bfc95"><td class="memItemLeft" align="right" valign="top"><a id="a855f3c44d92a3af4597ad2620c5bfc95"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdarwin_1_1_population.html#a855f3c44d92a3af4597ad2620c5bfc95">rankGenotypes</a> ()=0</td></tr>
-<tr class="memdesc:a855f3c44d92a3af4597ad2620c5bfc95"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sort (descending) the genotypes by fitness. <br /></td></tr>
-<tr class="separator:a855f3c44d92a3af4597ad2620c5bfc95"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaacc9200c65550ab3c3c6918b46789dc"><td class="memItemLeft" align="right" valign="top">virtual vector&lt; size_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdarwin_1_1_population.html#aaacc9200c65550ab3c3c6918b46789dc">rankingIndex</a> () const =0</td></tr>
+<tr class="memdesc:aaacc9200c65550ab3c3c6918b46789dc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the indexes of the ranked genotypes (sorted from best to worst)  <a href="#aaacc9200c65550ab3c3c6918b46789dc">More...</a><br /></td></tr>
+<tr class="separator:aaacc9200c65550ab3c3c6918b46789dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3a0242961ec9e3ced7bebdc0ec4e6098"><td class="memItemLeft" align="right" valign="top"><a id="a3a0242961ec9e3ced7bebdc0ec4e6098"></a>
 virtual int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdarwin_1_1_population.html#a3a0242961ec9e3ced7bebdc0ec4e6098">generation</a> () const =0</td></tr>
 <tr class="memdesc:a3a0242961ec9e3ced7bebdc0ec4e6098"><td class="mdescLeft">&#160;</td><td class="mdescRight">The current generation number. <br /></td></tr>
@@ -151,13 +150,36 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 </div><div class="memdoc">
 
 <p>Creates a new generation based on the current one. </p>
-<p>It assumes that:</p><ol type="1">
-<li>The fitness values are assigned for all genotypes in the population, as evaluated by the domain implementation (see <a class="el" href="classdarwin_1_1_domain.html#a4cb34f4fd48169976ab46aa6c4939b9f" title="Assigns fitness values to every genotype. ">Domain::evaluatePopulation()</a>)</li>
-<li>The genotypes are ranked (see <a class="el" href="classdarwin_1_1_population.html#a855f3c44d92a3af4597ad2620c5bfc95" title="Sort (descending) the genotypes by fitness. ">Population::rankGenotypes()</a>)</li>
-</ol>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="classdarwin_1_1_domain.html#a4cb34f4fd48169976ab46aa6c4939b9f" title="Assigns fitness values to every genotype. ">Domain::evaluatePopulation()</a> </dd>
-<dd>
-<a class="el" href="classdarwin_1_1_population.html#a855f3c44d92a3af4597ad2620c5bfc95" title="Sort (descending) the genotypes by fitness. ">Population::rankGenotypes()</a> </dd></dl>
+<p>It assumes that all the genotypes have been evaluated (see <a class="el" href="classdarwin_1_1_domain.html#a4cb34f4fd48169976ab46aa6c4939b9f" title="Assigns fitness values to every genotype. ">Domain::evaluatePopulation()</a>)</p>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classdarwin_1_1_domain.html#a4cb34f4fd48169976ab46aa6c4939b9f" title="Assigns fitness values to every genotype. ">Domain::evaluatePopulation()</a> </dd></dl>
+
+</div>
+</div>
+<a id="aaacc9200c65550ab3c3c6918b46789dc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaacc9200c65550ab3c3c6918b46789dc">&#9670;&nbsp;</a></span>rankingIndex()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual vector&lt;size_t&gt; darwin::Population::rankingIndex </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Return the indexes of the ranked genotypes (sorted from best to worst) </p>
+<p>The rankings are calculated based on the fitness values assigned to each genotype, and potentially other criteria internal to the population (for example a population may break the fitness ties by favoring less complex genotypes) </p>
 
 </div>
 </div>
