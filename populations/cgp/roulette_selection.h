@@ -27,6 +27,8 @@ struct RouletteSelectionConfig : public core::PropertySet {
 
   PROPERTY(elite_percentage, float, 0.1f, "Elite percentage");
   PROPERTY(elite_min_fitness, float, 0.0f, "Elite minimum fitness");
+
+  PROPERTY(mutation_only, bool, false, "Use only mutation (no crossover)");
 };
 
 class RouletteSelection : public selection::SelectionAlgorithm {

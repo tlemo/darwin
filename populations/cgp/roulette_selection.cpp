@@ -60,13 +60,33 @@ void RouletteSelection::createNextGeneration(GenerationFactory* next_generation)
     } else {
       random_device rd;
       default_random_engine rnd(rd());
-      uniform_real_distribution<double> dist_sample(0, sum);
-      const double sample = dist_sample(rnd);
-      const auto interval = lower_bound(prefix_sum.begin(), prefix_sum.end(), sample);
-      CHECK(interval != prefix_sum.end());
-      const int parent_index = std::distance(prefix_sum.begin(), interval);
-      genotype_factory->replicate(parent_index);
-      genotype_factory->mutate();
+
+      auto selectParent = [&] {
+        uniform_real_distribution<double> dist_sample(0, sum);
+        const double sample = dist_sample(rnd);
+        const auto interval = lower_bound(prefix_sum.begin(), prefix_sum.end(), sample);
+        CHECK(interval != prefix_sum.end());
+        return std::distance(prefix_sum.begin(), interval);
+      };
+
+      if (config_.mutation_only) {
+        const int parent_index = selectParent();
+        genotype_factory->replicate(parent_index);
+        genotype_factory->mutate();
+      } else {
+        const int parent1 = selectParent();
+        const int parent2 = selectParent();
+
+        const float f1 = fmax(population_->genotype(parent1)->fitness, 0);
+        const float f2 = fmax(population_->genotype(parent2)->fitness, 0);
+
+        float preference = f1 / (f1 + f2);
+        if (isnan(preference))
+          preference = 0.5f;
+
+        genotype_factory->crossover(parent1, parent2, preference);
+        genotype_factory->mutate();
+      }
     }
   });
 }
