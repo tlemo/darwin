@@ -92,7 +92,7 @@ struct Config : public core::PropertySet {
 
   VARIANT(selection_algorithm,
           SelectionAlgorithmVariant,
-          SelectionAlgorithmType::RouletteWheel,
+          SelectionAlgorithmType::Truncation,
           "Selection algorithm");
 };
 

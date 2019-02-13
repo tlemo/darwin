@@ -19,6 +19,7 @@
 
 namespace selection {
 
+//! Roulette wheel selection configuration
 struct RouletteSelectionConfig : public core::PropertySet {
   PROPERTY(min_fitness,
            float,
@@ -31,6 +32,10 @@ struct RouletteSelectionConfig : public core::PropertySet {
   PROPERTY(mutation_only, bool, false, "Use only mutation (no crossover)");
 };
 
+//! Roulette wheel selection
+//! 
+//! It supports elitism and it can use crossover + mutation or just mutation
+//! 
 class RouletteSelection : public selection::SelectionAlgorithm {
  public:
   explicit RouletteSelection(const core::PropertySet& config);

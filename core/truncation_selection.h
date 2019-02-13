@@ -22,12 +22,18 @@ using namespace std;
 
 namespace selection {
 
+//! Truncation selection configuration
 struct TruncationSelectionConfig : public core::PropertySet {
   PROPERTY(elite_percentage, float, 0.1f, "Elite percentage");
   PROPERTY(elite_min_fitness, float, 0.0f, "Elite minimum fitness");
   PROPERTY(elite_mutation_chance, float, 0.0f, "Elite mutation chance");
 };
 
+//! A truncation-selection variant
+//! 
+//! It support elitism. The parents for the next generation are randomly 
+//! selected based on the raking order of the previous generation.
+//!
 class TruncationSelection : public selection::SelectionAlgorithm {
  public:
   explicit TruncationSelection(const core::PropertySet& config);

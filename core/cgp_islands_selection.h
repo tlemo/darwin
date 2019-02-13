@@ -22,6 +22,7 @@ using namespace std;
 
 namespace selection {
 
+//! Configuration for CgpIslandsSelection
 struct CgpIslandsSelectionConfig : public core::PropertySet {
   PROPERTY(island_size, int, 10, "Size of the population islands");
 
@@ -36,6 +37,12 @@ struct CgpIslandsSelectionConfig : public core::PropertySet {
            "Percentage of low performing islands to go extinct");
 };
 
+//! An extension of the CGP-style (1+N) selection strategy
+//! 
+//! The population is divided into size of size N, and within each island
+//! the CGP 1+(N-1) selection is used. A percentage of the worst performing islands
+//! is considered extinct and repopulated with random initial individuals.
+//! 
 class CgpIslandsSelection : public selection::SelectionAlgorithm {
   static constexpr int kPrimordialSeed = -1;
   

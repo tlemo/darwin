@@ -37,9 +37,13 @@ class GenerationFactory {
   virtual GenotypeFactory* operator[](size_t index) = 0;
 };
 
+//! Selection Algorithm interface
 class SelectionAlgorithm : public core::NonCopyable {
  public:
+  //! Prepare the selection for a new population
   virtual void newPopulation(darwin::Population* population) = 0;
+  
+  //! Create a new generation of genotypes
   virtual void createNextGeneration(GenerationFactory* next_generation) = 0;
 };
 
