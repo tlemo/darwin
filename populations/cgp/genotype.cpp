@@ -57,6 +57,7 @@ void to_json(json& json_obj, const FunctionGene& gene) {
                                    : core::format("const_%d", -gene.function);
   json_obj["fn"] = function_name;
   json_obj["c"] = gene.connections;
+  json_obj["a"] = gene.function >= 0 ? kFunctionDef[gene.function].arity : 0;
 }
 
 void from_json(const json& json_obj, FunctionGene& gene) {
@@ -70,6 +71,8 @@ void from_json(const json& json_obj, FunctionGene& gene) {
     gene.function = core::fromString<FunctionId>(function_name);
   }
   CHECK(gene.function < FunctionId::LastEntry);
+  const int arity = gene.function >= 0 ? kFunctionDef[gene.function].arity : 0;
+  CHECK(json_obj.at("a") == arity);
   gene.connections = json_obj.at("c");
 }
 

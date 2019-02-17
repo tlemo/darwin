@@ -30,6 +30,8 @@ enum FunctionId : int16_t {
   LastEntry
 };
 
+constexpr int kFunctionCount = static_cast<int>(FunctionId::LastEntry);
+
 inline auto customStringify(core::TypeTag<FunctionId>) {
   static auto stringify = new core::StringifyKnownValues<FunctionId>{
     #undef FN_DEF
@@ -39,6 +41,32 @@ inline auto customStringify(core::TypeTag<FunctionId>) {
   return stringify;
 }
 
-constexpr int kFunctionCount = static_cast<int>(FunctionId::LastEntry);
+enum class FunctionCategory {
+  BasicConstant,
+  TranscendentalConstant,
+  BasicArithmetic,
+  ExtraArithmetic,
+  CommonMath,
+  ExtraMath,
+  Trigonometric,
+  Hyperbolic,
+  AnnActivation,
+  Comparisons,
+  LogicGates,
+  Conditional,
+  Stateful,
+};
+
+struct FunctionDef {
+  const char* const name;
+  const int arity;
+  const FunctionCategory category;
+};
+
+constexpr FunctionDef kFunctionDef[kFunctionCount] = {
+  #undef FN_DEF
+  #define FN_DEF(id, name, arity, category) { #name, (arity), FunctionCategory::category },
+  #include "functions_table.def"
+};
 
 }  // namespace cgp
