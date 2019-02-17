@@ -45,7 +45,7 @@ inline auto customStringify(core::TypeTag<MutationStrategy>) {
 }
 
 struct FixedCountMutation : public core::PropertySet {
-  PROPERTY(mutation_count, int, 10, "Number of mutations per genotype");
+  PROPERTY(mutation_count, int, 2, "Number of mutations per genotype");
 };
 
 struct ProbabilisticMutation : public core::PropertySet {
