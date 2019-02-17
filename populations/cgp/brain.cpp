@@ -66,11 +66,14 @@ IndexType Brain::dfsNodeEval(IndexType node_index, vector<IndexType>& nodes_map)
   if (node_index < inputs_count) {
     return node_index;
   }
+  
+  constexpr IndexType kPending = IndexType(-1);
 
   const auto function_node_index = IndexType(node_index - inputs_count);
   CHECK(function_node_index < nodes_map.size());
   
   auto register_index = nodes_map[function_node_index];
+  CHECK(register_index != kPending);
   if (register_index != 0) {
     CHECK(register_index >= inputs_count);
     CHECK(register_index < registers_.size());
@@ -78,6 +81,8 @@ IndexType Brain::dfsNodeEval(IndexType node_index, vector<IndexType>& nodes_map)
   }
 
   // if not yet visited, do a post-order dfs traversal
+  nodes_map[function_node_index] = kPending;
+  
   const auto& gene = genotype_->functionGenes()[function_node_index];
   Instruction instruction;
   instruction.function = gene.function;
