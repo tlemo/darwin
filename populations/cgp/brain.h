@@ -17,6 +17,7 @@
 #include "cgp.h"
 #include "genotype.h"
 #include "population.h"
+#include "functions.h"
 
 #include <core/darwin.h>
 

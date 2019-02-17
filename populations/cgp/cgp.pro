@@ -11,12 +11,17 @@ SOURCES += \
     cgp.cpp \
     population.cpp \
     genotype.cpp \
-    brain.cpp
+    brain.cpp \
+    functions.cpp
 
 HEADERS += \
     cgp.h \
     population.h \
     genotype.h \
-    brain.h
+    brain.h \
+    functions.h
+
+DISTFILES += \
+    functions_table.def
 
 addLibrary(../../core)

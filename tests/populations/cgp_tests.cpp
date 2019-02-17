@@ -79,6 +79,23 @@ TEST_F(CgpTest, FunctionGene_LoadSave) {
   EXPECT_EQ(gene_clone.connections, gene.connections);
 }
 
+TEST_F(CgpTest, FunctionGene_LoadSave_Const) {
+  core_test::TestCaseOutput output;
+  
+  cgp::FunctionGene gene;
+  gene.function = cgp::FunctionId(-1);
+  for (cgp::IndexType i = 0; i < gene.connections.size(); ++i) {
+    gene.connections[i] = i;
+  }
+
+  json json_obj = gene;
+  fprintf(output, "%s", json_obj.dump(2).c_str());
+  
+  cgp::FunctionGene gene_clone = json_obj;
+  EXPECT_EQ(gene_clone.function, gene.function);
+  EXPECT_EQ(gene_clone.connections, gene.connections);
+}
+
 TEST_F(CgpTest, OutputGene_LoadSave) {
   core_test::TestCaseOutput output;
   

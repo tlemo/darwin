@@ -1,0 +1,101 @@
+// Copyright 2019 The Darwin Neuroevolution Framework Authors.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+//----------------------------------------------------------------------------------------
+//     identifier,      short_name,     arity,    function_category
+//----------------------------------------------------------------------------------------
+
+// basic constants
+FN_DEF(ConstZero,       zero,           0,        BasicConstant)
+FN_DEF(ConstOne,        one,            0,        BasicConstant)
+FN_DEF(ConstTwo,        two,            0,        BasicConstant)
+
+// transcendental constants
+FN_DEF(ConstPi,         pi,             0,        TranscendentalConstant)
+FN_DEF(ConstE,          e,              0,        TranscendentalConstant)
+
+// basic arithmetic functions
+FN_DEF(Identity,        =,              1,        BasicArithmetic)
+FN_DEF(Add,             +,              2,        BasicArithmetic)
+FN_DEF(Subtract,        -,              2,        BasicArithmetic)
+FN_DEF(Multiply,        *,              2,        BasicArithmetic)
+FN_DEF(Divide,          /,              2,        BasicArithmetic)
+FN_DEF(Negate,          neg,            1,        BasicArithmetic)
+
+// extra arithmetic functions
+FN_DEF(Fmod,            mod,            2,        ExtraArithmetic)
+FN_DEF(Reminder,        rem,            2,        ExtraArithmetic)
+FN_DEF(Fdim,            fdim,           2,        ExtraArithmetic)
+FN_DEF(Ceil,            ceil,           1,        ExtraArithmetic)
+FN_DEF(Floor,           floor,          1,        ExtraArithmetic)
+
+// common math functions
+FN_DEF(Abs,             abs,            1,        CommonMath)
+FN_DEF(Average,         avg,            2,        CommonMath)
+FN_DEF(Min,             min,            2,        CommonMath)
+FN_DEF(Max,             max,            2,        CommonMath)
+FN_DEF(Square,          sqr,            1,        CommonMath)
+
+// extra (mostly transcendental) math functions
+FN_DEF(Log,             log,            1,        ExtraMath)
+FN_DEF(Log2,            log2,           1,        ExtraMath)
+FN_DEF(Sqrt,            sqrt,           1,        ExtraMath)
+FN_DEF(Power,           pow,            2,        ExtraMath)
+FN_DEF(Exp,             exp,            1,        ExtraMath)
+FN_DEF(Exp2,            exp2,           1,        ExtraMath)
+
+// trigonometric functions
+FN_DEF(Sin,             sin,            1,        Trigonometric)
+FN_DEF(Cos,             cos,            1,        Trigonometric)
+FN_DEF(Tan,             tan,            1,        Trigonometric)
+FN_DEF(Asin,            asin,           1,        Trigonometric)
+FN_DEF(Acos,            acos,           1,        Trigonometric)
+FN_DEF(Atan,            atan,           1,        Trigonometric)
+
+// hyperbolic functions
+FN_DEF(Sinh,            sinh,           1,        Hyperbolic)
+FN_DEF(Cosh,            cosh,           1,        Hyperbolic)
+FN_DEF(Tanh,            tanh,           1,        Hyperbolic)
+
+// ANN activation functions
+FN_DEF(AfnIdentity,     afn_identity,   1,        AnnActivation)
+FN_DEF(AfnLogistic,     afn_logistic,   1,        AnnActivation)
+FN_DEF(AfnTanh,         afn_tanh,       1,        AnnActivation)
+FN_DEF(AfnReLU,         afn_relu,       1,        AnnActivation)
+FN_DEF(AfnNeat,         afn_neat,       1,        AnnActivation)
+
+// comparisons
+FN_DEF(CmpEq,           ==,             2,        Comparisons)
+FN_DEF(CmpNe,           !=,             2,        Comparisons)
+FN_DEF(CmpGt,           >,              2,        Comparisons)
+FN_DEF(CmpGe,           >=,             2,        Comparisons)
+FN_DEF(CmpLt,           <,              2,        Comparisons)
+FN_DEF(CmpLe,           <=,             2,        Comparisons)
+
+// boolean logic gates
+FN_DEF(And,             and,            2,        LogicGates)
+FN_DEF(Or,              or,             2,        LogicGates)
+FN_DEF(Not,             not,            1,        LogicGates)
+FN_DEF(Xor,             xor,            2,        LogicGates)
+
+// conditional
+FN_DEF(IfOrZero,        if_or_zero,     2,        Conditional)
+
+// stateful functions
+FN_DEF(Velocity,        vel,            1,        Stateful)
+FN_DEF(HighWatermark,   hi_wm,          1,        Stateful)
+FN_DEF(LowWatermark,    lo_wm,          1,        Stateful)
+FN_DEF(MemoryCell,      mem,            2,        Stateful)
+FN_DEF(SoftMemoryCell,  soft_mem,       2,        Stateful)
+FN_DEF(TimeDelay,       delay,          1,        Stateful)

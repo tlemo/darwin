@@ -17,6 +17,9 @@
 #include "brain.h"
 #include "population.h"
 
+#include <core/format.h>
+
+#include <string>
 #include <random>
 #include <limits>
 #include <algorithm>
@@ -49,14 +52,25 @@ bool operator==(const Genotype& a, const Genotype& b) {
 }
 
 void to_json(json& json_obj, const FunctionGene& gene) {
-  json_obj["fn"] = gene.function;
+  const string function_name = gene.function >= 0
+                                   ? core::toString(gene.function)
+                                   : core::format("const_%d", -gene.function);
+  json_obj["fn"] = function_name;
   json_obj["c"] = gene.connections;
 }
 
 void from_json(const json& json_obj, FunctionGene& gene) {
-  gene.function = json_obj.at("fn");
-  gene.connections = json_obj.at("c");
+  constexpr char kPrefix[] = "const_";
+  constexpr size_t kPrefixLen = std::size(kPrefix) - 1;
+  const string function_name = json_obj.at("fn");
+  if (function_name.compare(0, kPrefixLen, kPrefix) == 0) {
+    const string const_index = function_name.substr(kPrefixLen);
+    gene.function = FunctionId(-core::fromString<int>(const_index));
+  } else {
+    gene.function = core::fromString<FunctionId>(function_name);
+  }
   CHECK(gene.function < FunctionId::LastEntry);
+  gene.connections = json_obj.at("c");
 }
 
 void to_json(json& json_obj, const OutputGene& gene) {

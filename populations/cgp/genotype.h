@@ -15,9 +15,11 @@
 #pragma once
 
 #include "cgp.h"
+#include "functions.h"
 
 #include <core/darwin.h>
 #include <core/properties.h>
+#include <core/stringify.h>
 
 #include <array>
 #include <cstdint>
@@ -71,102 +73,6 @@ struct MutationVariant : public core::PropertySetVariant<MutationStrategy> {
 };
 
 using IndexType = uint16_t;
-
-constexpr int kMaxFunctionArity = 2;
-
-// NOTE: removal/reordering of function IDs will break the
-//  serialization format compatibility!
-//
-enum FunctionId : int16_t {
-  // basic constants
-  ConstZero,
-  ConstOne,
-  ConstTwo,
-
-  // transcendental constants
-  ConstPi,
-  ConstE,
-
-  // basic arithmetic functions
-  Identity,
-  Add,
-  Subtract,
-  Multiply,
-  Divide,
-  Negate,
-
-  // extra arithmetic functions
-  Fmod,
-  Reminder,
-  Fdim,
-  Ceil,
-  Floor,
-
-  // common math functions
-  Abs,
-  Average,
-  Min,
-  Max,
-  Square,
-
-  // extra (mostly transcendental) math functions
-  Log,
-  Log2,
-  Sqrt,
-  Power,
-  Exp,
-  Exp2,
-
-  // trigonometric functions
-  Sin,
-  Cos,
-  Tan,
-  Asin,
-  Acos,
-  Atan,
-
-  // hyperbolic functions
-  Sinh,
-  Cosh,
-  Tanh,
-
-  // ANN activation functions
-  AfnIdentity,
-  AfnLogistic,
-  AfnTanh,
-  AfnReLU,
-  AfnNeat,
-
-  // comparisons
-  CmpEq,
-  CmpNe,
-  CmpGt,
-  CmpGe,
-  CmpLt,
-  CmpLe,
-
-  // boolean logic gates
-  And,
-  Or,
-  Not,
-  Xor,
-
-  // conditional
-  IfOrZero,
-  
-  // stateful functions
-  Velocity,
-  HighWatermark,
-  LowWatermark,
-  MemoryCell,
-  SoftMemoryCell,
-  TimeDelay,
-
-  // last value marker
-  LastEntry
-};
-
-constexpr int kFunctionCount = static_cast<int>(FunctionId::LastEntry);
 
 struct FunctionGene {
   FunctionId function;
