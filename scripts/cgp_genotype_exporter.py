@@ -57,7 +57,7 @@ json_genotypes = json.loads(cursor.fetchone()['genotypes'])
 genotype = json_genotypes['champion']
 
 #------------------------------------------------------------------------------
-# export the genotype as a graphviz dot specification
+# genotype values and helpers
 #------------------------------------------------------------------------------
 
 constants_genes = genotype['constants_genes']
@@ -94,6 +94,28 @@ def indexToNode(i):
     else:
         return outputNode(i - kInputs - kColumns * kRows)
 
+#------------------------------------------------------------------------------
+# identify the active nodes
+#------------------------------------------------------------------------------
+
+active_nodes = set()
+
+def nodeDfs(index):
+    node = indexToNode(index)
+    if node not in active_nodes:
+        active_nodes.add(node)
+        if index >= kInputs:
+            gene = function_genes[index - kInputs]
+            for src_index in gene['c']:
+                nodeDfs(src_index)
+
+for gene in output_genes:
+    nodeDfs(gene['c'])
+
+#------------------------------------------------------------------------------
+# export the genotype as a graphviz dot specification
+#------------------------------------------------------------------------------
+
 graph = '''
 # traceid = %d
 # generation = %d
@@ -101,8 +123,9 @@ digraph genotype {
   rankdir=LR
   compound=true
   splines=true
-  graph [fontsize=8]
-  node [shape=circle; fontsize=9]
+  graph [fontsize=6]
+  node [shape=circle; fontsize=8; margin=0; color="#80808080"; fontcolor="#80808080"]
+  edge [color="#80808080"]
 ''' % (trace_id, generation)
 
 # input nodes
@@ -110,6 +133,10 @@ graph += '\n  # Input nodes\n'
 graph += '  subgraph cluster_inputs {\n'
 graph += '    label="inputs"\n'
 graph += '    color=lightgrey\n'
+for i in range(kInputs):
+    node = inputNode(i)
+    if node in active_nodes:
+        graph += '    %s [color=blue; fontcolor=blue]\n' % node
 graph += '    { rank=same; edge [style=invis;]; '
 for i in reversed(range(kInputs)):
     node = inputNode(i)
@@ -122,11 +149,14 @@ graph += '\n  # Function nodes\n'
 graph += '  subgraph cluster_functions {\n'
 graph += '    color=lightgrey\n'
 for col in range(kColumns):
-    graph += '    { rank=same; edge [style=invis]; '
+    graph += '    subgraph cluster_col%d {' % col
+    graph += ' label="col %d";' % col
+    graph += ' color=lightgrey;\n'
+    graph += '      { rank=same; edge [style=invis]; '
     for row in reversed(range(kRows)):
         node = functionNode(col, row)
         graph += f'{node}%s' % ('' if row == 0 else '->')
-    graph += ' }\n'
+    graph += ' }}\n'
 graph += '  }\n'
 
 # output nodes
@@ -134,7 +164,7 @@ graph += '\n  # Output nodes\n'
 graph += '  subgraph cluster_outputs {\n'
 graph += '    label="outputs"\n'
 graph += '    color=lightgrey\n'
-graph += '    node [color=blue]\n'
+graph += '    node [color=blue; fontcolor=blue]\n'
 graph += '    { rank=same; edge [style=invis;]; '
 for i in reversed(range(kOutputs)):
     node = outputNode(i)
@@ -155,8 +185,12 @@ for i in range(len(function_genes)):
     node = indexToNode(kInputs + i)
     src0 = indexToNode(gene['c'][0])
     src1 = indexToNode(gene['c'][1])
-    graph += '  %s [label="[%d]"]\n' % (node, gene['fn'])
-    graph += '  %s->{%s,%s} [constraint=false; dir=back]\n' % (node, src0, src1)
+    color_attr = ' color=blue; fontcolor=blue' if node in active_nodes else ''
+    graph += '  %s [label="%s";%s]\n' % (node, gene['fn'], color_attr)
+    edge_attr = 'constraint=false; dir=back;'
+    if node in active_nodes:
+        edge_attr += ' color=blue'
+    graph += '  %s->{%s,%s} [%s]\n' % (node, src0, src1, edge_attr)
 
 # output genes
 graph += '\n  # Output genes\n'
