@@ -32,6 +32,8 @@ arg_parser.add_argument('-t', '--traceid',
     required = True, help = 'Evolution Trace ID')
 arg_parser.add_argument('-g', '--generation',
     required = True, help = 'Generation (from which to export the champion genotype)')
+arg_parser.add_argument('--prune',
+    help = 'Show the bias node', action='store_true')
 
 args = arg_parser.parse_args()
 
@@ -137,7 +139,7 @@ graph += '    color=lightgrey\n'
 for i in range(kInputs):
     node = inputNode(i)
     if node in active_nodes:
-        graph += '    %s [color=blue; fontcolor=blue]\n' % node
+        graph += '    %s [label=in_%d; color=blue; fontcolor=blue]\n' % (node, i)
 graph += '    { rank=same; edge [style=invis;]; '
 for i in reversed(range(kInputs)):
     node = inputNode(i)
@@ -146,19 +148,20 @@ graph += ' }\n'
 graph += '  }\n'
 
 # function nodes
-graph += '\n  # Function nodes\n'
-graph += '  subgraph cluster_functions {\n'
-graph += '    color=lightgrey\n'
-for col in range(kColumns):
-    graph += '    subgraph cluster_col%d {' % col
-    graph += ' label="col %d";' % col
-    graph += ' color=lightgrey;\n'
-    graph += '      { rank=same; edge [style=invis]; '
-    for row in reversed(range(kRows)):
-        node = functionNode(col, row)
-        graph += f'{node}%s' % ('' if row == 0 else '->')
-    graph += ' }}\n'
-graph += '  }\n'
+if not args.prune:
+    graph += '\n  # Function nodes\n'
+    graph += '  subgraph cluster_functions {\n'
+    graph += '    color=lightgrey\n'
+    for col in range(kColumns):
+        graph += '    subgraph cluster_col%d {' % col
+        graph += ' label="col %d";' % col
+        graph += ' color=lightgrey;\n'
+        graph += '      { rank=same; edge [style=invis]; '
+        for row in reversed(range(kRows)):
+            node = functionNode(col, row)
+            graph += f'{node}%s' % ('' if row == 0 else '->')
+        graph += ' }}\n'
+    graph += '  }\n'
 
 # output nodes
 graph += '\n  # Output nodes\n'
@@ -166,6 +169,9 @@ graph += '  subgraph cluster_outputs {\n'
 graph += '    label="outputs"\n'
 graph += '    color=lightgrey\n'
 graph += '    node [color=blue; fontcolor=blue]\n'
+for i in range(kOutputs):
+    node = outputNode(i)
+    graph += '    %s [label=out_%d]\n' % (node, i)
 graph += '    { rank=same; edge [style=invis;]; '
 for i in reversed(range(kOutputs)):
     node = outputNode(i)
@@ -174,10 +180,11 @@ graph += ' }\n'
 graph += '  }\n'
 
 # layout everything: inputs -> functions -> outputs
-graph += '\n  { edge [style=invis]; %s->' % inputNode(kInputs // 2)
-for col in range(kColumns):
-    graph += '%s->' % functionNode(col, kRows // 2)
-graph += '%s }\n' % outputNode(kOutputs // 2)
+if not args.prune:
+    graph += '\n  { edge [style=invis]; %s->' % inputNode(kInputs // 2)
+    for col in range(kColumns):
+        graph += '%s->' % functionNode(col, kRows // 2)
+    graph += '%s }\n' % outputNode(kOutputs // 2)
 
 # function genes
 graph += '\n  # Function genes\n'
@@ -185,12 +192,18 @@ for i in range(len(function_genes)):
     gene = function_genes[i]
     node = indexToNode(kInputs + i)
     active = node in active_nodes
+    if not active and args.prune:
+        continue
     color_attr = ' color=blue; fontcolor=blue' if active else ''
     graph += '  %s [label="%s";%s]\n' % (node, gene['fn'], color_attr)
     fn_arity = gene['a']
-    edge_attr = 'constraint=false;%s' % (' color=blue' if active else '')
-    for src_index in gene['c'][0:fn_arity]:
-        graph += '  %s->%s [%s]\n' % (indexToNode(src_index), node, edge_attr)
+    assert fn_arity >= 0 and fn_arity <= 2
+    edge_colors = ['blue', 'darkgreen']
+    for i in range(0, fn_arity):
+        edge_attr = f'constraint={args.prune};'
+        edge_attr += f' color={edge_colors[i]}' if active else ''
+        src = indexToNode(gene['c'][i])
+        graph += '  %s->%s [%s]\n' % (src, node, edge_attr)
 
 # output genes
 graph += '\n  # Output genes\n'
@@ -198,7 +211,7 @@ for i in range(len(output_genes)):
     gene = output_genes[i]
     node = outputNode(i)
     src = indexToNode(gene['c'])
-    graph += '  %s->%s [constraint=false; color=blue]\n' % (src, node)
+    graph += '  %s->%s [constraint=%s; color=blue]\n' % (src, node, args.prune)
 
 # done
 graph += '}\n'
