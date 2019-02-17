@@ -106,7 +106,8 @@ def nodeDfs(index):
         active_nodes.add(node)
         if index >= kInputs:
             gene = function_genes[index - kInputs]
-            for src_index in gene['c']:
+            arity = gene['a']
+            for src_index in gene['c'][0:arity]:
                 nodeDfs(src_index)
 
 for gene in output_genes:
@@ -183,14 +184,13 @@ graph += '\n  # Function genes\n'
 for i in range(len(function_genes)):
     gene = function_genes[i]
     node = indexToNode(kInputs + i)
-    src0 = indexToNode(gene['c'][0])
-    src1 = indexToNode(gene['c'][1])
-    color_attr = ' color=blue; fontcolor=blue' if node in active_nodes else ''
+    active = node in active_nodes
+    color_attr = ' color=blue; fontcolor=blue' if active else ''
     graph += '  %s [label="%s";%s]\n' % (node, gene['fn'], color_attr)
-    edge_attr = 'constraint=false; dir=back;'
-    if node in active_nodes:
-        edge_attr += ' color=blue'
-    graph += '  %s->{%s,%s} [%s]\n' % (node, src0, src1, edge_attr)
+    fn_arity = gene['a']
+    edge_attr = 'constraint=false;%s' % (' color=blue' if active else '')
+    for src_index in gene['c'][0:fn_arity]:
+        graph += '  %s->%s [%s]\n' % (indexToNode(src_index), node, edge_attr)
 
 # output genes
 graph += '\n  # Output genes\n'
@@ -198,7 +198,7 @@ for i in range(len(output_genes)):
     gene = output_genes[i]
     node = outputNode(i)
     src = indexToNode(gene['c'])
-    graph += '  %s->%s [constraint=false; dir=back; color=blue]\n' % (node, src)
+    graph += '  %s->%s [constraint=false; color=blue]\n' % (src, node)
 
 # done
 graph += '}\n'
