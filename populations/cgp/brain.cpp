@@ -28,7 +28,9 @@ Brain::Brain(const Genotype* genotype) : genotype_(genotype) {
   auto domain = genotype_->population()->domain();
 
   // start with the inputs set
-  registers_.resize(domain->inputs());
+  // (registers_[0] == NaN values and unused connections point to it)
+  registers_.resize(domain->inputs() + 1);
+  registers_[0] = numeric_limits<float>::signaling_NaN();
   
   // stores the output register index if the node was visited, otherwise 0
   vector<IndexType> nodes_map(genotype_->functionGenes().size());
@@ -37,14 +39,14 @@ Brain::Brain(const Genotype* genotype) : genotype_(genotype) {
     auto register_index = dfsNodeEval(output_gene.connection, nodes_map);
     outputs_map_.push_back(register_index);
   }
-  CHECK(registers_.size() == instructions_.size() + domain->inputs());
+  CHECK(registers_.size() == instructions_.size() + domain->inputs() + 1);
   
   memory_.resize(instructions_.size());
 }
 
 void Brain::setInput(int index, float value) {
   assert(index >= 0 && index < int(genotype_->population()->domain()->inputs()));
-  registers_[index] = value;
+  registers_[index + 1] = value;
 }
 
 float Brain::output(int index) const {
@@ -57,37 +59,39 @@ float Brain::output(int index) const {
   return isnan(value) ? numeric_limits<float>::infinity() : value;
 }
 
-// CONSIDER: switch to an explicit stack to avoid stack overflows
 IndexType Brain::dfsNodeEval(IndexType node_index, vector<IndexType>& nodes_map) {
   auto domain = genotype_->population()->domain();
   const size_t inputs_count = domain->inputs();
 
   // input node?
   if (node_index < inputs_count) {
-    return node_index;
+    return node_index + 1;
   }
-  
-  constexpr IndexType kPending = IndexType(-1);
 
   const auto function_node_index = IndexType(node_index - inputs_count);
   CHECK(function_node_index < nodes_map.size());
-  
+
+  constexpr IndexType kPending = IndexType(-1);
+
   auto register_index = nodes_map[function_node_index];
   CHECK(register_index != kPending);
   if (register_index != 0) {
-    CHECK(register_index >= inputs_count);
+    CHECK(register_index >= inputs_count + 1);
     CHECK(register_index < registers_.size());
     return register_index;
   }
 
-  // if not yet visited, do a post-order dfs traversal
+  // if not yet visited, do a post-order DFS traversal
   nodes_map[function_node_index] = kPending;
-  
+
   const auto& gene = genotype_->functionGenes()[function_node_index];
   Instruction instruction;
   instruction.function = gene.function;
-  for (size_t i = 0; i < gene.connections.size(); ++i) {
-    instruction.sources[i] = dfsNodeEval(gene.connections[i], nodes_map);
+  const int function_arity = kFunctionDef[gene.function].arity;
+  for (int i = 0; i < kMaxFunctionArity; ++i) {
+    instruction.sources[i] = (i < function_arity)
+                                 ? dfsNodeEval(gene.connections[i], nodes_map)
+                                 : IndexType(0);
   }
   const IndexType dst = IndexType(registers_.size());
   instructions_.push_back(instruction);
@@ -99,7 +103,7 @@ IndexType Brain::dfsNodeEval(IndexType node_index, vector<IndexType>& nodes_map)
 
 void Brain::think() {
   auto domain = genotype_->population()->domain();
-  const size_t instr_reg_base = domain->inputs();
+  const size_t instr_reg_base = domain->inputs() + 1;
   for (size_t instr_index = 0; instr_index < instructions_.size(); ++instr_index) {
     const size_t result_index = instr_reg_base + instr_index;
     const auto& instr = instructions_[instr_index];
