@@ -11,8 +11,7 @@ SOURCES += \
     cgp.cpp \
     population.cpp \
     genotype.cpp \
-    brain.cpp \
-    functions.cpp
+    brain.cpp
 
 HEADERS += \
     cgp.h \
