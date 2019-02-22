@@ -163,133 +163,66 @@ void Population::createNextGeneration() {
 void Population::setupAvailableFunctions() {
   CHECK(available_functions_.empty());
 
-  auto addFunctions = [&](initializer_list<FunctionId> functions) {
-    for (auto fn : functions) {
-      available_functions_.push_back(fn);
+  auto addFunctions = [&](FunctionCategory category) {
+    for (const auto& function_def : kFunctionDef) {
+      CHECK(kFunctionDef[function_def.id].id == function_def.id);
+      if (function_def.category == category) {
+        available_functions_.push_back(function_def.id);
+      }
     }
   };
 
   if (config_.fn_basic_constants) {
     core::log("CGP: adding basic constants...\n");
-    addFunctions({
-        FunctionId::ConstZero,
-        FunctionId::ConstOne,
-        FunctionId::ConstTwo,
-    });
+    addFunctions(FunctionCategory::BasicConstant);
   }
   if (config_.fn_transcendental_constants) {
     core::log("CGP: adding transcendental constants...\n");
-    addFunctions({
-        FunctionId::ConstPi,
-        FunctionId::ConstE,
-    });
+    addFunctions(FunctionCategory::TranscendentalConstant);
   }
   if (config_.fn_basic_arithmetic) {
     core::log("CGP: adding basic arithmetic...\n");
-    addFunctions({
-        FunctionId::Add,
-        FunctionId::Subtract,
-        FunctionId::Multiply,
-        FunctionId::Divide,
-        FunctionId::Negate,
-    });
+    addFunctions(FunctionCategory::BasicArithmetic);
   }
   if (config_.fn_extra_arithmetic) {
     core::log("CGP: adding extra arithmetic functions...\n");
-    addFunctions({
-        FunctionId::Fmod,
-        FunctionId::Reminder,
-        FunctionId::Fdim,
-        FunctionId::Ceil,
-        FunctionId::Floor,
-    });
+    addFunctions(FunctionCategory::ExtraArithmetic);
   }
   if (config_.fn_common_math) {
     core::log("CGP: adding common math functions...\n");
-    addFunctions({
-        FunctionId::Abs,
-        FunctionId::Average,
-        FunctionId::Min,
-        FunctionId::Max,
-        FunctionId::Square,
-    });
+    addFunctions(FunctionCategory::CommonMath);
   }
   if (config_.fn_extra_math) {
     core::log("CGP: adding extra math functions...\n");
-    addFunctions({
-        FunctionId::Log,
-        FunctionId::Log2,
-        FunctionId::Sqrt,
-        FunctionId::Power,
-        FunctionId::Exp,
-        FunctionId::Exp2,
-    });
+    addFunctions(FunctionCategory::ExtraMath);
   }
   if (config_.fn_trigonometric) {
     core::log("CGP: adding trigonometric functions...\n");
-    addFunctions({
-        FunctionId::Sin,
-        FunctionId::Cos,
-        FunctionId::Tan,
-        FunctionId::Asin,
-        FunctionId::Acos,
-        FunctionId::Atan,
-    });
+    addFunctions(FunctionCategory::Trigonometric);
   }
   if (config_.fn_hyperbolic) {
     core::log("CGP: adding hyperbolic functions...\n");
-    addFunctions({
-        FunctionId::Sinh,
-        FunctionId::Cosh,
-        FunctionId::Tanh,
-    });
+    addFunctions(FunctionCategory::Hyperbolic);
   }
   if (config_.fn_ann_activation) {
     core::log("CGP: adding ANN activation functions...\n");
-    addFunctions({
-        FunctionId::AfnIdentity,
-        FunctionId::AfnLogistic,
-        FunctionId::AfnTanh,
-        FunctionId::AfnReLU,
-        FunctionId::AfnNeat,
-    });
+    addFunctions(FunctionCategory::AnnActivation);
   }
   if (config_.fn_comparisons) {
     core::log("CGP: adding comparison functions...\n");
-    addFunctions({
-        FunctionId::CmpEq,
-        FunctionId::CmpNe,
-        FunctionId::CmpGt,
-        FunctionId::CmpGe,
-        FunctionId::CmpLt,
-        FunctionId::CmpLe,
-    });
+    addFunctions(FunctionCategory::Comparisons);
   }
   if (config_.fn_logic_gates) {
     core::log("CGP: adding logic gate functions...\n");
-    addFunctions({
-        FunctionId::And,
-        FunctionId::Or,
-        FunctionId::Not,
-        FunctionId::Xor,
-    });
+    addFunctions(FunctionCategory::LogicGates);
   }
   if (config_.fn_conditional) {
     core::log("CGP: adding conditional functions...\n");
-    addFunctions({
-        FunctionId::IfOrZero,
-    });
+    addFunctions(FunctionCategory::Conditional);
   }
   if (config_.fn_stateful) {
     core::log("CGP: adding stateful functions...\n");
-    addFunctions({
-        FunctionId::Velocity,
-        FunctionId::HighWatermark,
-        FunctionId::LowWatermark,
-        FunctionId::MemoryCell,
-        FunctionId::SoftMemoryCell,
-        FunctionId::TimeDelay,
-    });
+    addFunctions(FunctionCategory::Stateful);
   }
   
   core::log("CGP: %zu available functions\n\n", available_functions_.size());

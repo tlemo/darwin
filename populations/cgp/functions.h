@@ -58,6 +58,7 @@ enum class FunctionCategory {
 };
 
 struct FunctionDef {
+  const FunctionId id;
   const char* const name;
   const int arity;
   const FunctionCategory category;
@@ -65,7 +66,8 @@ struct FunctionDef {
 
 constexpr FunctionDef kFunctionDef[kFunctionCount] = {
   #undef FN_DEF
-  #define FN_DEF(id, name, arity, category) { #name, (arity), FunctionCategory::category },
+  #define FN_DEF(id, name, arity, category) \
+    { id, #name, (arity), FunctionCategory::category },
   #include "functions_table.def"
 };
 
