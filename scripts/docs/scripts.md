@@ -7,6 +7,7 @@
 - [fitness_diff.py](#fitness_diffpy)
 - [batch_fitness.py](#batch_fitnesspy)
 - [neat_genotype_exporter.py](#neat_genotype_exporterpy)
+- [cgp_genotype_exporter.py](#cgp_genotype_exporterpy)
 - [universe_summary.py](#universe_summarypy)
 - [universe_graph.py](#universe_graphpy)
 - [perf_chart.py](#perf_chartpy)
@@ -209,7 +210,43 @@ This output can be used with any tool accepting Graphviz DOT.
 Using the raw output above, [Viz.js](http://viz-js.com) will generate the following
 visualization:
 
-![Fitness diff](neat_genotype.png)
+![NEAT genotype](neat_genotype.png)
+
+# cgp_genotype_exporter.py
+
+Exports a CGP genotype as a [Graphviz](https://www.graphviz.org/) graph definition.
+
+```
+usage: cgp_genotype_exporter.py [-h] -u UNIVERSE -t TRACEID -g GENERATION
+                                [--prune]
+
+CGP Genotype Exporter
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -u UNIVERSE, --universe UNIVERSE
+                        Darwin universe database
+  -t TRACEID, --traceid TRACEID
+                        Evolution Trace ID
+  -g GENERATION, --generation GENERATION
+                        Generation (from which to export the champion
+                        genotype)
+  --prune               Generate a pruned version of the genotype
+```
+
+**Example**: `cgp_genotype_exporter.py -u universe.darwin -t 5 -g 100`
+
+The raw output is [Graphviz DOT language](https://www.graphviz.org/documentation/) and can
+be used with any tool accepting Graphviz DOT.
+
+Example of the 'full' genotype graph, which shows the CGP columns & rows,
+as well as the inactive nodes (which don't contribute to any output value):
+
+![CGP Genotype (full)](cgp_genotype_full.png)
+
+For the same genotype, passing `--prune` will generate only the active expressions forest:
+
+![CGP Genotype (pruned)](cgp_genotype_pruned.png)
 
 # universe_summary.py
 

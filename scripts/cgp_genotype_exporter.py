@@ -33,7 +33,7 @@ arg_parser.add_argument('-t', '--traceid',
 arg_parser.add_argument('-g', '--generation',
     required = True, help = 'Generation (from which to export the champion genotype)')
 arg_parser.add_argument('--prune',
-    help = 'Show the bias node', action='store_true')
+    help = 'Generate a pruned version of the genotype', action='store_true')
 
 args = arg_parser.parse_args()
 
