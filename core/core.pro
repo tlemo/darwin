@@ -24,7 +24,8 @@ SOURCES += \
     roulette_selection.cpp \
     cgp_islands_selection.cpp \
     truncation_selection.cpp \
-    simple_tournament.cpp
+    simple_tournament.cpp \
+    swiss_tournament.cpp
 
 HEADERS += \
     ann_utils.h \
@@ -56,7 +57,8 @@ HEADERS += \
     cgp_islands_selection.h \
     truncation_selection.h \
     simple_tournament.h \
-    tournament_implementations.h
+    tournament_implementations.h \
+    swiss_tournament.h
     
 addLibrary(../third_party/sqlite)
 addLibrary(../third_party/box2d)

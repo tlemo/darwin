@@ -17,6 +17,7 @@
 #include <core/stringify.h>
 #include <core/tournament.h>
 #include <core/simple_tournament.h>
+#include <core/swiss_tournament.h>
 
 #include <memory>
 using namespace std;
@@ -25,12 +26,14 @@ namespace tournament {
 
 //! Tournament type
 enum class TournamentType {
-  Simple,  //!< A basic tournament implementation
+  Simple,   //!< A basic tournament implementation
+  Swiss,    //!< Swiss-system tournament
 };
 
 inline auto customStringify(core::TypeTag<TournamentType>) {
   static auto stringify = new core::StringifyKnownValues<TournamentType>{
     { TournamentType::Simple, "simple" },
+    { TournamentType::Swiss, "swiss" },
   };
   return stringify;
 }
@@ -38,6 +41,7 @@ inline auto customStringify(core::TypeTag<TournamentType>) {
 //! Tournament configurations
 struct TournamentVariant : public core::PropertySetVariant<TournamentType> {
   CASE(TournamentType::Simple, simple_tournament, SimpleTournamentConfig);
+  CASE(TournamentType::Swiss, swiss_tournament, SwissTournamentConfig);
 };
 
 //! Concrete tournament factory
@@ -45,6 +49,8 @@ inline unique_ptr<Tournament> create(const TournamentVariant& variant) {
   switch (variant.tag()) {
     case TournamentType::Simple:
       return make_unique<SimpleTournament>(variant.simple_tournament);
+    case TournamentType::Swiss:
+      return make_unique<SwissTournament>(variant.swiss_tournament);
     default:
       FATAL("Unexpected tournament type");
   }
