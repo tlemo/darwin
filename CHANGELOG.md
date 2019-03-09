@@ -1,4 +1,13 @@
 
+## Feb 23rd, 2019
+
+Various additions to the CGP implementation:
+- [CGP genotype exporter](scripts/docs/scripts.md#cgp_genotype_exporterpy)
+- Support for multiple selection algorithms
+- Evolvable constants
+- Stateful functions
+- A simple one-point crossover operator
+
 ## Feb 1st, 2019
 
 New population: a basic [Cartesian Genetic Programming (CGP)](https://www.cartesiangp.com)
