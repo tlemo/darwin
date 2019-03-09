@@ -17,7 +17,7 @@
 #include <core/darwin.h>
 #include <core/properties.h>
 #include <core/stringify.h>
-#include <core/tournament.h>
+#include <core/tournament_implementations.h>
 
 namespace tic_tac_toe {
 
@@ -42,7 +42,7 @@ struct Config : public core::PropertySet {
 
   VARIANT(tournament_type,
           tournament::TournamentVariant,
-          tournament::TournamentType::Default,
+          tournament::TournamentType::Simple,
           "Tournament type");
 };
 
@@ -101,9 +101,9 @@ class Factory : public darwin::DomainFactory {
     auto config = make_unique<Config>();
     switch (hint) {
       case darwin::ComplexityHint::Minimal:
-        config->tournament_type.default_tournament.eval_games = 2;
-        config->tournament_type.default_tournament.rematches = false;
-        config->tournament_type.selectCase(tournament::TournamentType::Default);
+        config->tournament_type.simple_tournament.eval_games = 2;
+        config->tournament_type.simple_tournament.rematches = false;
+        config->tournament_type.selectCase(tournament::TournamentType::Simple);
         config->calibration_matches = 3;
         break;
 

@@ -17,7 +17,7 @@
 #include "board.h"
 
 #include <core/properties.h>
-#include <core/tournament.h>
+#include <core/tournament_implementations.h>
 
 #include <random>
 #include <string>
@@ -61,7 +61,7 @@ struct Config : public core::PropertySet {
 
   VARIANT(tournament_type,
           tournament::TournamentVariant,
-          tournament::TournamentType::Default,
+          tournament::TournamentType::Simple,
           "Tournament type");
 };
 

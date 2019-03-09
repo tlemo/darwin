@@ -49,13 +49,9 @@ bool TicTacToe::evaluatePopulation(darwin::Population* population) const {
   const int generation = population->generation();
   core::log("\n. generation %d\n", generation);
 
-  // currently there's only one type of tournament
-  CHECK(g_config.tournament_type.tag() == tournament::TournamentType::Default);
-
   TicTacToeRules rules;
-  tournament::Tournament tournament(g_config.tournament_type.default_tournament, &rules);
-  tournament.evaluatePopulation(population);
-
+  auto tournament = tournament::create(g_config.tournament_type);
+  tournament->evaluatePopulation(population, &rules);
   return false;
 }
 

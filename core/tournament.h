@@ -15,32 +15,10 @@
 #pragma once
 
 #include <core/darwin.h>
+#include <core/utils.h>
 #include <core/properties.h>
 
 namespace tournament {
-
-//! Tournament configuration
-struct TournamentConfig : public core::PropertySet {
-  PROPERTY(eval_games, int, 10, "Number of evaluation games");
-  PROPERTY(rematches, bool, true, "Play both-side rematches?");
-};
-
-//! Tournament type
-enum class TournamentType {
-  Default,  //!< The default tournament implementation
-};
-
-inline auto customStringify(core::TypeTag<TournamentType>) {
-  static auto stringify = new core::StringifyKnownValues<TournamentType>{
-    { TournamentType::Default, "default" },
-  };
-  return stringify;
-}
-
-//! Tournament configurations
-struct TournamentVariant : public core::PropertySetVariant<TournamentType> {
-  CASE(TournamentType::Default, default_tournament, TournamentConfig);
-};
 
 //! Final game scores
 //! \sa GameRules
@@ -71,25 +49,12 @@ class GameRules : public core::NonCopyable {
   virtual Scores scores(GameOutcome outcome) const = 0;
 };
 
-//! A simple tournament implementation
-//! 
-//! Every genotype in a population is paired with a fixed number of random
-//! opponents (genotypes from the same population). The fitness of the genotype
-//! is updated based on the aggregated results from all the games.
-//! 
-//! \note The opponent's fitness is not updated
-//! 
+//! Tournament interface
 class Tournament : public core::NonCopyable {
  public:
-  //! Creates a new tournament based on the specified game rules
-  Tournament(const core::PropertySet& config, GameRules* game_rules);
-
-  //! Assigns fitness values based on the tournament results
-  void evaluatePopulation(darwin::Population* population);
-
- private:
-  TournamentConfig config_;
-  GameRules* game_rules_;
+  //! Run the tournament and assigns fitness values based on the results
+  virtual void evaluatePopulation(darwin::Population* population,
+                                  GameRules* game_rules) = 0;
 };
 
 }  // namespace tournament
