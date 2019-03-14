@@ -10,6 +10,7 @@ SOURCES += \
     parallel_for_tests.cpp \
     properties_variant_tests.cpp \
     misc_tests.cpp \
-    selection_algorithms_tests.cpp
+    selection_algorithms_tests.cpp \
+    tournament_tests.cpp
     
 include(../tests_common.pri)

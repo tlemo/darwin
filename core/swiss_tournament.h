@@ -22,8 +22,7 @@ namespace tournament {
 
 //! SwissTournament configuration
 struct SwissTournamentConfig : public core::PropertySet {
-  PROPERTY(rounds, int, 10, "Number of rounds");
-  PROPERTY(eval_games, int, 10, "Number of evaluation games");
+  PROPERTY(rounds, int, 20, "Number of tournament rounds");
   PROPERTY(rematches, bool, true, "Play both-side rematches?");
 };
 
@@ -36,6 +35,8 @@ struct SwissTournamentConfig : public core::PropertySet {
 //! \note The opponent's fitness is not updated
 //!
 class SwissTournament : public Tournament {
+  class PairingLog;
+  
  public:
   explicit SwissTournament(const core::PropertySet& config);
 

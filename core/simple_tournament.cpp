@@ -26,16 +26,22 @@ SimpleTournament::SimpleTournament(const core::PropertySet& config) {
 void SimpleTournament::evaluatePopulation(darwin::Population* population,
                                           GameRules* game_rules) {
   darwin::StageScope stage("Tournament", population->size());
-  pp::for_each(*population, [&](int, darwin::Genotype* genotype) {
+  pp::for_each(*population, [&](int index, darwin::Genotype* genotype) {
     random_device rd;
     default_random_engine rnd(rd());
-    uniform_int_distribution<size_t> dist(0, population->size() - 1);
+    uniform_int_distribution<size_t> dist_opponent(0, population->size() - 1);
 
     float score = 0;
     int eval_games = 0;
 
     for (int i = 0; i < config_.eval_games; ++i) {
-      auto opponent_genotype = population->genotype(dist(rnd));
+      // pick a random (but different) opponent
+      size_t opponent_index = dist_opponent(rnd);
+      while (opponent_index == size_t(index)) {
+        opponent_index = dist_opponent(rnd);
+      }
+
+      auto opponent_genotype = population->genotype(opponent_index);
 
       auto outcome = game_rules->play(genotype, opponent_genotype);
       score += game_rules->scores(outcome).player1_score;
