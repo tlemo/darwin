@@ -15,7 +15,7 @@
 #pragma once
 
 #include <core/properties.h>
-#include <core/tournament.h>
+#include <core/tournament_implementations.h>
 
 namespace pong {
 
@@ -50,7 +50,7 @@ struct Config : public core::PropertySet {
 
   VARIANT(tournament_type,
           tournament::TournamentVariant,
-          tournament::TournamentType::Default,
+          tournament::TournamentType::Swiss,
           "Tournament type");
 };
 

@@ -21,6 +21,7 @@
 #include <core/darwin.h>
 #include <core/evolution.h>
 #include <core/logging.h>
+#include <core/tournament_implementations.h>
 
 #include <atomic>
 #include <random>
@@ -45,14 +46,10 @@ bool Conquest::evaluatePopulation(darwin::Population* population) const {
 
   const int generation = population->generation();
   core::log("\n. generation %d\n", generation);
-
-  // currently there's only one type of tournament
-  CHECK(g_config.tournament_type.tag() == tournament::TournamentType::Default);
-
+  
   ConquestRules rules(board_);
-  tournament::Tournament tournament(g_config.tournament_type.default_tournament, &rules);
-  tournament.evaluatePopulation(population);
-
+  auto tournament = tournament::create(g_config.tournament_type);
+  tournament->evaluatePopulation(population, &rules);
   return false;
 }
 
@@ -111,9 +108,9 @@ unique_ptr<core::PropertySet> Factory::defaultConfig(darwin::ComplexityHint hint
   auto config = make_unique<Config>();
   switch (hint) {
     case darwin::ComplexityHint::Minimal:
-      config->tournament_type.default_tournament.eval_games = 2;
-      config->tournament_type.default_tournament.rematches = true;
-      config->tournament_type.selectCase(tournament::TournamentType::Default);
+      config->tournament_type.simple_tournament.eval_games = 2;
+      config->tournament_type.simple_tournament.rematches = true;
+      config->tournament_type.selectCase(tournament::TournamentType::Simple);
       config->calibration_matches = 2;
       config->max_steps = 100;
       break;

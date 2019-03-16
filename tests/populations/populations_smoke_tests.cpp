@@ -18,11 +18,6 @@
 #include <core/parallel_for_each.h>
 #include <core/utils.h>
 
-#include <populations/cgp/cgp.h>
-#include <populations/classic/classic.h>
-#include <populations/neat/neat.h>
-#include <populations/test_population/test_population.h>
-
 #include <third_party/gtest/gtest.h>
 
 #include <memory>

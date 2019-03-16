@@ -1,4 +1,4 @@
-// Copyright 2018 The Darwin Neuroevolution Framework Authors.
+// Copyright 2019 The Darwin Neuroevolution Framework Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,42 +12,48 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "tournament.h"
+#include "simple_tournament.h"
 
 #include <core/evolution.h>
 #include <core/parallel_for_each.h>
 
 namespace tournament {
 
-Tournament::Tournament(const core::PropertySet& config, GameRules* game_rules)
-    : game_rules_(game_rules) {
+SimpleTournament::SimpleTournament(const core::PropertySet& config) {
   config_.copyFrom(config);
 }
 
-void Tournament::evaluatePopulation(darwin::Population* population) {
+void SimpleTournament::evaluatePopulation(darwin::Population* population,
+                                          GameRules* game_rules) {
   darwin::StageScope stage("Tournament", population->size());
-  pp::for_each(*population, [&](int, darwin::Genotype* genotype) {
+  pp::for_each(*population, [&](int index, darwin::Genotype* genotype) {
     random_device rd;
     default_random_engine rnd(rd());
-    uniform_int_distribution<size_t> dist(0, population->size() - 1);
+    uniform_int_distribution<size_t> dist_opponent(0, population->size() - 1);
 
     float score = 0;
     int eval_games = 0;
 
     for (int i = 0; i < config_.eval_games; ++i) {
-      auto opponent_genotype = population->genotype(dist(rnd));
+      // pick a random (but different) opponent
+      size_t opponent_index = dist_opponent(rnd);
+      while (opponent_index == size_t(index)) {
+        opponent_index = dist_opponent(rnd);
+      }
 
-      auto outcome = game_rules_->play(genotype, opponent_genotype);
-      score += game_rules_->scores(outcome).player1_score;
+      auto opponent_genotype = population->genotype(opponent_index);
+
+      auto outcome = game_rules->play(genotype, opponent_genotype);
+      score += game_rules->scores(outcome).player1_score;
       ++eval_games;
 
       if (config_.rematches) {
-        auto rematch_outcome = game_rules_->play(opponent_genotype, genotype);
-        score += game_rules_->scores(rematch_outcome).player2_score;
+        auto rematch_outcome = game_rules->play(opponent_genotype, genotype);
+        score += game_rules->scores(rematch_outcome).player2_score;
         ++eval_games;
       }
     }
-    
+
     // normalize the fitness to make it invariant to the number of played games
     genotype->fitness = score / eval_games * 100;
 
