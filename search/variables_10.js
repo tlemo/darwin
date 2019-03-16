@@ -7,8 +7,10 @@ var searchData=
   ['sets_5frequired_5fto_5fwin',['sets_required_to_win',['../structpong_1_1_config.html#a02feacd86496c28cd4e5e6864e8f50fe',1,'pong::Config']]],
   ['setup',['setup',['../structdarwin_1_1_db_experiment.html#ad199a9347eebcdc7cb3dfdc04781271b',1,'darwin::DbExperiment']]],
   ['simple_5fserve',['simple_serve',['../structpong_1_1_config.html#ae13362bf1880fb1d42e91322faed31c1',1,'pong::Config']]],
+  ['simple_5ftournament',['simple_tournament',['../structtournament_1_1_tournament_variant.html#a83c0c76cb53923d46fd1178ed4d52a53',1,'tournament::TournamentVariant']]],
   ['sparse_5fweights',['sparse_weights',['../structann_1_1_config.html#a0f5287b072de10d3db7496ded13b42a0',1,'ann::Config']]],
   ['stage',['stage',['../structdarwin_1_1_evolution_1_1_snapshot.html#af8abc674a37f98a63da4976f459bc236',1,'darwin::Evolution::Snapshot']]],
   ['state',['state',['../structdarwin_1_1_evolution_1_1_snapshot.html#a7cc3afa1edd62bb5996ac26226525a06',1,'darwin::Evolution::Snapshot']]],
-  ['summary',['summary',['../structdarwin_1_1_db_generation.html#a2db250960faa47e8d967daacaa97fee8',1,'darwin::DbGeneration']]]
+  ['summary',['summary',['../structdarwin_1_1_db_generation.html#a2db250960faa47e8d967daacaa97fee8',1,'darwin::DbGeneration']]],
+  ['swiss_5ftournament',['swiss_tournament',['../structtournament_1_1_tournament_variant.html#a94dc6ed65eae9f6f9ffd0ac3daf1dfa0',1,'tournament::TournamentVariant']]]
 ];

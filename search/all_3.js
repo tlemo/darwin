@@ -9,8 +9,6 @@ var searchData=
   ['dbgeneration',['DbGeneration',['../structdarwin_1_1_db_generation.html',1,'darwin']]],
   ['dbuniverseobject',['DbUniverseObject',['../structdarwin_1_1_db_universe_object.html',1,'darwin']]],
   ['dbvariationid',['dbVariationId',['../classdarwin_1_1_experiment.html#afb135bb2f961521f7fc53ac817d2d4ae',1,'darwin::Experiment']]],
-  ['default',['Default',['../namespacetournament.html#ac7e249f02d2cdfeff04f1a700d46a6bda7a1920d61156abc05a60135aefe8bc67',1,'tournament']]],
-  ['default_5ftournament',['default_tournament',['../structtournament_1_1_tournament_variant.html#acaedc99b6f2b6f3d57e7cb9769ed4d59',1,'tournament::TournamentVariant']]],
   ['defaultconfig',['defaultConfig',['../classdarwin_1_1_population_factory.html#a838a495c7164d6c678c2ea88d7350d19',1,'darwin::PopulationFactory::defaultConfig()'],['../classdarwin_1_1_domain_factory.html#a00ad35fdd79e8a29173c3be879c9c4a0',1,'darwin::DomainFactory::defaultConfig()']]],
   ['defaultvalue',['defaultValue',['../classcore_1_1_property.html#a55de1bbde375c89d4da5a7904b4a8960',1,'core::Property']]],
   ['deferred',['Deferred',['../namespacedb.html#a24b52b53160e032c8bfc78bc6a0d365aa4ed71db54748b36eeb398876b0c747ac',1,'db']]],

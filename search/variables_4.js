@@ -4,7 +4,7 @@ var searchData=
   ['elite_5fmin_5ffitness',['elite_min_fitness',['../structselection_1_1_roulette_selection_config.html#a0c98ac83e2354102f06cd1f2ea049bd0',1,'selection::RouletteSelectionConfig::elite_min_fitness()'],['../structselection_1_1_truncation_selection_config.html#a4cef1b06e478f07f31123970300f3b44',1,'selection::TruncationSelectionConfig::elite_min_fitness()']]],
   ['elite_5fmutation_5fchance',['elite_mutation_chance',['../structselection_1_1_truncation_selection_config.html#adb485bb36e6430445903ad02fb5f342d',1,'selection::TruncationSelectionConfig']]],
   ['elite_5fpercentage',['elite_percentage',['../structselection_1_1_roulette_selection_config.html#af1e6b47072fca9b3c0da96ef7672a060',1,'selection::RouletteSelectionConfig::elite_percentage()'],['../structselection_1_1_truncation_selection_config.html#a3b6c4a4de863c9810fa5e94b4f157901',1,'selection::TruncationSelectionConfig::elite_percentage()']]],
-  ['eval_5fgames',['eval_games',['../structtournament_1_1_tournament_config.html#a7cabb5eea958e7735db0e6169b2622f8',1,'tournament::TournamentConfig']]],
+  ['eval_5fgames',['eval_games',['../structtournament_1_1_simple_tournament_config.html#ae92748650a47e5a9d1d82dbb7acfc7fc',1,'tournament::SimpleTournamentConfig']]],
   ['eval_5fsteps',['eval_steps',['../structtest__domain_1_1_config.html#a5be9eeef91a14d4524f15f01c515f377',1,'test_domain::Config']]],
   ['evaluatelayer',['evaluateLayer',['../namespaceann.html#ac2a70be69002224cde0f24adf0cc399e',1,'ann']]],
   ['events',['events',['../classdarwin_1_1_evolution.html#abea945095945598ab195887235081de4',1,'darwin::Evolution']]],

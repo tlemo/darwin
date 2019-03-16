@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.14"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Darwin Neuroevolution Framework: tournament::Tournament Class Reference</title>
+<title>Darwin Neuroevolution Framework: tournament::SimpleTournament Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -61,45 +61,47 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="namespacetournament.html">tournament</a></li><li class="navelem"><a class="el" href="classtournament_1_1_tournament.html">Tournament</a></li>  </ul>
+<li class="navelem"><a class="el" href="namespacetournament.html">tournament</a></li><li class="navelem"><a class="el" href="classtournament_1_1_simple_tournament.html">SimpleTournament</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
-<a href="classtournament_1_1_tournament-members.html">List of all members</a>  </div>
+<a href="classtournament_1_1_simple_tournament-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">tournament::Tournament Class Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div>  </div>
+<div class="title">tournament::SimpleTournament Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
-<p><a class="el" href="classtournament_1_1_tournament.html" title="Tournament interface. ">Tournament</a> interface.  
- <a href="classtournament_1_1_tournament.html#details">More...</a></p>
+<p>A simple tournament implementation.  
+ <a href="classtournament_1_1_simple_tournament.html#details">More...</a></p>
 
-<p><code>#include &lt;<a class="el" href="tournament_8h_source.html">tournament.h</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="simple__tournament_8h_source.html">simple_tournament.h</a>&gt;</code></p>
 <div class="dynheader">
-Inheritance diagram for tournament::Tournament:</div>
+Inheritance diagram for tournament::SimpleTournament:</div>
 <div class="dyncontent">
  <div class="center">
-  <img src="classtournament_1_1_tournament.png" usemap="#tournament::Tournament_map" alt=""/>
-  <map id="tournament::Tournament_map" name="tournament::Tournament_map">
-<area href="classcore_1_1_non_copyable.html" title="Classes derived from this are not copyable or movable. " alt="core::NonCopyable" shape="rect" coords="96,0,279,24"/>
-<area href="classtournament_1_1_simple_tournament.html" title="A simple tournament implementation. " alt="tournament::SimpleTournament" shape="rect" coords="0,112,183,136"/>
-<area href="classtournament_1_1_swiss_tournament.html" title="Swiss-style tournament " alt="tournament::SwissTournament" shape="rect" coords="193,112,376,136"/>
+  <img src="classtournament_1_1_simple_tournament.png" usemap="#tournament::SimpleTournament_map" alt=""/>
+  <map id="tournament::SimpleTournament_map" name="tournament::SimpleTournament_map">
+<area href="classtournament_1_1_tournament.html" title="Tournament interface. " alt="tournament::Tournament" shape="rect" coords="0,56,183,80"/>
+<area href="classcore_1_1_non_copyable.html" title="Classes derived from this are not copyable or movable. " alt="core::NonCopyable" shape="rect" coords="0,0,183,24"/>
 </map>
  </div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a49b0ff0f5c8ae169d561777d7f99083c"><td class="memItemLeft" align="right" valign="top"><a id="a49b0ff0f5c8ae169d561777d7f99083c"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtournament_1_1_tournament.html#a49b0ff0f5c8ae169d561777d7f99083c">evaluatePopulation</a> (<a class="el" href="classdarwin_1_1_population.html">darwin::Population</a> *population, <a class="el" href="classtournament_1_1_game_rules.html">GameRules</a> *game_rules)=0</td></tr>
-<tr class="memdesc:a49b0ff0f5c8ae169d561777d7f99083c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Run the tournament and assigns fitness values based on the results. <br /></td></tr>
-<tr class="separator:a49b0ff0f5c8ae169d561777d7f99083c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac8a62fb96b51e043f0f77cf10ea9b71c"><td class="memItemLeft" align="right" valign="top"><a id="ac8a62fb96b51e043f0f77cf10ea9b71c"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtournament_1_1_simple_tournament.html#ac8a62fb96b51e043f0f77cf10ea9b71c">evaluatePopulation</a> (<a class="el" href="classdarwin_1_1_population.html">darwin::Population</a> *population, <a class="el" href="classtournament_1_1_game_rules.html">GameRules</a> *game_rules) override</td></tr>
+<tr class="memdesc:ac8a62fb96b51e043f0f77cf10ea9b71c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Run the tournament and assigns fitness values based on the results. <br /></td></tr>
+<tr class="separator:ac8a62fb96b51e043f0f77cf10ea9b71c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p><a class="el" href="classtournament_1_1_tournament.html" title="Tournament interface. ">Tournament</a> interface. </p>
-</div><hr/>The documentation for this class was generated from the following file:<ul>
-<li>C:/Users/lemo/work/darwin/core/<a class="el" href="tournament_8h_source.html">tournament.h</a></li>
+<div class="textblock"><p>A simple tournament implementation. </p>
+<p>Every genotype in a population is paired with a fixed number of random opponents (genotypes from the same population). The fitness of the genotype is updated based on the aggregated results from all the games.</p>
+<dl class="section note"><dt>Note</dt><dd>The opponent's fitness is not updated </dd></dl>
+</div><hr/>The documentation for this class was generated from the following files:<ul>
+<li>C:/Users/lemo/work/darwin/core/<a class="el" href="simple__tournament_8h_source.html">simple_tournament.h</a></li>
+<li>C:/Users/lemo/work/darwin/core/simple_tournament.cpp</li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

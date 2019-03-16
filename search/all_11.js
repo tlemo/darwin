@@ -29,7 +29,11 @@ var searchData=
   ['setviewport',['setViewport',['../classcore__ui_1_1_canvas.html#aabc61b6b2dacdde251af9fd7f11f0eee',1,'core_ui::Canvas::setViewport(const QRectF &amp;viewport_rect)'],['../classcore__ui_1_1_canvas.html#a906cfba45ce833470df8316bdb0b222c',1,'core_ui::Canvas::setViewport(const QPointF &amp;top_left, const QPointF &amp;bottom_right)']]],
   ['setworld',['setWorld',['../classcore__ui_1_1_box2d_sandbox_window.html#a1b984be55f27483be60b9324ae8902ea',1,'core_ui::Box2dSandboxWindow']]],
   ['setzero',['setZero',['../structmath_1_1_h_matrix2d.html#a77ee7a06d28f45008f8aeacb728eaf05',1,'math::HMatrix2d']]],
+  ['simple',['Simple',['../namespacetournament.html#ac7e249f02d2cdfeff04f1a700d46a6bda1fbb1e3943c2c6c560247ac8f9289780',1,'tournament']]],
   ['simple_5fserve',['simple_serve',['../structpong_1_1_config.html#ae13362bf1880fb1d42e91322faed31c1',1,'pong::Config']]],
+  ['simple_5ftournament',['simple_tournament',['../structtournament_1_1_tournament_variant.html#a83c0c76cb53923d46fd1178ed4d52a53',1,'tournament::TournamentVariant']]],
+  ['simpletournament',['SimpleTournament',['../classtournament_1_1_simple_tournament.html',1,'tournament']]],
+  ['simpletournamentconfig',['SimpleTournamentConfig',['../structtournament_1_1_simple_tournament_config.html',1,'tournament']]],
   ['singlestep',['singleStep',['../classcore__ui_1_1_box2d_sandbox_window.html#a746c9030ae70dc2abdf6a408af6a5d76',1,'core_ui::Box2dSandboxWindow']]],
   ['singlevalue',['singleValue',['../classdb_1_1_result_set.html#a7b9a33c6b6d63046c7c7ca9bf2a2abd2',1,'db::ResultSet']]],
   ['size',['size',['../classdarwin_1_1_population.html#a36f6ab1f22343fc4906af3b2c9dd5db7',1,'darwin::Population::size()'],['../classdb_1_1_result_set.html#abce067f19eb9e6ed04d3716f30bb7471',1,'db::ResultSet::size()'],['../classdarwin_1_1_evolution_trace.html#a375b2d86c190b651043924727af33062',1,'darwin::EvolutionTrace::size()'],['../classcore_1_1_array_view.html#a75d800220069634102bb97622d0c19de',1,'core::ArrayView::size()']]],
@@ -50,5 +54,9 @@ var searchData=
   ['stringifystrings',['StringifyStrings',['../classcore_1_1_stringify_strings.html',1,'core']]],
   ['subscribe',['subscribe',['../classcore_1_1_pub_sub.html#a66649f72a97686a99e7e85f04c02c5d7',1,'core::PubSub']]],
   ['substages',['subStages',['../classdarwin_1_1_evolution_stage.html#aa14f6ceaa78999b59babdc9035299012',1,'darwin::EvolutionStage']]],
-  ['summary',['summary',['../structdarwin_1_1_db_generation.html#a2db250960faa47e8d967daacaa97fee8',1,'darwin::DbGeneration']]]
+  ['summary',['summary',['../structdarwin_1_1_db_generation.html#a2db250960faa47e8d967daacaa97fee8',1,'darwin::DbGeneration']]],
+  ['swiss',['Swiss',['../namespacetournament.html#ac7e249f02d2cdfeff04f1a700d46a6bda020f758800fd8d186106ca324c700794',1,'tournament']]],
+  ['swiss_5ftournament',['swiss_tournament',['../structtournament_1_1_tournament_variant.html#a94dc6ed65eae9f6f9ffd0ac3daf1dfa0',1,'tournament::TournamentVariant']]],
+  ['swisstournament',['SwissTournament',['../classtournament_1_1_swiss_tournament.html',1,'tournament']]],
+  ['swisstournamentconfig',['SwissTournamentConfig',['../structtournament_1_1_swiss_tournament_config.html',1,'tournament']]]
 ];
