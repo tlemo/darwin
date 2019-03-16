@@ -1,4 +1,8 @@
 
+## Mar 16th, 2019
+
+A new tournament implementation: [Swiss Tournament][5]
+
 ## Feb 23rd, 2019
 
 Various additions to the CGP implementation:
@@ -94,3 +98,4 @@ Initial release
 [2]: https://tlemo.github.io/darwin/classcore__ui_1_1_properties_widget.html
 [3]: https://tlemo.github.io/darwin/classcart__pole_1_1_cart_pole.html
 [4]: https://tlemo.github.io/darwin/classdouble__cart__pole_1_1_double_cart_pole.html
+[5]: https://tlemo.github.io/darwin/classtournament_1_1_swiss_tournament.html
