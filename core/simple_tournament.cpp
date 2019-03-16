@@ -55,7 +55,7 @@ void SimpleTournament::evaluatePopulation(darwin::Population* population,
     }
 
     // normalize the fitness to make it invariant to the number of played games
-    genotype->fitness = score / eval_games * 100;
+    genotype->fitness = score / eval_games;
 
     darwin::ProgressManager::reportProgress();
   });

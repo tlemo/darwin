@@ -138,8 +138,7 @@ void SwissTournament::evaluatePopulation(darwin::Population* population,
         auto p1_genotype = population->genotype(pairing.p1);
         auto p2_genotype = population->genotype(pairing.p2);
 
-        const float score_scale =
-            1.0f / (config_.rounds * (config_.rematches ? 2 : 1)) * 100;
+        const float score_scale = 1.0f / (config_.rounds * (config_.rematches ? 2 : 1));
 
         auto outcome = game_rules->play(p1_genotype, p2_genotype);
         auto scores = game_rules->scores(outcome);

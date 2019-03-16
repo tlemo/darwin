@@ -77,7 +77,7 @@ static float calibrationScore(const TicTacToeRules& rules,
   }
 
   // normalize the fitness to make it invariant to the number of played games
-  return calibration_score / calibration_games * 100;
+  return calibration_score / calibration_games;
 }
 
 unique_ptr<core::PropertySet> TicTacToe::calibrateGenotype(
