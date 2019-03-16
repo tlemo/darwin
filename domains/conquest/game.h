@@ -61,7 +61,7 @@ struct Config : public core::PropertySet {
 
   VARIANT(tournament_type,
           tournament::TournamentVariant,
-          tournament::TournamentType::Simple,
+          tournament::TournamentType::Swiss,
           "Tournament type");
 };
 
