@@ -26,14 +26,7 @@ struct SwissTournamentConfig : public core::PropertySet {
   PROPERTY(rematches, bool, true, "Play both-side rematches?");
 };
 
-//! A simple tournament implementation
-//! 
-//! Every genotype in a population is paired with a fixed number of random
-//! opponents (genotypes from the same population). The fitness of the genotype
-//! is updated based on the aggregated results from all the games.
-//! 
-//! \note The opponent's fitness is not updated
-//!
+//! [Swiss-style tournament](https://en.wikipedia.org/wiki/Swiss-system_tournament)
 class SwissTournament : public Tournament {
   class PairingLog;
   
