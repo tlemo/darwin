@@ -1,4 +1,6 @@
 
+![](docs/images/unicycle_demo.gif)
+
 # Darwin Neuroevolution Framework
 
 Darwin is a framework intended to make Neuroevolution experiments easy, quick and fun. It
