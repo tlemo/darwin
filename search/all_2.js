@@ -16,8 +16,8 @@ var searchData=
   ['champion',['champion',['../structdarwin_1_1_generation_summary.html#a3c3b5cda2b5f53a35ecb8709d3166fb3',1,'darwin::GenerationSummary']]],
   ['checkpoint',['checkpoint',['../classpp_1_1_controller.html#af7146e479062d357fb35258e296977fa',1,'pp::Controller']]],
   ['childpropertyset',['childPropertySet',['../classcore_1_1_property.html#a372b528ae1591f39be1208d6ef4a0499',1,'core::Property']]],
-  ['classic',['classic',['../namespaceclassic.html',1,'']]],
   ['clone',['clone',['../classdarwin_1_1_genotype.html#a706a42939c0c72b9a859dc5e320bcacc',1,'darwin::Genotype']]],
+  ['cne',['cne',['../namespacecne.html',1,'']]],
   ['columncount',['columnCount',['../classdb_1_1_result_set.html#a05b1d65f19c7320c3604804a4a1924b3',1,'db::ResultSet']]],
   ['comment',['comment',['../structdarwin_1_1_db_universe_object.html#a011faf1b9528920bf54be8fe68b6ef6a',1,'darwin::DbUniverseObject']]],
   ['commit',['commit',['../classdb_1_1_connection.html#a7a7e4f0a08d81a865c940211bfa4bf10',1,'db::Connection::commit()'],['../classdb_1_1_transaction_scope.html#a8343de3e11a05e2a02730b8108cf77a3',1,'db::TransactionScope::commit()']]],
@@ -38,9 +38,9 @@ var searchData=
   ['createnew',['CreateNew',['../namespacedb.html#a28b71085755f495ec7c3492d729bef81a16aad4508a33afcd497d9cb37480722f',1,'db']]],
   ['createnextgeneration',['createNextGeneration',['../classselection_1_1_cgp_islands_selection.html#ae9858fdfb226310aadcadfce584a2456',1,'selection::CgpIslandsSelection::createNextGeneration()'],['../classdarwin_1_1_population.html#a8f71423aacd60e06c6dad2290bb14853',1,'darwin::Population::createNextGeneration()'],['../classselection_1_1_roulette_selection.html#a4e26c43f160ea6f2b942775dc2c41103',1,'selection::RouletteSelection::createNextGeneration()'],['../classselection_1_1_selection_algorithm.html#a8d3652023e3cfe27334819545da12e2b',1,'selection::SelectionAlgorithm::createNextGeneration()'],['../classselection_1_1_truncation_selection.html#a0991a86606080f6dde08c34a1a6ce9c1',1,'selection::TruncationSelection::createNextGeneration()']]],
   ['createprimordialgeneration',['createPrimordialGeneration',['../classdarwin_1_1_population.html#a7bfbc9b89360d4841ae0af9035da20ee',1,'darwin::Population']]],
-  ['feedforward',['feedforward',['../namespaceclassic_1_1feedforward.html',1,'classic']]],
-  ['full_5frnn',['full_rnn',['../namespaceclassic_1_1full__rnn.html',1,'classic']]],
-  ['lstm',['lstm',['../namespaceclassic_1_1lstm.html',1,'classic']]],
-  ['lstm_5flite',['lstm_lite',['../namespaceclassic_1_1lstm__lite.html',1,'classic']]],
-  ['rnn',['rnn',['../namespaceclassic_1_1rnn.html',1,'classic']]]
+  ['feedforward',['feedforward',['../namespacecne_1_1feedforward.html',1,'cne']]],
+  ['full_5frnn',['full_rnn',['../namespacecne_1_1full__rnn.html',1,'cne']]],
+  ['lstm',['lstm',['../namespacecne_1_1lstm.html',1,'cne']]],
+  ['lstm_5flite',['lstm_lite',['../namespacecne_1_1lstm__lite.html',1,'cne']]],
+  ['rnn',['rnn',['../namespacecne_1_1rnn.html',1,'cne']]]
 ];
