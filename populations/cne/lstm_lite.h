@@ -15,7 +15,7 @@
 #pragma once
 
 #include "brain.h"
-#include "classic.h"
+#include "cne.h"
 #include "feedforward.h"
 #include "genotype.h"
 
@@ -30,7 +30,7 @@ using namespace std;
 // is the only recurrence, with a single threshold gate which controls
 // the updates to this cell.
 
-namespace classic {
+namespace cne {
 namespace lstm_lite {
 
 enum LstmLiteWeightIds { Wg, Ug, Bg, Wc, Nweights };
@@ -50,7 +50,7 @@ struct Gene : public feedforward::Gene {
   friend void from_json(const json& json_obj, Gene& gene);
 };
 
-struct Layer : public classic::AnnLayer {
+struct Layer : public cne::AnnLayer {
   explicit Layer(const Gene& gene);
 
   vector<float> cells;
@@ -68,7 +68,7 @@ struct GenotypeTraits {
   using OutputLayerGene = feedforward::Gene;
 };
 
-using Genotype = classic::Genotype<GenotypeTraits>;
+using Genotype = cne::Genotype<GenotypeTraits>;
 
 struct BrainTraits {
   using Genotype = lstm_lite::Genotype;
@@ -78,7 +78,7 @@ struct BrainTraits {
   static constexpr bool kNormalizeHiddenLayers = false;
 };
 
-using Brain = classic::Brain<BrainTraits>;
+using Brain = cne::Brain<BrainTraits>;
 
 }  // namespace lstm_lite
-}  // namespace classic
+}  // namespace cne

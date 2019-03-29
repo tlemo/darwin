@@ -15,12 +15,12 @@
 #include "dummy_domain.h"
 
 #include <core/utils.h>
-#include <populations/classic/classic.h>
-#include <populations/classic/feedforward.h>
-#include <populations/classic/full_rnn.h>
-#include <populations/classic/lstm.h>
-#include <populations/classic/lstm_lite.h>
-#include <populations/classic/rnn.h>
+#include <populations/cne/cne.h>
+#include <populations/cne/feedforward.h>
+#include <populations/cne/full_rnn.h>
+#include <populations/cne/lstm.h>
+#include <populations/cne/lstm_lite.h>
+#include <populations/cne/rnn.h>
 
 #include <tests/testcase_output.h>
 #include <third_party/gtest/gtest.h>
@@ -28,15 +28,15 @@
 #include <memory>
 using namespace std;
 
-namespace classic_genotypes_tests {
+namespace cne_genotypes_tests {
 
 struct TestParam {
   size_t inputs = 0;
   size_t outputs = 0;
-  shared_ptr<classic::Config> population_config = make_shared<classic::Config>();
+  shared_ptr<cne::Config> population_config = make_shared<cne::Config>();
 };
 
-struct ClassicGenotypesTest : public testing::TestWithParam<TestParam> {
+struct CneGenotypesTest : public testing::TestWithParam<TestParam> {
   void initializePopulation(const string& population_name) {
     CHECK(!domain);
     CHECK(!population);
@@ -70,29 +70,29 @@ void testGenotypeSaveLoad() {
   EXPECT_EQ(json_src, json_dst);
 }
 
-TEST_P(ClassicGenotypesTest, FF_Genotype_Roundtrip) {
-  initializePopulation("classic.feedforward");
-  testGenotypeSaveLoad<classic::feedforward::Genotype>();
+TEST_P(CneGenotypesTest, FF_Genotype_Roundtrip) {
+  initializePopulation("cne.feedforward");
+  testGenotypeSaveLoad<cne::feedforward::Genotype>();
 }
 
-TEST_P(ClassicGenotypesTest, Full_RNN_Genotype_Roundtrip) {
-  initializePopulation("classic.full_rnn");
-  testGenotypeSaveLoad<classic::full_rnn::Genotype>();
+TEST_P(CneGenotypesTest, Full_RNN_Genotype_Roundtrip) {
+  initializePopulation("cne.full_rnn");
+  testGenotypeSaveLoad<cne::full_rnn::Genotype>();
 }
 
-TEST_P(ClassicGenotypesTest, LSTM_Genotype_Roundtrip) {
-  initializePopulation("classic.lstm");
-  testGenotypeSaveLoad<classic::lstm::Genotype>();
+TEST_P(CneGenotypesTest, LSTM_Genotype_Roundtrip) {
+  initializePopulation("cne.lstm");
+  testGenotypeSaveLoad<cne::lstm::Genotype>();
 }
 
-TEST_P(ClassicGenotypesTest, LSTM_Lite_Genotype_Roundtrip) {
-  initializePopulation("classic.lstm_lite");
-  testGenotypeSaveLoad<classic::lstm_lite::Genotype>();
+TEST_P(CneGenotypesTest, LSTM_Lite_Genotype_Roundtrip) {
+  initializePopulation("cne.lstm_lite");
+  testGenotypeSaveLoad<cne::lstm_lite::Genotype>();
 }
 
-TEST_P(ClassicGenotypesTest, RNN_Genotype_Roundtrip) {
-  initializePopulation("classic.rnn");
-  testGenotypeSaveLoad<classic::rnn::Genotype>();
+TEST_P(CneGenotypesTest, RNN_Genotype_Roundtrip) {
+  initializePopulation("cne.rnn");
+  testGenotypeSaveLoad<cne::rnn::Genotype>();
 }
 
 vector<TestParam> everyTestVariation() {
@@ -158,7 +158,7 @@ vector<TestParam> everyTestVariation() {
 }
 
 INSTANTIATE_TEST_CASE_P(All,
-                        ClassicGenotypesTest,
+                        CneGenotypesTest,
                         testing::ValuesIn(everyTestVariation()));
 
-}  // namespace classic_genotypes_tests
+}  // namespace cne_genotypes_tests

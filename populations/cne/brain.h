@@ -14,7 +14,7 @@
 
 #pragma once
 
-#include "classic.h"
+#include "cne.h"
 
 #include <core/darwin.h>
 #include <core/ann_dynamic.h>
@@ -23,7 +23,7 @@
 #include <limits>
 using namespace std;
 
-namespace classic {
+namespace cne {
 
 template <class TRAITS>
 class Brain : public darwin::Brain {
@@ -85,4 +85,4 @@ class Brain : public darwin::Brain {
   OutputLayer output_layer_;
 };
 
-}  // namespace classic
+}  // namespace cne

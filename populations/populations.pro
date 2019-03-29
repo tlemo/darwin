@@ -3,6 +3,6 @@ TEMPLATE = subdirs
 
 SUBDIRS += \
     cgp \
-    classic \
+    cne \
     neat \
     test_population

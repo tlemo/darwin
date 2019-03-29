@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "classic.h"
+#include "cne.h"
 #include "feedforward.h"
 #include "full_rnn.h"
 #include "lstm.h"
@@ -20,7 +20,7 @@
 #include "population.h"
 #include "rnn.h"
 
-namespace classic {
+namespace cne {
 
 Config g_config;
 
@@ -63,11 +63,11 @@ class Factory : public darwin::PopulationFactory {
 
 void init() {
   auto registry = darwin::registry();
-  registry->populations.add<Factory<feedforward::Genotype>>("classic.feedforward");
-  registry->populations.add<Factory<full_rnn::Genotype>>("classic.full_rnn");
-  registry->populations.add<Factory<lstm::Genotype>>("classic.lstm");
-  registry->populations.add<Factory<lstm_lite::Genotype>>("classic.lstm_lite");
-  registry->populations.add<Factory<rnn::Genotype>>("classic.rnn");
+  registry->populations.add<Factory<feedforward::Genotype>>("cne.feedforward");
+  registry->populations.add<Factory<full_rnn::Genotype>>("cne.full_rnn");
+  registry->populations.add<Factory<lstm::Genotype>>("cne.lstm");
+  registry->populations.add<Factory<lstm_lite::Genotype>>("cne.lstm_lite");
+  registry->populations.add<Factory<rnn::Genotype>>("cne.rnn");
 }
 
-}  // namespace classic
+}  // namespace cne

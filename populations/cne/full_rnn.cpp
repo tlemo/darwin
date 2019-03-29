@@ -15,7 +15,7 @@
 #include "full_rnn.h"
 #include "brain.h"
 
-namespace classic {
+namespace cne {
 
 template <>
 unique_ptr<darwin::Brain> full_rnn::Genotype::grow() const {
@@ -55,7 +55,7 @@ void from_json(const json& json_obj, Gene& gene) {
 }
 
 Layer::Layer(const Gene& gene)
-    : classic::AnnLayer(gene.w.cols), w(gene.w), rw(gene.rw), prev_values(gene.w.cols) {
+    : cne::AnnLayer(gene.w.cols), w(gene.w), rw(gene.rw), prev_values(gene.w.cols) {
   CHECK(rw.rows == rw.cols);
   CHECK(rw.cols == w.cols);
 }
@@ -80,4 +80,4 @@ void Layer::resetState() {
 }
 
 }  // namespace full_rnn
-}  // namespace classic
+}  // namespace cne

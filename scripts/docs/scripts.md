@@ -290,7 +290,7 @@ Experiment #3 : find_max_value / neat[5000]
   Variation #5 :
     Trace #9 : 2018-09-29, 14:16:39 (1131 generations, max_fitness = 63.33)
 
-Experiment #4 : find_max_value / classic.lstm[5000] 
+Experiment #4 : find_max_value / cne.lstm[5000] 
   Variation #6 :
     Trace #10 : 2018-09-29, 14:28:42 (424 generations, max_fitness = 98.00)
 ```

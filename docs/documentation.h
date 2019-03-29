@@ -51,26 +51,26 @@
 //! \brief [Cartesian Genetic Programming (CGP)]
 //!     (https://en.wikipedia.org/wiki/Cartesian_genetic_programming)
 
-//! \namespace classic
-//! \brief Classic (Conventional) Neuroevolution populations
+//! \namespace cne
+//! \brief Conventional Neuroevolution (CNE) populations
 
-//! \namespace classic::feedforward
+//! \namespace cne::feedforward
 //! \brief [Feedforward ANN]
 //!     (https://en.wikipedia.org/wiki/Feedforward_neural_network)
 
-//! \namespace classic::rnn
+//! \namespace cne::rnn
 //! \brief [Recurent ANN (local node recurrence only)]
 //!     (https://en.wikipedia.org/wiki/Recurrent_neural_network)
 
-//! \namespace classic::full_rnn
+//! \namespace cne::full_rnn
 //! \brief [Recurent ANN (full layer recurrence)]
 //!     (https://en.wikipedia.org/wiki/Recurrent_neural_network)
 
-//! \namespace classic::lstm
+//! \namespace cne::lstm
 //! \brief [LSTM ANN]
 //!     (https://en.wikipedia.org/wiki/Long_short-term_memory)
 
-//! \namespace classic::lstm_lite
+//! \namespace cne::lstm_lite
 //! \brief A drastically simplified LSTM variation
 
 //! \namespace test_population

@@ -12,22 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "lstm_lite.h"
-#include "brain.h"
+#include "lstm.h"
 
 #include <core/ann_dynamic.h>
 #include <core/ann_utils.h>
 
 #include <assert.h>
 
-namespace classic {
+namespace cne {
 
 template <>
-unique_ptr<darwin::Brain> lstm_lite::Genotype::grow() const {
-  return make_unique<lstm_lite::Brain>(this);
+unique_ptr<darwin::Brain> lstm::Genotype::grow() const {
+  return make_unique<lstm::Brain>(this);
 }
 
-namespace lstm_lite {
+namespace lstm {
 
 Gene::Gene(size_t inputs, size_t outputs)
     : feedforward::Gene(inputs, outputs), lw(outputs, Nweights) {}
@@ -60,7 +59,7 @@ void from_json(const json& json_obj, Gene& gene) {
 }
 
 Layer::Layer(const Gene& gene)
-    : classic::AnnLayer(gene.w.cols), cells(gene.w.cols), w(gene.w), lw(gene.lw) {
+    : cne::AnnLayer(gene.w.cols), cells(gene.w.cols), w(gene.w), lw(gene.lw) {
   CHECK(lw.cols == Nweights);
 }
 
@@ -75,10 +74,13 @@ void Layer::evaluate(const vector<float>& inputs) {
     for (size_t j = 0; j < bias_index; ++j)
       v += inputs[j] * w[j][i];
 
-    float gate = ann::activateGate(lw[i][Wg] * v + lw[i][Ug] * cells[i] + lw[i][Bg]);
-    v += lw[i][Wc] * cells[i];
-    cells[i] = v * gate;
-    values[i] = ann::activate(v);
+    const float prev = values[i];
+    float cand_C = ann::activate(lw[i][Wc] * v + lw[i][Uc] * prev + lw[i][Bc]);
+    float i_gate = ann::activateGate(lw[i][Wi] * v + lw[i][Ui] * prev + lw[i][Bi]);
+    float f_gate = ann::activateGate(lw[i][Wf] * v + lw[i][Uf] * prev + lw[i][Bf]);
+    float o_gate = ann::activateGate(lw[i][Wo] * v + lw[i][Uo] * prev + lw[i][Bo]);
+    cells[i] = f_gate * cells[i] + i_gate * cand_C;
+    values[i] = o_gate * ann::activate(cells[i]);
   }
 }
 
@@ -87,5 +89,5 @@ void Layer::resetState() {
   ann::reset(cells);
 }
 
-}  // namespace lstm_lite
-}  // namespace classic
+}  // namespace lstm
+}  // namespace cne

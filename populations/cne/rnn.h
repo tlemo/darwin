@@ -15,7 +15,7 @@
 #pragma once
 
 #include "brain.h"
-#include "classic.h"
+#include "cne.h"
 #include "feedforward.h"
 #include "genotype.h"
 
@@ -26,15 +26,13 @@
 #include <vector>
 using namespace std;
 
-namespace classic {
-namespace lstm {
-
-enum LstmWeightIds { Wi, Ui, Bi, Wf, Uf, Bf, Wo, Uo, Bo, Wc, Uc, Bc, Nweights };
+namespace cne {
+namespace rnn {
 
 struct Gene : public feedforward::Gene {
-  // LSTM weights, lw[OUTPUTS][lstm::Nweights]
-  //  lw[i][j]    : i = output neuron
-  ann::Matrix lw;
+  // recurrent self links
+  // (this matrix is actually a 1xN one dimensional array)
+  ann::Matrix rw;
 
   Gene() = default;
   Gene(size_t inputs, size_t outputs);
@@ -47,35 +45,33 @@ struct Gene : public feedforward::Gene {
   friend void from_json(const json& json_obj, Gene& gene);
 };
 
-struct Layer : public classic::AnnLayer {
-  explicit Layer(const Gene& gene);
-
-  vector<float> cells;
+struct Layer : public cne::AnnLayer {
+  Layer(const Gene& gene);
 
   // points directly to the weights in the genotype
   const ann::Matrix& w;
-  const ann::Matrix& lw;
+  const ann::Matrix& rw;
 
   void evaluate(const vector<float>& inputs) override;
   void resetState() override;
 };
 
 struct GenotypeTraits {
-  using HiddenLayerGene = lstm::Gene;
-  using OutputLayerGene = feedforward::Gene;
+  using HiddenLayerGene = rnn::Gene;
+  using OutputLayerGene = rnn::Gene;
 };
 
-using Genotype = classic::Genotype<GenotypeTraits>;
+using Genotype = cne::Genotype<GenotypeTraits>;
 
 struct BrainTraits {
-  using Genotype = lstm::Genotype;
-  using HiddenLayer = lstm::Layer;
-  using OutputLayer = feedforward::Layer;
+  using Genotype = rnn::Genotype;
+  using HiddenLayer = rnn::Layer;
+  using OutputLayer = rnn::Layer;
 
-  static constexpr bool kNormalizeHiddenLayers = false;
+  static constexpr bool kNormalizeHiddenLayers = true;
 };
 
-using Brain = classic::Brain<BrainTraits>;
+using Brain = cne::Brain<BrainTraits>;
 
-}  // namespace lstm
-}  // namespace classic
+}  // namespace rnn
+}  // namespace cne

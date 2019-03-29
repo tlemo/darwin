@@ -15,8 +15,7 @@
 #pragma once
 
 #include "brain.h"
-#include "classic.h"
-#include "feedforward.h"
+#include "cne.h"
 #include "genotype.h"
 
 #include <core/utils.h>
@@ -26,13 +25,14 @@
 #include <vector>
 using namespace std;
 
-namespace classic {
-namespace rnn {
+namespace cne {
+namespace feedforward {
 
-struct Gene : public feedforward::Gene {
-  // recurrent self links
-  // (this matrix is actually a 1xN one dimensional array)
-  ann::Matrix rw;
+struct Gene {
+  // the weights of a fully connected layer, w[INPUTS+1][OUTPUTS]
+  //  w[i][j]     : connection from in.i -> out.j
+  //  w[last][j]  : bias weight for out.j
+  ann::Matrix w;
 
   Gene() = default;
   Gene(size_t inputs, size_t outputs);
@@ -45,33 +45,32 @@ struct Gene : public feedforward::Gene {
   friend void from_json(const json& json_obj, Gene& gene);
 };
 
-struct Layer : public classic::AnnLayer {
-  Layer(const Gene& gene);
+struct Layer : public cne::AnnLayer {
+  explicit Layer(const Gene& gene);
 
   // points directly to the weights in the genotype
   const ann::Matrix& w;
-  const ann::Matrix& rw;
 
   void evaluate(const vector<float>& inputs) override;
   void resetState() override;
 };
 
 struct GenotypeTraits {
-  using HiddenLayerGene = rnn::Gene;
-  using OutputLayerGene = rnn::Gene;
+  using HiddenLayerGene = feedforward::Gene;
+  using OutputLayerGene = feedforward::Gene;
 };
 
-using Genotype = classic::Genotype<GenotypeTraits>;
+using Genotype = cne::Genotype<GenotypeTraits>;
 
 struct BrainTraits {
-  using Genotype = rnn::Genotype;
-  using HiddenLayer = rnn::Layer;
-  using OutputLayer = rnn::Layer;
+  using Genotype = feedforward::Genotype;
+  using HiddenLayer = feedforward::Layer;
+  using OutputLayer = feedforward::Layer;
 
   static constexpr bool kNormalizeHiddenLayers = true;
 };
 
-using Brain = classic::Brain<BrainTraits>;
+using Brain = cne::Brain<BrainTraits>;
 
-}  // namespace rnn
-}  // namespace classic
+}  // namespace feedforward
+}  // namespace cne

@@ -34,7 +34,7 @@ addLibrary(../domains/unicycle)
 addLibrary(../domains/test_domain)
 
 addLibrary(../populations/cgp)
-addLibrary(../populations/classic)
+addLibrary(../populations/cne)
 addLibrary(../populations/test_population)
 addLibrary(../populations/neat)
 

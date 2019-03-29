@@ -13,12 +13,12 @@
 // limitations under the License.
 
 #include <core/utils.h>
-#include <populations/classic/classic.h>
-#include <populations/classic/feedforward.h>
-#include <populations/classic/full_rnn.h>
-#include <populations/classic/lstm.h>
-#include <populations/classic/lstm_lite.h>
-#include <populations/classic/rnn.h>
+#include <populations/cne/cne.h>
+#include <populations/cne/feedforward.h>
+#include <populations/cne/full_rnn.h>
+#include <populations/cne/lstm.h>
+#include <populations/cne/lstm_lite.h>
+#include <populations/cne/rnn.h>
 
 #include <third_party/json/json.h>
 using nlohmann::json;
@@ -26,7 +26,7 @@ using nlohmann::json;
 #include <tests/testcase_output.h>
 #include <third_party/gtest/gtest.h>
 
-namespace classic_genes_tests {
+namespace cne_genes_tests {
 
 void initializeMatrix(ann::Matrix& m, float start, float step) {
   float value = start;
@@ -44,77 +44,77 @@ void checkMatrix(const ann::Matrix& m, float start, float step) {
   }
 }
 
-TEST(ClassicGenesTest, FF_Gene_LoadSave) {
+TEST(CneGenesTest, FF_Gene_LoadSave) {
   core_test::TestCaseOutput output;
 
   constexpr size_t kInputs = 3;
   constexpr size_t kOutputs = 2;
-  classic::feedforward::Gene gene(kInputs, kOutputs);
+  cne::feedforward::Gene gene(kInputs, kOutputs);
   initializeMatrix(gene.w, 0, 1);
   json json_obj = gene;
   fprintf(output, "%s", json_obj.dump(2).c_str());
-  classic::feedforward::Gene gene_clone = json_obj;
+  cne::feedforward::Gene gene_clone = json_obj;
   checkMatrix(gene_clone.w, 0, 1);
 }
 
-TEST(ClassicGenesTest, Full_RNN_Gene_LoadSave) {
+TEST(CneGenesTest, Full_RNN_Gene_LoadSave) {
   core_test::TestCaseOutput output;
 
   constexpr size_t kInputs = 3;
   constexpr size_t kOutputs = 2;
-  classic::full_rnn::Gene gene(kInputs, kOutputs);
-  initializeMatrix(gene.w, 0, 1);
-  initializeMatrix(gene.rw, 100, 1);
-  json json_obj = gene;
-  fprintf(output, "%s", json_obj.dump(2).c_str());
-  classic::full_rnn::Gene gene_clone = json_obj;
-  checkMatrix(gene_clone.w, 0, 1);
-  checkMatrix(gene_clone.rw, 100, 1);
-}
-
-TEST(ClassicGenesTest, LSTM_Gene_LoadSave) {
-  core_test::TestCaseOutput output;
-
-  constexpr size_t kInputs = 3;
-  constexpr size_t kOutputs = 2;
-  classic::lstm::Gene gene(kInputs, kOutputs);
-  initializeMatrix(gene.w, 0, 1);
-  initializeMatrix(gene.lw, 100, 1);
-  json json_obj = gene;
-  fprintf(output, "%s", json_obj.dump(2).c_str());
-  classic::lstm::Gene gene_clone = json_obj;
-  checkMatrix(gene_clone.w, 0, 1);
-  checkMatrix(gene_clone.lw, 100, 1);
-}
-
-TEST(ClassicGenesTest, LSTM_Lite_Gene_LoadSave) {
-  core_test::TestCaseOutput output;
-
-  constexpr size_t kInputs = 3;
-  constexpr size_t kOutputs = 2;
-  classic::lstm_lite::Gene gene(kInputs, kOutputs);
-  initializeMatrix(gene.w, 0, 1);
-  initializeMatrix(gene.lw, 100, 1);
-  json json_obj = gene;
-  fprintf(output, "%s", json_obj.dump(2).c_str());
-  classic::lstm_lite::Gene gene_clone = json_obj;
-  checkMatrix(gene_clone.w, 0, 1);
-  checkMatrix(gene_clone.lw, 100, 1);
-}
-
-TEST(ClassicGenesTest, RNN_Gene_LoadSave) {
-  core_test::TestCaseOutput output;
-
-  constexpr size_t kInputs = 3;
-  constexpr size_t kOutputs = 2;
-  classic::rnn::Gene gene(kInputs, kOutputs);
+  cne::full_rnn::Gene gene(kInputs, kOutputs);
   initializeMatrix(gene.w, 0, 1);
   initializeMatrix(gene.rw, 100, 1);
   json json_obj = gene;
   fprintf(output, "%s", json_obj.dump(2).c_str());
-  classic::rnn::Gene gene_clone = json_obj;
+  cne::full_rnn::Gene gene_clone = json_obj;
   checkMatrix(gene_clone.w, 0, 1);
   checkMatrix(gene_clone.rw, 100, 1);
 }
 
-}  // namespace classic_genes_tests
+TEST(CneGenesTest, LSTM_Gene_LoadSave) {
+  core_test::TestCaseOutput output;
+
+  constexpr size_t kInputs = 3;
+  constexpr size_t kOutputs = 2;
+  cne::lstm::Gene gene(kInputs, kOutputs);
+  initializeMatrix(gene.w, 0, 1);
+  initializeMatrix(gene.lw, 100, 1);
+  json json_obj = gene;
+  fprintf(output, "%s", json_obj.dump(2).c_str());
+  cne::lstm::Gene gene_clone = json_obj;
+  checkMatrix(gene_clone.w, 0, 1);
+  checkMatrix(gene_clone.lw, 100, 1);
+}
+
+TEST(CneGenesTest, LSTM_Lite_Gene_LoadSave) {
+  core_test::TestCaseOutput output;
+
+  constexpr size_t kInputs = 3;
+  constexpr size_t kOutputs = 2;
+  cne::lstm_lite::Gene gene(kInputs, kOutputs);
+  initializeMatrix(gene.w, 0, 1);
+  initializeMatrix(gene.lw, 100, 1);
+  json json_obj = gene;
+  fprintf(output, "%s", json_obj.dump(2).c_str());
+  cne::lstm_lite::Gene gene_clone = json_obj;
+  checkMatrix(gene_clone.w, 0, 1);
+  checkMatrix(gene_clone.lw, 100, 1);
+}
+
+TEST(CneGenesTest, RNN_Gene_LoadSave) {
+  core_test::TestCaseOutput output;
+
+  constexpr size_t kInputs = 3;
+  constexpr size_t kOutputs = 2;
+  cne::rnn::Gene gene(kInputs, kOutputs);
+  initializeMatrix(gene.w, 0, 1);
+  initializeMatrix(gene.rw, 100, 1);
+  json json_obj = gene;
+  fprintf(output, "%s", json_obj.dump(2).c_str());
+  cne::rnn::Gene gene_clone = json_obj;
+  checkMatrix(gene_clone.w, 0, 1);
+  checkMatrix(gene_clone.rw, 100, 1);
+}
+
+}  // namespace cne_genes_tests

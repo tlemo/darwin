@@ -14,7 +14,7 @@
 
 #pragma once
 
-#include "classic.h"
+#include "cne.h"
 
 #include <core/ann_activation_functions.h>
 #include <core/utils.h>
@@ -30,7 +30,7 @@
 #include <memory>
 using namespace std;
 
-namespace classic {
+namespace cne {
 
 template <class GENOTYPE>
 class Population : public darwin::Population {
@@ -155,4 +155,4 @@ class Population : public darwin::Population {
   unique_ptr<selection::SelectionAlgorithm> selection_algorithm_;
 };
 
-}  // namespace classic
+}  // namespace cne

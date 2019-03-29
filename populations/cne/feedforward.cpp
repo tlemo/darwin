@@ -18,7 +18,7 @@
 #include <core/ann_dynamic.h>
 #include <core/ann_utils.h>
 
-namespace classic {
+namespace cne {
 
 template <>
 unique_ptr<darwin::Brain> feedforward::Genotype::grow() const {
@@ -49,7 +49,7 @@ void from_json(const json& json_obj, Gene& gene) {
   gene.w = json_obj.at("w");
 }
 
-Layer::Layer(const Gene& gene) : classic::AnnLayer(gene.w.cols), w(gene.w) {}
+Layer::Layer(const Gene& gene) : cne::AnnLayer(gene.w.cols), w(gene.w) {}
 
 void Layer::evaluate(const vector<float>& inputs) {
   ann::evaluateLayer(inputs, values, w);
@@ -60,4 +60,4 @@ void Layer::resetState() {
 }
 
 }  // namespace feedforward
-}  // namespace classic
+}  // namespace cne

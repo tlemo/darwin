@@ -3,12 +3,12 @@ include(../../common.pri)
 
 QT -= core gui
 
-TARGET = classic
+TARGET = cne
 TEMPLATE = lib
 CONFIG += staticlib
 
 SOURCES += \
-    classic.cpp \
+    cne.cpp \
     genetic_operators.cpp \
     feedforward.cpp \
     lstm.cpp \
@@ -17,7 +17,7 @@ SOURCES += \
     lstm_lite.cpp
 
 HEADERS += \
-    classic.h \
+    cne.h \
     population.h \
     feedforward.h \
     lstm.h \

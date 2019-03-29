@@ -15,7 +15,7 @@
 #include "registry.h"
 
 #include <populations/cgp/cgp.h>
-#include <populations/classic/classic.h>
+#include <populations/cne/cne.h>
 #include <populations/test_population/test_population.h>
 #include <populations/neat/neat.h>
 
@@ -45,7 +45,7 @@ void init() {
 
   // populations
   cgp::init();
-  classic::init();
+  cne::init();
   test_population::init();
   neat::init();
 }

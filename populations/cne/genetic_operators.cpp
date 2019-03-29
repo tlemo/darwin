@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "classic.h"
+#include "cne.h"
 
 #include <core/ann_dynamic.h>
 
-namespace classic {
+namespace cne {
 
 void crossoverOperator(ann::Matrix& child,
                        const ann::Matrix& parent1,
@@ -293,4 +293,4 @@ void mutationOperator(ann::Matrix& w, float mutation_std_dev) {
   }
 }
 
-}  // namespace classic
+}  // namespace cne

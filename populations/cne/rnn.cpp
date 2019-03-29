@@ -20,7 +20,7 @@
 
 #include <assert.h>
 
-namespace classic {
+namespace cne {
 
 template <>
 unique_ptr<darwin::Brain> rnn::Genotype::grow() const {
@@ -59,7 +59,7 @@ void from_json(const json& json_obj, Gene& gene) {
     throw core::Exception("Can't load gene, inconsistent RNN weights");
 }
 
-Layer::Layer(const Gene& gene) : classic::AnnLayer(gene.w.cols), w(gene.w), rw(gene.rw) {
+Layer::Layer(const Gene& gene) : cne::AnnLayer(gene.w.cols), w(gene.w), rw(gene.rw) {
   CHECK(rw.rows == 1);
   CHECK(rw.cols == w.cols);
 }
@@ -82,4 +82,4 @@ void Layer::resetState() {
 }
 
 }  // namespace rnn
-}  // namespace classic
+}  // namespace cne

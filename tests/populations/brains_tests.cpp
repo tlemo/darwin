@@ -19,7 +19,7 @@
 #include <core/parallel_for_each.h>
 
 #include <populations/cgp/cgp.h>
-#include <populations/classic/classic.h>
+#include <populations/cne/cne.h>
 #include <populations/test_population/test_population.h>
 #include <populations/neat/neat.h>
 
@@ -47,8 +47,8 @@ struct BrainsTest : public testing::TestWithParam<string> {
 
     if (auto neat_config = dynamic_cast<neat::Config*>(config.get())) {
       updateConfig(neat_config);
-    } else if (auto classic_config = dynamic_cast<classic::Config*>(config.get())) {
-      updateConfig(classic_config);
+    } else if (auto cne_config = dynamic_cast<cne::Config*>(config.get())) {
+      updateConfig(cne_config);
     } else if (auto cgp_config = dynamic_cast<cgp::Config*>(config.get())) {
       updateConfig(cgp_config);
     } else if (auto test_config = dynamic_cast<test_population::Config*>(config.get())) {
@@ -95,7 +95,7 @@ struct BrainsTest : public testing::TestWithParam<string> {
     config->normalize_output = true;
   }
 
-  void updateConfig(classic::Config* config) {
+  void updateConfig(cne::Config* config) {
     const size_t inputs = domain->inputs();
     const size_t outputs = domain->outputs();
     config->hidden_layers.push_back(inputs);

@@ -14,11 +14,11 @@
 
 #pragma once
 
-#include "classic.h"
+#include "cne.h"
 
 #include <core/darwin.h>
 
-namespace classic {
+namespace cne {
 
 template <class TRAITS>
 class Genotype : public darwin::Genotype {
@@ -113,4 +113,4 @@ class Genotype : public darwin::Genotype {
   }
 };
 
-}  // namespace classic
+}  // namespace cne

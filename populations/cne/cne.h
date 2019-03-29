@@ -27,7 +27,7 @@
 #include <vector>
 using namespace std;
 
-namespace classic {
+namespace cne {
 
 void init();
 
@@ -175,4 +175,4 @@ struct AnnLayer {
   virtual void resetState() = 0;
 };
 
-}  // namespace classic
+}  // namespace cne

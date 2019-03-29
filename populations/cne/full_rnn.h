@@ -18,7 +18,7 @@
 #pragma once
 
 #include "brain.h"
-#include "classic.h"
+#include "cne.h"
 #include "feedforward.h"
 #include "genotype.h"
 
@@ -31,7 +31,7 @@
 #include <vector>
 using namespace std;
 
-namespace classic {
+namespace cne {
 namespace full_rnn {
 
 struct Gene : public feedforward::Gene {
@@ -49,7 +49,7 @@ struct Gene : public feedforward::Gene {
   friend void from_json(const json& json_obj, Gene& gene);
 };
 
-struct Layer : public classic::AnnLayer {
+struct Layer : public cne::AnnLayer {
   explicit Layer(const Gene& gene);
 
   // points directly to the weights in the genotype
@@ -68,7 +68,7 @@ struct GenotypeTraits {
   using OutputLayerGene = full_rnn::Gene;
 };
 
-using Genotype = classic::Genotype<GenotypeTraits>;
+using Genotype = cne::Genotype<GenotypeTraits>;
 
 struct BrainTraits {
   using Genotype = full_rnn::Genotype;
@@ -78,7 +78,7 @@ struct BrainTraits {
   static constexpr bool kNormalizeHiddenLayers = true;
 };
 
-using Brain = classic::Brain<BrainTraits>;
+using Brain = cne::Brain<BrainTraits>;
 
 }  // namespace full_rnn
-}  // namespace classic
+}  // namespace cne
