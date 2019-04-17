@@ -40,6 +40,8 @@ class GenerationFactory {
 //! Selection Algorithm interface
 class SelectionAlgorithm : public core::NonCopyable {
  public:
+  virtual ~SelectionAlgorithm() = default;
+  
   //! Prepare the selection for a new population
   virtual void newPopulation(darwin::Population* population) = 0;
   
