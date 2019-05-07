@@ -17,6 +17,8 @@ SUBDIRS += \
     double_cart_pole_ui \
     unicycle \
     unicycle_ui \
+    ballistics \
+    ballistics_ui \
     test_domain
 
 pong_ui.depends = pong
@@ -26,3 +28,4 @@ harvester_ui.depends = harvester
 cart_pole_ui.depends = cart_pole
 double_cart_pole_ui.depends = double_cart_pole
 unicycle_ui.depends = unicycle
+ballistics_ui.depends = ballistics
