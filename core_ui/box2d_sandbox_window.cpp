@@ -110,6 +110,10 @@ void Box2dSandboxWindow::stop(State state) {
   state_ = state;
 }
 
+Box2dWidget* Box2dSandboxWindow::box2dWidget() const {
+  return ui->world_widget;
+}
+
 PropertiesWidget* Box2dSandboxWindow::variablesWidget() const {
   return ui->variables;
 }

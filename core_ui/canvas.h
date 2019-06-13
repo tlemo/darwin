@@ -38,16 +38,16 @@ class Canvas : public QFrame {
   //! Creates a new Canvas
   explicit Canvas(QWidget* parent);
 
-  //! Border size value
+  //! Border size value (in pixels)
   int borderSize() const { return border_size_; }
   
-  //! Sets a new border size
+  //! Sets a new border size (pixels)
   void setBorderSize(int border_size);
 
-  //! Current viewport rectangle
+  //! Current viewport rectangle (in logical coordinates)
   const QRectF& viewport() const { return viewport_rect_; }
   
-  //! Sets the viewport rectangle
+  //! Sets the viewport rectangle (logical coordinates)
   //! 
   //! In order to use the traditional Cartesian coordinates, with the y-axis pointing up,
   //! the height of the viewport rectangle should have a negative value. The top_left 

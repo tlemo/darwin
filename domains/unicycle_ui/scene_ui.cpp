@@ -26,7 +26,7 @@ using namespace std;
 
 namespace unicycle_ui {
 
-void SceneUi::render(QPainter& painter) {
+void SceneUi::render(QPainter& painter, const QRectF&) {
   // draw an "arrow" pointing to the target position
   constexpr float kArrowHalfSize = unicycle::World::kGroundY / 4;
   const float target_position = world_->targetPosition();

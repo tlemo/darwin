@@ -27,7 +27,7 @@ class Box2dSceneUi : public QObject {
 
  public:
   // rendering
-  virtual void render(QPainter& /*painter*/) {}
+  virtual void render(QPainter& /*painter*/, const QRectF& /*viewport*/) {}
 
   // mouse
   virtual void mousePressEvent(const QPointF& /*pos*/, QMouseEvent* /*event*/) {}
@@ -37,7 +37,7 @@ class Box2dSceneUi : public QObject {
   // keyboard
   virtual void keyPressEvent(QKeyEvent* /*event*/) {}
   virtual void keyReleaseEvent(QKeyEvent* /*event*/) {}
-  
+
  signals:
   void sigPlayPause();
 };
