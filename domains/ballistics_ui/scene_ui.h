@@ -17,18 +17,26 @@
 #include <core_ui/box2d_widget.h>
 #include <domains/ballistics/world.h>
 
+#include <QPainterPath>
+
 namespace ballistics_ui {
 
 class SceneUi : public core_ui::Box2dSceneUi {
+  Q_OBJECT
+
  public:
-  SceneUi(ballistics::World* world) : world_(world) {}
+  SceneUi(ballistics::World* world) : world_(world) { trajectory_path_.moveTo(0, 0); }
+
+ signals:
+  void sigNewTarget(double x, double y);
 
  private:
-  void render(QPainter& painter) override;
+  void render(QPainter& painter, const QRectF& viewport) override;
   void mousePressEvent(const QPointF& pos, QMouseEvent* event) override;
 
  private:
   ballistics::World* world_ = nullptr;
+  QPainterPath trajectory_path_;
 };
 
 }  // namespace ballistics_ui

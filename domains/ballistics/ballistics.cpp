@@ -32,11 +32,11 @@ Ballistics::Ballistics(const core::PropertySet& config) {
 }
 
 size_t Ballistics::inputs() const {
-  return Agent::inputs(config_);
+  return Agent::kInputs;
 }
 
 size_t Ballistics::outputs() const {
-  return Agent::outputs(config_);
+  return Agent::kOutputs;
 }
 
 bool Ballistics::evaluatePopulation(darwin::Population* population) const {
@@ -54,30 +54,30 @@ bool Ballistics::evaluatePopulation(darwin::Population* population) const {
     darwin::StageScope stage("Evaluate one world", population->size());
     core::log(" ... world %d\n", world_index);
 
-    const float initial_angle = randomInitialAngle();
-    const float target_position = randomTargetPosition();
+    const b2Vec2 target_position = randomTargetPosition();
+    const float target_distance = target_position.Length();
 
     pp::for_each(*population, [&](int, darwin::Genotype* genotype) {
-      World world(initial_angle, target_position, this);
-      Agent agent(genotype, &world);
+      World world(target_position, this);
+
+      Agent agent(genotype);
+      world.fireProjectile(agent.aim(target_position.x, target_position.y));
 
       // simulation loop
-      int step = 0;
-      for (; step < config_.max_steps; ++step) {
-        agent.simStep();
-        if (!world.simStep())
-          break;
-      }
-      CHECK(step > 0);
+      float closest_distance = target_distance;
+      do {
+        const float distance = (world.projectilePosition() - target_position).Length();
+        if (distance < closest_distance) {
+          closest_distance = distance;
+        }
+      } while (world.simStep());
 
-      // fitness value: 
-      // 1. the number of steps keeping the pole balanced, normalized to [0..1]
-      // 2. iff the pole was balanced for the whole episode, add the fitness bonus
-      float episode_fitness = float(step) / config_.max_steps;
-      if (step == config_.max_steps) {
-        episode_fitness += world.fitnessBonus() / config_.max_steps;
+      float fitness = 1.0f - closest_distance / target_distance;
+      if (closest_distance <= config_.target_radius + config_.projectile_radius) {
+        fitness += config_.target_hit_bonus;
       }
-      genotype->fitness += episode_fitness / config_.test_worlds;
+
+      genotype->fitness += fitness / config_.test_worlds;
 
       darwin::ProgressManager::reportProgress();
     });
@@ -87,49 +87,43 @@ bool Ballistics::evaluatePopulation(darwin::Population* population) const {
   return false;
 }
 
-float Ballistics::randomInitialAngle() const {
+b2Vec2 Ballistics::randomTargetPosition() const {
   random_device rd;
   default_random_engine rnd(rd());
-  uniform_real_distribution<float> dist(-config_.max_initial_angle,
-                                        config_.max_initial_angle);
-  return dist(rnd);
-}
-
-float Ballistics::randomTargetPosition() const {
-  random_device rd;
-  default_random_engine rnd(rd());
-  uniform_real_distribution<float> dist(-config_.max_distance, config_.max_distance);
-  return dist(rnd);
+  uniform_real_distribution<float> dist_x(config_.range_min_x, config_.range_max_x);
+  uniform_real_distribution<float> dist_y(config_.range_min_y, config_.range_max_y);
+  return b2Vec2(dist_x(rnd), dist_y(rnd));
 }
 
 // validate the configuration
 // (just a few obvious sanity checks for values which would completly break the domain,
 // nonsensical configurations are still possible)
 void Ballistics::validateConfiguration() {
-  if (config_.max_distance <= 0)
-    throw core::Exception("Invalid configuration: max_distance <= 0");
-  if (config_.max_angle >= 90)
-    throw core::Exception("Invalid configuration: max_angle >= 90");
-  if (config_.max_initial_angle >= config_.max_angle)
-    throw core::Exception("Invalid configuration: max_initial_angle >= max_angle");
-  if (config_.pole_length <= 0)
-    throw core::Exception("Invalid configuration: pole_length must be positive");
-  if (config_.pole_density <= 0)
-    throw core::Exception("Invalid configuration: pole_density must be positive");
-  if (config_.wheel_radius <= 0)
-    throw core::Exception("Invalid configuration: wheel_radius must be positive");
-  if (config_.wheel_density < 0)
-    throw core::Exception("Invalid configuration: wheel_density must be positive or 0");
-  if (config_.wheel_friction <= 0)
-    throw core::Exception("Invalid configuration: wheel_friction must be positive");
+  if (config_.gravity < 0)
+    throw core::Exception("Invalid configuration: gravity < 0");
 
-  if (inputs() < 1)
-    throw core::Exception("Invalid configuration: at least one input must be selected");
+  if (config_.range_min_x < 0)
+    throw core::Exception("Invalid configuration: range_min_x < 0");
+  if (config_.range_min_x > config_.range_max_x)
+    throw core::Exception("Invalid configuration: range_min_x > range_max_x");
+  if (config_.range_min_y > config_.range_max_y)
+    throw core::Exception("Invalid configuration: range_min_y > range_max_y");
+
+  if (config_.target_radius <= 0)
+    throw core::Exception("Invalid configuration: target_radius <= 0");
+
+  if (config_.target_hit_bonus < 0)
+    throw core::Exception("Invalid configuration: target_hit_bonus < 0");
+  if (config_.target_hit_bonus > 1)
+    throw core::Exception("Invalid configuration: target_hit_bonus > 1");
+
+  if (config_.projectile_radius <= 0)
+    throw core::Exception("Invalid configuration: projectile_radius <= 0");
+  if (config_.projectile_velocity <= 0)
+    throw core::Exception("Invalid configuration: projectile_velocity <= 0");
 
   if (config_.test_worlds < 1)
     throw core::Exception("Invalid configuration: test_worlds < 1");
-  if (config_.max_steps < 1)
-    throw core::Exception("Invalid configuration: max_steps < 1");
 }
 
 unique_ptr<darwin::Domain> Factory::create(const core::PropertySet& config) {
@@ -141,7 +135,6 @@ unique_ptr<core::PropertySet> Factory::defaultConfig(darwin::ComplexityHint hint
   switch (hint) {
     case darwin::ComplexityHint::Minimal:
       config->test_worlds = 2;
-      config->max_steps = 100;
       break;
 
     case darwin::ComplexityHint::Balanced:
@@ -149,7 +142,6 @@ unique_ptr<core::PropertySet> Factory::defaultConfig(darwin::ComplexityHint hint
 
     case darwin::ComplexityHint::Extra:
       config->test_worlds = 10;
-      config->max_steps = 10000;
       break;
   }
   return config;

@@ -14,148 +14,66 @@
 
 #include "world.h"
 
-#include <core/math_2d.h>
-
-#include <iterator>
-using namespace std;
-
 namespace ballistics {
 
-b2Body* World::createGround() {
+World::World(b2Vec2 target_pos, const Ballistics* domain)
+    : b2_world_(b2Vec2(0, -domain->config().gravity)), domain_(domain) {
   const auto& config = domain_->config();
+    
+  // create target body
+  b2BodyDef target_body_def;
+  target_body_def.type = b2_staticBody;
+  target_body_def.position = target_pos;
+  target_ = b2_world_.CreateBody(&target_body_def);
 
-  b2BodyDef ground_body_def;
-  ground_body_def.position.Set(0, kGroundY);
-  auto ground = b2_world_.CreateBody(&ground_body_def);
+  b2CircleShape target_shape;
+  target_shape.m_radius = config.target_radius;
 
-  b2EdgeShape ground_shape;
-  ground_shape.Set(b2Vec2(-config.max_distance, 0), b2Vec2(config.max_distance, 0));
-
-  b2FixtureDef ground_fixture_def;
-  ground_fixture_def.shape = &ground_shape;
-  ground_fixture_def.density = 0;
-  ground_fixture_def.friction = kGroundFriction;
-  ground->CreateFixture(&ground_fixture_def);
-
-  return ground;
+  b2FixtureDef target_fixture_def;
+  target_fixture_def.shape = &target_shape;
+  target_fixture_def.isSensor = true;
+  target_->CreateFixture(&target_fixture_def);
+  
+  // default vertical limit
+  vertical_limit_ = target_pos.y - (config.target_radius + config.projectile_radius);
 }
 
-b2Body* World::createPole(float initial_angle) {
-  const auto& config = domain_->config();
-  const float wheel_axle_height = config.wheel_radius + kGroundY;
-  const float pole_half_height = config.pole_length / 2;
+void World::fireProjectile(float aim_angle) {
+  CHECK(projectile_ == nullptr);
 
-  b2BodyDef pole_body_def;
-  pole_body_def.type = b2_dynamicBody;
-  pole_body_def.position.Set(0.0f, wheel_axle_height);
-  pole_body_def.angle = math::degreesToRadians(initial_angle);
-  auto pole = b2_world_.CreateBody(&pole_body_def);
+  // create the projectile
+  b2BodyDef body_def;
+  body_def.type = b2_dynamicBody;
+  body_def.position.Set(0, 0);
+  body_def.bullet = true;
+  projectile_ = b2_world_.CreateBody(&body_def);
 
-  b2PolygonShape pole_shape;
-  pole_shape.SetAsBox(
-      kPoleHalfWidth, pole_half_height, b2Vec2(0, pole_half_height), 0.0f);
+  b2CircleShape shape;
+  shape.m_radius = domain_->config().projectile_radius;
 
-  b2FixtureDef pole_fixture_def;
-  pole_fixture_def.shape = &pole_shape;
-  pole_fixture_def.density = config.pole_density;
-  pole_fixture_def.filter.groupIndex = -1;
-  pole->CreateFixture(&pole_fixture_def);
+  b2FixtureDef fixture_def;
+  fixture_def.shape = &shape;
+  fixture_def.density = 1.0f;
+  projectile_->CreateFixture(&fixture_def);
 
-  return pole;
-}
-
-b2Body* World::createWheel() {
-  const auto& config = domain_->config();
-
-  b2BodyDef wheel_body_def;
-  wheel_body_def.type = b2_dynamicBody;
-  wheel_body_def.position.Set(0.0f, config.wheel_radius + kGroundY);
-  auto wheel = b2_world_.CreateBody(&wheel_body_def);
-
-  b2CircleShape wheel_shape;
-  wheel_shape.m_radius = config.wheel_radius;
-
-  b2FixtureDef wheel_fixture_def;
-  wheel_fixture_def.shape = &wheel_shape;
-  wheel_fixture_def.density = config.wheel_density;
-  wheel_fixture_def.friction = config.wheel_friction;
-  wheel->CreateFixture(&wheel_fixture_def);
-
-  return wheel;
-}
-
-void World::createHinge(b2Body* wheel, b2Body* pole) {
-  b2RevoluteJointDef hinge_def;
-  hinge_def.bodyA = wheel;
-  hinge_def.bodyB = pole;
-  hinge_def.localAnchorA.Set(0.0f, 0.0f);
-  hinge_def.localAnchorB.Set(0.0f, 0.0f);
-  b2_world_.CreateJoint(&hinge_def);
-}
-
-World::World(float initial_angle, float target_position, const Ballistics* domain)
-    : b2_world_(b2Vec2(0, -domain->config().gravity)),
-      target_position_(target_position),
-      domain_(domain) {
-  createGround();
-  wheel_ = createWheel();
-  pole_ = createPole(initial_angle);
-  createHinge(wheel_, pole_);
+  // initial velocity
+  const float v = domain_->config().projectile_velocity;
+  projectile_->SetLinearVelocity(b2Vec2(v * cos(aim_angle), v * sin(aim_angle)));
 }
 
 bool World::simStep() {
+  CHECK(projectile_ != nullptr);
+
   constexpr float32 kTimeStep = 1.0f / 50.0f;
   constexpr int32 kVelocityIterations = 5;
   constexpr int32 kPositionIterations = 5;
 
-  const auto& config = domain_->config();
-
   // box2d: simulate one step
   b2_world_.Step(kTimeStep, kVelocityIterations, kPositionIterations);
 
-  // check wheel distance
-  const auto distance = wheelDistance();
-  if (distance < -config.max_distance || distance > config.max_distance)
-    return false;
-
-  // check pole angle
-  const auto max_angle = math::degreesToRadians(config.max_angle);
-  const auto pole_angle = poleAngle();
-  if (pole_angle < -max_angle || pole_angle > max_angle)
-    return false;
-
-  // update the "close-to-target" fitness bonus
-  const float distance_from_target = fabs(wheelDistance() - target_position_);
-  const float score = 1 - fmin(distance_from_target / config.max_distance, 1);
-  fitness_bonus_ += score * score;
-
-  return true;
-}
-
-void World::setTargetPosition(float target_position) {
-  target_position_ = target_position;
-}
-
-void World::turnWheel(float torque) {
-  CHECK(!isnan(torque));
-
-  const auto& config = domain_->config();
-
-  // discrete control forces?
-  if (config.discrete_controls && torque != 0) {
-    const auto magnitude = config.discrete_torque_magnitude;
-    torque = torque > 0 ? +magnitude : -magnitude;
-  }
-
-  // cap the maximum force magnitude
-  // (applies to the discrete inputs as well)
-  if (torque < -config.max_torque) {
-    torque = -config.max_torque;
-  } else if (torque > config.max_torque) {
-    torque = config.max_torque;
-  }
-
-  wheel_->ApplyTorque(torque, true);
+  const float y = projectile_->GetPosition().y;
+  const float vy = projectile_->GetLinearVelocity().y;
+  return vy >= 0 || y > vertical_limit_;
 }
 
 }  // namespace ballistics

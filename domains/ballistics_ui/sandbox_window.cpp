@@ -22,6 +22,9 @@
 
 #include <QString>
 
+#include <algorithm>
+using namespace std;
+
 namespace ballistics_ui {
 
 bool SandboxWindow::setup() {
@@ -35,14 +38,13 @@ bool SandboxWindow::setup() {
   domain_ = dynamic_cast<const ballistics::Ballistics*>(snapshot.domain);
   CHECK(domain_ != nullptr);
 
-  const auto default_generation = snapshot.generation - 1;
-  const auto default_max_steps = domain_->config().max_steps;
-
+  const int default_generation = snapshot.generation - 1;
+  const int default_max_steps = 1000;
   core_ui::Box2dSandboxDialog dlg(default_generation, default_max_steps);
   if (dlg.exec() != QDialog::Accepted) {
     return false;
   }
-  
+
   const int generation = dlg.generation();
   max_steps_ = dlg.maxSteps();
   CHECK(max_steps_ > 0);
@@ -55,7 +57,7 @@ bool SandboxWindow::setup() {
         "Generation %d champion genotype is not available: %s\n", generation, e.what());
     return false;
   }
-  
+
   setWindowTitle(QString::asprintf("Generation %d", generation));
   setupVariables();
 
@@ -70,85 +72,104 @@ bool SandboxWindow::setup() {
 }
 
 void SandboxWindow::newScene() {
-  CHECK(domain_ != nullptr);
-  CHECK(max_steps_ > 0);
-
-  const float initial_angle = domain_->randomInitialAngle();
-  const float target_position = domain_->randomTargetPosition();
-  world_ = make_unique<ballistics::World>(initial_angle, target_position, domain_);
-  agent_ = make_unique<ballistics::Agent>(genotype_.get(), world_.get());
-  step_ = 0;
-
-  variables_.initial_angle->setValue(QString::asprintf("%.2f", initial_angle));
-  variables_.target_position->setValue(QString::asprintf("%.2f", target_position));
-
-  // calculate viewport extents based on the configuration values
-  const auto& config = domain_->config();
-  constexpr float kMargin = 0.3f;
-  const auto half_width = fmax(config.max_distance + kMargin, config.pole_length);
-  const auto height = config.pole_length + config.wheel_radius + kMargin;
-  QRectF viewport(-half_width, height, 2 * half_width, -height);
-
-  setWorld(world_->box2dWorld(), viewport);
-  
-  scene_ui_ = make_unique<SceneUi>(world_.get());
-  setSceneUi(scene_ui_.get());
+  setupScene(domain_->randomTargetPosition());
 }
 
 void SandboxWindow::singleStep() {
   CHECK(world_);
   CHECK(agent_);
 
-  if (step_ < max_steps_) {
-    agent_->simStep();
-    if (!world_->simStep()) {
-      stop(State::Failed);
-    } else {
-      ++step_;
-    }
+  if (world_->simStep() && step_ < max_steps_) {
+    ++step_;
   } else {
     stop(State::Completed);
   }
 
+  viewport_rect_ = calculateViewport(viewport_rect_);
+  box2dWidget()->setViewport(viewport_rect_);
   updateUI();
 }
 
 void SandboxWindow::updateUI() {
-  const float wheel_distance = world_->wheelDistance();
-  const float wheel_velocity = world_->wheelVelocity();
-  const float pole_angle = math::radiansToDegrees(world_->poleAngle());
-  const float angular_velocity = math::radiansToDegrees(world_->poleAngularVelocity());
-  const float dist_from_target = fabs(wheel_distance - world_->targetPosition());
-  const float fitness_bonus = world_->fitnessBonus() / max_steps_;
-
+  const auto projectile_position = world_->projectilePosition();
+  const auto target_position = world_->targetPosition();
+  const double dist_from_target = (projectile_position - target_position).Length();
+  closest_dist_ = min(closest_dist_, dist_from_target);
   variables_.state->setValue(stateDescription());
   variables_.step->setValue(step_);
-  variables_.fitness_bonus->setValue(QString::asprintf("%.3f", fitness_bonus));
-  variables_.position->setValue(QString::asprintf("%.3f", wheel_distance));
-  variables_.velocity->setValue(QString::asprintf("%.3f", wheel_velocity));
-  variables_.angle->setValue(QString::asprintf("%.2f", pole_angle));
-  variables_.angular_velocity->setValue(QString::asprintf("%.3f", angular_velocity));
+  variables_.projectile_x->setValue(QString::asprintf("%.3f", projectile_position.x));
+  variables_.projectile_y->setValue(QString::asprintf("%.3f", projectile_position.y));
   variables_.dist_from_target->setValue(QString::asprintf("%.3f", dist_from_target));
-
+  variables_.closest_dist->setValue(QString::asprintf("%.3f", closest_dist_));
   update();
+}
+
+void SandboxWindow::setupScene(const b2Vec2& target_position) {
+  CHECK(domain_ != nullptr);
+  CHECK(max_steps_ > 0);
+
+  if (scene_ui_) {
+    disconnect(scene_ui_.get(), &SceneUi::sigNewTarget, this, &SandboxWindow::newTarget);
+    setSceneUi(nullptr);
+    scene_ui_.reset();
+  }
+
+  world_ = make_unique<ballistics::World>(target_position, domain_);
+  agent_ = make_unique<ballistics::Agent>(genotype_.get());
+  step_ = 0;
+  closest_dist_ = target_position.Length();
+
+  const auto& config = domain_->config();
+  world_->setVerticalLimit(config.range_min_y);
+  world_->fireProjectile(agent_->aim(target_position.x, target_position.y));
+
+  variables_.target_x->setValue(QString::asprintf("%.3f", target_position.x));
+  variables_.target_y->setValue(QString::asprintf("%.3f", target_position.y));
+  variables_.target_dist->setValue(QString::asprintf("%.3f", target_position.Length()));
+
+  viewport_rect_ = calculateViewport();
+  setWorld(world_->box2dWorld(), viewport_rect_);
+
+  scene_ui_ = make_unique<SceneUi>(world_.get());
+  setSceneUi(scene_ui_.get());
+  connect(scene_ui_.get(), &SceneUi::sigNewTarget, this, &SandboxWindow::newTarget);
+}
+
+void SandboxWindow::newTarget(double x, double y) {
+  pause();
+  setupScene(b2Vec2(float(x), float(y)));
+  play();
+
+  updateUI();
 }
 
 void SandboxWindow::setupVariables() {
   auto config_section = variablesWidget()->addSection("Configuration");
   variables_.generation = config_section->addProperty("Generation");
   variables_.max_steps = config_section->addProperty("Max steps");
-  variables_.initial_angle = config_section->addProperty("Initial angle");
-  variables_.target_position = config_section->addProperty("Target position");
+  variables_.target_x = config_section->addProperty("Target x coordinate");
+  variables_.target_y = config_section->addProperty("Target y coordinate");
+  variables_.target_dist = config_section->addProperty("Distance to target");
 
   auto game_state_section = variablesWidget()->addSection("Game state");
   variables_.state = game_state_section->addProperty("State");
   variables_.step = game_state_section->addProperty("Simulation step");
-  variables_.fitness_bonus = game_state_section->addProperty("Fitness bonus");
-  variables_.position = game_state_section->addProperty("Wheel position");
-  variables_.velocity = game_state_section->addProperty("Wheel velocity");
-  variables_.angle = game_state_section->addProperty("Pole angle");
-  variables_.angular_velocity = game_state_section->addProperty("Angular velocity");
+  variables_.projectile_x = game_state_section->addProperty("Projectile x coordinate");
+  variables_.projectile_y = game_state_section->addProperty("Projectile y coordinate");
   variables_.dist_from_target = game_state_section->addProperty("Distance from target");
+  variables_.closest_dist = game_state_section->addProperty("Closest distance");
+}
+
+QRectF SandboxWindow::calculateViewport(QRectF old_rect) const {
+  CHECK(world_);
+  const auto& config = domain_->config();
+  const auto pos = world_->projectilePosition();
+  const double margin = 2 * max(config.projectile_radius, config.target_radius);
+  const double left = min(min(0.0f, pos.x) - margin, old_rect.left());
+  const double right = max(max(config.range_max_x, pos.x) + margin, old_rect.right());
+  const double top = max(max(config.range_max_y, pos.y) + margin, old_rect.top());
+  const double bottom = min(min(config.range_min_y, pos.y) - margin, old_rect.bottom());
+  return QRectF(QPointF(left, top), QPointF(right, bottom));
 }
 
 }  // namespace ballistics_ui

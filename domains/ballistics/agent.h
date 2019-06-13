@@ -27,14 +27,19 @@ class World;
 
 class Agent {
  public:
-  Agent(const darwin::Genotype* genotype, World* world);
-  void simStep();
-  
-  static int inputs(const Config& config);
-  static int outputs(const Config& config);
+  static constexpr int kInputs = 2;
+  static constexpr int kOutputs = 1;
 
  private:
-  World* world_ = nullptr;
+  static constexpr int kInputTargetX = 0;
+  static constexpr int kInputTargetY = 1;
+  static constexpr int kOutputAimAngle = 0;
+
+ public:
+  explicit Agent(const darwin::Genotype* genotype);
+  float aim(float target_x, float target_y);
+
+ private:
   unique_ptr<darwin::Brain> brain_;
 };
 

@@ -36,18 +36,17 @@ class SandboxWindow : public core_ui::Box2dSandboxWindow {
     // configuration
     core_ui::PropertyItem* generation = nullptr;
     core_ui::PropertyItem* max_steps = nullptr;
-    core_ui::PropertyItem* initial_angle = nullptr;
-    core_ui::PropertyItem* target_position = nullptr;
+    core_ui::PropertyItem* target_x = nullptr;
+    core_ui::PropertyItem* target_y = nullptr;
+    core_ui::PropertyItem* target_dist = nullptr;
 
     // simulation state
     core_ui::PropertyItem* state = nullptr;
     core_ui::PropertyItem* step = nullptr;
-    core_ui::PropertyItem* fitness_bonus = nullptr;
-    core_ui::PropertyItem* position = nullptr;
-    core_ui::PropertyItem* velocity = nullptr;
-    core_ui::PropertyItem* angle = nullptr;
-    core_ui::PropertyItem* angular_velocity = nullptr;
+    core_ui::PropertyItem* projectile_x = nullptr;
+    core_ui::PropertyItem* projectile_y = nullptr;
     core_ui::PropertyItem* dist_from_target = nullptr;
+    core_ui::PropertyItem* closest_dist = nullptr;
   };
 
  public:
@@ -58,7 +57,10 @@ class SandboxWindow : public core_ui::Box2dSandboxWindow {
   void updateUI() override;
 
  private:
+  void newTarget(double x, double y);
+  void setupScene(const b2Vec2& target_position);
   void setupVariables();
+  QRectF calculateViewport(QRectF old_rect = QRect(0, 0, 0, 0)) const;
 
  private:
   Variables variables_;
@@ -69,8 +71,12 @@ class SandboxWindow : public core_ui::Box2dSandboxWindow {
   unique_ptr<ballistics::World> world_;
   unique_ptr<ballistics::Agent> agent_;
   unique_ptr<SceneUi> scene_ui_;
+  
   int step_ = -1;
   int max_steps_ = -1;
+  double closest_dist_ = 0;
+  
+  QRectF viewport_rect_;
 };
 
 }  // namespace ballistics_ui

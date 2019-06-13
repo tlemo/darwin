@@ -15,34 +15,57 @@
 #include "scene_ui.h"
 
 #include <QBrush>
+#include <QMouseEvent>
 #include <QPainter>
 #include <QPen>
 #include <QPointF>
 #include <QRectF>
-#include <QMouseEvent>
 
 #include <array>
 using namespace std;
 
 namespace ballistics_ui {
 
-void SceneUi::render(QPainter& painter) {
-  // draw an "arrow" pointing to the target position
-  constexpr float kArrowHalfSize = ballistics::World::kGroundY / 4;
-  const float target_position = world_->targetPosition();
-  array<QPointF, 3> points = {
-    QPointF(target_position, 3 * kArrowHalfSize),
-    QPointF(target_position + kArrowHalfSize, kArrowHalfSize),
-    QPointF(target_position - kArrowHalfSize, kArrowHalfSize),
-  };
-  painter.setPen(QPen(Qt::gray, 0));
-  painter.setBrush(Qt::green);
-  painter.drawConvexPolygon(points.data(), int(points.size()));
+void SceneUi::render(QPainter& painter, const QRectF& viewport) {
+  painter.setPen(QPen(Qt::lightGray, 0));
+
+  // x/y axis
+  painter.drawLine(QPointF(viewport.left(), 0.0), QPointF(viewport.right(), 0.0));
+  painter.drawLine(QPointF(0.0, viewport.bottom()), QPointF(0.0, viewport.top()));
+
+  constexpr double kTickSpacing = 0.2;
+  constexpr double kTickSize = -0.05;
+
+  // horizontal ticks
+  for (double x = viewport.left(); x < viewport.right(); x += kTickSpacing) {
+    painter.drawLine(QPointF(x, 0), QPointF(x, kTickSize));
+  }
+
+  // vertical ticks
+  for (double y = viewport.bottom(); y < viewport.top(); y += kTickSpacing) {
+    painter.drawLine(QPointF(0, y), QPointF(kTickSize, y));
+  }
+
+  const auto target_position = world_->targetPosition();
+  const auto projectile_position = world_->projectilePosition();
+
+  const auto target_point = QPointF(target_position.x, target_position.y);
+  const auto projectile_point = QPointF(projectile_position.x, projectile_position.y);
+
+  // origin - target line
+  painter.setPen(QPen(Qt::lightGray, 0, Qt::DotLine));
+  painter.drawLine(QPointF(0, 0), target_point);
+
+  // trajectory
+  painter.setPen(QPen(Qt::green, 0, Qt::DotLine));
+  painter.setBrush(Qt::NoBrush);
+  trajectory_path_.lineTo(projectile_point);
+  painter.drawPath(trajectory_path_);
 }
 
 void SceneUi::mousePressEvent(const QPointF& pos, QMouseEvent* event) {
   if (event->button() == Qt::LeftButton) {
-    world_->setTargetPosition(pos.x());
+    emit sigNewTarget(pos.x(), pos.y());
   } else {
     emit sigPlayPause();
   }
