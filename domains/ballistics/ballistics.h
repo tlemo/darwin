@@ -25,16 +25,16 @@ struct Config : public core::PropertySet {
   PROPERTY(gravity, float, 9.8f, "Gravitational acceleration");
 
   PROPERTY(range_min_x, float, 0.0f, "Min target x coordinate");
-  PROPERTY(range_max_x, float, 20.0f, "Max target x coordinate");
-  PROPERTY(range_min_y, float, -5.0f, "Min target y coordinate");
-  PROPERTY(range_max_y, float, 5.0f, "Max target y coordinate");
+  PROPERTY(range_max_x, float, 10.0f, "Max target x coordinate");
+  PROPERTY(range_min_y, float, -2.5f, "Min target y coordinate");
+  PROPERTY(range_max_y, float, 2.5f, "Max target y coordinate");
 
   PROPERTY(target_radius, float, 0.1f, "Target radius");
   
   PROPERTY(target_hit_bonus, float, 0.5f, "Extra score for hitting the target [0..1]");
 
   PROPERTY(projectile_radius, float, 0.1f, "Projectile size");
-  PROPERTY(projectile_velocity, float, 15.0f, "Initial projectile velocity");
+  PROPERTY(projectile_velocity, float, 10.0f, "Initial projectile velocity");
 
   PROPERTY(test_worlds, int, 5, "Number of test worlds per generation");
 };
@@ -48,11 +48,11 @@ struct Config : public core::PropertySet {
 //! ![](images/ballistics_sandbox.png)
 //!
 //! While seemingly simple, the analytical solution is not exactly trivial and it seems a 
-//! good benchmark for Neuroevolution. The fitness is:
+//! good benchmark for Neuroevolution. The fitness function is:
 //! 
 //! `1 - closest_distance / target_distance`
 //! 
-//! An optional bonus fitness is added if the target is hit.
+//! An optional fitness bonus is added if the target is hit.
 //!
 //! ### Inputs
 //! 

@@ -102,8 +102,6 @@ void Ballistics::validateConfiguration() {
   if (config_.gravity < 0)
     throw core::Exception("Invalid configuration: gravity < 0");
 
-  if (config_.range_min_x < 0)
-    throw core::Exception("Invalid configuration: range_min_x < 0");
   if (config_.range_min_x > config_.range_max_x)
     throw core::Exception("Invalid configuration: range_min_x > range_max_x");
   if (config_.range_min_y > config_.range_max_y)

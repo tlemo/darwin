@@ -165,7 +165,7 @@ QRectF SandboxWindow::calculateViewport(QRectF old_rect) const {
   const auto& config = domain_->config();
   const auto pos = world_->projectilePosition();
   const double margin = 2 * max(config.projectile_radius, config.target_radius);
-  const double left = min(min(0.0f, pos.x) - margin, old_rect.left());
+  const double left = min(min(config.range_min_x, pos.x) - margin, old_rect.left());
   const double right = max(max(config.range_max_x, pos.x) + margin, old_rect.right());
   const double top = max(max(config.range_max_y, pos.y) + margin, old_rect.top());
   const double bottom = min(min(config.range_min_y, pos.y) - margin, old_rect.bottom());
