@@ -34,7 +34,7 @@ struct Config : public core::PropertySet {
   PROPERTY(target_hit_bonus, float, 0.5f, "Extra score for hitting the target [0..1]");
 
   PROPERTY(projectile_radius, float, 0.1f, "Projectile size");
-  PROPERTY(projectile_velocity, float, 10.0f, "Initial projectile velocity");
+  PROPERTY(projectile_velocity, float, 12.0f, "Initial projectile velocity");
 
   PROPERTY(test_worlds, int, 5, "Number of test worlds per generation");
 };
