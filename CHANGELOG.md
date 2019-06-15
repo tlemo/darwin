@@ -1,4 +1,13 @@
 
+## Jun 14th, 2019
+
+New domain: [ballistics][6]. Given the (x, y) coordinates of the target, output the aim
+angle required to hit the target (initial velocity is fixed). The analytical [solution][7]
+is not exactly trivial and both CNE and NEAT struggle to solve this seemingly simple 
+problem.
+
+![](docs/images/ballistics_demo.gif)
+
 ## Mar 16th, 2019
 
 A new tournament implementation: [Swiss Tournament][5]
@@ -38,8 +47,8 @@ balancing problem.
 
 ## Jan 5th, 2019
 
-New domain: the classic cart-pole control theory benchmark problem (also known as “pole
-balancing” or “inverted pendulum”)
+New domain: the classic cart-pole control theory benchmark problem (also known as "pole
+balancing" or "inverted pendulum")
 
 ![Cart-Pole screenshot](docs/images/cart_pole_sandbox.png)
 
@@ -99,3 +108,5 @@ Initial release
 [3]: https://tlemo.github.io/darwin/classcart__pole_1_1_cart_pole.html
 [4]: https://tlemo.github.io/darwin/classdouble__cart__pole_1_1_double_cart_pole.html
 [5]: https://tlemo.github.io/darwin/classtournament_1_1_swiss_tournament.html
+[6]: https://tlemo.github.io/darwin/classballistics_1_1_ballistics.html
+[7]: https://en.wikipedia.org/wiki/Projectile_motion
