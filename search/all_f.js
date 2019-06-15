@@ -44,6 +44,8 @@ var searchData=
   ['progressmonitor',['ProgressMonitor',['../classdarwin_1_1_progress_monitor.html',1,'darwin']]],
   ['progresspercent',['progressPercent',['../classdarwin_1_1_evolution_stage.html#a0a7aaf6de5f118961b64ad5a37663449',1,'darwin::EvolutionStage']]],
   ['progressupdate',['ProgressUpdate',['../classdarwin_1_1_evolution.html#a78d415aac62c8554b49d834dd2377e23ae07e6553b3a3f607298f402c141a4393',1,'darwin::Evolution']]],
+  ['projectile_5fradius',['projectile_radius',['../structballistics_1_1_config.html#a19b5482668c3199a4c613a9d61b4e0a2',1,'ballistics::Config']]],
+  ['projectile_5fvelocity',['projectile_velocity',['../structballistics_1_1_config.html#adbe60ec37437bb0dcc34d068058b1700',1,'ballistics::Config']]],
   ['properties',['properties',['../classcore_1_1_property_set.html#aa2b26e814908929c68515f18e8e36746',1,'core::PropertySet::properties()'],['../classcore_1_1_property_set.html#a38cd816371fc80faf6a39949906a2fda',1,'core::PropertySet::properties() const']]],
   ['propertiessectionitem',['PropertiesSectionItem',['../classcore__ui_1_1_properties_section_item.html',1,'core_ui']]],
   ['propertieswidget',['PropertiesWidget',['../classcore__ui_1_1_properties_widget.html',1,'core_ui::PropertiesWidget'],['../classcore__ui_1_1_properties_widget.html#adad746b759a598e02ae04e4de282503a',1,'core_ui::PropertiesWidget::PropertiesWidget()']]],

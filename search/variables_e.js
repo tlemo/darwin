@@ -25,5 +25,7 @@ var searchData=
   ['production_5fstep',['production_step',['../structconquest_1_1_config.html#a0b3e79083532d76f24261b8be43138f4',1,'conquest::Config']]],
   ['profile',['profile',['../structdarwin_1_1_db_generation.html#aa688264ec940da6d148734509bc3a74b',1,'darwin::DbGeneration']]],
   ['profile_5finformation',['profile_information',['../structdarwin_1_1_evolution_config.html#aaa5bdc5e3abd51c5585684fb6185bc99',1,'darwin::EvolutionConfig']]],
+  ['projectile_5fradius',['projectile_radius',['../structballistics_1_1_config.html#a19b5482668c3199a4c613a9d61b4e0a2',1,'ballistics::Config']]],
+  ['projectile_5fvelocity',['projectile_velocity',['../structballistics_1_1_config.html#adbe60ec37437bb0dcc34d068058b1700',1,'ballistics::Config']]],
   ['protected_5fage',['protected_age',['../structselection_1_1_cgp_islands_selection_config.html#aaebdb7740a5eeff0bb8b164f1b23e455',1,'selection::CgpIslandsSelectionConfig']]]
 ];

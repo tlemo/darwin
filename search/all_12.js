@@ -2,9 +2,11 @@ var searchData=
 [
   ['tag',['tag',['../classcore_1_1_property_set_variant.html#a2ef7e164c0f586fc577fc14ee767b3c0',1,'core::PropertySetVariant']]],
   ['tanh',['Tanh',['../namespaceann.html#a1075b962a0c710dcafad8d7b7e9a1da3acc132a41cab5676334f353a22a0aa5c5',1,'ann']]],
+  ['target_5fhit_5fbonus',['target_hit_bonus',['../structballistics_1_1_config.html#a15f9dc884378c63f6859caea6b51bdc0',1,'ballistics::Config']]],
+  ['target_5fradius',['target_radius',['../structballistics_1_1_config.html#af24fcd423da02f04c3314d98283f4744',1,'ballistics::Config']]],
   ['test_5fmaps',['test_maps',['../structharvester_1_1_config.html#a58b400ddb6e07a55bfb4546963f11a5f',1,'harvester::Config']]],
   ['test_5fpopulation',['test_population',['../namespacetest__population.html',1,'']]],
-  ['test_5fworlds',['test_worlds',['../structcart__pole_1_1_config.html#a6b70521938db09d87091d30a140a2b01',1,'cart_pole::Config::test_worlds()'],['../structdouble__cart__pole_1_1_config.html#ac1b8472def4c34cfcb26a637a7e276ac',1,'double_cart_pole::Config::test_worlds()'],['../structfind__max__value_1_1_config.html#a3b65178e14ff6842efe5ec1c5cb8287f',1,'find_max_value::Config::test_worlds()'],['../structunicycle_1_1_config.html#a6c09112e75b33b863c9fe77feab7c8f4',1,'unicycle::Config::test_worlds()']]],
+  ['test_5fworlds',['test_worlds',['../structballistics_1_1_config.html#afe86d3b0a19b966de3c8498577876096',1,'ballistics::Config::test_worlds()'],['../structcart__pole_1_1_config.html#a6b70521938db09d87091d30a140a2b01',1,'cart_pole::Config::test_worlds()'],['../structdouble__cart__pole_1_1_config.html#ac1b8472def4c34cfcb26a637a7e276ac',1,'double_cart_pole::Config::test_worlds()'],['../structfind__max__value_1_1_config.html#a3b65178e14ff6842efe5ec1c5cb8287f',1,'find_max_value::Config::test_worlds()'],['../structunicycle_1_1_config.html#a6c09112e75b33b863c9fe77feab7c8f4',1,'unicycle::Config::test_worlds()']]],
   ['testdomain',['TestDomain',['../classtest__domain_1_1_test_domain.html',1,'test_domain']]],
   ['think',['think',['../classdarwin_1_1_brain.html#a71c8a242a3397e25c2ba0c8c80dda106',1,'darwin::Brain']]],
   ['threadpool',['ThreadPool',['../classpp_1_1_thread_pool.html',1,'pp::ThreadPool'],['../classpp_1_1_thread_pool.html#a961cab1706e5bf00213b0bf0476e468b',1,'pp::ThreadPool::ThreadPool()']]],

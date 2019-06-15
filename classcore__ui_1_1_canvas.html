@@ -90,18 +90,18 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a8f96d64e521d20f346f3dcad05c6e81b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6658c07638368a94b8d1f34b9b0ed463"><td class="memItemLeft" align="right" valign="top"><a id="a6658c07638368a94b8d1f34b9b0ed463"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcore__ui_1_1_canvas.html#a6658c07638368a94b8d1f34b9b0ed463">borderSize</a> () const</td></tr>
-<tr class="memdesc:a6658c07638368a94b8d1f34b9b0ed463"><td class="mdescLeft">&#160;</td><td class="mdescRight">Border size value. <br /></td></tr>
+<tr class="memdesc:a6658c07638368a94b8d1f34b9b0ed463"><td class="mdescLeft">&#160;</td><td class="mdescRight">Border size value (in pixels) <br /></td></tr>
 <tr class="separator:a6658c07638368a94b8d1f34b9b0ed463"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa0a09f962a4169fb782ee446e3051d76"><td class="memItemLeft" align="right" valign="top"><a id="aa0a09f962a4169fb782ee446e3051d76"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcore__ui_1_1_canvas.html#aa0a09f962a4169fb782ee446e3051d76">setBorderSize</a> (int border_size)</td></tr>
-<tr class="memdesc:aa0a09f962a4169fb782ee446e3051d76"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets a new border size. <br /></td></tr>
+<tr class="memdesc:aa0a09f962a4169fb782ee446e3051d76"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets a new border size (pixels) <br /></td></tr>
 <tr class="separator:aa0a09f962a4169fb782ee446e3051d76"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0c9674114af388e3ea92263508e7b2b5"><td class="memItemLeft" align="right" valign="top"><a id="a0c9674114af388e3ea92263508e7b2b5"></a>
 const QRectF &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcore__ui_1_1_canvas.html#a0c9674114af388e3ea92263508e7b2b5">viewport</a> () const</td></tr>
-<tr class="memdesc:a0c9674114af388e3ea92263508e7b2b5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Current viewport rectangle. <br /></td></tr>
+<tr class="memdesc:a0c9674114af388e3ea92263508e7b2b5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Current viewport rectangle (in logical coordinates) <br /></td></tr>
 <tr class="separator:a0c9674114af388e3ea92263508e7b2b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aabc61b6b2dacdde251af9fd7f11f0eee"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcore__ui_1_1_canvas.html#aabc61b6b2dacdde251af9fd7f11f0eee">setViewport</a> (const QRectF &amp;viewport_rect)</td></tr>
-<tr class="memdesc:aabc61b6b2dacdde251af9fd7f11f0eee"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the viewport rectangle.  <a href="#aabc61b6b2dacdde251af9fd7f11f0eee">More...</a><br /></td></tr>
+<tr class="memdesc:aabc61b6b2dacdde251af9fd7f11f0eee"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the viewport rectangle (logical coordinates)  <a href="#aabc61b6b2dacdde251af9fd7f11f0eee">More...</a><br /></td></tr>
 <tr class="separator:aabc61b6b2dacdde251af9fd7f11f0eee"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a906cfba45ce833470df8316bdb0b222c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcore__ui_1_1_canvas.html#a906cfba45ce833470df8316bdb0b222c">setViewport</a> (const QPointF &amp;top_left, const QPointF &amp;bottom_right)</td></tr>
 <tr class="memdesc:a906cfba45ce833470df8316bdb0b222c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the viewport rectangle.  <a href="#a906cfba45ce833470df8316bdb0b222c">More...</a><br /></td></tr>
@@ -126,7 +126,7 @@ double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cl
 <li>pointing down (default QPainter coordinates)</li>
 <li>pointing up (traditional math/physics Cartesian coordinates)</li>
 </ul>
-<p>Using coordinates with y "pointing up" requires extra care, see <a class="el" href="classcore__ui_1_1_canvas.html#aabc61b6b2dacdde251af9fd7f11f0eee" title="Sets the viewport rectangle. ">Canvas::setViewport()</a> </p>
+<p>Using coordinates with y "pointing up" requires extra care, see <a class="el" href="classcore__ui_1_1_canvas.html#aabc61b6b2dacdde251af9fd7f11f0eee" title="Sets the viewport rectangle (logical coordinates) ">Canvas::setViewport()</a> </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="aabc61b6b2dacdde251af9fd7f11f0eee"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aabc61b6b2dacdde251af9fd7f11f0eee">&#9670;&nbsp;</a></span>setViewport() <span class="overload">[1/2]</span></h2>
@@ -144,7 +144,7 @@ double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cl
       </table>
 </div><div class="memdoc">
 
-<p>Sets the viewport rectangle. </p>
+<p>Sets the viewport rectangle (logical coordinates) </p>
 <p>In order to use the traditional Cartesian coordinates, with the y-axis pointing up, the height of the viewport rectangle should have a negative value. The top_left viewport corner should still use the <b>top</b> y coordinate. For example, in order to define a (0,0) -&gt; (10,5) viewport you would call:</p>
 <div class="fragment"><div class="line"><a class="code" href="classcore__ui_1_1_canvas.html#aabc61b6b2dacdde251af9fd7f11f0eee">setViewport</a>(QRectF(0, 5, 10, -5));</div></div><!-- fragment --><dl class="section warning"><dt>Warning</dt><dd>When using coordinates where y "points up", the text will also be flipped upside down. To render text properly, the viewport transformation must be temporary modified to flip the y-coordinate. </dd></dl>
 

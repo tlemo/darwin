@@ -4,6 +4,7 @@ var searchData=
   ['balanced',['Balanced',['../namespacedarwin.html#aa320b4c1abc04889b88f9ec5cbaf73f2ac6589f5236c0c434d0c63dc5f9a856f2',1,'darwin']]],
   ['ball_5fradius',['ball_radius',['../structpong_1_1_config.html#a217cdbe33ff28becb34c8cf6ecfeba7e',1,'pong::Config']]],
   ['ball_5fspeed',['ball_speed',['../structpong_1_1_config.html#ab6c51e01f37adb234e7be472df1085ea',1,'pong::Config']]],
+  ['ballistics',['Ballistics',['../classballistics_1_1_ballistics.html',1,'ballistics']]],
   ['batch',['batch',['../classpp_1_1_work_item.html#ad4889159298b7b40eeff9a05a159d23d',1,'pp::WorkItem']]],
   ['begin',['begin',['../classdb_1_1_result_set.html#a30f8b0f113c328a70eea12d7e3abc677',1,'db::ResultSet::begin()'],['../classcore_1_1_implementations_set.html#a42caed96ba8cec834e9ce4a40487803d',1,'core::ImplementationsSet::begin()']]],
   ['beginstage',['beginStage',['../classdarwin_1_1_progress_monitor.html#a7c635b21c4fe4f17f1140d87a905f99f',1,'darwin::ProgressMonitor::beginStage()'],['../classdarwin_1_1_progress_manager.html#abceabd237d9ced5bec6b798bfe213bf0',1,'darwin::ProgressManager::beginStage()']]],
@@ -15,5 +16,6 @@ var searchData=
   ['box2drenderer',['Box2dRenderer',['../classcore__ui_1_1_box2d_renderer.html',1,'core_ui']]],
   ['box2dsandboxwindow',['Box2dSandboxWindow',['../classcore__ui_1_1_box2d_sandbox_window.html',1,'core_ui::Box2dSandboxWindow'],['../classcore__ui_1_1_box2d_sandbox_window.html#a6c4c4dffb5d4322f7efd84c0b312e6d0',1,'core_ui::Box2dSandboxWindow::Box2dSandboxWindow()']]],
   ['box2dsceneui',['Box2dSceneUi',['../classcore__ui_1_1_box2d_scene_ui.html',1,'core_ui']]],
+  ['box2dwidget',['box2dWidget',['../classcore__ui_1_1_box2d_sandbox_window.html#ab3ea549b7208fe81823b1208ca7a12f3',1,'core_ui::Box2dSandboxWindow']]],
   ['brain',['Brain',['../classdarwin_1_1_brain.html',1,'darwin']]]
 ];
