@@ -15,20 +15,28 @@
 #pragma once
 
 #include <core_ui/box2d_widget.h>
-#include <domains/unicycle/world.h>
+#include <domains/ballistics/world.h>
 
-namespace unicycle_ui {
+#include <QPainterPath>
+
+namespace ballistics_ui {
 
 class SceneUi : public core_ui::Box2dSceneUi {
+  Q_OBJECT
+
  public:
-  SceneUi(unicycle::World* world) : world_(world) {}
+  SceneUi(ballistics::World* world) : world_(world) { trajectory_path_.moveTo(0, 0); }
+
+ signals:
+  void sigNewTarget(double x, double y);
 
  private:
-  void render(QPainter& painter, const QRectF&) override;
+  void render(QPainter& painter, const QRectF& viewport) override;
   void mousePressEvent(const QPointF& pos, QMouseEvent* event) override;
 
  private:
-  unicycle::World* world_ = nullptr;
+  ballistics::World* world_ = nullptr;
+  QPainterPath trajectory_path_;
 };
 
-}  // namespace unicycle_ui
+}  // namespace ballistics_ui

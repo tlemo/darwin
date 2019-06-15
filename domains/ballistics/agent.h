@@ -14,21 +14,33 @@
 
 #pragma once
 
-#include <core_ui/box2d_widget.h>
-#include <domains/unicycle/world.h>
+#include "ballistics.h"
 
-namespace unicycle_ui {
+#include <core/darwin.h>
 
-class SceneUi : public core_ui::Box2dSceneUi {
+#include <memory>
+using namespace std;
+
+namespace ballistics {
+
+class World;
+
+class Agent {
  public:
-  SceneUi(unicycle::World* world) : world_(world) {}
+  static constexpr int kInputs = 2;
+  static constexpr int kOutputs = 1;
 
  private:
-  void render(QPainter& painter, const QRectF&) override;
-  void mousePressEvent(const QPointF& pos, QMouseEvent* event) override;
+  static constexpr int kInputTargetX = 0;
+  static constexpr int kInputTargetY = 1;
+  static constexpr int kOutputAimAngle = 0;
+
+ public:
+  explicit Agent(const darwin::Genotype* genotype);
+  float aim(float target_x, float target_y);
 
  private:
-  unicycle::World* world_ = nullptr;
+  unique_ptr<darwin::Brain> brain_;
 };
 
-}  // namespace unicycle_ui
+}  // namespace ballistics

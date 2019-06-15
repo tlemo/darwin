@@ -72,6 +72,9 @@ bool SandboxWindow::setup() {
 void SandboxWindow::newScene() {
   CHECK(domain_ != nullptr);
   CHECK(max_steps_ > 0);
+  
+  setSceneUi(nullptr);
+  scene_ui_.reset();
 
   const float initial_angle = domain_->randomInitialAngle();
   const float target_position = domain_->randomTargetPosition();

@@ -30,6 +30,7 @@ class Box2dSandboxWindow;
 }
 
 class PropertiesWidget;
+class Box2dWidget;
 class Box2dSceneUi;
 
 //! A reusable sandbox window for domains based on Box2D physics simulations
@@ -80,6 +81,9 @@ class Box2dSandboxWindow : public QFrame {
 
   //! Terminate the simulation, with the given final state
   void stop(State state);
+  
+  //! The Box2D widget
+  Box2dWidget* box2dWidget() const;
   
   //! The properties widget used to show sandbox values
   PropertiesWidget* variablesWidget() const;

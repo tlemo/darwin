@@ -45,9 +45,10 @@ void Box2dWidget::setSceneUi(Box2dSceneUi* scene_ui) {
   if (scene_ui_ != nullptr) {
     disconnect(scene_ui_, &Box2dSceneUi::sigPlayPause, this, &Box2dWidget::sigPlayPause);
   }
-  CHECK(scene_ui != nullptr);
   scene_ui_ = scene_ui;
-  connect(scene_ui, &Box2dSceneUi::sigPlayPause, this, &Box2dWidget::sigPlayPause);
+  if (scene_ui_ != nullptr) {
+    connect(scene_ui_, &Box2dSceneUi::sigPlayPause, this, &Box2dWidget::sigPlayPause);
+  }
   update();
 }
 
@@ -80,9 +81,9 @@ void Box2dWidget::paintEvent(QPaintEvent*) {
   if (world_ != nullptr) {
     // custom rendering (optional)
     if (scene_ui_ != nullptr) {
-      scene_ui_->render(painter);
+      scene_ui_->render(painter, viewport());
     }
-    
+
     // debug rendering layer
     if (enable_debug_render_) {
       debugRender(painter);

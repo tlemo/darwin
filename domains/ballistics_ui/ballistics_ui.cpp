@@ -12,23 +12,28 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#pragma once
+#include "ballistics_ui.h"
+#include "sandbox_window.h"
 
-#include <core_ui/box2d_widget.h>
-#include <domains/unicycle/world.h>
+#include <core/darwin.h>
+#include <core/logging.h>
 
-namespace unicycle_ui {
+#include <memory>
+using namespace std;
 
-class SceneUi : public core_ui::Box2dSceneUi {
- public:
-  SceneUi(unicycle::World* world) : world_(world) {}
+namespace ballistics_ui {
 
- private:
-  void render(QPainter& painter, const QRectF&) override;
-  void mousePressEvent(const QPointF& pos, QMouseEvent* event) override;
+void init() {
+  darwin::registry()->domains_ui.add<Factory>("ballistics");
+}
 
- private:
-  unicycle::World* world_ = nullptr;
-};
+QWidget* Factory::newSandboxWindow() {
+  auto sandbox_window = make_unique<SandboxWindow>();
+  if (!sandbox_window->setup()) {
+    core::log("Failed to setup the new sandbox window\n\n");
+    sandbox_window.reset();
+  }
+  return sandbox_window.release();
+}
 
-}  // namespace unicycle_ui
+}  // namespace ballistics_ui

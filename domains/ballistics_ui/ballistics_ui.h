@@ -14,21 +14,14 @@
 
 #pragma once
 
-#include <core_ui/box2d_widget.h>
-#include <domains/unicycle/world.h>
+#include <core/darwin.h>
 
-namespace unicycle_ui {
+namespace ballistics_ui {
 
-class SceneUi : public core_ui::Box2dSceneUi {
- public:
-  SceneUi(unicycle::World* world) : world_(world) {}
+void init();
 
- private:
-  void render(QPainter& painter, const QRectF&) override;
-  void mousePressEvent(const QPointF& pos, QMouseEvent* event) override;
-
- private:
-  unicycle::World* world_ = nullptr;
+class Factory : public darwin::DomainUiFactory {
+  QWidget* newSandboxWindow() override;
 };
 
-}  // namespace unicycle_ui
+}  // namespace ballistics_ui

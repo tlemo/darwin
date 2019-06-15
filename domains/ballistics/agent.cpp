@@ -12,23 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#pragma once
+#include "agent.h"
+#include "world.h"
 
-#include <core_ui/box2d_widget.h>
-#include <domains/unicycle/world.h>
+namespace ballistics {
 
-namespace unicycle_ui {
+Agent::Agent(const darwin::Genotype* genotype) : brain_(genotype->grow()) {}
 
-class SceneUi : public core_ui::Box2dSceneUi {
- public:
-  SceneUi(unicycle::World* world) : world_(world) {}
+float Agent::aim(float target_x, float target_y) {
+  brain_->setInput(kInputTargetX, target_x);
+  brain_->setInput(kInputTargetY, target_y);
 
- private:
-  void render(QPainter& painter, const QRectF&) override;
-  void mousePressEvent(const QPointF& pos, QMouseEvent* event) override;
+  brain_->think();
 
- private:
-  unicycle::World* world_ = nullptr;
-};
+  return brain_->output(kOutputAimAngle);
+}
 
-}  // namespace unicycle_ui
+}  // namespace ballistics
