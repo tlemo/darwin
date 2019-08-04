@@ -29,4 +29,7 @@ FORMS += \
     box2d_sandbox_dialog.ui \
     box2d_sandbox_window.ui
 
+RESOURCES += \
+    resources.qrc
+
 addLibrary(../core)

@@ -26,6 +26,8 @@
 #define DARWIN_COMPILER_GCC
 #elif defined(__clang__)
 #define DARWIN_COMPILER_CLANG
+#else
+#error Unsupported compiler
 #endif
 
 #if defined(_WIN32)
@@ -34,6 +36,8 @@
 #define DARWIN_OS_LINUX
 #elif defined(__APPLE__)
 #define DARWIN_OS_APPLE
+#else
+#error Unsupported OS
 #endif
 
 namespace core {
