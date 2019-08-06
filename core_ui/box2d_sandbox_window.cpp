@@ -32,11 +32,17 @@ Box2dSandboxWindow::Box2dSandboxWindow()
           &Box2dWidget::sigPlayPause,
           this,
           &Box2dSandboxWindow::on_play_pause_clicked);
+
+  setFocusPolicy(Qt::StrongFocus);
 }
 
 Box2dSandboxWindow::~Box2dSandboxWindow() {
   timer_.stop();
   delete ui;
+}
+
+void Box2dSandboxWindow::focusInEvent(QFocusEvent* /*event*/) {
+  ui->world_widget->setFocus();
 }
 
 QString Box2dSandboxWindow::stateDescription() const {

@@ -8,6 +8,7 @@
 
 MainWindow::MainWindow() : QMainWindow(nullptr), ui(new Ui::MainWindow) {
   ui->setupUi(this);
+  connect(ui->tabs, &QTabWidget::currentChanged, this, &MainWindow::onTabChanged);
   initWorld();
 }
 
@@ -20,4 +21,10 @@ void MainWindow::initWorld() {
   auto sandbox_window = make_unique<SandboxWindow>(sandbox_factory_.get());
   ui->tabs->addTab(sandbox_window.release(),
                    QString::fromStdString(sandbox_window->name()));
+}
+
+void MainWindow::onTabChanged(int index) {
+  if (index != -1) {
+    ui->tabs->currentWidget()->setFocus();
+  }
 }

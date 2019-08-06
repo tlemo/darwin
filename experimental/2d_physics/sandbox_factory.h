@@ -3,8 +3,8 @@
 
 #include "physics.h"
 
-#include <core_ui/box2d_widget.h>
 #include <core/modules.h>
+#include <core_ui/box2d_widget.h>
 
 #include <memory>
 using namespace std;
@@ -18,4 +18,3 @@ class SandboxFactory : public core::ModuleFactory {
  public:
   virtual SandboxScenePackage createScenePackage() = 0;
 };
-

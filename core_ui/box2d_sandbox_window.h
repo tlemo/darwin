@@ -52,6 +52,8 @@ class Box2dSandboxWindow : public QFrame {
   ~Box2dSandboxWindow();
 
  protected:
+  void focusInEvent(QFocusEvent* event) override;
+
   //! Current state
   State state() const { return state_; }
 
@@ -70,7 +72,7 @@ class Box2dSandboxWindow : public QFrame {
   //! Sets the associated Box2D world
   void setWorld(b2World* world, const QRectF& viewport);
 
-  //! Sets a custom scene UI  
+  //! Sets a custom scene UI
   void setSceneUi(Box2dSceneUi* scene_ui);
 
   //! Play/resume simulation
@@ -81,10 +83,10 @@ class Box2dSandboxWindow : public QFrame {
 
   //! Terminate the simulation, with the given final state
   void stop(State state);
-  
+
   //! The Box2D widget
   Box2dWidget* box2dWidget() const;
-  
+
   //! The properties widget used to show sandbox values
   PropertiesWidget* variablesWidget() const;
 

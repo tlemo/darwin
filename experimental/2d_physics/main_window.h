@@ -21,6 +21,7 @@ class MainWindow : public QMainWindow {
 
  private:
   void initWorld();
+  void onTabChanged(int index);
 
  private:
   Ui::MainWindow* ui = nullptr;

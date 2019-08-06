@@ -17,7 +17,7 @@ class SandboxWindow : public core_ui::Box2dSandboxWindow {
   };
 
  public:
-  SandboxWindow(SandboxFactory* factory);
+  explicit SandboxWindow(SandboxFactory* factory);
   
   void newScene() override;
   void singleStep() override;
