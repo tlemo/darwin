@@ -22,8 +22,6 @@ class SandboxWindow : public core_ui::Box2dSandboxWindow {
   void newScene() override;
   void singleStep() override;
   void updateUI() override;
-  
-  string name() const { return scene_package_.scene->name(); }
 
  private:
   void setupVariables();

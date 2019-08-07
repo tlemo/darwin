@@ -17,8 +17,6 @@ namespace sandbox_scene_1 {
 class Scene : public phys::Scene {
  public:
   Scene();
-
-  string name() const override { return "Scene1"; }
 };
 
 class SceneUi : public core_ui::Box2dSceneUi {

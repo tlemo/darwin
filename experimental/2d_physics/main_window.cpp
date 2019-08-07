@@ -9,18 +9,18 @@
 MainWindow::MainWindow() : QMainWindow(nullptr), ui(new Ui::MainWindow) {
   ui->setupUi(this);
   connect(ui->tabs, &QTabWidget::currentChanged, this, &MainWindow::onTabChanged);
-  initWorld();
+  initWorlds();
 }
 
 MainWindow::~MainWindow() {
   delete ui;
 }
 
-void MainWindow::initWorld() {
-  sandbox_factory_ = make_unique<sandbox_scene_1::Factory>();
-  auto sandbox_window = make_unique<SandboxWindow>(sandbox_factory_.get());
-  ui->tabs->addTab(sandbox_window.release(),
-                   QString::fromStdString(sandbox_window->name()));
+void MainWindow::initWorlds() {
+  for (const auto& [name, factory] : scenesRegistry()) {
+    auto sandbox_window = make_unique<SandboxWindow>(factory.get());
+    ui->tabs->addTab(sandbox_window.release(), QString::fromStdString(name));
+  }
 }
 
 void MainWindow::onTabChanged(int index) {

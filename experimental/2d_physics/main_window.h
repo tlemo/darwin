@@ -20,7 +20,7 @@ class MainWindow : public QMainWindow {
   ~MainWindow();
 
  private:
-  void initWorld();
+  void initWorlds();
   void onTabChanged(int index);
 
  private:

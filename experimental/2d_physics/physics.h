@@ -47,8 +47,6 @@ class Scene : public core::NonCopyable {
   // (add support for Scene in Box2dSandboxWindow and Box2dWidget)
   b2World* box2dWorld() { return &world_; }
 
-  virtual string name() const = 0;
-
   void step() {
     constexpr float32 timeStep = 1.0f / 50.0f;
     constexpr int32 velocityIterations = 10;

@@ -1,7 +1,15 @@
 
 #include "scene6.h"
 
-Scene6::Scene6() : Scene(b2Vec2(0, -9.8f), phys::Rect(-5, 0, 10, 5)) {
+#include <core/global_initializer.h>
+
+namespace sandbox_scene_6 {
+
+GLOBAL_INITIALIZER {
+  scenesRegistry().add<Factory>("Scene6");
+}
+
+Scene::Scene() : phys::Scene(b2Vec2(0, -9.8f), phys::Rect(-5, 0, 10, 5)) {
   // ground
   constexpr float kGroundY = 0.1f;
   constexpr float kMaxDistance = 2.5f;
@@ -54,3 +62,5 @@ Scene6::Scene6() : Scene(b2Vec2(0, -9.8f), phys::Rect(-5, 0, 10, 5)) {
   hinge_def.localAnchorB.Set(0.0f, -kPoleHeight);
   world_.CreateJoint(&hinge_def);
 }
+
+}  // namespace sandbox_scene_6

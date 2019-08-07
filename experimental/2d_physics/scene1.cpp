@@ -1,7 +1,13 @@
 
 #include "scene1.h"
 
+#include <core/global_initializer.h>
+
 namespace sandbox_scene_1 {
+
+GLOBAL_INITIALIZER {
+  scenesRegistry().add<Factory>("Scene1");
+}
 
 Scene::Scene() : phys::Scene(b2Vec2(0, -9.8f), phys::Rect(-100, -100, 200, 200)) {
   // Define the ground body.

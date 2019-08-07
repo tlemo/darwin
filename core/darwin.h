@@ -298,8 +298,8 @@ struct Registry {
 
 //! Accessor to the Registry singleton
 inline Registry* registry() {
-  static auto instance = new Registry();
-  return instance;
+  static Registry instance;
+  return &instance;
 }
 
 //! An experiment configuration
