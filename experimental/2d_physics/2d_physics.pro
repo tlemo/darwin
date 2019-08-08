@@ -12,6 +12,7 @@ DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000
 SOURCES += \
     main.cpp \
     main_window.cpp \
+    new_sandbox_dialog.cpp \
     physics.cpp \
     sandbox_window.cpp \
     scene1.cpp \
@@ -19,6 +20,7 @@ SOURCES += \
 
 HEADERS += \
     main_window.h \
+    new_sandbox_dialog.h \
     physics.h \
     sandbox_factory.h \
     sandbox_window.h \
@@ -26,7 +28,8 @@ HEADERS += \
     scene6.h \
     script.h
     
-FORMS += main_window.ui
+FORMS += main_window.ui \
+    new_sandbox_dialog.ui
 
 addLibrary(../../registry)
 addLibrary(../../core_ui)

@@ -19,8 +19,10 @@ class MainWindow : public QMainWindow {
   MainWindow();
   ~MainWindow();
 
- private:
-  void initWorlds();
+private slots:
+  void on_action_new_sandbox_triggered();
+  
+private:
   void onTabChanged(int index);
 
  private:
