@@ -3,8 +3,8 @@
 
 #include "script.h"
 
-#include <core/utils.h>
 #include <core/properties.h>
+#include <core/utils.h>
 #include <third_party/box2d/box2d.h>
 
 #include <string>
@@ -32,16 +32,15 @@ struct Rect {
 
 class Scene : public core::NonCopyable {
  public:
-  Scene(const b2Vec2& gravity, const Rect& extents) : world_(gravity), extents_(extents) {
-    script_.start();
-  }
+  Scene(const b2Vec2& gravity, const Rect& extents)
+      : world_(gravity), extents_(extents) {}
 
   virtual ~Scene() = default;
 
   const Rect& extents() const { return extents_; }
-  
+
   float timestamp() const { return timestamp_; }
-  
+
   int objectsCount() const { return world_.GetBodyCount(); }
 
   virtual const core::PropertySet* variables() const { return nullptr; }
@@ -52,25 +51,8 @@ class Scene : public core::NonCopyable {
   // (add support for Scene in Box2dSandboxWindow and Box2dWidget)
   b2World* box2dWorld() { return &world_; }
 
-  void step() {
-    preStep();
-    
-    constexpr float32 timeStep = 1.0f / 50.0f;
-    constexpr int32 velocityIterations = 10;
-    constexpr int32 positionIterations = 10;
+  void step();
 
-    script_.play(timestamp_);
-
-    // Box2D simulation step
-    world_.Step(timeStep, velocityIterations, positionIterations);
-    timestamp_ += timeStep;
-
-    // TODO: process the contacts
-    // TODO: pause/resume/done/reset?
-    
-    postStep();
-  }
-  
  protected:
   b2World world_;
   Rect extents_;

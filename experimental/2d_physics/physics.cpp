@@ -116,4 +116,27 @@ b2Body* addBoxProjectile(float x, float y, float dx, float dy, b2World* world) {
   return body;
 }
 
+void Scene::step() {
+  if (timestamp_ == 0) {
+    script_.start();
+  }
+
+  preStep();
+
+  constexpr float32 timeStep = 1.0f / 50.0f;
+  constexpr int32 velocityIterations = 10;
+  constexpr int32 positionIterations = 10;
+
+  script_.play(timestamp_);
+
+  // Box2D simulation step
+  world_.Step(timeStep, velocityIterations, positionIterations);
+  timestamp_ += timeStep;
+
+  // TODO: process the contacts
+  // TODO: pause/resume/done/reset?
+
+  postStep();
+}
+
 }  // namespace phys

@@ -16,6 +16,7 @@ SOURCES += \
     physics.cpp \
     sandbox_window.cpp \
     scene1.cpp \
+    scene2.cpp \
     scene6.cpp
 
 HEADERS += \
@@ -25,6 +26,7 @@ HEADERS += \
     sandbox_factory.h \
     sandbox_window.h \
     scene1.h \
+    scene2.h \
     scene6.h \
     script.h
     

@@ -10,21 +10,14 @@ GLOBAL_INITIALIZER {
 }
 
 Scene::Scene() : phys::Scene(b2Vec2(0, -9.8f), phys::Rect(-100, -100, 200, 200)) {
-  // Define the ground body.
   b2BodyDef ground_body_def;
   ground_body_def.position.Set(0.0f, -10.0f);
   ground_body_def.type = b2_staticBody;
-
-  // Call the body factory which allocates memory for the ground body
-  // from a pool and creates the ground box shape (also from a pool).
-  // The body is also added to the world.
   auto ground_body = world_.CreateBody(&ground_body_def);
 
-  // Define the ground box shape.
   b2PolygonShape ground_box;
   ground_box.SetAsBox(100.0f, 10.0f);
 
-  // Add the ground fixture to the ground body.
   ground_body->CreateFixture(&ground_box, 0.0f);
 
   phys::addBall(-80, 90, 1, &world_);
