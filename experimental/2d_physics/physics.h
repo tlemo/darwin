@@ -4,6 +4,7 @@
 #include "script.h"
 
 #include <core/utils.h>
+#include <core/properties.h>
 #include <third_party/box2d/box2d.h>
 
 #include <string>
@@ -42,12 +43,18 @@ class Scene : public core::NonCopyable {
   float timestamp() const { return timestamp_; }
   
   int objectsCount() const { return world_.GetBodyCount(); }
-  
+
+  virtual const core::PropertySet* variables() const { return nullptr; }
+  virtual void preStep() {}
+  virtual void postStep() {}
+
   // TODO: temporary workaround, revisit
   // (add support for Scene in Box2dSandboxWindow and Box2dWidget)
   b2World* box2dWorld() { return &world_; }
 
   void step() {
+    preStep();
+    
     constexpr float32 timeStep = 1.0f / 50.0f;
     constexpr int32 velocityIterations = 10;
     constexpr int32 positionIterations = 10;
@@ -60,6 +67,8 @@ class Scene : public core::NonCopyable {
 
     // TODO: process the contacts
     // TODO: pause/resume/done/reset?
+    
+    postStep();
   }
   
  protected:

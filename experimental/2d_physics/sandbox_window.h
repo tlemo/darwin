@@ -7,6 +7,10 @@
 #include <core_ui/box2d_sandbox_window.h>
 #include <core_ui/properties_widget.h>
 
+#include <unordered_map>
+#include <string>
+using namespace std;
+
 class SandboxWindow : public core_ui::Box2dSandboxWindow {
   struct Variables {
     // simulation state
@@ -27,10 +31,11 @@ class SandboxWindow : public core_ui::Box2dSandboxWindow {
   void setupVariables();
 
  private:
-  Variables variables_;
-  
   SandboxFactory* factory_ = nullptr;
   SandboxScenePackage scene_package_;
   int step_ = -1;
+
+  Variables variables_;
+  unordered_map<string, core_ui::PropertyItem*> scene_variables_map_;
 };
 

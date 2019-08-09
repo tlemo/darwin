@@ -47,17 +47,17 @@ Scene::Scene() : phys::Scene(b2Vec2(0, -9.8f), phys::Rect(-5, 0, 10, 5)) {
   b2BodyDef pole_body_def;
   pole_body_def.type = b2_dynamicBody;
   pole_body_def.position.Set(0.0f, kCartHeight + kPoleHeight + kGroundY);
-  auto pole = world_.CreateBody(&pole_body_def);
+  pole_ = world_.CreateBody(&pole_body_def);
 
   b2FixtureDef pole_fixture_def;
   pole_fixture_def.shape = &pole_shape;
   pole_fixture_def.density = 1.0f;
-  pole->CreateFixture(&pole_fixture_def);
+  pole_->CreateFixture(&pole_fixture_def);
 
   // hinge
   b2RevoluteJointDef hinge_def;
   hinge_def.bodyA = cart_;
-  hinge_def.bodyB = pole;
+  hinge_def.bodyB = pole_;
   hinge_def.localAnchorA.Set(0.0f, 0.0f);
   hinge_def.localAnchorB.Set(0.0f, -kPoleHeight);
   world_.CreateJoint(&hinge_def);
@@ -65,6 +65,13 @@ Scene::Scene() : phys::Scene(b2Vec2(0, -9.8f), phys::Rect(-5, 0, 10, 5)) {
 
 void Scene::moveCart(float force) {
   cart_->ApplyForceToCenter(b2Vec2(force, 0), true);
+}
+
+void Scene::updateVariables() {
+  variables_.cart_distance = cart_->GetPosition().x;
+  variables_.cart_velocity = cart_->GetLinearVelocity().x;
+  variables_.pole_angle = pole_->GetAngle();
+  variables_.pole_angular_velocity = pole_->GetAngularVelocity();
 }
 
 }  // namespace sandbox_scene_6

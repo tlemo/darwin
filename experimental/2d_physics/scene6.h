@@ -4,6 +4,7 @@
 #include "physics.h"
 #include "sandbox_factory.h"
 
+#include <core/properties.h>
 #include <core_ui/box2d_widget.h>
 
 #include <QKeyEvent>
@@ -13,14 +14,30 @@ using namespace std;
 
 namespace sandbox_scene_6 {
 
+struct SceneVariables : public core::PropertySet {
+  PROPERTY(cart_distance, float, 0, "Cart distance from the center");
+  PROPERTY(cart_velocity, float, 0, "Cart horizontal velocity");
+  PROPERTY(pole_angle, float, 0, "Pole angle (from vertical)");
+  PROPERTY(pole_angular_velocity, float, 0, "Pole angular velocity");
+};
+
 class Scene : public phys::Scene {
  public:
   Scene();
 
+  const SceneVariables* variables() const override { return &variables_; }
+
+  void postStep() override { updateVariables(); }
+
   void moveCart(float force);
 
  private:
+  void updateVariables();
+
+ private:
   b2Body* cart_ = nullptr;
+  b2Body* pole_ = nullptr;
+  SceneVariables variables_;
 };
 
 class SceneUi : public core_ui::Box2dSceneUi {
