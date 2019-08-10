@@ -36,31 +36,41 @@ Scene::Scene() : phys::Scene(b2Vec2(0, -9.8f), phys::Rect(-100, -100, 200, 200))
   jd.enableMotor = true;
   world_.CreateJoint(&jd);
 
-  auto spin_box = phys::addBox(0, 0, 10, 2, &world_);
+  auto middle = phys::addBox(0, 0, 10, 2, &world_);
 
   b2RevoluteJointDef hinge_def;
   hinge_def.bodyA = box;
-  hinge_def.bodyB = spin_box;
+  hinge_def.bodyB = middle;
   hinge_def.localAnchorA.Set(20.0f, 0.0f);
   hinge_def.localAnchorB.Set(-10.0f, 0.0f);
   world_.CreateJoint(&hinge_def);
 
-  auto spin_box_2 = phys::addBox(0, 0, 10, 2, &world_);
+  auto cross = phys::addCross(0, 0, 15, 2, &world_);
 
   b2RevoluteJointDef hinge_def_2;
-  hinge_def_2.bodyA = spin_box;
-  hinge_def_2.bodyB = spin_box_2;
+  hinge_def_2.bodyA = middle;
+  hinge_def_2.bodyB = cross;
   hinge_def_2.localAnchorA.Set(10.0f, 0.0f);
-  hinge_def_2.localAnchorB.Set(-10.0f, 0.0f);
+  hinge_def_2.localAnchorB.Set(-15.0f, 0.0f);
   world_.CreateJoint(&hinge_def_2);
 
-  for (int i = 0; i < 100; ++i) {
-    script_.record(i, [&](float) { phys::addBullet(-95, 5, 100 * 100, 0, &world_); });
+  for (int i = 0; i < 250; ++i) {
+    script_.record(i * 0.5f, [&](float) {
+      phys::addBullet(-95, 5, 100 * 100, 0, &world_);
+      phys::addBullet(95, 5, -100 * 100, 0, &world_);
+    });
   }
 
-  script_.record(1.5f, [&](float) { phys::addBox(0, 50, 30, 1, &world_); });
+  script_.record(2.5f, [&](float) { phys::addBox(0, 50, 30, 1, &world_); });
 
-  script_.record(5.5f, [&](float) {
+  script_.record(5.0f, [&](float) {
+    phys::addBall(-95, 95, 1, &world_);
+    phys::addBall(-95, -95, 2, &world_);
+    phys::addBall(95, 95, 3, &world_);
+    phys::addBall(95, -95, 4, &world_);
+  });
+
+  script_.record(7.5f, [&](float) {
     auto box = phys::addBox(0, 50, 10, 1, &world_);
     box->ApplyAngularImpulse(1000.0f, true);
   });
