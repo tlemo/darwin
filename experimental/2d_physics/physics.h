@@ -31,9 +31,20 @@ struct Rect {
 };
 
 class Scene : public core::NonCopyable {
+  class ContactListener : public b2ContactListener {
+   public:
+    explicit ContactListener(Scene* scene) : scene_(scene) {}
+    void BeginContact(b2Contact* contact) override { scene_->onContact(contact); }
+
+   private:
+    Scene* scene_ = nullptr;
+  };
+
  public:
   Scene(const b2Vec2& gravity, const Rect& extents)
-      : world_(gravity), extents_(extents) {}
+      : world_(gravity), extents_(extents), contact_listener_(this) {
+    world_.SetContactListener(&contact_listener_);
+  }
 
   virtual ~Scene() = default;
 
@@ -46,6 +57,7 @@ class Scene : public core::NonCopyable {
   virtual const core::PropertySet* variables() const { return nullptr; }
   virtual void preStep() {}
   virtual void postStep() {}
+  virtual void onContact(b2Contact* /*contact*/) {}
 
   // TODO: temporary workaround, revisit
   // (add support for Scene in Box2dSandboxWindow and Box2dWidget)
@@ -58,6 +70,7 @@ class Scene : public core::NonCopyable {
   Rect extents_;
   Script script_;
   float timestamp_ = 0;
+  ContactListener contact_listener_;
 };
 
 }  // namespace phys
