@@ -52,19 +52,33 @@ Scene::Scene() : phys::Scene(b2Vec2(0, -9.8f), phys::Rect(-100, -100, 200, 200))
             b2Vec2(kInnerBoxSize, -kInnerBoxSize));
   reaper_->CreateFixture(&shape, 0.0f);
 
-  // agitator
-  auto agitator = phys::addCross(0, 0, 45, 2, &world_);
+  // agitator (top)
+  auto top_agitator = phys::addCross(0, 0, 45, 2, &world_);
 
-  b2RevoluteJointDef jd;
-  jd.bodyA = inner_box;
-  jd.bodyB = agitator;
-  jd.localAnchorA.Set(0.0f, -40.0f);
-  jd.localAnchorB.Set(0.0f, 0.0f);
-  jd.referenceAngle = 0.0f;
-  jd.motorSpeed = 0.5f * b2_pi;
-  jd.maxMotorTorque = 1e8f;
-  jd.enableMotor = true;
-  world_.CreateJoint(&jd);
+  b2RevoluteJointDef top_jd;
+  top_jd.bodyA = inner_box;
+  top_jd.bodyB = top_agitator;
+  top_jd.localAnchorA.Set(0.0f, 50.0f);
+  top_jd.localAnchorB.Set(0.0f, 0.0f);
+  top_jd.referenceAngle = 0.0f;
+  top_jd.motorSpeed = -0.5f * b2_pi;
+  top_jd.maxMotorTorque = 1e8f;
+  top_jd.enableMotor = true;
+  world_.CreateJoint(&top_jd);
+
+  // agitator (bottom)
+  auto bottom_agitator = phys::addCross(0, 0, 45, 2, &world_);
+
+  b2RevoluteJointDef bottom_jd;
+  bottom_jd.bodyA = inner_box;
+  bottom_jd.bodyB = bottom_agitator;
+  bottom_jd.localAnchorA.Set(0.0f, -40.0f);
+  bottom_jd.localAnchorB.Set(0.0f, 0.0f);
+  bottom_jd.referenceAngle = 0.0f;
+  bottom_jd.motorSpeed = 0.5f * b2_pi;
+  bottom_jd.maxMotorTorque = 1e8f;
+  bottom_jd.enableMotor = true;
+  world_.CreateJoint(&bottom_jd);
 
   // script (shooting projectiles)
   for (int i = 0; i < 200; ++i) {
