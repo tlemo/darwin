@@ -10,22 +10,13 @@
 #include <QMouseEvent>
 
 #include <memory>
-#include <unordered_set>
 using namespace std;
 
-namespace sandbox_scene_4 {
+namespace bouncing_scene {
 
 class Scene : public phys::Scene {
  public:
   Scene();
-
-  void postStep() override;
-  void onContact(b2Contact* contact) override;
-  
- private:
-  b2Body* reaper_ = nullptr;
-  b2Body* fence_ = nullptr;
-  unordered_set<b2Body*> reaped_bodies_;
 };
 
 class SceneUi : public core_ui::Box2dSceneUi {
@@ -63,4 +54,4 @@ class Factory : public SandboxFactory {
   }
 };
 
-}  // namespace sandbox_scene_4
+}  // namespace bouncing_scene

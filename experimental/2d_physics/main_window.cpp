@@ -1,7 +1,4 @@
 
-#include "scene1.h"
-#include "scene6.h"
-
 #include "main_window.h"
 #include "new_sandbox_dialog.h"
 #include "sandbox_window.h"

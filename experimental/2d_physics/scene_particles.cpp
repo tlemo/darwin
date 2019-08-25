@@ -1,12 +1,12 @@
 
-#include "scene2.h"
+#include "scene_particles.h"
 
 #include <core/global_initializer.h>
 
-namespace sandbox_scene_2 {
+namespace particles_scene {
 
 GLOBAL_INITIALIZER {
-  scenesRegistry().add<Factory>("Scene2");
+  scenesRegistry().add<Factory>("Particles");
 }
 
 Scene::Scene() : phys::Scene(b2Vec2(0, -9.8f), phys::Rect(-100, -100, 200, 200)) {
@@ -54,8 +54,8 @@ Scene::Scene() : phys::Scene(b2Vec2(0, -9.8f), phys::Rect(-100, -100, 200, 200))
   hinge_def_2.localAnchorB.Set(-15.0f, 0.0f);
   world_.CreateJoint(&hinge_def_2);
 
-  for (int i = 0; i < 250; ++i) {
-    script_.record(i * 0.5f, [&](float) {
+  for (int i = 0; i < 500; ++i) {
+    script_.record(i * 0.25f, [&](float) {
       phys::addBullet(-95, 5, 100 * 100, 0, &world_);
       phys::addBullet(95, 5, -100 * 100, 0, &world_);
     });
@@ -76,4 +76,4 @@ Scene::Scene() : phys::Scene(b2Vec2(0, -9.8f), phys::Rect(-100, -100, 200, 200))
   });
 }
 
-}  // namespace sandbox_scene_2
+}  // namespace particles_scene

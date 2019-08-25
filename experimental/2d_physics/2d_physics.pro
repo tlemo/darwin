@@ -15,10 +15,10 @@ SOURCES += \
     new_sandbox_dialog.cpp \
     physics.cpp \
     sandbox_window.cpp \
-    scene1.cpp \
-    scene2.cpp \
-    scene4.cpp \
-    scene6.cpp
+    scene_bouncing.cpp \
+    scene_cart_pole.cpp \
+    scene_electric_fence.cpp \
+    scene_particles.cpp
 
 HEADERS += \
     main_window.h \
@@ -26,10 +26,10 @@ HEADERS += \
     physics.h \
     sandbox_factory.h \
     sandbox_window.h \
-    scene1.h \
-    scene2.h \
-    scene4.h \
-    scene6.h \
+    scene_bouncing.h \
+    scene_cart_pole.h \
+    scene_electric_fence.h \
+    scene_particles.h \
     script.h
     
 FORMS += main_window.ui \

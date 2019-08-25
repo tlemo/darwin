@@ -1,12 +1,12 @@
 
-#include "scene4.h"
+#include "scene_electric_fence.h"
 
 #include <core/global_initializer.h>
 
-namespace sandbox_scene_4 {
+namespace electric_fence_scene {
 
 GLOBAL_INITIALIZER {
-  scenesRegistry().add<Factory>("Scene4");
+  scenesRegistry().add<Factory>("Electric Fence");
 }
 
 Scene::Scene() : phys::Scene(b2Vec2(0, -9.8f), phys::Rect(-100, -100, 200, 200)) {
@@ -66,24 +66,38 @@ Scene::Scene() : phys::Scene(b2Vec2(0, -9.8f), phys::Rect(-100, -100, 200, 200))
   top_jd.enableMotor = true;
   world_.CreateJoint(&top_jd);
 
-  // agitator (bottom)
-  auto bottom_agitator = phys::addCross(0, 0, 45, 2, &world_);
+  // agitator (bottom/left)
+  auto bottom_left_agitator = phys::addCross(0, 0, 45, 2, &world_);
 
-  b2RevoluteJointDef bottom_jd;
-  bottom_jd.bodyA = inner_box;
-  bottom_jd.bodyB = bottom_agitator;
-  bottom_jd.localAnchorA.Set(0.0f, -40.0f);
-  bottom_jd.localAnchorB.Set(0.0f, 0.0f);
-  bottom_jd.referenceAngle = 0.0f;
-  bottom_jd.motorSpeed = 0.5f * b2_pi;
-  bottom_jd.maxMotorTorque = 1e8f;
-  bottom_jd.enableMotor = true;
-  world_.CreateJoint(&bottom_jd);
+  b2RevoluteJointDef bottom_left_jd;
+  bottom_left_jd.bodyA = inner_box;
+  bottom_left_jd.bodyB = bottom_left_agitator;
+  bottom_left_jd.localAnchorA.Set(-50.0f, -50.0f);
+  bottom_left_jd.localAnchorB.Set(0.0f, 0.0f);
+  bottom_left_jd.referenceAngle = 0.0f;
+  bottom_left_jd.motorSpeed = 0.8f * b2_pi;
+  bottom_left_jd.maxMotorTorque = 1e8f;
+  bottom_left_jd.enableMotor = true;
+  world_.CreateJoint(&bottom_left_jd);
+
+  // agitator (bottom/right)
+  auto bottom_right_agitator = phys::addCross(0, 0, 45, 2, &world_);
+
+  b2RevoluteJointDef bottom_right_jd;
+  bottom_right_jd.bodyA = inner_box;
+  bottom_right_jd.bodyB = bottom_right_agitator;
+  bottom_right_jd.localAnchorA.Set(50.0f, -50.0f);
+  bottom_right_jd.localAnchorB.Set(0.0f, 0.0f);
+  bottom_right_jd.referenceAngle = 0.0f;
+  bottom_right_jd.motorSpeed = -0.8f * b2_pi;
+  bottom_right_jd.maxMotorTorque = 1e8f;
+  bottom_right_jd.enableMotor = true;
+  world_.CreateJoint(&bottom_right_jd);
 
   // script (shooting projectiles)
-  for (int i = 0; i < 200; ++i) {
-    script_.record(i / 20.0f, [&, i](float) {
-      phys::addBullet(0, 0, 100 * (i % 2 ? 100 : -100), (i - 50) * 150, &world_);
+  for (int i = 0; i < 500; ++i) {
+    script_.record(i / 30.0f, [&, i](float) {
+      phys::addBullet(0, 0, 100 * (i % 2 ? 100 : -100), (i - 250) * 50, &world_);
     });
   }
 }
@@ -109,4 +123,4 @@ void Scene::onContact(b2Contact* contact) {
   }
 }
 
-}  // namespace sandbox_scene_4
+}  // namespace electric_fence_scene

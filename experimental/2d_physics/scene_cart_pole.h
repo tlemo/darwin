@@ -12,7 +12,7 @@
 #include <memory>
 using namespace std;
 
-namespace sandbox_scene_6 {
+namespace cart_pole_scene {
 
 struct SceneVariables : public core::PropertySet {
   PROPERTY(cart_distance, float, 0, "Cart distance from the center");
@@ -69,4 +69,4 @@ class Factory : public SandboxFactory {
   }
 };
 
-}  // namespace sandbox_scene_6
+}  // namespace cart_pole_scene

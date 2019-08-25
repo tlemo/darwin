@@ -12,7 +12,7 @@
 #include <memory>
 using namespace std;
 
-namespace sandbox_scene_1 {
+namespace particles_scene {
 
 class Scene : public phys::Scene {
  public:
@@ -54,4 +54,4 @@ class Factory : public SandboxFactory {
   }
 };
 
-}  // namespace sandbox_scene_1
+}  // namespace particles_scene

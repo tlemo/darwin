@@ -1,12 +1,12 @@
 
-#include "scene1.h"
+#include "scene_bouncing.h"
 
 #include <core/global_initializer.h>
 
-namespace sandbox_scene_1 {
+namespace bouncing_scene {
 
 GLOBAL_INITIALIZER {
-  scenesRegistry().add<Factory>("Scene1");
+  scenesRegistry().add<Factory>("Bouncing Objects");
 }
 
 Scene::Scene() : phys::Scene(b2Vec2(0, -9.8f), phys::Rect(-100, -100, 200, 200)) {
@@ -34,4 +34,4 @@ Scene::Scene() : phys::Scene(b2Vec2(0, -9.8f), phys::Rect(-100, -100, 200, 200))
   box3->ApplyAngularImpulse(1.0f, true);
 }
 
-}  // namespace sandbox_scene_1
+}  // namespace bouncing_scene

@@ -1,9 +1,9 @@
 
-#include "scene6.h"
+#include "scene_cart_pole.h"
 
 #include <core/global_initializer.h>
 
-namespace sandbox_scene_6 {
+namespace cart_pole_scene {
 
 GLOBAL_INITIALIZER {
   scenesRegistry().add<Factory>("Cart-Pole Balancing");
@@ -74,4 +74,4 @@ void Scene::updateVariables() {
   variables_.pole_angular_velocity = pole_->GetAngularVelocity();
 }
 
-}  // namespace sandbox_scene_6
+}  // namespace cart_pole_scene
