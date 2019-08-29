@@ -55,6 +55,8 @@ class Scene : public core::NonCopyable {
   int objectsCount() const { return world_.GetBodyCount(); }
 
   virtual const core::PropertySet* variables() const { return nullptr; }
+  virtual const core::PropertySet* config() const { return nullptr; }
+  
   virtual void preStep() {}
   virtual void postStep() {}
   virtual void onContact(b2Contact* /*contact*/) {}

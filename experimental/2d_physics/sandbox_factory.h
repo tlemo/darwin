@@ -4,6 +4,7 @@
 #include "physics.h"
 
 #include <core/modules.h>
+#include <core/properties.h>
 #include <core_ui/box2d_widget.h>
 
 #include <memory>
@@ -16,7 +17,10 @@ struct SandboxScenePackage {
 
 class SandboxFactory : public core::ModuleFactory {
  public:
-  virtual SandboxScenePackage createScenePackage() = 0;
+  // config may be nullptr (for no configuration or default configuration)
+  virtual SandboxScenePackage createScenePackage(const core::PropertySet* config) = 0;
+  
+  virtual unique_ptr<core::PropertySet> defaultConfig() const { return nullptr; }
 };
 
 inline auto& scenesRegistry() {

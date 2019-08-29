@@ -9,10 +9,15 @@ GLOBAL_INITIALIZER {
   scenesRegistry().add<Factory>("Cart-Pole Balancing");
 }
 
-Scene::Scene() : phys::Scene(b2Vec2(0, -9.8f), phys::Rect(-5, 0, 10, 5)) {
+Scene::Scene(const core::PropertySet* config)
+    : phys::Scene(b2Vec2(0, -9.8f), phys::Rect(-5, 0, 10, 5)) {
+  if (config) {
+    config_.copyFrom(*config);
+  }
+  
   // ground
   constexpr float kGroundY = 0.1f;
-  constexpr float kMaxDistance = 2.5f;
+  constexpr float kMaxDistance = 4.0f;
   b2EdgeShape ground_shape;
   ground_shape.Set(b2Vec2(-kMaxDistance, kGroundY), b2Vec2(kMaxDistance, kGroundY));
 
@@ -39,14 +44,13 @@ Scene::Scene() : phys::Scene(b2Vec2(0, -9.8f), phys::Rect(-5, 0, 10, 5)) {
 
   // pole
   constexpr float kPoleWidth = 0.04f;
-  constexpr float kPoleHeight = 1.5f;
+  const float pole_length = config_.pole_length;
   b2PolygonShape pole_shape;
-  pole_shape.SetAsBox(kPoleWidth, kPoleHeight, b2Vec2(0, kPoleHeight), 0);
-  pole_shape.SetAsBox(kPoleWidth, kPoleHeight);
+  pole_shape.SetAsBox(kPoleWidth, pole_length);
 
   b2BodyDef pole_body_def;
   pole_body_def.type = b2_dynamicBody;
-  pole_body_def.position.Set(0.0f, kCartHeight + kPoleHeight + kGroundY);
+  pole_body_def.position.Set(0.0f, kCartHeight + pole_length + kGroundY);
   pole_ = world_.CreateBody(&pole_body_def);
 
   b2FixtureDef pole_fixture_def;
@@ -59,12 +63,12 @@ Scene::Scene() : phys::Scene(b2Vec2(0, -9.8f), phys::Rect(-5, 0, 10, 5)) {
   hinge_def.bodyA = cart_;
   hinge_def.bodyB = pole_;
   hinge_def.localAnchorA.Set(0.0f, 0.0f);
-  hinge_def.localAnchorB.Set(0.0f, -kPoleHeight);
+  hinge_def.localAnchorB.Set(0.0f, -pole_length);
   world_.CreateJoint(&hinge_def);
 }
 
-void Scene::moveCart(float force) {
-  cart_->ApplyForceToCenter(b2Vec2(force, 0), true);
+void Scene::moveCart(float impulse) {
+  cart_->ApplyLinearImpulseToCenter(b2Vec2(impulse, 0), true);
 }
 
 void Scene::updateVariables() {

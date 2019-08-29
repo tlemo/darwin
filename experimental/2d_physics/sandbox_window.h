@@ -4,11 +4,13 @@
 #include "physics.h"
 #include "sandbox_factory.h"
 
+#include <core/properties.h>
 #include <core_ui/box2d_sandbox_window.h>
 #include <core_ui/properties_widget.h>
 
 #include <unordered_map>
 #include <string>
+#include <memory>
 using namespace std;
 
 class SandboxWindow : public core_ui::Box2dSandboxWindow {
@@ -37,5 +39,8 @@ class SandboxWindow : public core_ui::Box2dSandboxWindow {
 
   Variables variables_;
   unordered_map<string, core_ui::PropertyItem*> scene_variables_map_;
+  unordered_map<string, core_ui::PropertyItem*> scene_config_map_;
+  
+  unique_ptr<core::PropertySet> config_;
 };
 

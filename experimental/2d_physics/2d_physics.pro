@@ -13,6 +13,7 @@ SOURCES += \
     main.cpp \
     main_window.cpp \
     new_sandbox_dialog.cpp \
+    new_scene_dialog.cpp \
     physics.cpp \
     sandbox_window.cpp \
     scene_bouncing.cpp \
@@ -23,6 +24,7 @@ SOURCES += \
 HEADERS += \
     main_window.h \
     new_sandbox_dialog.h \
+    new_scene_dialog.h \
     physics.h \
     sandbox_factory.h \
     sandbox_window.h \
@@ -33,7 +35,8 @@ HEADERS += \
     script.h
     
 FORMS += main_window.ui \
-    new_sandbox_dialog.ui
+    new_sandbox_dialog.ui \
+    new_scene_dialog.ui
 
 addLibrary(../../registry)
 addLibrary(../../core_ui)

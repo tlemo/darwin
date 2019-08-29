@@ -56,7 +56,7 @@ class SceneUi : public core_ui::Box2dSceneUi {
 };
 
 class Factory : public SandboxFactory {
-  SandboxScenePackage createScenePackage() override {
+  SandboxScenePackage createScenePackage(const core::PropertySet*) override {
     auto scene = make_unique<Scene>();
     auto scene_ui = make_unique<SceneUi>(scene.get());
     return { std::move(scene), std::move(scene_ui) };
