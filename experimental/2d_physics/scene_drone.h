@@ -10,20 +10,23 @@
 #include <QKeyEvent>
 
 #include <memory>
+#include <unordered_map>
 using namespace std;
 
-namespace cart_pole_scene {
+namespace drone_scene {
 
 struct Config : public core::PropertySet {
-  PROPERTY(pole_length, float, 1.5f, "Pole length");
-  PROPERTY(impulse, float, 1.0f, "Magnitude of the impulse used to control the cart");
+  PROPERTY(drone_radius, float, 0.5f, "Drone size");
+  PROPERTY(move_force, float, 5.0f, "The force used to move the drone");
+  PROPERTY(rotate_torque, float, 1.5f, "The torque used to rotate the drone");
 };
 
 struct SceneVariables : public core::PropertySet {
-  PROPERTY(cart_distance, float, 0, "Cart distance from the center");
-  PROPERTY(cart_velocity, float, 0, "Cart horizontal velocity");
-  PROPERTY(pole_angle, float, 0, "Pole angle (from vertical)");
-  PROPERTY(pole_angular_velocity, float, 0, "Pole angular velocity");
+  PROPERTY(drone_x, float, 0, "Drone x coordinate");
+  PROPERTY(drone_y, float, 0, "Drone y coordinate");
+  PROPERTY(drone_vx, float, 0, "Drone velocity (x component)");
+  PROPERTY(drone_vy, float, 0, "Drone velocity (y component)");
+  PROPERTY(drone_dir, float, 0, "Heading angle");
 };
 
 class Scene : public phys::Scene {
@@ -36,14 +39,14 @@ class Scene : public phys::Scene {
 
   void postStep() override { updateVariables(); }
 
-  void moveCart(float impulse);
-  
+  void moveDrone(const b2Vec2& force);
+  void rotateDrone(float torque);
+
  private:
   void updateVariables();
 
  private:
-  b2Body* cart_ = nullptr;
-  b2Body* pole_ = nullptr;
+  b2Body* drone_ = nullptr;
   SceneVariables variables_;
   Config config_;
 };
@@ -54,20 +57,22 @@ class SceneUi : public core_ui::Box2dSceneUi {
  public:
   explicit SceneUi(Scene* scene) : scene_(scene) {}
 
-  void keyPressEvent(QKeyEvent* event) override {
-    const float impulse = scene_->config()->impulse;
-    switch (event->key()) {
-      case Qt::Key_Left:
-        scene_->moveCart(-impulse);
-        break;
-      case Qt::Key_Right:
-        scene_->moveCart(impulse);
-        break;
-    }
+  bool keyPressed(int key) const {
+    const auto it = key_state_.find(key);
+    return it != key_state_.end() ? it->second : false;
   }
+
+  void step() override;
+
+  void keyPressEvent(QKeyEvent* event) override { key_state_[event->key()] = true; }
+
+  void keyReleaseEvent(QKeyEvent* event) override { key_state_[event->key()] = false; }
+
+  void focusOutEvent() override { key_state_.clear(); }
 
  private:
   Scene* scene_ = nullptr;
+  unordered_map<int, bool> key_state_;
 };
 
 class Factory : public SandboxFactory {
@@ -82,4 +87,4 @@ class Factory : public SandboxFactory {
   }
 };
 
-}  // namespace cart_pole_scene
+}  // namespace drone_scene

@@ -37,6 +37,13 @@ class Box2dSceneUi : public QObject {
   // keyboard
   virtual void keyPressEvent(QKeyEvent* /*event*/) {}
   virtual void keyReleaseEvent(QKeyEvent* /*event*/) {}
+  
+  // focus
+  virtual void focusInEvent() {}
+  virtual void focusOutEvent() {}
+  
+  // simulation step
+  virtual void step() {}
 
  signals:
   void sigPlayPause();
@@ -66,6 +73,9 @@ class Box2dWidget : public core_ui::Canvas {
   
   void keyPressEvent(QKeyEvent* event) override;
   void keyReleaseEvent(QKeyEvent* event) override;
+  
+  void focusInEvent(QFocusEvent*) override;
+  void focusOutEvent(QFocusEvent*) override;
   
   void debugRender(QPainter& painter) const;
 

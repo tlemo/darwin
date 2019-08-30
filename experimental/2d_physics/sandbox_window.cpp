@@ -34,6 +34,10 @@ void SandboxWindow::newScene() {
 void SandboxWindow::singleStep() {
   CHECK(scene_package_.scene);
   scene_package_.scene->step();
+  if (scene_package_.scene_ui) {
+    // TODO(revisit): calling scene UI stuff from here is questionable
+    scene_package_.scene_ui->step();
+  }
   ++step_;
   updateUI();
 }

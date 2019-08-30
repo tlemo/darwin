@@ -131,4 +131,18 @@ void Box2dWidget::keyReleaseEvent(QKeyEvent* event) {
   update();
 }
 
+void Box2dWidget::focusInEvent(QFocusEvent*) {
+  if (scene_ui_ != nullptr) {
+    scene_ui_->focusInEvent();
+  }
+  update();
+}
+
+void Box2dWidget::focusOutEvent(QFocusEvent*) {
+  if (scene_ui_ != nullptr) {
+    scene_ui_->focusOutEvent();
+  }
+  update();
+}
+
 }  // namespace core_ui
