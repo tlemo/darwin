@@ -2,6 +2,10 @@
 #include "scene_drone.h"
 
 #include <core/global_initializer.h>
+#include <core/math_2d.h>
+
+#include <QPainter>
+#include <QRectF>
 
 namespace drone_scene {
 
@@ -62,6 +66,19 @@ void Scene::updateVariables() {
   variables_.drone_vx = drone_->GetLinearVelocity().x;
   variables_.drone_vy = drone_->GetLinearVelocity().y;
   variables_.drone_dir = drone_->GetAngle();
+}
+
+void SceneUi::render(QPainter& painter, const QRectF&) {
+  auto vars = scene_->variables();
+  auto config = scene_->config();
+  const float radius = config->drone_radius;
+  painter.save();
+  painter.translate(vars->drone_x, vars->drone_y);
+  painter.scale(1, -1);
+  painter.rotate(math::radiansToDegrees(-vars->drone_dir));
+  const QRectF dest_rect(-radius, -radius, radius * 2, radius * 2);
+  painter.drawPixmap(dest_rect, drone_pixmap_, drone_pixmap_.rect());
+  painter.restore();
 }
 
 void SceneUi::step() {

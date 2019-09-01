@@ -61,6 +61,10 @@ class Box2dWidget : public core_ui::Canvas {
   void setWorld(b2World* world, const QRectF& viewport);
   void setSceneUi(Box2dSceneUi* scene_ui);
 
+  bool debugRender() const { return enable_debug_render_; }
+
+  void setDebugRender(bool enable);
+
  signals:
   void sigPlayPause();
 
@@ -77,7 +81,7 @@ class Box2dWidget : public core_ui::Canvas {
   void focusInEvent(QFocusEvent*) override;
   void focusOutEvent(QFocusEvent*) override;
   
-  void debugRender(QPainter& painter) const;
+  void renderDebugLayer(QPainter& painter) const;
 
  private:
   b2World* world_ = nullptr;

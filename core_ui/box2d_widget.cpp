@@ -52,7 +52,12 @@ void Box2dWidget::setSceneUi(Box2dSceneUi* scene_ui) {
   update();
 }
 
-void Box2dWidget::debugRender(QPainter& painter) const {
+void Box2dWidget::setDebugRender(bool enable) {
+  enable_debug_render_ = enable;
+  update();
+}
+
+void Box2dWidget::renderDebugLayer(QPainter& painter) const {
   core_ui::Box2dRenderer box2d_renderer(&painter);
   box2d_renderer.SetFlags(b2Draw::e_shapeBit | b2Draw::e_centerOfMassBit);
 
@@ -64,7 +69,9 @@ void Box2dWidget::debugRender(QPainter& painter) const {
 void Box2dWidget::paintEvent(QPaintEvent*) {
   QPainter painter(this);
 
-  painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
+  painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing |
+                         QPainter::SmoothPixmapTransform |
+                         QPainter::HighQualityAntialiasing);
 
   // background (whole widget)
   painter.setPen(Qt::NoPen);
@@ -72,7 +79,7 @@ void Box2dWidget::paintEvent(QPaintEvent*) {
   painter.drawRect(rect());
 
   painter.setTransform(transformFromViewport());
-
+  
   // viewport background
   painter.setPen(Qt::NoPen);
   painter.setBrush(kViewportColor);
@@ -86,7 +93,7 @@ void Box2dWidget::paintEvent(QPaintEvent*) {
 
     // debug rendering layer
     if (enable_debug_render_) {
-      debugRender(painter);
+      renderDebugLayer(painter);
     }
   }
 }

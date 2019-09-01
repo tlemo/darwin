@@ -8,6 +8,7 @@
 #include <core_ui/box2d_widget.h>
 
 #include <QKeyEvent>
+#include <QPixmap>
 
 #include <memory>
 #include <unordered_map>
@@ -18,7 +19,7 @@ namespace drone_scene {
 struct Config : public core::PropertySet {
   PROPERTY(drone_radius, float, 0.5f, "Drone size");
   PROPERTY(move_force, float, 5.0f, "The force used to move the drone");
-  PROPERTY(rotate_torque, float, 1.5f, "The torque used to rotate the drone");
+  PROPERTY(rotate_torque, float, 1.0f, "The torque used to rotate the drone");
 };
 
 struct SceneVariables : public core::PropertySet {
@@ -62,6 +63,8 @@ class SceneUi : public core_ui::Box2dSceneUi {
     return it != key_state_.end() ? it->second : false;
   }
 
+  void render(QPainter& painter, const QRectF&) override;
+
   void step() override;
 
   void keyPressEvent(QKeyEvent* event) override { key_state_[event->key()] = true; }
@@ -73,6 +76,7 @@ class SceneUi : public core_ui::Box2dSceneUi {
  private:
   Scene* scene_ = nullptr;
   unordered_map<int, bool> key_state_;
+  QPixmap drone_pixmap_{ ":/resources/drone.png" };
 };
 
 class Factory : public SandboxFactory {

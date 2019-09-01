@@ -5,6 +5,7 @@
 #include <QRectF>
 
 SandboxWindow::SandboxWindow(SandboxFactory* factory) : factory_(factory) {
+  box2dWidget()->setDebugRender(true);
   config_ = factory_->defaultConfig();
   newScene();
   play();
