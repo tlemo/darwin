@@ -42,6 +42,9 @@ class Scene : public phys::Scene {
 
   void moveDrone(const b2Vec2& force);
   void rotateDrone(float torque);
+  
+  void addBalloon(float x, float y, float radius);
+  void addBox(float x, float y, float sx, float sy);
 
  private:
   void updateVariables();
@@ -66,6 +69,8 @@ class SceneUi : public core_ui::Box2dSceneUi {
   void render(QPainter& painter, const QRectF&) override;
 
   void step() override;
+
+  void mousePressEvent(const QPointF& pos, QMouseEvent* event) override;
 
   void keyPressEvent(QKeyEvent* event) override { key_state_[event->key()] = true; }
 

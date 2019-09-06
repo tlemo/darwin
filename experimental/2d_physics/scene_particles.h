@@ -23,7 +23,7 @@ class SceneUi : public core_ui::Box2dSceneUi {
  public:
   explicit SceneUi(Scene* scene) : scene_(scene) {}
 
-  void mousePressEvent(const QPointF& pos, QMouseEvent* event) {
+  void mousePressEvent(const QPointF& pos, QMouseEvent* event) override {
     const auto x = float(pos.x());
     const auto y = float(pos.y());
     
@@ -36,7 +36,7 @@ class SceneUi : public core_ui::Box2dSceneUi {
     }
   }
 
-  void keyPressEvent(QKeyEvent* event) {
+  void keyPressEvent(QKeyEvent* event) override {
     if (event->key() == Qt::Key_Space) {
       phys::addBullet(-95, 5, 100 * 100, 0, scene_->box2dWorld());
     }

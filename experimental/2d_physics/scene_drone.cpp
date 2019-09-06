@@ -60,6 +60,44 @@ void Scene::rotateDrone(float torque) {
   drone_->ApplyTorque(torque, true);
 }
 
+void Scene::addBalloon(float x, float y, float radius) {
+  b2BodyDef body_def;
+  body_def.type = b2_dynamicBody;
+  body_def.position.Set(x, y);
+  body_def.linearDamping = 1.0f;
+  body_def.angularDamping = 1.0f;
+  auto body = world_.CreateBody(&body_def);
+
+  b2CircleShape shape;
+  shape.m_radius = radius;
+
+  b2FixtureDef fixture_def;
+  fixture_def.shape = &shape;
+  fixture_def.density = 0.02f;
+  fixture_def.friction = 1.0f;
+  fixture_def.restitution = 0.9f;
+  body->CreateFixture(&fixture_def);
+}
+
+void Scene::addBox(float x, float y, float sx, float sy) {
+  b2BodyDef body_def;
+  body_def.type = b2_dynamicBody;
+  body_def.position.Set(x, y);
+  body_def.linearDamping = 2.0f;
+  body_def.angularDamping = 2.0f;
+  auto body = world_.CreateBody(&body_def);
+
+  b2PolygonShape shape;
+  shape.SetAsBox(sx, sy);
+
+  b2FixtureDef fixture_def;
+  fixture_def.shape = &shape;
+  fixture_def.density = 0.5f;
+  fixture_def.friction = 1.0f;
+  fixture_def.restitution = 0.5f;
+  body->CreateFixture(&fixture_def);
+}
+
 void Scene::updateVariables() {
   variables_.drone_x = drone_->GetPosition().x;
   variables_.drone_y = drone_->GetPosition().y;
@@ -101,6 +139,19 @@ void SceneUi::step() {
   }
   if (keyPressed(Qt::Key_W)) {
     scene_->rotateDrone(-rotate_torque);
+  }
+}
+
+void SceneUi::mousePressEvent(const QPointF& pos, QMouseEvent* event) {
+  const auto x = float(pos.x());
+  const auto y = float(pos.y());
+
+  if ((event->buttons() & Qt::LeftButton) != 0) {
+    scene_->addBalloon(x, y, 0.8f);
+  }
+
+  if ((event->buttons() & Qt::RightButton) != 0) {
+    scene_->addBox(x, y, 0.5f, 2.0f);
   }
 }
 
