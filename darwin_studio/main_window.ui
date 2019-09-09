@@ -20,7 +20,7 @@
    <string>Darwin Studio</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="resources.qrc">
+   <iconset resource="../core_ui/resources.qrc">
     <normaloff>:/resources/darwin.png</normaloff>:/resources/darwin.png</iconset>
   </property>
   <property name="dockNestingEnabled">
@@ -380,7 +380,7 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>
-  <include location="resources.qrc"/>
+  <include location="../core_ui/resources.qrc"/>
  </resources>
  <connections>
   <connection>

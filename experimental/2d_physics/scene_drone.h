@@ -1,6 +1,7 @@
 
 #pragma once
 
+#include "camera.h"
 #include "physics.h"
 #include "sandbox_factory.h"
 
@@ -38,11 +39,13 @@ class Scene : public phys::Scene {
 
   const Config* config() const override { return &config_; }
 
+  const phys::Camera* camera() const { return camera_.get(); }
+
   void postStep() override { updateVariables(); }
 
   void moveDrone(const b2Vec2& force);
   void rotateDrone(float torque);
-  
+
   void addBalloon(float x, float y, float radius);
   void addBox(float x, float y, float sx, float sy);
 
@@ -51,6 +54,7 @@ class Scene : public phys::Scene {
 
  private:
   b2Body* drone_ = nullptr;
+  unique_ptr<phys::Camera> camera_;
   SceneVariables variables_;
   Config config_;
 };
@@ -77,6 +81,10 @@ class SceneUi : public core_ui::Box2dSceneUi {
   void keyReleaseEvent(QKeyEvent* event) override { key_state_[event->key()] = false; }
 
   void focusOutEvent() override { key_state_.clear(); }
+
+ private:
+  void renderCamera(QPainter& painter, const phys::Camera* camera) const;
+  void renderDrone(QPainter& painter) const;
 
  private:
   Scene* scene_ = nullptr;

@@ -6,6 +6,8 @@
 
 #include <QPainter>
 #include <QRectF>
+#include <QPointF>
+#include <QPolygonF>
 
 namespace drone_scene {
 
@@ -50,6 +52,9 @@ Scene::Scene(const core::PropertySet* config)
   drone_fixture_def.friction = 1.0f;
   drone_fixture_def.restitution = 0.2f;
   drone_->CreateFixture(&drone_fixture_def);
+  
+  // camera
+  camera_ = make_unique<phys::Camera>(drone_, 0.4f, 0.1f, 1000.0f, 512);
 }
 
 void Scene::moveDrone(const b2Vec2& force) {
@@ -106,7 +111,30 @@ void Scene::updateVariables() {
   variables_.drone_dir = drone_->GetAngle();
 }
 
-void SceneUi::render(QPainter& painter, const QRectF&) {
+void SceneUi::renderCamera(QPainter& painter, const phys::Camera* camera) const {
+  auto body = camera->body();
+  
+  const float near = camera->near();
+  const float far = camera->far();
+  const float near_x = -camera->width() / 2;
+  const float far_x = near_x * (far / near);
+  
+  const b2Vec2 far_left(-far_x, far);
+  const b2Vec2 far_right(far_x, far);
+  
+  auto vec2point = [](const b2Vec2& vec) { return QPointF(vec.x, vec.y); };
+  
+  QPolygonF frustum;
+  frustum << vec2point(body->GetWorldPoint(b2Vec2(0, 0)));
+  frustum << vec2point(body->GetWorldPoint(far_left));
+  frustum << vec2point(body->GetWorldPoint(far_right));
+
+  painter.setPen(Qt::NoPen);
+  painter.setBrush(QColor(64, 64, 64, 32));  
+  painter.drawPolygon(frustum);
+}
+
+void SceneUi::renderDrone(QPainter& painter) const {
   auto vars = scene_->variables();
   auto config = scene_->config();
   const float radius = config->drone_radius;
@@ -117,6 +145,11 @@ void SceneUi::render(QPainter& painter, const QRectF&) {
   const QRectF dest_rect(-radius, -radius, radius * 2, radius * 2);
   painter.drawPixmap(dest_rect, drone_pixmap_, drone_pixmap_.rect());
   painter.restore();
+}
+
+void SceneUi::render(QPainter& painter, const QRectF&) {
+  renderDrone(painter);
+  renderCamera(painter, scene_->camera());
 }
 
 void SceneUi::step() {

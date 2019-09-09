@@ -10,6 +10,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000
 
 SOURCES += \
+    camera.cpp \
     main.cpp \
     main_window.cpp \
     new_sandbox_dialog.cpp \
@@ -23,6 +24,7 @@ SOURCES += \
     scene_particles.cpp
 
 HEADERS += \
+    camera.h \
     main_window.h \
     new_sandbox_dialog.h \
     new_scene_dialog.h \
