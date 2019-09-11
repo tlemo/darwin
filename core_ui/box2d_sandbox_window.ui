@@ -23,7 +23,7 @@ background-clip: content;
 }
 </string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_2">
+  <layout class="QVBoxLayout" name="layout">
    <property name="spacing">
     <number>5</number>
    </property>
@@ -65,7 +65,7 @@ background-clip: content;
       </property>
      </widget>
      <widget class="QWidget" name="layoutWidget">
-      <layout class="QVBoxLayout" name="verticalLayout">
+      <layout class="QVBoxLayout" name="toolbox_layout">
        <property name="spacing">
         <number>2</number>
        </property>

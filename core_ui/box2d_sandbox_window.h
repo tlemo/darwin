@@ -49,7 +49,9 @@ class Box2dSandboxWindow : public QFrame {
  public:
   //! Creates a new sandbox windows
   Box2dSandboxWindow();
-  ~Box2dSandboxWindow();
+  virtual ~Box2dSandboxWindow();
+  
+  void addBottomPane(QWidget* widget);
 
  protected:
   void focusInEvent(QFocusEvent* event) override;

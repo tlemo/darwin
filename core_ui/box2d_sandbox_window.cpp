@@ -41,6 +41,11 @@ Box2dSandboxWindow::~Box2dSandboxWindow() {
   delete ui;
 }
 
+void Box2dSandboxWindow::addBottomPane(QWidget* widget) {
+  Q_ASSERT(widget->parentWidget() == this);
+  ui->layout->addWidget(widget);
+}
+
 void Box2dSandboxWindow::focusInEvent(QFocusEvent* /*event*/) {
   ui->world_widget->setFocus();
 }

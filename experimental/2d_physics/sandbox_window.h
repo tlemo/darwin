@@ -3,6 +3,7 @@
 
 #include "physics.h"
 #include "sandbox_factory.h"
+#include "camera_widget.h"
 
 #include <core/properties.h>
 #include <core_ui/box2d_sandbox_window.h>
@@ -33,6 +34,8 @@ class SandboxWindow : public core_ui::Box2dSandboxWindow {
   void setupVariables();
 
  private:
+  CameraWidget* camera_widget_ = nullptr;
+  
   SandboxFactory* factory_ = nullptr;
   SandboxScenePackage scene_package_;
   int step_ = -1;
