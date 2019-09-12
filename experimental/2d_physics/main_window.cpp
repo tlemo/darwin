@@ -30,3 +30,7 @@ void MainWindow::on_action_new_sandbox_triggered() {
     ui->tabs->setCurrentIndex(new_tab_index);
   }
 }
+
+void MainWindow::on_tabs_tabCloseRequested(int index) {
+  delete ui->tabs->widget(index);
+}

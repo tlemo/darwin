@@ -1,6 +1,8 @@
 
 #include "scene_drone.h"
+#include "camera_widget.h"
 
+#include <core_ui/box2d_sandbox_window.h>
 #include <core/global_initializer.h>
 #include <core/math_2d.h>
 
@@ -145,6 +147,11 @@ void SceneUi::renderDrone(QPainter& painter) const {
   const QRectF dest_rect(-radius, -radius, radius * 2, radius * 2);
   painter.drawPixmap(dest_rect, drone_pixmap_, drone_pixmap_.rect());
   painter.restore();
+}
+
+void SceneUi::init(core_ui::Box2dSandboxWindow* sandbox_window) {
+  camera_widget_ = make_unique<CameraWidget>(sandbox_window, scene_->camera());
+  sandbox_window->addBottomPane(camera_widget_.get());
 }
 
 void SceneUi::render(QPainter& painter, const QRectF&) {

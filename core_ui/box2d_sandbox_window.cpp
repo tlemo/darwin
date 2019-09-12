@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include "box2d_sandbox_window.h"
+#include "box2d_widget.h"
 #include "ui_box2d_sandbox_window.h"
 
 #include <core/darwin.h>
@@ -92,6 +93,9 @@ void Box2dSandboxWindow::setWorld(b2World* world, const QRectF& viewport) {
 }
 
 void Box2dSandboxWindow::setSceneUi(Box2dSceneUi* scene_ui) {
+  if (scene_ui != nullptr) {
+    scene_ui->init(this);
+  }
   ui->world_widget->setSceneUi(scene_ui);
 }
 

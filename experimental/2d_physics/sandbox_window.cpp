@@ -5,9 +5,6 @@
 #include <QRectF>
 
 SandboxWindow::SandboxWindow(SandboxFactory* factory) : factory_(factory) {
-  camera_widget_ = new CameraWidget(this);
-  addBottomPane(camera_widget_);
-  
   box2dWidget()->setDebugRender(true);
   config_ = factory_->defaultConfig();
   newScene();

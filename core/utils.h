@@ -59,7 +59,7 @@ namespace core {
 [[noreturn]] void __fatal(const char* message, ...);
 
 //! Unconditional fast-fail (present in all build flavors)
-#define FATAL(msg, ...) core::__fatal("\nFATAL: " msg "\n\n", ##__VA_ARGS__);
+#define FATAL(msg, ...) core::__fatal("\nFATAL: " msg "\n\n", ##__VA_ARGS__)
 
 //! Classes derived from this are not copyable or movable
 //! 

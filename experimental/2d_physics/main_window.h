@@ -17,12 +17,13 @@ class MainWindow : public QMainWindow {
 
  public:
   MainWindow();
-  ~MainWindow();
+  ~MainWindow() override;
 
-private slots:
+ private slots:
   void on_action_new_sandbox_triggered();
-  
-private:
+  void on_tabs_tabCloseRequested(int index);
+
+ private:
   void onTabChanged(int index);
 
  private:
