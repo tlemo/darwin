@@ -9,23 +9,26 @@ using namespace std;
 
 namespace phys {
 
-struct Color {
+struct Receptor {
   float r = 0;
   float g = 0;
   float b = 0;
-  
-  Color() = default;
-  explicit Color(float r, float g, float b) : r(r), g(g), b(b) {}
+  float distance = 0;
+
+  Receptor() = default;
+
+  explicit Receptor(float r, float g, float b, float distance)
+      : r(r), g(g), b(b), distance(distance) {}
 };
 
 class Camera {
  public:
   Camera(b2Body* body, float width, float near, float far, int resolution);
 
-  vector<Color> render() const;
-  
+  vector<Receptor> render() const;
+
   b2Body* body() const { return body_; }
-  
+
   float width() const { return width_; }
   float near() const { return near_; }
   float far() const { return far_; }

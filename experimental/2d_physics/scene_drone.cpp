@@ -56,7 +56,7 @@ Scene::Scene(const core::PropertySet* config)
   drone_->CreateFixture(&drone_fixture_def);
   
   // camera
-  camera_ = make_unique<phys::Camera>(drone_, 0.4f, 0.1f, 1000.0f, 512);
+  camera_ = make_unique<phys::Camera>(drone_, 0.4f, 0.1f, 30.0f, 512);
 }
 
 void Scene::moveDrone(const b2Vec2& force) {

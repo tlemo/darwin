@@ -6,6 +6,7 @@ namespace phys {
 struct RayCastCallback : public b2RayCastCallback {
   b2Vec2 point;
   b2Vec2 normal;
+  float fraction = 0;
   b2Fixture* fixture = nullptr;
   const float min_fraction = 0;
 
@@ -19,6 +20,7 @@ struct RayCastCallback : public b2RayCastCallback {
       this->point = point;
       this->normal = normal;
       this->fixture = fixture;
+      this->fraction = fraction;
       return fraction;
     } else {
       return -1;
@@ -34,8 +36,8 @@ Camera::Camera(b2Body* body, float width, float near, float far, int resolution)
   CHECK(far_ > near_);
 }
 
-vector<Color> Camera::render() const {
-  vector<Color> image(resolution_);
+vector<Receptor> Camera::render() const {
+  vector<Receptor> image(resolution_);
   const float dx = width_ / resolution_;
   const float far_near_ratio = far_ / near_;
   const float near_far_ratio = near_ / far_;
@@ -49,10 +51,11 @@ vector<Color> Camera::render() const {
     world->RayCast(&raycast, ray_start, ray_end);
     if (raycast.fixture != nullptr) {
       // TODO: fixture color
-      image[i] = Color(1, 1, 1);
+      CHECK(raycast.fraction > 0 && raycast.fraction <= 1);
+      image[i] = Receptor(1, 1, 1, raycast.fraction);
     } else {
       // TODO: background color
-      image[i] = Color(0, 0, 0);
+      image[i] = Receptor(0, 0, 0, 1.0f);
     }
     near_x += dx;
   }
