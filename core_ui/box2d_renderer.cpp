@@ -25,7 +25,7 @@ void Box2dRenderer::DrawPolygon(const b2Vec2* vertices,
                                 int32 vertexCount,
                                 const b2Color& color) {
   QColor pen_color;
-  pen_color.setRgbF(color.r, color.g, color.b, color.a);
+  pen_color.setRgbF(color.r, color.g, color.b);
 
   QPolygonF polygon;
   for (int i = 0; i < vertexCount; ++i) {
@@ -43,7 +43,7 @@ void Box2dRenderer::DrawSolidPolygon(const b2Vec2* vertices,
   constexpr float kAlphaScale = 0.7f;
 
   QColor brush_color;
-  brush_color.setRgbF(color.r, color.g, color.b, color.a * kAlphaScale);
+  brush_color.setRgbF(color.r, color.g, color.b, kAlphaScale);
 
   QPolygonF polygon;
   for (int i = 0; i < vertexCount; ++i) {
@@ -59,7 +59,7 @@ void Box2dRenderer::DrawCircle(const b2Vec2& center,
                                float32 radius,
                                const b2Color& color) {
   QColor pen_color;
-  pen_color.setRgbF(color.r, color.g, color.b, color.a);
+  pen_color.setRgbF(color.r, color.g, color.b);
 
   painter_->setPen(QPen(pen_color, 0));
   painter_->setBrush(Qt::NoBrush);
@@ -73,7 +73,7 @@ void Box2dRenderer::DrawSolidCircle(const b2Vec2& center,
   constexpr float kAlphaScale = 0.7f;
 
   QColor brush_color;
-  brush_color.setRgbF(color.r, color.g, color.b, color.a * kAlphaScale);
+  brush_color.setRgbF(color.r, color.g, color.b, kAlphaScale);
 
   painter_->setPen(QPen(Qt::darkGray, 0));
   painter_->setBrush(QBrush(brush_color));
@@ -88,7 +88,7 @@ void Box2dRenderer::DrawSegment(const b2Vec2& p1,
                                 const b2Vec2& p2,
                                 const b2Color& color) {
   QColor pen_color;
-  pen_color.setRgbF(color.r, color.g, color.b, color.a);
+  pen_color.setRgbF(color.r, color.g, color.b);
 
   painter_->setPen(QPen(pen_color, 0));
   painter_->setBrush(Qt::NoBrush);
@@ -120,7 +120,7 @@ void Box2dRenderer::DrawTransform(const b2Transform& xf) {
 
 void Box2dRenderer::DrawPoint(const b2Vec2& p, float32 size, const b2Color& color) {
   QColor pen_color;
-  pen_color.setRgbF(color.r, color.g, color.b, color.a);
+  pen_color.setRgbF(color.r, color.g, color.b);
 
   painter_->setPen(QPen(pen_color, 0));
   painter_->setBrush(pen_color);
