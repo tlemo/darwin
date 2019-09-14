@@ -1,7 +1,12 @@
 
 #include "camera.h"
 
+#include <limits>
+
 namespace phys {
+
+constexpr float kInfinity = std::numeric_limits<float>::infinity();
+constexpr float kEpsilon = std::numeric_limits<float>::epsilon();
 
 struct RayCastCallback : public b2RayCastCallback {
   b2Vec2 point;
@@ -36,27 +41,89 @@ Camera::Camera(b2Body* body, float width, float near, float far, int resolution)
   CHECK(far_ > near_);
 }
 
+Receptor Camera::castRay(const b2Vec2& ray_start,
+                         const b2Vec2& ray_end,
+                         float min_fraction,
+                         int depth) const {
+  const auto world = body_->GetWorld();
+  RayCastCallback raycast(min_fraction);
+  world->RayCast(&raycast, ray_start, ray_end);
+
+  // no intersection? return the background color
+  if (raycast.fixture == nullptr) {
+    // TODO: background color
+    return Receptor(b2Color(0, 0, 0), 1.0f);
+  }
+
+  b2Color color;  // TODO: ambient color
+  b2Color specular_color;
+
+  const b2Body* body = raycast.fixture->GetBody();
+  const b2Material& material = raycast.fixture->GetMaterial();
+  const b2Vec2 local_point = body->GetLocalPoint(raycast.point);
+  const b2Vec2 local_normal = body->GetLocalVector(raycast.normal);
+
+  // emissive lighting
+  assert(material.emit_intensity >= 0 && material.emit_intensity <= 1);
+  if (material.emit_intensity > 0) {
+    color = color + material.color * material.emit_intensity;
+  }
+
+  // basic illumination (diffuse, specular), including shadows
+  for (auto light = world->GetLightList(); light != nullptr; light = light->GetNext()) {
+    const auto& ldef = light->GetDef();
+    const auto global_light_pos = ldef.body->GetWorldPoint(ldef.position);
+    const auto local_light_pos = body->GetLocalPoint(global_light_pos);
+
+    // shadow?
+    if (render_shadows_) {
+      RayCastCallback shadow_raycast(kEpsilon);
+      world->RayCast(&shadow_raycast, raycast.point, global_light_pos);
+      if (shadow_raycast.fixture != nullptr) {
+        //continue;
+      }
+    }
+
+    // diffuse lighting
+    const b2Vec2 L = (local_light_pos - local_point).Normalized();
+    const float diffuse_intensity = ldef.intensity * fmaxf(b2Dot(local_normal, L), 0);
+    color = color + ldef.color * diffuse_intensity;
+
+    // specular lighing?
+    /*
+    assert(material.shininess >= 0 && material.shininess <= 1);
+    if (render_specular_ && material.shininess > 0) {
+      const Vector3 H = (L + V) * 0.5f;
+      const Scalar s = pow(fmax(intersection.normal * H, 0), material.shininess);
+      const Scalar specular_intensity = light.intensity * s;
+      specular_color = specular_color + light.color * specular_intensity;
+    }
+    */
+  }
+
+  // final color modulation
+  color = color * material.color + specular_color;
+
+  // saturation
+  color.r = fminf(color.r, 1.0f);
+  color.g = fminf(color.g, 1.0f);
+  color.b = fminf(color.b, 1.0f);
+
+  assert(raycast.fraction > 0 && raycast.fraction <= 1);
+  return Receptor(color, raycast.fraction);
+}
+
 vector<Receptor> Camera::render() const {
   vector<Receptor> image(resolution_);
   const float dx = width_ / resolution_;
   const float far_near_ratio = far_ / near_;
   const float near_far_ratio = near_ / far_;
-  const auto world = body_->GetWorld();
   float near_x = -(width_ - dx) / 2;
   const b2Vec2 ray_start = body_->GetWorldPoint(b2Vec2(0, 0));
   for (int i = 0; i < resolution_; ++i) {
     const float far_x = near_x * far_near_ratio;
     const b2Vec2 ray_end = body_->GetWorldPoint(b2Vec2(far_x, far_));
-    RayCastCallback raycast(near_far_ratio);
-    world->RayCast(&raycast, ray_start, ray_end);
-    if (raycast.fixture != nullptr) {
-      // TODO: fixture color
-      CHECK(raycast.fraction > 0 && raycast.fraction <= 1);
-      image[i] = Receptor(1, 1, 1, raycast.fraction);
-    } else {
-      // TODO: background color
-      image[i] = Receptor(0, 0, 0, 1.0f);
-    }
+    image[i] = castRay(ray_start, ray_end, near_far_ratio);
     near_x += dx;
   }
   return image;

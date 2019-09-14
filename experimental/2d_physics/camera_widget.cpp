@@ -22,7 +22,7 @@ void CameraWidget::paintEvent(QPaintEvent*) {
   for (int i = 0; i < camera_image.size(); ++i) {
     const auto& ci = camera_image[i];
     const float shade = 1.0f - ci.distance;
-    color_pixels[i] = QColor::fromRgbF(ci.r, ci.g, ci.b).rgb();
+    color_pixels[i] = QColor::fromRgbF(ci.color.r, ci.color.g, ci.color.b).rgb();
     depth_pixels[i] = QColor::fromRgbF(shade, shade, shade).rgb();
   }
 
@@ -30,11 +30,11 @@ void CameraWidget::paintEvent(QPaintEvent*) {
   const auto half_height = rect().height() / 2;
   auto top_half = rect();
   top_half.setHeight(half_height);
-  auto bottom_half = rect();
-  bottom_half.moveTop(half_height);
+  auto bottom_half = top_half;
+  bottom_half.translate(0, half_height);
 
   // render the camera image
   QPainter painter(this);
   painter.drawImage(top_half, color_image);
-  painter.drawImage(top_half, depth_image);
+  painter.drawImage(bottom_half, depth_image);
 }

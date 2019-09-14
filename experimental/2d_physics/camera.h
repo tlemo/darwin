@@ -10,15 +10,13 @@ using namespace std;
 namespace phys {
 
 struct Receptor {
-  float r = 0;
-  float g = 0;
-  float b = 0;
+  b2Color color;
   float distance = 0;
 
   Receptor() = default;
 
-  explicit Receptor(float r, float g, float b, float distance)
-      : r(r), g(g), b(b), distance(distance) {}
+  explicit Receptor(const b2Color& color, float distance)
+      : color(color), distance(distance) {}
 };
 
 class Camera {
@@ -35,11 +33,20 @@ class Camera {
   int resolution() const { return resolution_; }
 
  private:
+  Receptor castRay(const b2Vec2& ray_start,
+                   const b2Vec2& ray_end,
+                   float min_fraction,
+                   int depth = 0) const;
+
+ private:
   b2Body* body_ = nullptr;
   const float width_ = 0;
   const float near_ = 0;
   const float far_ = 0;
   const int resolution_ = 0;
+  bool render_shadows_ = true;
+  bool render_specular_ = true;
+  int max_reflection_depth_ = 4;
 };
 
 }  // namespace phys
