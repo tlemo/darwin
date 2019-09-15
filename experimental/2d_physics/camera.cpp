@@ -15,12 +15,14 @@ struct RayCastCallback : public b2RayCastCallback {
   b2Fixture* fixture = nullptr;
   const float min_fraction = 0;
 
-  RayCastCallback(float min_fraction) : min_fraction(min_fraction) {}
+  explicit RayCastCallback(float min_fraction) : min_fraction(min_fraction) {}
 
   float32 ReportFixture(b2Fixture* fixture,
                         const b2Vec2& point,
                         const b2Vec2& normal,
                         float32 fraction) override {
+    assert(fraction >= 0);
+    assert(fraction <= 1);
     if (fraction >= min_fraction) {
       this->point = point;
       this->normal = normal;
@@ -29,6 +31,25 @@ struct RayCastCallback : public b2RayCastCallback {
       return fraction;
     } else {
       return -1;
+    }
+  }
+};
+
+struct ShadowRayCastCallback : public b2RayCastCallback {
+  b2Fixture* const self = nullptr;
+  bool intersection = false;
+
+  explicit ShadowRayCastCallback(b2Fixture* self) : self(self) {}
+
+  float32 ReportFixture(b2Fixture* fixture,
+                        const b2Vec2& /*point*/,
+                        const b2Vec2& /*normal*/,
+                        float32 /*fraction*/) override {
+    if (fixture == self) {
+      return -1;
+    } else {
+      intersection = true;
+      return 0;
     }
   }
 };
@@ -77,10 +98,10 @@ Receptor Camera::castRay(const b2Vec2& ray_start,
 
     // shadow?
     if (render_shadows_) {
-      RayCastCallback shadow_raycast(kEpsilon);
+      ShadowRayCastCallback shadow_raycast(raycast.fixture);
       world->RayCast(&shadow_raycast, raycast.point, global_light_pos);
-      if (shadow_raycast.fixture != nullptr) {
-        //continue;
+      if (shadow_raycast.intersection) {
+        continue;
       }
     }
 
