@@ -70,9 +70,8 @@ Receptor Camera::castRay(const b2Vec2& ray_start,
   RayCastCallback raycast(min_fraction);
   world->RayCast(&raycast, ray_start, ray_end);
 
-  // no intersection? return the background color
+  // if no intersection, return the background color
   if (raycast.fixture == nullptr) {
-    // TODO: background color
     return Receptor(b2Color(0, 0, 0), 1.0f);
   }
 
@@ -83,6 +82,7 @@ Receptor Camera::castRay(const b2Vec2& ray_start,
   const b2Material& material = raycast.fixture->GetMaterial();
   const b2Vec2 local_point = body->GetLocalPoint(raycast.point);
   const b2Vec2 local_normal = body->GetLocalVector(raycast.normal);
+  const b2Vec2 V = body->GetLocalVector(ray_start - ray_end).Normalized();
 
   // emissive lighting
   assert(material.emit_intensity >= 0 && material.emit_intensity <= 1);
@@ -96,7 +96,7 @@ Receptor Camera::castRay(const b2Vec2& ray_start,
     const auto global_light_pos = ldef.body->GetWorldPoint(ldef.position);
     const auto local_light_pos = body->GetLocalPoint(global_light_pos);
 
-    // shadow?
+    // shadows?
     if (render_shadows_) {
       ShadowRayCastCallback shadow_raycast(raycast.fixture);
       world->RayCast(&shadow_raycast, raycast.point, global_light_pos);
@@ -111,15 +111,13 @@ Receptor Camera::castRay(const b2Vec2& ray_start,
     color = color + ldef.color * diffuse_intensity;
 
     // specular lighing?
-    /*
-    assert(material.shininess >= 0 && material.shininess <= 1);
+    assert(material.shininess >= 0);
     if (render_specular_ && material.shininess > 0) {
-      const Vector3 H = (L + V) * 0.5f;
-      const Scalar s = pow(fmax(intersection.normal * H, 0), material.shininess);
-      const Scalar specular_intensity = light.intensity * s;
-      specular_color = specular_color + light.color * specular_intensity;
+      const b2Vec2 H = (L + V) * 0.5f;
+      const float s = powf(fmaxf(b2Dot(local_normal, H), 0), material.shininess);
+      const float specular_intensity = ldef.intensity * s;
+      specular_color = specular_color + ldef.color * specular_intensity;
     }
-    */
   }
 
   // final color modulation
