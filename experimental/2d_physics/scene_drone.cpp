@@ -56,20 +56,17 @@ Scene::Scene(const core::PropertySet* config)
   drone_->CreateFixture(&drone_fixture_def);
 
   // lights
-  b2BodyDef light_body_def;
-  auto light_body = world_.CreateBody(&light_body_def);
-
   b2LightDef light1_def;
-  light1_def.body = light_body;
-  light1_def.color = b2Color(1.0f, 0, 0);
-  light1_def.intensity = 1.0f;
+  light1_def.body = walls;
+  light1_def.color = b2Color(1, 1, 1);
+  light1_def.intensity = 0.7f;
   light1_def.position = b2Vec2(9, -9);
   world_.CreateLight(&light1_def);
 
   b2LightDef light2_def;
-  light2_def.body = light_body;
-  light2_def.color = b2Color(0, 1, 1);
-  light2_def.intensity = 1.0f;
+  light2_def.body = walls;
+  light2_def.color = b2Color(1, 1, 1);
+  light2_def.intensity = 0.7f;
   light2_def.position = b2Vec2(-9, -9);
   world_.CreateLight(&light2_def);
 
@@ -101,9 +98,9 @@ void Scene::addBalloon(float x, float y, float radius) {
   fixture_def.density = 0.02f;
   fixture_def.friction = 1.0f;
   fixture_def.restitution = 0.9f;
-  fixture_def.material.color = b2Color(1, 1, 0);
+  fixture_def.material.color = b2Color(1, 0, 0);
   fixture_def.material.reflect = 0.1f;
-  fixture_def.material.shininess = 0.3f;
+  fixture_def.material.shininess = 10;
   fixture_def.material.emit_intensity = 0.3f;
   body->CreateFixture(&fixture_def);
 }
@@ -124,9 +121,9 @@ void Scene::addBox(float x, float y, float sx, float sy) {
   fixture_def.density = 0.5f;
   fixture_def.friction = 1.0f;
   fixture_def.restitution = 0.5f;
-  fixture_def.material.color = b2Color(1, 1, 1);
+  fixture_def.material.color = b2Color(0, 1, 0);
   fixture_def.material.reflect = 0.5f;
-  fixture_def.material.shininess = 0.5f;
+  fixture_def.material.shininess = 25;
   fixture_def.material.emit_intensity = 0.2f;
   body->CreateFixture(&fixture_def);
 }
