@@ -68,21 +68,21 @@ Scene::Scene(const core::PropertySet* config)
   b2LightDef light1_def;
   light1_def.body = walls;
   light1_def.color = b2Color(1, 1, 1);
-  light1_def.intensity = 1.0f;
-  light1_def.attenuation_distance = 30.0f;
+  light1_def.intensity = 2.0f;
+  light1_def.attenuation_distance = 25.0f;
   light1_def.position = b2Vec2(9, -9);
   world_.CreateLight(&light1_def);
 
   b2LightDef light2_def;
   light2_def.body = walls;
   light2_def.color = b2Color(1, 1, 1);
-  light2_def.intensity = 1.0f;
-  light2_def.attenuation_distance = 30.0f;
+  light2_def.intensity = 2.0f;
+  light2_def.attenuation_distance = 25.0f;
   light2_def.position = b2Vec2(-9, -9);
   world_.CreateLight(&light2_def);
 
   // camera
-  camera_ = make_unique<phys::Camera>(drone_, 0.4f, 0.1f, 30.0f, 512);
+  camera_ = make_unique<phys::Camera>(drone_, 120, 0.1f, 30.0f, 512);
 }
 
 void Scene::moveDrone(const b2Vec2& force) {
@@ -149,25 +149,17 @@ void Scene::updateVariables() {
 
 void SceneUi::renderCamera(QPainter& painter, const phys::Camera* camera) const {
   auto body = camera->body();
-  
-  const float near = camera->near();
   const float far = camera->far();
-  const float near_x = -camera->width() / 2;
-  const float far_x = near_x * (far / near);
-  
-  const b2Vec2 far_left(-far_x, far);
-  const b2Vec2 far_right(far_x, far);
-  
-  auto vec2point = [](const b2Vec2& vec) { return QPointF(vec.x, vec.y); };
-  
-  QPolygonF frustum;
-  frustum << vec2point(body->GetWorldPoint(b2Vec2(0, 0)));
-  frustum << vec2point(body->GetWorldPoint(far_left));
-  frustum << vec2point(body->GetWorldPoint(far_right));
+  const float fov = camera->fov();
+  const auto pos = body->GetWorldPoint(b2Vec2(0, 0));
+
+  const QPointF center(pos.x, pos.y);
+  const QRectF frustum_rect(center - QPointF(far, far), center + QPointF(far, far));
+  const double angle = math::radiansToDegrees(body->GetAngle()) + 90 + fov / 2;
 
   painter.setPen(Qt::NoPen);
-  painter.setBrush(QColor(64, 64, 64, 32));  
-  painter.drawPolygon(frustum);
+  painter.setBrush(QColor(64, 64, 64, 32));
+  painter.drawPie(frustum_rect, int(-angle * 16), int(fov * 16));
 }
 
 void SceneUi::renderDrone(QPainter& painter) const {

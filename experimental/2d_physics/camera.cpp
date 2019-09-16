@@ -7,6 +7,8 @@ namespace phys {
 
 constexpr float kInfinity = std::numeric_limits<float>::infinity();
 constexpr float kEpsilon = std::numeric_limits<float>::epsilon();
+constexpr float kPi = 3.14159274101f;
+constexpr float kDegreesToRadians = kPi / 180.0f;
 
 struct RayCastCallback : public b2RayCastCallback {
   b2Vec2 point;
@@ -54,10 +56,10 @@ struct ShadowRayCastCallback : public b2RayCastCallback {
   }
 };
 
-Camera::Camera(b2Body* body, float width, float near, float far, int resolution)
-    : body_(body), width_(width), near_(near), far_(far), resolution_(resolution) {
-  CHECK(resolution_ > 0);
-  CHECK(width_ > 0);
+Camera::Camera(b2Body* body, float fov, float near, float far, int resolution)
+    : body_(body), fov_(fov), near_(near), far_(far), resolution_(resolution) {
+  CHECK(resolution_ > 1);
+  CHECK(fov_ > 0);
   CHECK(near_ > 0);
   CHECK(far_ > near_);
 }
@@ -81,9 +83,6 @@ Receptor Camera::castRay(const b2Vec2& ray_start,
   const b2Vec2 local_normal = body->GetLocalVector(raycast.normal);
   const b2Vec2 V = body->GetLocalVector(ray_start - ray_end).Normalized();
 
-  const float distance = (raycast.point - ray_start).Length();
-  const float camera_attenuation = fmaxf(1 - distance / far_, 0);
-
   b2Color color(0.2f, 0.2f, 0.2f);  // TODO: ambient color
   b2Color specular_color;
 
@@ -101,9 +100,7 @@ Receptor Camera::castRay(const b2Vec2& ray_start,
 
     b2Vec2 L = local_light_pos - local_point;
     const float light_distance = L.Normalize();
-    const float light_attenuation =
-        fmaxf(1 - light_distance / ldef.attenuation_distance, 0);
-    const float attenuation = light_attenuation * camera_attenuation;
+    const float attenuation = fmaxf(1 - light_distance / ldef.attenuation_distance, 0);
     float light_intensity = ldef.intensity * attenuation;
 
     // shadow?
@@ -133,6 +130,9 @@ Receptor Camera::castRay(const b2Vec2& ray_start,
   // final color modulation
   color = color * material.color + specular_color;
 
+  // distance-from-camera attenuation
+  color = color * (1 - raycast.fraction);
+
   // saturation
   color.r = fminf(color.r, 1.0f);
   color.g = fminf(color.g, 1.0f);
@@ -144,17 +144,25 @@ Receptor Camera::castRay(const b2Vec2& ray_start,
 
 vector<Receptor> Camera::render() const {
   vector<Receptor> image(resolution_);
-  const float dx = width_ / resolution_;
+
+  const b2Vec2 ray_start = body_->GetWorldPoint(b2Vec2(0, 0));
+
   const float far_near_ratio = far_ / near_;
   const float near_far_ratio = near_ / far_;
-  float near_x = -(width_ - dx) / 2;
-  const b2Vec2 ray_start = body_->GetWorldPoint(b2Vec2(0, 0));
+
+  const float fov_radians = fov_ * kDegreesToRadians;
+  const float slice_angle = fov_radians / (resolution_ - 1);
+  float ray_angle = fov_radians * -0.5f;
   for (int i = 0; i < resolution_; ++i) {
+    const float near_x = sinf(ray_angle) * near_;
+    const float near_y = cosf(ray_angle) * near_;
     const float far_x = near_x * far_near_ratio;
-    const b2Vec2 ray_end = body_->GetWorldPoint(b2Vec2(far_x, far_));
+    const float far_y = near_y * far_near_ratio;
+    const b2Vec2 ray_end = body_->GetWorldPoint(b2Vec2(far_x, far_y));
     image[i] = castRay(ray_start, ray_end, near_far_ratio);
-    near_x += dx;
+    ray_angle += slice_angle;
   }
+
   return image;
 }
 

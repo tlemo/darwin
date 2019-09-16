@@ -21,13 +21,13 @@ struct Receptor {
 
 class Camera {
  public:
-  Camera(b2Body* body, float width, float near, float far, int resolution);
+  Camera(b2Body* body, float fov, float near, float far, int resolution);
 
   vector<Receptor> render() const;
 
   b2Body* body() const { return body_; }
 
-  float width() const { return width_; }
+  float fov() const { return fov_; }
   float near() const { return near_; }
   float far() const { return far_; }
   int resolution() const { return resolution_; }
@@ -40,7 +40,7 @@ class Camera {
 
  private:
   b2Body* body_ = nullptr;
-  const float width_ = 0;
+  const float fov_ = 0;
   const float near_ = 0;
   const float far_ = 0;
   const int resolution_ = 0;
