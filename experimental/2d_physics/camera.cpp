@@ -75,14 +75,17 @@ Receptor Camera::castRay(const b2Vec2& ray_start,
     return Receptor(b2Color(0, 0, 0), 1.0f);
   }
 
-  b2Color color;  // TODO: ambient color
-  b2Color specular_color;
-
   const b2Body* body = raycast.fixture->GetBody();
   const b2Material& material = raycast.fixture->GetMaterial();
   const b2Vec2 local_point = body->GetLocalPoint(raycast.point);
   const b2Vec2 local_normal = body->GetLocalVector(raycast.normal);
   const b2Vec2 V = body->GetLocalVector(ray_start - ray_end).Normalized();
+
+  const float distance = (raycast.point - ray_start).Length();
+  const float camera_attenuation = fmaxf(1 - distance / far_, 0);
+
+  b2Color color(0.2f, 0.2f, 0.2f);  // TODO: ambient color
+  b2Color specular_color;
 
   // emissive lighting
   assert(material.emit_intensity >= 0 && material.emit_intensity <= 1);
@@ -96,18 +99,25 @@ Receptor Camera::castRay(const b2Vec2& ray_start,
     const auto global_light_pos = ldef.body->GetWorldPoint(ldef.position);
     const auto local_light_pos = body->GetLocalPoint(global_light_pos);
 
-    // shadows?
-    if (render_shadows_) {
+    b2Vec2 L = local_light_pos - local_point;
+    const float light_distance = L.Normalize();
+    const float light_attenuation =
+        fmaxf(1 - light_distance / ldef.attenuation_distance, 0);
+    const float attenuation = light_attenuation * camera_attenuation;
+    float light_intensity = ldef.intensity * attenuation;
+
+    // shadow?
+    assert(shadow_attenuation_ >= 0 && shadow_attenuation_ <= 1);
+    if (shadow_attenuation_ < 1) {
       ShadowRayCastCallback shadow_raycast(raycast.fixture);
       world->RayCast(&shadow_raycast, raycast.point, global_light_pos);
       if (shadow_raycast.intersection) {
-        continue;
+        light_intensity *= shadow_attenuation_;
       }
     }
 
     // diffuse lighting
-    const b2Vec2 L = (local_light_pos - local_point).Normalized();
-    const float diffuse_intensity = ldef.intensity * fmaxf(b2Dot(local_normal, L), 0);
+    const float diffuse_intensity = light_intensity * fmaxf(b2Dot(local_normal, L), 0);
     color = color + ldef.color * diffuse_intensity;
 
     // specular lighing?
@@ -115,7 +125,7 @@ Receptor Camera::castRay(const b2Vec2& ray_start,
     if (render_specular_ && material.shininess > 0) {
       const b2Vec2 H = (L + V) * 0.5f;
       const float s = powf(fmaxf(b2Dot(local_normal, H), 0), material.shininess);
-      const float specular_intensity = ldef.intensity * s;
+      const float specular_intensity = light_intensity * s;
       specular_color = specular_color + ldef.color * specular_intensity;
     }
   }

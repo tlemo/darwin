@@ -44,9 +44,9 @@ class Camera {
   const float near_ = 0;
   const float far_ = 0;
   const int resolution_ = 0;
-  bool render_shadows_ = true;
-  bool render_specular_ = true;
+  float shadow_attenuation_ = 1.0f;
   int max_reflection_depth_ = 4;
+  bool render_specular_ = true;
 };
 
 }  // namespace phys
