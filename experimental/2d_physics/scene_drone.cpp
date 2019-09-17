@@ -110,7 +110,6 @@ void Scene::addBalloon(float x, float y, float radius) {
   fixture_def.friction = 1.0f;
   fixture_def.restitution = 0.9f;
   fixture_def.material.color = b2Color(1, 0, 0);
-  fixture_def.material.reflect = 0.1f;
   fixture_def.material.shininess = 10;
   fixture_def.material.emit_intensity = 0.1f;
   body->CreateFixture(&fixture_def);
@@ -133,7 +132,6 @@ void Scene::addBox(float x, float y, float sx, float sy) {
   fixture_def.friction = 1.0f;
   fixture_def.restitution = 0.5f;
   fixture_def.material.color = b2Color(0, 1, 0);
-  fixture_def.material.reflect = 0.5f;
   fixture_def.material.shininess = 25;
   fixture_def.material.emit_intensity = 0.1f;
   body->CreateFixture(&fixture_def);

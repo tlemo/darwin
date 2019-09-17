@@ -35,17 +35,23 @@ class Camera {
  private:
   Receptor castRay(const b2Vec2& ray_start,
                    const b2Vec2& ray_end,
-                   float min_fraction,
-                   int depth = 0) const;
+                   float min_fraction) const;
 
  private:
   b2Body* body_ = nullptr;
+
+  // field of view (in degrees)
   const float fov_ = 0;
+
   const float near_ = 0;
   const float far_ = 0;
+
   const int resolution_ = 0;
+
+  // the shadow attenuation factor
+  // [0=completely blocking light .. 1=no shadows]
   float shadow_attenuation_ = 1.0f;
-  int max_reflection_depth_ = 4;
+
   bool render_specular_ = true;
 };
 

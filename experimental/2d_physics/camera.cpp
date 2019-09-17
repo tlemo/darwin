@@ -5,10 +5,10 @@
 
 namespace phys {
 
-constexpr float kInfinity = std::numeric_limits<float>::infinity();
-constexpr float kEpsilon = std::numeric_limits<float>::epsilon();
 constexpr float kPi = 3.14159274101f;
 constexpr float kDegreesToRadians = kPi / 180.0f;
+
+namespace {
 
 struct RayCastCallback : public b2RayCastCallback {
   b2Vec2 point;
@@ -56,6 +56,8 @@ struct ShadowRayCastCallback : public b2RayCastCallback {
   }
 };
 
+} // anonymous namespace
+
 Camera::Camera(b2Body* body, float fov, float near, float far, int resolution)
     : body_(body), fov_(fov), near_(near), far_(far), resolution_(resolution) {
   CHECK(resolution_ > 1);
@@ -66,8 +68,7 @@ Camera::Camera(b2Body* body, float fov, float near, float far, int resolution)
 
 Receptor Camera::castRay(const b2Vec2& ray_start,
                          const b2Vec2& ray_end,
-                         float min_fraction,
-                         int depth) const {
+                         float min_fraction) const {
   const auto world = body_->GetWorld();
   RayCastCallback raycast(min_fraction);
   world->RayCast(&raycast, ray_start, ray_end);
@@ -95,6 +96,8 @@ Receptor Camera::castRay(const b2Vec2& ray_start,
   // basic illumination (diffuse, specular), including shadows
   for (auto light = world->GetLightList(); light != nullptr; light = light->GetNext()) {
     const auto& ldef = light->GetDef();
+    assert(ldef.intensity >= 0);
+    
     const auto global_light_pos = ldef.body->GetWorldPoint(ldef.position);
     const auto local_light_pos = body->GetLocalPoint(global_light_pos);
 
@@ -125,16 +128,6 @@ Receptor Camera::castRay(const b2Vec2& ray_start,
       const float specular_intensity = light_intensity * s;
       specular_color = specular_color + ldef.color * specular_intensity;
     }
-  }
-
-  // reflections
-  assert(material.reflect >= 0 && material.reflect <= 1);
-  if (material.reflect > 0 && depth < max_reflection_depth_) {
-    const b2Vec2 R = 2 * b2Dot(local_normal, V) * local_normal - V;
-    const b2Vec2 reflection_ray_end = raycast.point + far_ * body->GetWorldVector(R);
-    const auto reflection =
-        castRay(raycast.point, reflection_ray_end, kEpsilon, depth + 1);
-    color = color * (1 - material.reflect) + reflection.color * material.reflect;
   }
 
   // final color modulation
