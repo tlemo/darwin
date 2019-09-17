@@ -33,8 +33,6 @@ Scene::Scene(const core::PropertySet* config)
   wall_fixture_def.friction = 1.0f;
   wall_fixture_def.restitution = 0.5f;
   wall_fixture_def.material.color = b2Color(1, 1, 0);
-  wall_fixture_def.material.reflect = 0.2f;
-  wall_fixture_def.material.shininess = 0;
   wall_fixture_def.material.emit_intensity = 0.1f;
   
   wall_shape.Set(b2Vec2(-10, -10), b2Vec2(10, -10));
@@ -62,6 +60,8 @@ Scene::Scene(const core::PropertySet* config)
   drone_fixture_def.density = 0.1f;
   drone_fixture_def.friction = 1.0f;
   drone_fixture_def.restitution = 0.2f;
+  drone_fixture_def.material.color = b2Color(0, 0, 1);
+  drone_fixture_def.material.emit_intensity = 0.5f;
   drone_->CreateFixture(&drone_fixture_def);
 
   // lights

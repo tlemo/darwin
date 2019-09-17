@@ -127,6 +127,16 @@ Receptor Camera::castRay(const b2Vec2& ray_start,
     }
   }
 
+  // reflections
+  assert(material.reflect >= 0 && material.reflect <= 1);
+  if (material.reflect > 0 && depth < max_reflection_depth_) {
+    const b2Vec2 R = 2 * b2Dot(local_normal, V) * local_normal - V;
+    const b2Vec2 reflection_ray_end = raycast.point + far_ * body->GetWorldVector(R);
+    const auto reflection =
+        castRay(raycast.point, reflection_ray_end, kEpsilon, depth + 1);
+    color = color * (1 - material.reflect) + reflection.color * material.reflect;
+  }
+
   // final color modulation
   color = color * material.color + specular_color;
 
