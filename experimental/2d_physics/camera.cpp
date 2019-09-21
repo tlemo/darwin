@@ -84,7 +84,7 @@ Receptor Camera::castRay(const b2Vec2& ray_start,
   const b2Vec2 local_normal = body->GetLocalVector(raycast.normal);
   const b2Vec2 V = body->GetLocalVector(ray_start - ray_end).Normalized();
 
-  b2Color color(0.2f, 0.2f, 0.2f);  // TODO: ambient color
+  b2Color color = ambient_light_;
   b2Color specular_color;
 
   // emissive lighting

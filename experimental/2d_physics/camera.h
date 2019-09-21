@@ -53,6 +53,10 @@ class Camera {
   float shadow_attenuation_ = 1.0f;
 
   bool render_specular_ = true;
+  
+  // technically this should be a property of the scene (world),
+  // but modeled here for convenience and extra flexibility
+  b2Color ambient_light_{ 0.2f, 0.2f, 0.2f };
 };
 
 }  // namespace phys
