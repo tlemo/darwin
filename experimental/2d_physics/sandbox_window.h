@@ -3,7 +3,7 @@
 
 #include "physics.h"
 #include "sandbox_factory.h"
-#include "camera_widget.h"
+#include "camera_window.h"
 
 #include <core/properties.h>
 #include <core_ui/box2d_sandbox_window.h>
@@ -13,6 +13,8 @@
 #include <string>
 #include <memory>
 using namespace std;
+
+class MainWindow;
 
 class SandboxWindow : public core_ui::Box2dSandboxWindow {
   struct Variables {
@@ -24,17 +26,19 @@ class SandboxWindow : public core_ui::Box2dSandboxWindow {
   };
 
  public:
-  explicit SandboxWindow(SandboxFactory* factory);
+  explicit SandboxWindow(MainWindow* main_window, SandboxFactory* factory);
   
   void newScene() override;
   void singleStep() override;
   void updateUI() override;
+  
+  const SandboxScenePackage& scenePackage() const { return scene_package_; }
 
  private:
   void setupVariables();
 
  private:
-  CameraWidget* camera_widget_ = nullptr;
+  MainWindow* main_window_ = nullptr;
   
   SandboxFactory* factory_ = nullptr;
   SandboxScenePackage scene_package_;

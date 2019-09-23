@@ -63,7 +63,7 @@
      <height>21</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menu_File">
+   <widget class="QMenu" name="menu_file">
     <property name="title">
      <string>&amp;File</string>
     </property>
@@ -71,12 +71,18 @@
     <addaction name="separator"/>
     <addaction name="action_exit"/>
    </widget>
-   <addaction name="menu_File"/>
+   <widget class="QMenu" name="menu_windows">
+    <property name="title">
+     <string>Windows</string>
+    </property>
+   </widget>
+   <addaction name="menu_file"/>
+   <addaction name="menu_windows"/>
   </widget>
   <widget class="QStatusBar" name="status_bar"/>
   <widget class="QToolBar" name="tool_bar">
    <property name="windowTitle">
-    <string>toolBar</string>
+    <string>Toolbar</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>

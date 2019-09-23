@@ -1,10 +1,12 @@
 
 #include "sandbox_window.h"
 #include "new_scene_dialog.h"
+#include "main_window.h"
 
 #include <QRectF>
 
-SandboxWindow::SandboxWindow(SandboxFactory* factory) : factory_(factory) {
+SandboxWindow::SandboxWindow(MainWindow* main_window, SandboxFactory* factory)
+    : main_window_(main_window), factory_(factory) {
   box2dWidget()->setDebugRender(true);
   config_ = factory_->defaultConfig();
   newScene();
@@ -30,6 +32,7 @@ void SandboxWindow::newScene() {
   setWorld(scene_package_.scene->box2dWorld(), viewport);
 
   setSceneUi(scene_package_.scene_ui.get());
+  main_window_->onSandboxChange(this);
 }
 
 void SandboxWindow::singleStep() {
@@ -64,6 +67,7 @@ void SandboxWindow::updateUI() {
   }
 
   update();
+  main_window_->updateToolWindows();
 }
 
 void SandboxWindow::setupVariables() {

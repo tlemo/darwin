@@ -18,6 +18,8 @@ b2Body* addCross(float x, float y, float w, float h, b2World* world);
 b2Body* addBullet(float x, float y, float dx, float dy, b2World* world);
 b2Body* addBoxProjectile(float x, float y, float dx, float dy, b2World* world);
 
+class Camera;
+
 struct Rect {
   float x = 0;
   float y = 0;
@@ -64,6 +66,9 @@ class Scene : public core::NonCopyable {
   // TODO: temporary workaround, revisit
   // (add support for Scene in Box2dSandboxWindow and Box2dWidget)
   b2World* box2dWorld() { return &world_; }
+  
+  // sensors
+  virtual const Camera* camera() const { return nullptr; }
 
   void step();
 

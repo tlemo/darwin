@@ -11,7 +11,7 @@ DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000
 
 SOURCES += \
     camera.cpp \
-    camera_widget.cpp \
+    camera_window.cpp \
     main.cpp \
     main_window.cpp \
     new_sandbox_dialog.cpp \
@@ -22,11 +22,12 @@ SOURCES += \
     scene_cart_pole.cpp \
     scene_drone.cpp \
     scene_electric_fence.cpp \
-    scene_particles.cpp
+    scene_particles.cpp \
+    tool_window.cpp
 
 HEADERS += \
     camera.h \
-    camera_widget.h \
+    camera_window.h \
     main_window.h \
     new_sandbox_dialog.h \
     new_scene_dialog.h \
@@ -38,7 +39,8 @@ HEADERS += \
     scene_drone.h \
     scene_electric_fence.h \
     scene_particles.h \
-    script.h
+    script.h \
+    tool_window.h
     
 FORMS += main_window.ui \
     new_sandbox_dialog.ui \

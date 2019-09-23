@@ -28,9 +28,6 @@ class Box2dSceneUi : public QObject {
   Q_OBJECT
 
  public:
-  // initial setup
-  virtual void init(Box2dSandboxWindow* /*sandbox_window*/) {}
-
   // rendering
   virtual void render(QPainter& /*painter*/, const QRectF& /*viewport*/) {}
 

@@ -4,7 +4,7 @@
 #include "camera.h"
 #include "physics.h"
 #include "sandbox_factory.h"
-#include "camera_widget.h"
+#include "camera_window.h"
 
 #include <core/properties.h>
 #include <core_ui/box2d_widget.h>
@@ -40,7 +40,7 @@ class Scene : public phys::Scene {
 
   const Config* config() const override { return &config_; }
 
-  const phys::Camera* camera() const { return camera_.get(); }
+  const phys::Camera* camera() const override { return camera_.get(); }
 
   void postStep() override { updateVariables(); }
 
@@ -71,8 +71,6 @@ class SceneUi : public core_ui::Box2dSceneUi {
     return it != key_state_.end() ? it->second : false;
   }
 
-  void init(core_ui::Box2dSandboxWindow* sandbox_window) override;
-
   void render(QPainter& painter, const QRectF&) override;
 
   void step() override;
@@ -91,7 +89,6 @@ class SceneUi : public core_ui::Box2dSceneUi {
 
  private:
   Scene* scene_ = nullptr;
-  unique_ptr<CameraWidget> camera_widget_;
   unordered_map<int, bool> key_state_;
   QPixmap drone_pixmap_{ ":/resources/drone.png" };
 };
