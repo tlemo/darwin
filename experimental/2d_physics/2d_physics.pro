@@ -11,7 +11,9 @@ DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000
 
 SOURCES += \
     camera.cpp \
+    touch_sensor.cpp \
     camera_window.cpp \
+    touch_window.cpp \
     main.cpp \
     main_window.cpp \
     new_sandbox_dialog.cpp \
@@ -27,7 +29,9 @@ SOURCES += \
 
 HEADERS += \
     camera.h \
+    touch_sensor.h \
     camera_window.h \
+    touch_window.h \
     main_window.h \
     new_sandbox_dialog.h \
     new_scene_dialog.h \

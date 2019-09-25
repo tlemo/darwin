@@ -1,6 +1,7 @@
 
 #include "main_window.h"
 #include "camera_window.h"
+#include "touch_window.h"
 #include "new_sandbox_dialog.h"
 #include "sandbox_window.h"
 #include "ui_main_window.h"
@@ -19,9 +20,13 @@ MainWindow::MainWindow() : QMainWindow(nullptr), ui(new Ui::MainWindow) {
   setCorner(Qt::TopRightCorner, Qt::RightDockWidgetArea);
   setCorner(Qt::BottomRightCorner, Qt::RightDockWidgetArea);
 
-  // dock windows
-  auto camera_window = new CameraWindow(this, nullptr);
+  // camera window
+  auto camera_window = new CameraWindow(this);
   dockWindow(camera_window, Qt::AllDockWidgetAreas, Qt::BottomDockWidgetArea);
+  
+  // touch window
+  auto touch_window = new TouchWindow(this);
+  dockWindow(touch_window, Qt::AllDockWidgetAreas, Qt::LeftDockWidgetArea);
 }
 
 MainWindow::~MainWindow() {

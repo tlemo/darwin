@@ -1,7 +1,7 @@
 
 #include "camera.h"
 
-#include <limits>
+#include <core/utils.h>
 
 namespace phys {
 

@@ -1,6 +1,5 @@
 
 #include "camera_window.h"
-#include "camera.h"
 #include "sandbox_window.h"
 
 #include <QImage>

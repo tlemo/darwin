@@ -1,7 +1,6 @@
 
 #pragma once
 
-#include <core/utils.h>
 #include <third_party/box2d/box2d.h>
 
 #include <vector>
