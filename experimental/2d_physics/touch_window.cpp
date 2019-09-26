@@ -7,15 +7,13 @@
 TouchWindow::TouchWindow(QWidget* parent) : ToolWindow(parent) {
   setWindowTitle("Touch");
   setMinimumSize(64, 64);
-  setContentsMargins(5, 5, 5, 5);
 }
 
-void TouchWindow::paintEvent(QPaintEvent*) {
-  if (touch_sensor_ == nullptr) {
-    return;
+void TouchWindow::paintEvent(QPaintEvent* event) {
+  ToolWindow::paintEvent(event);
+  if (touch_sensor_ != nullptr) {
+    // TODO
   }
-
-  // TODO
 }
 
 void TouchWindow::onSandboxChange(SandboxWindow* sandbox_window) {

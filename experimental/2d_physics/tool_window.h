@@ -9,7 +9,7 @@ class ToolWindow : public QFrame {
   Q_OBJECT
 
  public:
-  explicit ToolWindow(QWidget* parent) : QFrame(parent) {}
+  explicit ToolWindow(QWidget* parent);
 
   virtual void onSandboxChange(SandboxWindow* sandbox_window) = 0;
 };
