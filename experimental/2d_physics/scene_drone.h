@@ -2,6 +2,7 @@
 #pragma once
 
 #include "camera.h"
+#include "touch_sensor.h"
 #include "physics.h"
 #include "sandbox_factory.h"
 #include "camera_window.h"
@@ -41,6 +42,7 @@ class Scene : public phys::Scene {
   const Config* config() const override { return &config_; }
 
   const phys::Camera* camera() const override { return camera_.get(); }
+  const phys::TouchSensor* touchSensor() const override { return touch_sensor_.get(); }
 
   void postStep() override { updateVariables(); }
 
@@ -56,6 +58,7 @@ class Scene : public phys::Scene {
  private:
   b2Body* drone_ = nullptr;
   unique_ptr<phys::Camera> camera_;
+  unique_ptr<phys::TouchSensor> touch_sensor_;
   SceneVariables variables_;
   Config config_;
 };
