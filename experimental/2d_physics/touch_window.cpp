@@ -2,18 +2,18 @@
 #include "touch_window.h"
 #include "sandbox_window.h"
 
+#include <QLineF>
 #include <QPainter>
 #include <QPen>
-#include <QVBoxLayout>
-#include <QLineF>
-#include <QRectF>
 #include <QPointF>
+#include <QRectF>
+#include <QVBoxLayout>
 
-TouchSensorWidget::TouchSensorWidget(QWidget *parent) : Canvas(parent) {
-  setViewport(QRectF(-10, 10, 20, -20));
+TouchSensorWidget::TouchSensorWidget(QWidget* parent) : Canvas(parent) {
+  setViewport(QRectF(-kCanvasWidth / 2, kCanvasHeight / 2, kCanvasWidth, -kCanvasHeight));
 }
 
-void TouchSensorWidget::setSensor(const phys::TouchSensor *sensor) {
+void TouchSensorWidget::setSensor(const phys::TouchSensor* sensor) {
   sensor_ = sensor;
   update();
 }
@@ -34,14 +34,35 @@ void TouchSensorWidget::paintEvent(QPaintEvent* event) {
 
     painter.setTransform(transformFromViewport());
 
-    // axes
-    painter.setPen(QPen(Qt::gray, 0));
-    painter.setBrush(Qt::NoBrush);
-    painter.drawLine(QLineF(0, -1000, 0, 1000));
-    painter.drawLine(QLineF(-1000, 0, 1000, 0));
-    painter.drawEllipse(QRectF(-5, -5, 10, 10));
+    const QRectF sensorsRect(
+        -kSensorWidth / 2, -kSensorHeight / 2, kSensorWidth, kSensorHeight);
 
-    // TODO
+    // axes
+    painter.setPen(QPen(Qt::lightGray, 0));
+    painter.setBrush(Qt::NoBrush);
+    painter.drawLine(QLineF(0, -kCanvasHeight / 2, 0, kCanvasHeight / 2));
+    painter.drawLine(QLineF(-kCanvasWidth / 2, 0, kCanvasWidth / 2, 0));
+
+    // receptor values
+    painter.setPen(QPen(Qt::gray, 0));
+    const auto receptors = sensor_->receptors();
+    if (receptors.size() == 1) {
+      painter.setBrush(receptors[0] > 0 ? Qt::green : Qt::white);
+      painter.drawEllipse(sensorsRect);
+    } else {
+      const double slice_angle = 360.0 / receptors.size();
+      for (size_t i = 0; i < receptors.size(); ++i) {
+        const double angle = i * slice_angle - 90;
+        Q_ASSERT(receptors[i] >= 0);
+        painter.setBrush(receptors[i] > 0 ? Qt::green : Qt::white);
+        painter.drawPie(sensorsRect, int(angle * 16), int(slice_angle * 16));
+      }
+    }
+
+    painter.setPen(QPen(Qt::gray, 0));
+    painter.setBrush(Qt::white);
+    painter.drawEllipse(
+        sensorsRect.adjusted(+kSkinSize, +kSkinSize, -kSkinSize, -kSkinSize));
   }
 }
 

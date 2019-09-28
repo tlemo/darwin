@@ -6,6 +6,8 @@ QT += core gui widgets
 TARGET = 2d_physics
 TEMPLATE = app
 
+#CONFIG += console
+
 DEFINES += QT_DEPRECATED_WARNINGS
 DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000
 

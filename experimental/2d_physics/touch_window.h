@@ -7,6 +7,14 @@
 #include <core_ui/canvas.h>
 
 class TouchSensorWidget : public core_ui::Canvas {
+  static constexpr double kCanvasWidth = 20;
+  static constexpr double kCanvasHeight = 20;
+  
+  static constexpr double kSensorWidth = 15;
+  static constexpr double kSensorHeight = 15;
+  
+  static constexpr double kSkinSize = 1.5;
+  
  public:
   explicit TouchSensorWidget(QWidget* parent);
 
