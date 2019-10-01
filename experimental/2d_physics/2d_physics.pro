@@ -16,7 +16,10 @@ SOURCES += \
     touch_sensor.cpp \
     camera_window.cpp \
     touch_window.cpp \
+    accelerometer_window.cpp \
+    compass_window.cpp \
     accelerometer.cpp \
+    compass.cpp \
     main.cpp \
     main_window.cpp \
     new_sandbox_dialog.cpp \
@@ -35,7 +38,10 @@ HEADERS += \
     touch_sensor.h \
     camera_window.h \
     touch_window.h \
+    accelerometer_window.h \
+    compass_window.h \
     accelerometer.h \
+    compass.h \
     main_window.h \
     new_sandbox_dialog.h \
     new_scene_dialog.h \

@@ -81,9 +81,10 @@ Scene::Scene(const core::PropertySet* config)
   world_.CreateLight(&light2_def);
 
   // sensors
-  camera_ = make_unique<phys::Camera>(drone_, 120, 0.1f, 30.0f, 512);
-  touch_sensor_ = make_unique<phys::TouchSensor>(drone_, 16);
-  accelerometer_ = make_unique<phys::Accelerometer>(drone_);
+  camera_ = make_unique<Camera>(drone_, 120, 0.1f, 30.0f, 512);
+  touch_sensor_ = make_unique<TouchSensor>(drone_, 16);
+  accelerometer_ = make_unique<Accelerometer>(drone_);
+  compass_ = make_unique<Compass>(drone_);
 }
 
 void Scene::postStep(float dt) {

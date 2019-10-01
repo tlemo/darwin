@@ -20,6 +20,8 @@ b2Body* addBoxProjectile(float x, float y, float dx, float dy, b2World* world);
 
 class Camera;
 class TouchSensor;
+class Accelerometer;
+class Compass;
 
 struct Rect {
   float x = 0;
@@ -71,6 +73,8 @@ class Scene : public core::NonCopyable {
   // sensors
   virtual const Camera* camera() const { return nullptr; }
   virtual const phys::TouchSensor* touchSensor() const { return nullptr; }
+  virtual const phys::Accelerometer* accelerometer() const { return nullptr; }
+  virtual const phys::Compass* compass() const { return nullptr; }
 
   void step();
 

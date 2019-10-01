@@ -2,6 +2,8 @@
 #include "main_window.h"
 #include "camera_window.h"
 #include "touch_window.h"
+#include "accelerometer_window.h"
+#include "compass_window.h"
 #include "new_sandbox_dialog.h"
 #include "sandbox_window.h"
 #include "ui_main_window.h"
@@ -23,10 +25,18 @@ MainWindow::MainWindow() : QMainWindow(nullptr), ui(new Ui::MainWindow) {
   // camera window
   auto camera_window = new CameraWindow(this);
   dockWindow(camera_window, Qt::AllDockWidgetAreas, Qt::BottomDockWidgetArea);
-  
+
   // touch window
   auto touch_window = new TouchWindow(this);
   dockWindow(touch_window, Qt::AllDockWidgetAreas, Qt::LeftDockWidgetArea);
+
+  // accelerometer window
+  auto accelerometer_window = new AccelerometerWindow(this);
+  dockWindow(accelerometer_window, Qt::AllDockWidgetAreas, Qt::LeftDockWidgetArea);
+
+  // compass window
+  auto compass_window = new CompassWindow(this);
+  dockWindow(compass_window, Qt::AllDockWidgetAreas, Qt::LeftDockWidgetArea);
 }
 
 MainWindow::~MainWindow() {

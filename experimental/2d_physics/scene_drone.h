@@ -4,6 +4,7 @@
 #include "camera.h"
 #include "touch_sensor.h"
 #include "accelerometer.h"
+#include "compass.h"
 #include "physics.h"
 #include "sandbox_factory.h"
 #include "camera_window.h"
@@ -19,6 +20,11 @@
 using namespace std;
 
 namespace drone_scene {
+
+using phys::Camera;
+using phys::TouchSensor;
+using phys::Accelerometer;
+using phys::Compass;
 
 struct Config : public core::PropertySet {
   PROPERTY(drone_radius, float, 0.5f, "Drone size");
@@ -42,8 +48,10 @@ class Scene : public phys::Scene {
 
   const Config* config() const override { return &config_; }
 
-  const phys::Camera* camera() const override { return camera_.get(); }
-  const phys::TouchSensor* touchSensor() const override { return touch_sensor_.get(); }
+  const Camera* camera() const override { return camera_.get(); }
+  const TouchSensor* touchSensor() const override { return touch_sensor_.get(); }
+  const Accelerometer* accelerometer() const override { return accelerometer_.get(); }
+  const Compass* compass() const override { return compass_.get(); }
 
   void postStep(float dt) override;
 
@@ -58,9 +66,10 @@ class Scene : public phys::Scene {
 
  private:
   b2Body* drone_ = nullptr;
-  unique_ptr<phys::Camera> camera_;
-  unique_ptr<phys::TouchSensor> touch_sensor_;
-  unique_ptr<phys::Accelerometer> accelerometer_;
+  unique_ptr<Camera> camera_;
+  unique_ptr<TouchSensor> touch_sensor_;
+  unique_ptr<Accelerometer> accelerometer_;
+  unique_ptr<Compass> compass_;
   SceneVariables variables_;
   Config config_;
 };
