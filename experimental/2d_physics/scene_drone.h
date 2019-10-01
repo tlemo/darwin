@@ -3,6 +3,7 @@
 
 #include "camera.h"
 #include "touch_sensor.h"
+#include "accelerometer.h"
 #include "physics.h"
 #include "sandbox_factory.h"
 #include "camera_window.h"
@@ -44,7 +45,7 @@ class Scene : public phys::Scene {
   const phys::Camera* camera() const override { return camera_.get(); }
   const phys::TouchSensor* touchSensor() const override { return touch_sensor_.get(); }
 
-  void postStep() override { updateVariables(); }
+  void postStep(float dt) override;
 
   void moveDrone(const b2Vec2& force);
   void rotateDrone(float torque);
@@ -59,6 +60,7 @@ class Scene : public phys::Scene {
   b2Body* drone_ = nullptr;
   unique_ptr<phys::Camera> camera_;
   unique_ptr<phys::TouchSensor> touch_sensor_;
+  unique_ptr<phys::Accelerometer> accelerometer_;
   SceneVariables variables_;
   Config config_;
 };

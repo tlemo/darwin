@@ -61,7 +61,7 @@ class Scene : public core::NonCopyable {
   virtual const core::PropertySet* config() const { return nullptr; }
   
   virtual void preStep() {}
-  virtual void postStep() {}
+  virtual void postStep(float /*dt*/) {}
   virtual void onContact(b2Contact* /*contact*/) {}
 
   // TODO: temporary workaround, revisit

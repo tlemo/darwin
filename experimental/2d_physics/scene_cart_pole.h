@@ -34,7 +34,7 @@ class Scene : public phys::Scene {
 
   const Config* config() const override { return &config_; }
 
-  void postStep() override { updateVariables(); }
+  void postStep(float /*dt*/) override { updateVariables(); }
 
   void moveCart(float impulse);
   

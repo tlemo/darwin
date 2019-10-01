@@ -123,20 +123,20 @@ void Scene::step() {
 
   preStep();
 
-  constexpr float32 timeStep = 1.0f / 50.0f;
-  constexpr int32 velocityIterations = 10;
-  constexpr int32 positionIterations = 10;
+  constexpr float32 time_step = 1.0f / 50.0f;
+  constexpr int32 velocity_iterations = 10;
+  constexpr int32 position_iterations = 10;
 
   script_.play(timestamp_);
 
   // Box2D simulation step
-  world_.Step(timeStep, velocityIterations, positionIterations);
-  timestamp_ += timeStep;
+  world_.Step(time_step, velocity_iterations, position_iterations);
+  timestamp_ += time_step;
 
   // TODO: process the contacts
   // TODO: pause/resume/done/reset?
 
-  postStep();
+  postStep(time_step);
 }
 
 }  // namespace phys

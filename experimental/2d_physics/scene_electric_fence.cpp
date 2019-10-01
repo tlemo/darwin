@@ -102,7 +102,7 @@ Scene::Scene() : phys::Scene(b2Vec2(0, -9.8f), phys::Rect(-100, -100, 200, 200))
   }
 }
 
-void Scene::postStep() {
+void Scene::postStep(float /*dt*/) {
   for (auto body : reaped_bodies_) {
     world_.DestroyBody(body);
   }

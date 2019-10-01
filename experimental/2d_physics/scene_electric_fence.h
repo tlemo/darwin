@@ -19,7 +19,7 @@ class Scene : public phys::Scene {
  public:
   Scene();
 
-  void postStep() override;
+  void postStep(float dt) override;
   void onContact(b2Contact* contact) override;
   
  private:

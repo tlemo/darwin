@@ -83,6 +83,12 @@ Scene::Scene(const core::PropertySet* config)
   // sensors
   camera_ = make_unique<phys::Camera>(drone_, 120, 0.1f, 30.0f, 512);
   touch_sensor_ = make_unique<phys::TouchSensor>(drone_, 16);
+  accelerometer_ = make_unique<phys::Accelerometer>(drone_);
+}
+
+void Scene::postStep(float dt) {
+  accelerometer_->update(dt);
+  updateVariables();
 }
 
 void Scene::moveDrone(const b2Vec2& force) {

@@ -5,7 +5,13 @@
 
 namespace phys {
 
+// Basic accelerometer which treats gravity as a regular force
+// (so it doesn't really measure the "proper acceleration":
+//  https://en.wikipedia.org/wiki/Proper_acceleration)
 class Accelerometer {
+  static constexpr float kMaxLinearAcceleration = 100.0f;
+  static constexpr float kMaxAngularAcceleration = 120.0f;
+
  public:
   Accelerometer(b2Body* body);
 
