@@ -34,7 +34,7 @@ void TouchSensorWidget::paintEvent(QPaintEvent* event) {
 
     painter.setTransform(transformFromViewport());
 
-    const QRectF sensorsRect(
+    const QRectF sensor_rect(
         -kSensorWidth / 2, -kSensorHeight / 2, kSensorWidth, kSensorHeight);
 
     // axes
@@ -48,21 +48,21 @@ void TouchSensorWidget::paintEvent(QPaintEvent* event) {
     const auto receptors = sensor_->receptors();
     if (receptors.size() == 1) {
       painter.setBrush(receptors[0] > 0 ? Qt::green : Qt::white);
-      painter.drawEllipse(sensorsRect);
+      painter.drawEllipse(sensor_rect);
     } else {
       const double slice_angle = 360.0 / receptors.size();
       for (size_t i = 0; i < receptors.size(); ++i) {
         const double angle = i * slice_angle - 90;
         Q_ASSERT(receptors[i] >= 0);
         painter.setBrush(receptors[i] > 0 ? Qt::green : Qt::white);
-        painter.drawPie(sensorsRect, int(angle * 16), int(slice_angle * 16));
+        painter.drawPie(sensor_rect, int(angle * 16), int(slice_angle * 16));
       }
     }
 
     painter.setPen(QPen(Qt::gray, 0));
     painter.setBrush(Qt::white);
     painter.drawEllipse(
-        sensorsRect.adjusted(+kSkinSize, +kSkinSize, -kSkinSize, -kSkinSize));
+        sensor_rect.adjusted(+kSkinSize, +kSkinSize, -kSkinSize, -kSkinSize));
   }
 }
 

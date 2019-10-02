@@ -23,8 +23,10 @@ class Accelerometer {
   //
   void update(float dt);
 
-  // accelerometer measurements
+  // the linear acceleration vector length is in the [0, 1] range
   const b2Vec2& linearAcceleration() const { return linear_acceleration_; }
+  
+  // angular acceleration is in the [-1, 1] range
   float angularAcceleration() const { return angular_acceleration_; }
 
  private:

@@ -34,7 +34,9 @@ void AccelerometerWidget::paintEvent(QPaintEvent* event) {
 
     painter.setTransform(transformFromViewport());
 
-    const QRectF sensorsRect(
+    const QPen vector_pen(Qt::darkGreen, kVectorWidth, Qt::SolidLine, Qt::RoundCap);
+
+    QRectF sensor_rect(
         -kSensorWidth / 2, -kSensorHeight / 2, kSensorWidth, kSensorHeight);
 
     // axes
@@ -42,29 +44,23 @@ void AccelerometerWidget::paintEvent(QPaintEvent* event) {
     painter.setBrush(Qt::NoBrush);
     painter.drawLine(QLineF(0, -kCanvasHeight / 2, 0, kCanvasHeight / 2));
     painter.drawLine(QLineF(-kCanvasWidth / 2, 0, kCanvasWidth / 2, 0));
+    painter.drawEllipse(sensor_rect);
 
-    // receptor values
-#if 0  // TODO
-    painter.setPen(QPen(Qt::gray, 0));
-    const auto receptors = sensor_->receptors();
-    if (receptors.size() == 1) {
-      painter.setBrush(receptors[0] > 0 ? Qt::green : Qt::white);
-      painter.drawEllipse(sensorsRect);
-    } else {
-      const double slice_angle = 360.0 / receptors.size();
-      for (size_t i = 0; i < receptors.size(); ++i) {
-        const double angle = i * slice_angle - 90;
-        Q_ASSERT(receptors[i] >= 0);
-        painter.setBrush(receptors[i] > 0 ? Qt::green : Qt::white);
-        painter.drawPie(sensorsRect, int(angle * 16), int(slice_angle * 16));
-      }
-    }
-#endif
+    // angular acceleration
+    sensor_rect.adjust(+kSkinSize, +kSkinSize, -kSkinSize, -kSkinSize);
+    const float arc_angle = -sensor_->angularAcceleration() * 90;
+    painter.setPen(vector_pen);
+    painter.drawArc(sensor_rect, -90 * 16, int(arc_angle * 16));
 
-    painter.setPen(QPen(Qt::gray, 0));
-    painter.setBrush(Qt::white);
-    painter.drawEllipse(
-        sensorsRect.adjusted(+kSkinSize, +kSkinSize, -kSkinSize, -kSkinSize));
+    // linear acceleration
+    const b2Vec2 linear_acceleration = sensor_->linearAcceleration() * kVectorLength;
+    painter.setPen(vector_pen);
+    painter.drawLine(QLineF(0, 0, linear_acceleration.x, linear_acceleration.y));
+
+    // inner circle
+    painter.setPen(QPen(Qt::lightGray, 0));
+    sensor_rect.adjust(+kSkinSize, +kSkinSize, -kSkinSize, -kSkinSize);
+    painter.drawEllipse(sensor_rect);
   }
 }
 

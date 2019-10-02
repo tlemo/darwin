@@ -13,7 +13,9 @@ class AccelerometerWidget : public core_ui::Canvas {
   static constexpr double kSensorWidth = 15;
   static constexpr double kSensorHeight = 15;
 
-  static constexpr double kSkinSize = 1.5;
+  static constexpr double kSkinSize = 0.7;
+  static constexpr double kVectorLength = 6;
+  static constexpr double kVectorWidth = 0.4;
 
  public:
   explicit AccelerometerWidget(QWidget* parent);

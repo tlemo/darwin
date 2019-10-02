@@ -35,7 +35,7 @@ void CompassWidget::paintEvent(QPaintEvent* event) {
 
     painter.setTransform(transformFromViewport());
 
-    const QRectF sensorsRect(
+    const QRectF sensor_rect(
         -kSensorWidth / 2, -kSensorHeight / 2, kSensorWidth, kSensorHeight);
 
     // axes
@@ -43,9 +43,9 @@ void CompassWidget::paintEvent(QPaintEvent* event) {
     painter.setBrush(Qt::NoBrush);
     painter.drawLine(QLineF(0, -kCanvasHeight / 2, 0, kCanvasHeight / 2));
     painter.drawLine(QLineF(-kCanvasWidth / 2, 0, kCanvasWidth / 2, 0));
-    painter.drawEllipse(sensorsRect);
+    painter.drawEllipse(sensor_rect);
 
-    // receptor values
+    // heading
     const auto heading = sensor_->heading() * kCompassLength;
     painter.setPen(QPen(Qt::blue, kCompassWidth, Qt::SolidLine, Qt::RoundCap));
     painter.drawLine(QLineF(0, 0, heading.x, heading.y));
