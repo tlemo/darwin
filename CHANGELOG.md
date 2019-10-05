@@ -1,4 +1,20 @@
 
+## Oct 5th, 2019
+
+A new `experimental` directory is the place for subprojects which are not strictly
+required in order to build & run Darwin experiment. The first such project is a simple
+sandbox intended to help with prototyping 2D-physics environments. 
+
+Part of this sandbox (`experimental/2d_physics`), Box2D was extended with support for 
+minimal visual attributes (ex. object color/material) and a few sensors:
+
+- TouchSensor: contact information
+- Accelerometer: linear and angular acceleration
+- Compass: heading information (in the object local coordinates)
+- Camera: a simple 2d raytracer providing color and depth channels
+
+![](docs/images/2d_physics.png)
+
 ## Jun 14th, 2019
 
 New domain: [ballistics][6]. Given the (x, y) coordinates of the target, output the aim
