@@ -26,6 +26,8 @@
 #define DARWIN_COMPILER_GCC
 #elif defined(__clang__)
 #define DARWIN_COMPILER_CLANG
+#else
+#error Unsupported compiler
 #endif
 
 #if defined(_WIN32)
@@ -34,6 +36,8 @@
 #define DARWIN_OS_LINUX
 #elif defined(__APPLE__)
 #define DARWIN_OS_APPLE
+#else
+#error Unsupported OS
 #endif
 
 namespace core {
@@ -55,7 +59,7 @@ namespace core {
 [[noreturn]] void __fatal(const char* message, ...);
 
 //! Unconditional fast-fail (present in all build flavors)
-#define FATAL(msg, ...) core::__fatal("\nFATAL: " msg "\n\n", ##__VA_ARGS__);
+#define FATAL(msg, ...) core::__fatal("\nFATAL: " msg "\n\n", ##__VA_ARGS__)
 
 //! Classes derived from this are not copyable or movable
 //! 

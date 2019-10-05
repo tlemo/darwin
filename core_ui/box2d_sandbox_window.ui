@@ -23,7 +23,7 @@ background-clip: content;
 }
 </string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_2">
+  <layout class="QVBoxLayout" name="layout">
    <property name="spacing">
     <number>5</number>
    </property>
@@ -65,7 +65,7 @@ background-clip: content;
       </property>
      </widget>
      <widget class="QWidget" name="layoutWidget">
-      <layout class="QVBoxLayout" name="verticalLayout">
+      <layout class="QVBoxLayout" name="toolbox_layout">
        <property name="spacing">
         <number>2</number>
        </property>
@@ -131,7 +131,7 @@ background-clip: content;
            <string/>
           </property>
           <property name="icon">
-           <iconset resource="../darwin_studio/resources.qrc">
+           <iconset resource="resources.qrc">
             <normaloff>:/resources/mc_play.png</normaloff>:/resources/mc_play.png</iconset>
           </property>
           <property name="iconSize">
@@ -160,7 +160,7 @@ background-clip: content;
            <string/>
           </property>
           <property name="icon">
-           <iconset resource="../darwin_studio/resources.qrc">
+           <iconset resource="resources.qrc">
             <normaloff>:/resources/mc_skip_forward.png</normaloff>:/resources/mc_skip_forward.png</iconset>
           </property>
           <property name="iconSize">
@@ -229,7 +229,7 @@ background-clip: content;
            <string/>
           </property>
           <property name="icon">
-           <iconset resource="../darwin_studio/resources.qrc">
+           <iconset resource="resources.qrc">
             <normaloff>:/resources/refresh.png</normaloff>:/resources/refresh.png</iconset>
           </property>
           <property name="iconSize">
@@ -265,7 +265,7 @@ background-clip: content;
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="../darwin_studio/resources.qrc"/>
+  <include location="resources.qrc"/>
  </resources>
  <connections/>
 </ui>

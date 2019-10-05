@@ -52,9 +52,6 @@ FORMS += \
     open_experiment_dialog.ui \
     start_evolution_dialog.ui
 
-RESOURCES += \
-    resources.qrc
-
 addLibrary(../registry)
 addLibrary(../core_ui)
 addLibrary(../core)

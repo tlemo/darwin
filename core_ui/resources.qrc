@@ -30,5 +30,6 @@
         <file>resources/mc_skip_backward.png</file>
         <file>resources/mc_stop.png</file>
         <file>resources/white_user.png</file>
+        <file>resources/drone.png</file>
     </qresource>
 </RCC>

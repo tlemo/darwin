@@ -21,6 +21,8 @@
 
 namespace core_ui {
 
+class Box2dSandboxWindow;
+
 //! Custom box2d scene rendering & input processing
 class Box2dSceneUi : public QObject {
   Q_OBJECT
@@ -37,6 +39,13 @@ class Box2dSceneUi : public QObject {
   // keyboard
   virtual void keyPressEvent(QKeyEvent* /*event*/) {}
   virtual void keyReleaseEvent(QKeyEvent* /*event*/) {}
+  
+  // focus
+  virtual void focusInEvent() {}
+  virtual void focusOutEvent() {}
+  
+  // simulation step
+  virtual void step() {}
 
  signals:
   void sigPlayPause();
@@ -54,6 +63,10 @@ class Box2dWidget : public core_ui::Canvas {
   void setWorld(b2World* world, const QRectF& viewport);
   void setSceneUi(Box2dSceneUi* scene_ui);
 
+  bool debugRender() const { return enable_debug_render_; }
+
+  void setDebugRender(bool enable);
+
  signals:
   void sigPlayPause();
 
@@ -67,7 +80,10 @@ class Box2dWidget : public core_ui::Canvas {
   void keyPressEvent(QKeyEvent* event) override;
   void keyReleaseEvent(QKeyEvent* event) override;
   
-  void debugRender(QPainter& painter) const;
+  void focusInEvent(QFocusEvent*) override;
+  void focusOutEvent(QFocusEvent*) override;
+  
+  void renderDebugLayer(QPainter& painter) const;
 
  private:
   b2World* world_ = nullptr;

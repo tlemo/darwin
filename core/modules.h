@@ -24,6 +24,39 @@ using namespace std;
 
 namespace core {
 
+//! A simple factory implementation
+//! (instances can be created using the type's registered name)
+template <class INTERFACE>
+class TypeFactory : public core::NonCopyable {
+  using Factory = std::function<INTERFACE*()>;
+
+ public:
+  //! Registers a new type
+  template <class IMPL>
+  void add(const string& name) {
+    auto factory = [] { return new IMPL(); };
+    CHECK(implementations_.insert({ name, factory }).second);
+  }
+
+  //! Creates an instance of a previously registered type
+  INTERFACE* create(const string& name) const {
+    auto it = implementations_.find(name);
+    return it != implementations_.end() ? it->second() : nullptr;
+  }
+
+  //! Registered types begin iterator
+  auto begin() const { return implementations_.begin(); }
+
+  //! Registered types end iterator
+  auto end() const { return implementations_.end(); }
+
+  //! Returns true if the set of registered types is empty
+  bool empty() const { return implementations_.empty(); }
+
+ private:
+  map<string, Factory> implementations_;
+};
+
 //! A set of instances implementing common interface
 //! (primarily intended to support registering named factory objects)
 template <class INTERFACE>

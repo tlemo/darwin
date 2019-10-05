@@ -27,6 +27,7 @@
 
 int main(int argc, char* argv[]) {
   QApplication app(argc, argv);
+  Q_INIT_RESOURCE(resources);
 
   // console output is buffered
   // (so we can display early messages in the output window)

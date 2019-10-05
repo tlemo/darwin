@@ -31,6 +31,7 @@ HEADERS += \
     ann_utils.h \
     darwin.h \
     ann_dynamic.h \
+    global_initializer.h \
     pubsub.h \
     logging.h \
     scope_guard.h \

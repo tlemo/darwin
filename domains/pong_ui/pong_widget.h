@@ -49,8 +49,8 @@ class PongWidget : public QFrame {
   void reset();
   void setGame(pong::Game* game);
 
-  int keyState(int key) const {
-    auto it = key_state_.find(key);
+  bool keyState(int key) const {
+    const auto it = key_state_.find(key);
     return it != key_state_.end() ? it->second : false;
   }
 
