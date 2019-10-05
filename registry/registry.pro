@@ -16,6 +16,7 @@ HEADERS += \
     registry.h \
     registry_ui.h
 
+addLibrary(../domains/test_domain)
 addLibrary(../domains/cart_pole_ui)
 addLibrary(../domains/cart_pole)
 addLibrary(../domains/conquest_ui)
@@ -33,7 +34,8 @@ addLibrary(../domains/unicycle_ui)
 addLibrary(../domains/unicycle)
 addLibrary(../domains/ballistics_ui)
 addLibrary(../domains/ballistics)
-addLibrary(../domains/test_domain)
+addLibrary(../domains/drone_vision_ui)
+addLibrary(../domains/drone_vision)
 
 addLibrary(../populations/cgp)
 addLibrary(../populations/cne)

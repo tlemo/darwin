@@ -19,6 +19,7 @@
 #include <populations/test_population/test_population.h>
 #include <populations/neat/neat.h>
 
+#include <domains/test_domain/test_domain.h>
 #include <domains/conquest/conquest.h>
 #include <domains/harvester/harvester.h>
 #include <domains/max/max.h>
@@ -28,12 +29,13 @@
 #include <domains/double_cart_pole/double_cart_pole.h>
 #include <domains/unicycle/unicycle.h>
 #include <domains/ballistics/ballistics.h>
-#include <domains/test_domain/test_domain.h>
+#include <domains/drone_vision/drone_vision.h>
 
 namespace registry {
 
 void init() {
   // domains
+  test_domain::init();
   pong::init();
   find_max_value::init();
   tic_tac_toe::init();
@@ -43,7 +45,7 @@ void init() {
   double_cart_pole::init();
   unicycle::init();
   ballistics::init();
-  test_domain::init();
+  drone_vision::init();
 
   // populations
   cgp::init();
