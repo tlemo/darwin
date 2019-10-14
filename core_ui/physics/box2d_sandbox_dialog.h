@@ -14,21 +14,26 @@
 
 #pragma once
 
-#include <core_ui/physics/box2d_widget.h>
-#include <domains/unicycle/world.h>
+#include <QDialog>
 
-namespace unicycle_ui {
+namespace physics_ui {
 
-class SceneUi : public physics_ui::Box2dSceneUi {
+namespace Ui {
+class Box2dSandboxDialog;
+}
+
+class Box2dSandboxDialog : public QDialog {
+  Q_OBJECT
+
  public:
-  SceneUi(unicycle::World* world) : world_(world) {}
+  explicit Box2dSandboxDialog(int default_generation, int default_max_steps);
+  ~Box2dSandboxDialog();
+
+  int generation() const;
+  int maxSteps() const;
 
  private:
-  void render(QPainter& painter, const QRectF&) override;
-  void mousePressEvent(const QPointF& pos, QMouseEvent* event) override;
-
- private:
-  unicycle::World* world_ = nullptr;
+  Ui::Box2dSandboxDialog* ui = nullptr;
 };
 
-}  // namespace unicycle_ui
+}  // namespace physics_ui

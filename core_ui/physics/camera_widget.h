@@ -1,4 +1,4 @@
-// Copyright 2019 The Darwin Neuroevolution Framework Authors.
+// Copyright The Darwin Neuroevolution Framework Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,26 +14,24 @@
 
 #pragma once
 
-#include <QDialog>
+#include <core/physics/camera.h>
 
-namespace core_ui {
+#include <QWidget>
 
-namespace Ui {
-class Box2dSandboxDialog;
-}
+namespace physics_ui {
 
-class Box2dSandboxDialog : public QDialog {
-  Q_OBJECT
-
+//! Visualization for a physics::Camera object
+class CameraWidget : public QWidget {
  public:
-  explicit Box2dSandboxDialog(int default_generation, int default_max_steps);
-  ~Box2dSandboxDialog();
+  explicit CameraWidget(QWidget* parent) : QWidget(parent) {}
 
-  int generation() const;
-  int maxSteps() const;
+  void setCamera(const physics::Camera* camera);
 
  private:
-  Ui::Box2dSandboxDialog* ui = nullptr;
+  void paintEvent(QPaintEvent* event) override;
+
+ private:
+  const physics::Camera* camera_ = nullptr;
 };
 
-}  // namespace core_ui
+}  // namespace physics_ui

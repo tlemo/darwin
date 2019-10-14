@@ -19,7 +19,7 @@
 
 #include <QColor>
 
-namespace core_ui {
+namespace physics_ui {
 
 class Box2dSandboxWindow;
 
@@ -91,4 +91,4 @@ class Box2dWidget : public core_ui::Canvas {
   bool enable_debug_render_ = true;
 };
 
-}  // namespace core_ui
+}  // namespace physics_ui

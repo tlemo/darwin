@@ -15,7 +15,7 @@
 #include "box2d_sandbox_dialog.h"
 #include "ui_box2d_sandbox_dialog.h"
 
-namespace core_ui {
+namespace physics_ui {
 
 Box2dSandboxDialog::Box2dSandboxDialog(int default_generation, int default_max_steps)
     : QDialog(nullptr,
@@ -41,4 +41,4 @@ int Box2dSandboxDialog::maxSteps() const {
   return ui->max_steps->value();
 }
 
-}  // namespace core_ui
+}  // namespace physics_ui

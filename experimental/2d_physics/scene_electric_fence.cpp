@@ -9,7 +9,7 @@ GLOBAL_INITIALIZER {
   scenesRegistry().add<Factory>("Electric Fence");
 }
 
-Scene::Scene() : phys::Scene(b2Vec2(0, -9.8f), phys::Rect(-100, -100, 200, 200)) {
+Scene::Scene() : physics::Scene(b2Vec2(0, -9.8f), physics::Rect(-100, -100, 200, 200)) {
   constexpr float kOuterBoxSize = 100.0f;
   constexpr float kInnerBoxSize = 99.0f;
 
@@ -53,7 +53,7 @@ Scene::Scene() : phys::Scene(b2Vec2(0, -9.8f), phys::Rect(-100, -100, 200, 200))
   reaper_->CreateFixture(&shape, 0.0f);
 
   // agitator (top)
-  auto top_agitator = phys::addCross(0, 0, 45, 2, &world_);
+  auto top_agitator = physics::addCross(0, 0, 45, 2, &world_);
 
   b2RevoluteJointDef top_jd;
   top_jd.bodyA = inner_box;
@@ -67,7 +67,7 @@ Scene::Scene() : phys::Scene(b2Vec2(0, -9.8f), phys::Rect(-100, -100, 200, 200))
   world_.CreateJoint(&top_jd);
 
   // agitator (bottom/left)
-  auto bottom_left_agitator = phys::addCross(0, 0, 45, 2, &world_);
+  auto bottom_left_agitator = physics::addCross(0, 0, 45, 2, &world_);
 
   b2RevoluteJointDef bottom_left_jd;
   bottom_left_jd.bodyA = inner_box;
@@ -81,7 +81,7 @@ Scene::Scene() : phys::Scene(b2Vec2(0, -9.8f), phys::Rect(-100, -100, 200, 200))
   world_.CreateJoint(&bottom_left_jd);
 
   // agitator (bottom/right)
-  auto bottom_right_agitator = phys::addCross(0, 0, 45, 2, &world_);
+  auto bottom_right_agitator = physics::addCross(0, 0, 45, 2, &world_);
 
   b2RevoluteJointDef bottom_right_jd;
   bottom_right_jd.bodyA = inner_box;
@@ -97,7 +97,7 @@ Scene::Scene() : phys::Scene(b2Vec2(0, -9.8f), phys::Rect(-100, -100, 200, 200))
   // script (shooting projectiles)
   for (int i = 0; i < 500; ++i) {
     script_.record(i / 30.0f, [&, i](float) {
-      phys::addBullet(0, 0, 100 * (i % 2 ? 100 : -100), (i - 250) * 50, &world_);
+      physics::addBullet(0, 0, 100 * (i % 2 ? 100 : -100), (i - 250) * 50, &world_);
     });
   }
 }

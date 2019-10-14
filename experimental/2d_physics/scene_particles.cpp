@@ -9,7 +9,7 @@ GLOBAL_INITIALIZER {
   scenesRegistry().add<Factory>("Particles");
 }
 
-Scene::Scene() : phys::Scene(b2Vec2(0, -9.8f), phys::Rect(-100, -100, 200, 200)) {
+Scene::Scene() : physics::Scene(b2Vec2(0, -9.8f), physics::Rect(-100, -100, 200, 200)) {
   b2BodyDef ground_def;
   auto ground = world_.CreateBody(&ground_def);
 
@@ -23,7 +23,7 @@ Scene::Scene() : phys::Scene(b2Vec2(0, -9.8f), phys::Rect(-100, -100, 200, 200))
   shape.Set(b2Vec2(-100, 100), b2Vec2(100, 100));
   ground->CreateFixture(&shape, 0.0f);
 
-  auto box = phys::addBox(0, 0, 20, 2, &world_);
+  auto box = physics::addBox(0, 0, 20, 2, &world_);
 
   b2RevoluteJointDef jd;
   jd.bodyA = ground;
@@ -36,7 +36,7 @@ Scene::Scene() : phys::Scene(b2Vec2(0, -9.8f), phys::Rect(-100, -100, 200, 200))
   jd.enableMotor = true;
   world_.CreateJoint(&jd);
 
-  auto middle = phys::addBox(0, 0, 10, 2, &world_);
+  auto middle = physics::addBox(0, 0, 10, 2, &world_);
 
   b2RevoluteJointDef hinge_def;
   hinge_def.bodyA = box;
@@ -45,7 +45,7 @@ Scene::Scene() : phys::Scene(b2Vec2(0, -9.8f), phys::Rect(-100, -100, 200, 200))
   hinge_def.localAnchorB.Set(-10.0f, 0.0f);
   world_.CreateJoint(&hinge_def);
 
-  auto cross = phys::addCross(0, 0, 15, 2, &world_);
+  auto cross = physics::addCross(0, 0, 15, 2, &world_);
 
   b2RevoluteJointDef hinge_def_2;
   hinge_def_2.bodyA = middle;
@@ -56,22 +56,22 @@ Scene::Scene() : phys::Scene(b2Vec2(0, -9.8f), phys::Rect(-100, -100, 200, 200))
 
   for (int i = 0; i < 500; ++i) {
     script_.record(i * 0.25f, [&](float) {
-      phys::addBullet(-95, 5, 100 * 100, 0, &world_);
-      phys::addBullet(95, 5, -100 * 100, 0, &world_);
+      physics::addBullet(-95, 5, 100 * 100, 0, &world_);
+      physics::addBullet(95, 5, -100 * 100, 0, &world_);
     });
   }
 
-  script_.record(2.5f, [&](float) { phys::addBox(0, 50, 30, 1, &world_); });
+  script_.record(2.5f, [&](float) { physics::addBox(0, 50, 30, 1, &world_); });
 
   script_.record(5.0f, [&](float) {
-    phys::addBall(-95, 95, 1, &world_);
-    phys::addBall(-95, -95, 2, &world_);
-    phys::addBall(95, 95, 3, &world_);
-    phys::addBall(95, -95, 4, &world_);
+    physics::addBall(-95, 95, 1, &world_);
+    physics::addBall(-95, -95, 2, &world_);
+    physics::addBall(95, 95, 3, &world_);
+    physics::addBall(95, -95, 4, &world_);
   });
 
   script_.record(7.5f, [&](float) {
-    auto box = phys::addBox(0, 50, 10, 1, &world_);
+    auto box = physics::addBox(0, 50, 10, 1, &world_);
     box->ApplyAngularImpulse(1000.0f, true);
   });
 }

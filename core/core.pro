@@ -25,7 +25,13 @@ SOURCES += \
     cgp_islands_selection.cpp \
     truncation_selection.cpp \
     simple_tournament.cpp \
-    swiss_tournament.cpp
+    swiss_tournament.cpp \
+    physics/accelerometer.cpp \
+    physics/camera.cpp \
+    physics/compass.cpp \
+    physics/scene.cpp \
+    physics/misc.cpp \
+    physics/touch_sensor.cpp
 
 HEADERS += \
     ann_utils.h \
@@ -59,7 +65,14 @@ HEADERS += \
     truncation_selection.h \
     simple_tournament.h \
     tournament_implementations.h \
-    swiss_tournament.h
+    swiss_tournament.h \
+    physics/accelerometer.h \
+    physics/camera.h \
+    physics/compass.h \
+    physics/scene.h \
+    physics/misc.h \
+    physics/script.h \
+    physics/touch_sensor.h
     
 addLibrary(../third_party/sqlite)
 addLibrary(../third_party/box2d)

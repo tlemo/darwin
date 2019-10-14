@@ -1,22 +1,25 @@
+// Copyright The Darwin Neuroevolution Framework Authors.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 #pragma once
 
-#include "script.h"
-
+#include <core/physics/script.h>
 #include <core/properties.h>
 #include <core/utils.h>
 #include <third_party/box2d/box2d.h>
 
-#include <string>
-using namespace std;
-
-namespace phys {
-
-b2Body* addBall(float x, float y, float r, b2World* world);
-b2Body* addBox(float x, float y, float w, float h, b2World* world);
-b2Body* addCross(float x, float y, float w, float h, b2World* world);
-b2Body* addBullet(float x, float y, float dx, float dy, b2World* world);
-b2Body* addBoxProjectile(float x, float y, float dx, float dy, b2World* world);
+namespace physics {
 
 class Camera;
 class TouchSensor;
@@ -35,6 +38,7 @@ struct Rect {
       : x(x), y(y), width(width), height(height) {}
 };
 
+//! High-level physics scene abstraction
 class Scene : public core::NonCopyable {
   class ContactListener : public b2ContactListener {
    public:
@@ -72,9 +76,9 @@ class Scene : public core::NonCopyable {
   
   // sensors
   virtual const Camera* camera() const { return nullptr; }
-  virtual const phys::TouchSensor* touchSensor() const { return nullptr; }
-  virtual const phys::Accelerometer* accelerometer() const { return nullptr; }
-  virtual const phys::Compass* compass() const { return nullptr; }
+  virtual const physics::TouchSensor* touchSensor() const { return nullptr; }
+  virtual const physics::Accelerometer* accelerometer() const { return nullptr; }
+  virtual const physics::Compass* compass() const { return nullptr; }
 
   void step();
 
@@ -86,4 +90,4 @@ class Scene : public core::NonCopyable {
   ContactListener contact_listener_;
 };
 
-}  // namespace phys
+}  // namespace physics

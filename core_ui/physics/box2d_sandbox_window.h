@@ -14,6 +14,7 @@
 
 #pragma once
 
+#include <core_ui/properties_widget.h>
 #include <third_party/box2d/box2d.h>
 
 #include <QFrame>
@@ -23,13 +24,12 @@
 #include <memory>
 using namespace std;
 
-namespace core_ui {
+namespace physics_ui {
 
 namespace Ui {
 class Box2dSandboxWindow;
 }
 
-class PropertiesWidget;
 class Box2dWidget;
 class Box2dSceneUi;
 
@@ -50,7 +50,7 @@ class Box2dSandboxWindow : public QFrame {
   //! Creates a new sandbox windows
   Box2dSandboxWindow();
   virtual ~Box2dSandboxWindow();
-  
+
  protected:
   void focusInEvent(QFocusEvent* event) override;
 
@@ -88,7 +88,7 @@ class Box2dSandboxWindow : public QFrame {
   Box2dWidget* box2dWidget() const;
 
   //! The properties widget used to show sandbox values
-  PropertiesWidget* variablesWidget() const;
+  core_ui::PropertiesWidget* variablesWidget() const;
 
  private slots:
   void on_play_pause_clicked();
@@ -102,4 +102,4 @@ class Box2dSandboxWindow : public QFrame {
   State state_ = State::None;
 };
 
-}  // namespace core_ui
+}  // namespace physics_ui

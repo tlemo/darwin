@@ -1,4 +1,4 @@
-// Copyright 2019 The Darwin Neuroevolution Framework Authors.
+// Copyright The Darwin Neuroevolution Framework Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,23 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#pragma once
+#include "compass.h"
 
-#include <core_ui/physics/box2d_widget.h>
-#include <domains/unicycle/world.h>
+#include <core/utils.h>
 
-namespace unicycle_ui {
+namespace physics {
 
-class SceneUi : public physics_ui::Box2dSceneUi {
- public:
-  SceneUi(unicycle::World* world) : world_(world) {}
+Compass::Compass(b2Body* body) : body_(body) {}
 
- private:
-  void render(QPainter& painter, const QRectF&) override;
-  void mousePressEvent(const QPointF& pos, QMouseEvent* event) override;
+const b2Vec2 Compass::heading() const {
+  return body_->GetLocalVector(b2Vec2(0, 1));
+}
 
- private:
-  unicycle::World* world_ = nullptr;
-};
-
-}  // namespace unicycle_ui
+}  // namespace physics

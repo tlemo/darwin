@@ -1,18 +1,17 @@
 
 #pragma once
 
-#include "physics.h"
-
+#include <core/physics/scene.h>
 #include <core/modules.h>
 #include <core/properties.h>
-#include <core_ui/box2d_widget.h>
+#include <core_ui/physics/box2d_widget.h>
 
 #include <memory>
 using namespace std;
 
 struct SandboxScenePackage {
-  unique_ptr<phys::Scene> scene;
-  unique_ptr<core_ui::Box2dSceneUi> scene_ui;
+  unique_ptr<physics::Scene> scene;
+  unique_ptr<physics_ui::Box2dSceneUi> scene_ui;
 };
 
 class SandboxFactory : public core::ModuleFactory {

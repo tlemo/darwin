@@ -1,4 +1,4 @@
-// Copyright 2019 The Darwin Neuroevolution Framework Authors.
+// Copyright The Darwin Neuroevolution Framework Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,21 +14,15 @@
 
 #pragma once
 
-#include <core_ui/physics/box2d_widget.h>
-#include <domains/unicycle/world.h>
+#include <third_party/box2d/box2d.h>
 
-namespace unicycle_ui {
+namespace physics {
 
-class SceneUi : public physics_ui::Box2dSceneUi {
- public:
-  SceneUi(unicycle::World* world) : world_(world) {}
+// TODO: refactor these helpers
+b2Body* addBall(float x, float y, float r, b2World* world);
+b2Body* addBox(float x, float y, float w, float h, b2World* world);
+b2Body* addCross(float x, float y, float w, float h, b2World* world);
+b2Body* addBullet(float x, float y, float dx, float dy, b2World* world);
+b2Body* addBoxProjectile(float x, float y, float dx, float dy, b2World* world);
 
- private:
-  void render(QPainter& painter, const QRectF&) override;
-  void mousePressEvent(const QPointF& pos, QMouseEvent* event) override;
-
- private:
-  unicycle::World* world_ = nullptr;
-};
-
-}  // namespace unicycle_ui
+}  // namespace physics

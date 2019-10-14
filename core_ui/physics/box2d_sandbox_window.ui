@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>core_ui::Box2dSandboxWindow</class>
- <widget class="QFrame" name="core_ui::Box2dSandboxWindow">
+ <class>physics_ui::Box2dSandboxWindow</class>
+ <widget class="QFrame" name="physics_ui::Box2dSandboxWindow">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -47,7 +47,7 @@ background-clip: content;
      <property name="handleWidth">
       <number>2</number>
      </property>
-     <widget class="core_ui::Box2dWidget" name="world_widget">
+     <widget class="physics_ui::Box2dWidget" name="world_widget">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
         <horstretch>4</horstretch>
@@ -258,9 +258,9 @@ background-clip: content;
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>core_ui::Box2dWidget</class>
+   <class>physics_ui::Box2dWidget</class>
    <extends>QFrame</extends>
-   <header>core_ui/box2d_widget.h</header>
+   <header>core_ui/physics/box2d_widget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

@@ -1,11 +1,11 @@
 
 #pragma once
 
-#include "physics.h"
 #include "sandbox_factory.h"
 
+#include <core/physics/scene.h>
+#include <core_ui/physics/box2d_widget.h>
 #include <core/properties.h>
-#include <core_ui/box2d_widget.h>
 
 #include <QKeyEvent>
 
@@ -26,7 +26,7 @@ struct SceneVariables : public core::PropertySet {
   PROPERTY(pole_angular_velocity, float, 0, "Pole angular velocity");
 };
 
-class Scene : public phys::Scene {
+class Scene : public physics::Scene {
  public:
   explicit Scene(const core::PropertySet* config);
 
@@ -48,7 +48,7 @@ class Scene : public phys::Scene {
   Config config_;
 };
 
-class SceneUi : public core_ui::Box2dSceneUi {
+class SceneUi : public physics_ui::Box2dSceneUi {
   static constexpr float kCartImpulse = 1.0f;
 
  public:

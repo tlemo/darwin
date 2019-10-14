@@ -1,4 +1,4 @@
-// Copyright 2019 The Darwin Neuroevolution Framework Authors.
+// Copyright The Darwin Neuroevolution Framework Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,21 +14,21 @@
 
 #pragma once
 
-#include <core_ui/physics/box2d_widget.h>
-#include <domains/unicycle/world.h>
+#include <third_party/box2d/box2d.h>
 
-namespace unicycle_ui {
+namespace physics {
 
-class SceneUi : public physics_ui::Box2dSceneUi {
+//! Tracks the local direction of the global "North" (x=0, y=1) vector
+class Compass {
  public:
-  SceneUi(unicycle::World* world) : world_(world) {}
+  Compass(b2Body* body);
+
+  b2Body* body() const { return body_; }
+
+  const b2Vec2 heading() const;
 
  private:
-  void render(QPainter& painter, const QRectF&) override;
-  void mousePressEvent(const QPointF& pos, QMouseEvent* event) override;
-
- private:
-  unicycle::World* world_ = nullptr;
+  b2Body* body_ = nullptr;
 };
 
-}  // namespace unicycle_ui
+}  // namespace physics

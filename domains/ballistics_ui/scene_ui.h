@@ -14,14 +14,14 @@
 
 #pragma once
 
-#include <core_ui/box2d_widget.h>
+#include <core_ui/physics/box2d_widget.h>
 #include <domains/ballistics/world.h>
 
 #include <QPainterPath>
 
 namespace ballistics_ui {
 
-class SceneUi : public core_ui::Box2dSceneUi {
+class SceneUi : public physics_ui::Box2dSceneUi {
   Q_OBJECT
 
  public:

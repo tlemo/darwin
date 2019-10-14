@@ -15,56 +15,13 @@
 #include <third_party/box2d/box2d.h>
 
 #include <core/utils.h>
+#include <core/physics/script.h>
 #include <third_party/gtest/gtest.h>
 
-#include <map>
 #include <unordered_set>
-#include <functional>
 using namespace std;
 
 namespace box2d_tests {
-
-// basic action scripting: arbrirary actions are recorded together with a timestamp,
-// then played in sequence (ordered by the reference timestamp, which is assumed to
-// be strictly advancing)
-class Script {
-  using Action = std::function<void(float)>;
-  
-  static constexpr float kStartTimestamp = -1;
-  static constexpr float kInvalidTimestamp = -2;
-
- public:
-  void record(float t, const Action& action) {
-    CHECK(timestamp_ == kInvalidTimestamp);
-    actions_.emplace(t, action);
-  }
-
-  void start() {
-    current_action_ = actions_.begin();
-    timestamp_ = kStartTimestamp;
-  }
-
-  void play(float t) {
-    CHECK(timestamp_ != kInvalidTimestamp);
-    CHECK(t > timestamp_);
-    while (current_action_ != actions_.end() && current_action_->first <= t) {
-      current_action_->second(t);
-      ++current_action_;
-    }
-    timestamp_ = t;
-  }
-
-  void clear() {
-    actions_.clear();
-    current_action_ = actions_.end();
-    timestamp_ = kInvalidTimestamp;
-  }
-
- private:
-  multimap<float, Action> actions_;
-  multimap<float, Action>::const_iterator current_action_;
-  float timestamp_ = kInvalidTimestamp;
-};
 
 // test contact listener: it monitors all the contacts against two reference bodies:
 // 1. checkpoint body: expected contacts (the touching bodies are recorded)
@@ -196,7 +153,7 @@ TEST(Box2dTest, RoundProjectiles) {
   world.SetContactListener(&contact_listener);
 
   // script (shooting projectiles)
-  Script script;
+  physics::Script script;
   constexpr int kProjectilesCount = 200;
   for (int i = 0; i < kProjectilesCount; ++i) {
     script.record(i / 20.0f, [&, i](float) {
@@ -286,7 +243,7 @@ TEST(Box2dTest, BoxProjectiles) {
   world.SetContactListener(&contact_listener);
 
   // script (shooting projectiles)
-  Script script;
+  physics::Script script;
   constexpr int kProjectilesCount = 50;
   for (int i = 0; i < kProjectilesCount; ++i) {
     script.record(i / 10.0f, [&, i](float) {

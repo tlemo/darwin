@@ -16,7 +16,7 @@
 
 #include "scene_ui.h"
 
-#include <core_ui/box2d_sandbox_window.h>
+#include <core_ui/physics/box2d_sandbox_window.h>
 #include <core_ui/properties_widget.h>
 #include <domains/drone_vision/agent.h>
 #include <domains/drone_vision/drone_vision.h>
@@ -31,7 +31,7 @@ using namespace std;
 
 namespace drone_vision_ui {
 
-class SandboxWindow : public core_ui::Box2dSandboxWindow {
+class SandboxWindow : public physics_ui::Box2dSandboxWindow {
   struct Variables {
     // configuration
     core_ui::PropertyItem* generation = nullptr;

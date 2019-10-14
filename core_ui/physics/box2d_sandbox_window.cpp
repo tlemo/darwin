@@ -13,8 +13,9 @@
 // limitations under the License.
 
 #include "box2d_sandbox_window.h"
-#include "box2d_widget.h"
 #include "ui_box2d_sandbox_window.h"
+
+#include <core_ui/physics/box2d_widget.h>
 
 #include <core/darwin.h>
 #include <core/evolution.h>
@@ -23,7 +24,7 @@
 
 #include <QString>
 
-namespace core_ui {
+namespace physics_ui {
 
 Box2dSandboxWindow::Box2dSandboxWindow()
     : QFrame(nullptr), ui(new Ui::Box2dSandboxWindow) {
@@ -121,7 +122,7 @@ Box2dWidget* Box2dSandboxWindow::box2dWidget() const {
   return ui->world_widget;
 }
 
-PropertiesWidget* Box2dSandboxWindow::variablesWidget() const {
+core_ui::PropertiesWidget* Box2dSandboxWindow::variablesWidget() const {
   return ui->variables;
 }
 
@@ -152,4 +153,4 @@ void Box2dSandboxWindow::on_simulation_speed_valueChanged(int value) {
   updateUI();
 }
 
-}  // namespace core_ui
+}  // namespace physics_ui

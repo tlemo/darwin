@@ -1,12 +1,10 @@
 
 #pragma once
 
-#include "physics.h"
 #include "sandbox_factory.h"
-#include "camera_window.h"
 
 #include <core/properties.h>
-#include <core_ui/box2d_sandbox_window.h>
+#include <core_ui/physics/box2d_sandbox_window.h>
 #include <core_ui/properties_widget.h>
 
 #include <unordered_map>
@@ -16,7 +14,7 @@ using namespace std;
 
 class MainWindow;
 
-class SandboxWindow : public core_ui::Box2dSandboxWindow {
+class SandboxWindow : public physics_ui::Box2dSandboxWindow {
   struct Variables {
     // simulation state
     core_ui::PropertyItem* state = nullptr;

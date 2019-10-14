@@ -16,7 +16,7 @@
 
 #include <core/math_2d.h>
 #include <core/utils.h>
-#include <core_ui/box2d_renderer.h>
+#include <core_ui/physics/box2d_renderer.h>
 
 #include <QBrush>
 #include <QPainter>
@@ -26,7 +26,7 @@
 
 #include <math.h>
 
-namespace core_ui {
+namespace physics_ui {
 
 Box2dWidget::Box2dWidget(QWidget* parent) : core_ui::Canvas(parent) {
   setAutoFillBackground(false);
@@ -58,7 +58,7 @@ void Box2dWidget::setDebugRender(bool enable) {
 }
 
 void Box2dWidget::renderDebugLayer(QPainter& painter) const {
-  core_ui::Box2dRenderer box2d_renderer(&painter);
+  physics_ui::Box2dRenderer box2d_renderer(&painter);
   box2d_renderer.SetFlags(b2Draw::e_shapeBit | b2Draw::e_centerOfMassBit);
 
   world_->SetDebugDraw(&box2d_renderer);
@@ -152,4 +152,4 @@ void Box2dWidget::focusOutEvent(QFocusEvent*) {
   update();
 }
 
-}  // namespace core_ui
+}  // namespace physics_ui

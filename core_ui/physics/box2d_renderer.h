@@ -18,7 +18,7 @@
 
 #include <QPainter>
 
-namespace core_ui {
+namespace physics_ui {
 
 //! A QPainter-based implementation of Box2d debug draw interface (b2Draw)
 class Box2dRenderer : public b2Draw {
@@ -52,4 +52,4 @@ class Box2dRenderer : public b2Draw {
   QPainter* painter_ = nullptr;
 };
 
-}  // namespace core_ui
+}  // namespace physics_ui
