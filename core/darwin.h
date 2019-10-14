@@ -236,10 +236,10 @@ class Domain : public core::NonCopyable {
   Domain() = default;
   virtual ~Domain() = default;
 
-  //! Count of inputs to a Brain
+  //! Number of inputs to a Brain
   virtual size_t inputs() const = 0;
   
-  //! Count of outputs from a Brain
+  //! Number of outputs from a Brain
   virtual size_t outputs() const = 0;
 
   //! Assigns fitness values to every genotype
