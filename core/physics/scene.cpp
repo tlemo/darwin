@@ -16,7 +16,7 @@
 
 namespace physics {
 
-void Scene::step() {
+bool Scene::simStep() {
   if (timestamp_ == 0) {
     script_.start();
   }
@@ -37,6 +37,7 @@ void Scene::step() {
   // TODO: pause/resume/done/reset?
 
   postStep(time_step);
+  return true;
 }
 
 }  // namespace physics

@@ -27,9 +27,10 @@ using namespace std;
 namespace drone_vision_ui {
 
 void SceneUi::render(QPainter& painter, const QRectF&) {
+#if 0 // TODO
   // draw an "arrow" pointing to the target position
   constexpr float kArrowHalfSize = drone_vision::World::kGroundY / 4;
-  const float target_position = world_->targetPosition();
+  const float target_position = scene_->targetPosition();
   array<QPointF, 3> points = {
     QPointF(target_position, 3 * kArrowHalfSize),
     QPointF(target_position + kArrowHalfSize, kArrowHalfSize),
@@ -38,14 +39,17 @@ void SceneUi::render(QPainter& painter, const QRectF&) {
   painter.setPen(QPen(Qt::gray, 0));
   painter.setBrush(Qt::green);
   painter.drawConvexPolygon(points.data(), int(points.size()));
+#endif  
 }
 
 void SceneUi::mousePressEvent(const QPointF& pos, QMouseEvent* event) {
+#if 0 // TODO
   if (event->button() == Qt::LeftButton) {
-    world_->setTargetPosition(pos.x());
+    scene_->setTargetPosition(pos.x());
   } else {
     emit sigPlayPause();
   }
+#endif  
 }
 
 }  // namespace drone_vision_ui

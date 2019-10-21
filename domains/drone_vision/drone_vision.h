@@ -21,35 +21,16 @@ namespace drone_vision {
 
 //! Drone Vision domain configuration
 struct Config : public core::PropertySet {
-  PROPERTY(gravity, float, 9.8f, "Gravitational acceleration");
-  PROPERTY(max_distance, float, 3.0f, "Maximum distance from the center");
-  PROPERTY(max_angle, float, 60.0f, "Maximum angle from vertical");
-  PROPERTY(max_initial_angle, float, 10.0f, "Maximum starting angle from vertical");
-  PROPERTY(pole_length, float, 1.5f, "Pole length");
-  PROPERTY(pole_density, float, 1.0f, "Pole density");
-  PROPERTY(wheel_radius, float, 0.2f, "Wheel size (radius)");
-  PROPERTY(wheel_density, float, 1.0f, "Wheel density");
-  PROPERTY(wheel_friction, float, 10.0f, "Wheel friction");
-  PROPERTY(max_torque, float, 1.0f, "Maximum torque which can be applied to the wheel");
+  PROPERTY(drone_radius, float, 0.5f, "Drone size");
+  PROPERTY(move_force, float, 5.0f, "The force used to move the drone");
+  PROPERTY(rotate_torque, float, 1.0f, "The torque used to rotate the drone");
 
-  PROPERTY(input_pole_angle, bool, true, "Use the pole angle as input");
-  PROPERTY(input_angular_velocity, bool, true, "Use the angular velocity as input");
-  PROPERTY(input_wheel_distance, bool, true, "Use the wheel distance as input");
-  PROPERTY(input_wheel_velocity, bool, true, "Use the wheel linear velocity as input");
-  PROPERTY(input_distance_from_target, bool, true, "Distance from target position");
+  PROPERTY(camera_fov, float, 120, "Camera field of view (FOV)");
+  PROPERTY(camera_resolution, int, 64, "Camera resolution");
+  PROPERTY(camera_depth, bool, false, "Use camera depth channel");
 
   PROPERTY(test_worlds, int, 5, "Number of test worlds per generation");
   PROPERTY(max_steps, int, 1000, "Maximum number of steps per episode");
-
-  PROPERTY(discrete_controls,
-           bool,
-           false,
-           "Force the actuator force to fixed +/-discrete_force_magnitude");
-
-  PROPERTY(discrete_torque_magnitude,
-           float,
-           0.5f,
-           "The fixed force magnitude used if discrete_controls is true");
 };
 
 //! Domain: Drone Vision

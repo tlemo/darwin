@@ -23,18 +23,18 @@ using namespace std;
 
 namespace drone_vision {
 
-class World;
+class Scene;
 
 class Agent {
  public:
-  Agent(const darwin::Genotype* genotype, World* world);
+  Agent(const darwin::Genotype* genotype, Scene* scene);
   void simStep();
   
   static int inputs(const Config& config);
   static int outputs(const Config& config);
 
  private:
-  World* world_ = nullptr;
+  Scene* scene_ = nullptr;
   unique_ptr<darwin::Brain> brain_;
 };
 

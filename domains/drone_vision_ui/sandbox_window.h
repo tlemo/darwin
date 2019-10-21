@@ -20,7 +20,7 @@
 #include <core_ui/properties_widget.h>
 #include <domains/drone_vision/agent.h>
 #include <domains/drone_vision/drone_vision.h>
-#include <domains/drone_vision/world.h>
+#include <domains/drone_vision/scene.h>
 
 #include <QFrame>
 #include <QIcon>
@@ -66,7 +66,7 @@ class SandboxWindow : public physics_ui::Box2dSandboxWindow {
   const drone_vision::DroneVision* domain_ = nullptr;
 
   shared_ptr<const darwin::Genotype> genotype_;
-  unique_ptr<drone_vision::World> world_;
+  unique_ptr<drone_vision::Scene> scene_;
   unique_ptr<drone_vision::Agent> agent_;
   unique_ptr<SceneUi> scene_ui_;
   int step_ = -1;

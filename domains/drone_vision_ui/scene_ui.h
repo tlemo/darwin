@@ -15,20 +15,20 @@
 #pragma once
 
 #include <core_ui/physics/box2d_widget.h>
-#include <domains/drone_vision/world.h>
+#include <domains/drone_vision/scene.h>
 
 namespace drone_vision_ui {
 
 class SceneUi : public physics_ui::Box2dSceneUi {
  public:
-  SceneUi(drone_vision::World* world) : world_(world) {}
+  SceneUi(drone_vision::Scene* scene) : scene_(scene) {}
 
  private:
   void render(QPainter& painter, const QRectF&) override;
   void mousePressEvent(const QPointF& pos, QMouseEvent* event) override;
 
  private:
-  drone_vision::World* world_ = nullptr;
+  drone_vision::Scene* scene_ = nullptr;
 };
 
 }  // namespace drone_vision_ui

@@ -13,37 +13,40 @@
 // limitations under the License.
 
 #include "agent.h"
-#include "world.h"
+#include "scene.h"
 
 namespace drone_vision {
 
-Agent::Agent(const darwin::Genotype* genotype, World* world)
-    : world_(world), brain_(genotype->grow()) {}
+Agent::Agent(const darwin::Genotype* genotype, Scene* scene)
+    : scene_(scene), brain_(genotype->grow()) {}
 
 void Agent::simStep() {
-  const auto& config = world_->domain()->config();
+  const auto& config = scene_->domain()->config();
 
+#if 0 // TODO
   // setup inputs
   int input_index = 0;
   if (config.input_pole_angle)
-    brain_->setInput(input_index++, world_->poleAngle());
+    brain_->setInput(input_index++, scene_->poleAngle());
   if (config.input_angular_velocity)
-    brain_->setInput(input_index++, world_->poleAngularVelocity());
+    brain_->setInput(input_index++, scene_->poleAngularVelocity());
   if (config.input_wheel_distance)
-    brain_->setInput(input_index++, world_->wheelDistance());
+    brain_->setInput(input_index++, scene_->wheelDistance());
   if (config.input_wheel_velocity)
-    brain_->setInput(input_index++, world_->wheelVelocity());
+    brain_->setInput(input_index++, scene_->wheelVelocity());
   if (config.input_distance_from_target)
-    brain_->setInput(input_index++, world_->wheelDistance() - world_->targetPosition());
+    brain_->setInput(input_index++, scene_->wheelDistance() - scene_->targetPosition());
 
   brain_->think();
 
   // act based on the output values
-  world_->turnWheel(brain_->output(0));
+  scene_->turnWheel(brain_->output(0));
+#endif
 }
 
 int Agent::inputs(const Config& config) {
   int inputs_count = 0;
+#if 0 // TODO
   if (config.input_pole_angle)
     ++inputs_count;
   if (config.input_angular_velocity)
@@ -54,6 +57,7 @@ int Agent::inputs(const Config& config) {
     ++inputs_count;
   if (config.input_distance_from_target)
     ++inputs_count;
+#endif
   return inputs_count;
 }
 

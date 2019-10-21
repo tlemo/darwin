@@ -80,7 +80,7 @@ class Scene : public core::NonCopyable {
   virtual const physics::Accelerometer* accelerometer() const { return nullptr; }
   virtual const physics::Compass* compass() const { return nullptr; }
 
-  void step();
+  bool simStep();
 
  protected:
   b2World world_;

@@ -26,7 +26,7 @@ namespace drone_vision_ui {
 
 bool SandboxWindow::setup() {
   CHECK(!domain_);
-  CHECK(!world_);
+  CHECK(!scene_);
   CHECK(!agent_);
   CHECK(!scene_ui_);
   CHECK(state() == State::None);
@@ -76,12 +76,11 @@ void SandboxWindow::newScene() {
   setSceneUi(nullptr);
   scene_ui_.reset();
 
-  const float initial_angle = domain_->randomInitialAngle();
-  const float target_position = domain_->randomTargetPosition();
-  world_ = make_unique<drone_vision::World>(initial_angle, target_position, domain_);
-  agent_ = make_unique<drone_vision::Agent>(genotype_.get(), world_.get());
+  scene_ = make_unique<drone_vision::Scene>(domain_);
+  agent_ = make_unique<drone_vision::Agent>(genotype_.get(), scene_.get());
   step_ = 0;
 
+#if 0
   variables_.initial_angle->setValue(QString::asprintf("%.2f", initial_angle));
   variables_.target_position->setValue(QString::asprintf("%.2f", target_position));
 
@@ -92,19 +91,20 @@ void SandboxWindow::newScene() {
   const auto height = config.pole_length + config.wheel_radius + kMargin;
   QRectF viewport(-half_width, height, 2 * half_width, -height);
 
-  setWorld(world_->box2dWorld(), viewport);
+  setWorld(scene_->box2dWorld(), viewport);
+#endif
   
-  scene_ui_ = make_unique<SceneUi>(world_.get());
+  scene_ui_ = make_unique<SceneUi>(scene_.get());
   setSceneUi(scene_ui_.get());
 }
 
 void SandboxWindow::singleStep() {
-  CHECK(world_);
+  CHECK(scene_);
   CHECK(agent_);
 
   if (step_ < max_steps_) {
     agent_->simStep();
-    if (!world_->simStep()) {
+    if (!scene_->simStep()) {
       stop(State::Failed);
     } else {
       ++step_;
@@ -117,12 +117,13 @@ void SandboxWindow::singleStep() {
 }
 
 void SandboxWindow::updateUI() {
-  const float wheel_distance = world_->wheelDistance();
-  const float wheel_velocity = world_->wheelVelocity();
-  const float pole_angle = math::radiansToDegrees(world_->poleAngle());
-  const float angular_velocity = math::radiansToDegrees(world_->poleAngularVelocity());
-  const float dist_from_target = fabs(wheel_distance - world_->targetPosition());
-  const float fitness_bonus = world_->fitnessBonus() / max_steps_;
+#if 0
+  const float wheel_distance = scene_->wheelDistance();
+  const float wheel_velocity = scene_->wheelVelocity();
+  const float pole_angle = math::radiansToDegrees(scene_->poleAngle());
+  const float angular_velocity = math::radiansToDegrees(scene_->poleAngularVelocity());
+  const float dist_from_target = fabs(wheel_distance - scene_->targetPosition());
+  const float fitness_bonus = scene_->fitnessBonus() / max_steps_;
 
   variables_.state->setValue(stateDescription());
   variables_.step->setValue(step_);
@@ -132,6 +133,7 @@ void SandboxWindow::updateUI() {
   variables_.angle->setValue(QString::asprintf("%.2f", pole_angle));
   variables_.angular_velocity->setValue(QString::asprintf("%.3f", angular_velocity));
   variables_.dist_from_target->setValue(QString::asprintf("%.3f", dist_from_target));
+#endif
 
   update();
 }

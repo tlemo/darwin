@@ -14,7 +14,7 @@
 
 #include "drone_vision.h"
 #include "agent.h"
-#include "world.h"
+#include "scene.h"
 
 #include <core/evolution.h>
 #include <core/exception.h>
@@ -54,18 +54,15 @@ bool DroneVision::evaluatePopulation(darwin::Population* population) const {
     darwin::StageScope stage("Evaluate one world", population->size());
     core::log(" ... world %d\n", world_index);
 
-    const float initial_angle = randomInitialAngle();
-    const float target_position = randomTargetPosition();
-
     pp::for_each(*population, [&](int, darwin::Genotype* genotype) {
-      World world(initial_angle, target_position, this);
-      Agent agent(genotype, &world);
+      Scene scene(this);
+      Agent agent(genotype, &scene);
 
       // simulation loop
       int step = 0;
       for (; step < config_.max_steps; ++step) {
         agent.simStep();
-        if (!world.simStep())
+        if (!scene.simStep())
           break;
       }
       CHECK(step > 0);
@@ -74,9 +71,11 @@ bool DroneVision::evaluatePopulation(darwin::Population* population) const {
       // 1. the number of steps keeping the pole balanced, normalized to [0..1]
       // 2. iff the pole was balanced for the whole episode, add the fitness bonus
       float episode_fitness = float(step) / config_.max_steps;
+#if 0 // TODO
       if (step == config_.max_steps) {
         episode_fitness += world.fitnessBonus() / config_.max_steps;
       }
+#endif
       genotype->fitness += episode_fitness / config_.test_worlds;
 
       darwin::ProgressManager::reportProgress();
@@ -87,25 +86,11 @@ bool DroneVision::evaluatePopulation(darwin::Population* population) const {
   return false;
 }
 
-float DroneVision::randomInitialAngle() const {
-  random_device rd;
-  default_random_engine rnd(rd());
-  uniform_real_distribution<float> dist(-config_.max_initial_angle,
-                                        config_.max_initial_angle);
-  return dist(rnd);
-}
-
-float DroneVision::randomTargetPosition() const {
-  random_device rd;
-  default_random_engine rnd(rd());
-  uniform_real_distribution<float> dist(-config_.max_distance, config_.max_distance);
-  return dist(rnd);
-}
-
 // validate the configuration
 // (just a few obvious sanity checks for values which would completly break the domain,
 // nonsensical configurations are still possible)
 void DroneVision::validateConfiguration() {
+#if 0 // TODO
   if (config_.max_distance <= 0)
     throw core::Exception("Invalid configuration: max_distance <= 0");
   if (config_.max_angle >= 90)
@@ -122,6 +107,7 @@ void DroneVision::validateConfiguration() {
     throw core::Exception("Invalid configuration: wheel_density must be positive or 0");
   if (config_.wheel_friction <= 0)
     throw core::Exception("Invalid configuration: wheel_friction must be positive");
+#endif
 
   if (inputs() < 1)
     throw core::Exception("Invalid configuration: at least one input must be selected");
