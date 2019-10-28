@@ -95,12 +95,13 @@ void Scene::rotateDrone(float torque) {
   drone_->ApplyTorque(torque, true);
 }
 
-void Scene::addBalloon(float x, float y, float radius) {
+void Scene::addTarget(float x, float y, float vx, float vy, float radius) {
   b2BodyDef body_def;
   body_def.type = b2_dynamicBody;
   body_def.position.Set(x, y);
-  body_def.linearDamping = 1.0f;
-  body_def.angularDamping = 1.0f;
+  body_def.linearVelocity.Set(vx, vy);
+  body_def.linearDamping = 0.0f;
+  body_def.angularDamping = 0.0f;
   auto body = world_.CreateBody(&body_def);
 
   b2CircleShape shape;
@@ -109,32 +110,10 @@ void Scene::addBalloon(float x, float y, float radius) {
   b2FixtureDef fixture_def;
   fixture_def.shape = &shape;
   fixture_def.density = 0.02f;
-  fixture_def.friction = 1.0f;
-  fixture_def.restitution = 0.9f;
+  fixture_def.friction = 0.0f;
+  fixture_def.restitution = 1.0f;
   fixture_def.material.color = b2Color(1, 0, 0);
   fixture_def.material.shininess = 10;
-  fixture_def.material.emit_intensity = 0.1f;
-  body->CreateFixture(&fixture_def);
-}
-
-void Scene::addBox(float x, float y, float sx, float sy) {
-  b2BodyDef body_def;
-  body_def.type = b2_dynamicBody;
-  body_def.position.Set(x, y);
-  body_def.linearDamping = 2.0f;
-  body_def.angularDamping = 2.0f;
-  auto body = world_.CreateBody(&body_def);
-
-  b2PolygonShape shape;
-  shape.SetAsBox(sx, sy);
-
-  b2FixtureDef fixture_def;
-  fixture_def.shape = &shape;
-  fixture_def.density = 0.5f;
-  fixture_def.friction = 1.0f;
-  fixture_def.restitution = 0.5f;
-  fixture_def.material.color = b2Color(0, 1, 0);
-  fixture_def.material.shininess = 25;
   fixture_def.material.emit_intensity = 0.1f;
   body->CreateFixture(&fixture_def);
 }

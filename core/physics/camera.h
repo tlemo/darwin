@@ -24,12 +24,12 @@ namespace physics {
 //! A single color & depth "pixel"
 struct Receptor {
   b2Color color;
-  float distance = 0;
+  float depth = 0;
 
   Receptor() = default;
 
   explicit Receptor(const b2Color& color, float distance)
-      : color(color), distance(distance) {}
+      : color(color), depth(distance) {}
 };
 
 //! Raytraced rendering of a 2d world

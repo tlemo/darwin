@@ -67,11 +67,11 @@ bool DroneVision::evaluatePopulation(darwin::Population* population) const {
       }
       CHECK(step > 0);
 
-      // fitness value: 
+      // fitness value:
       // 1. the number of steps keeping the pole balanced, normalized to [0..1]
       // 2. iff the pole was balanced for the whole episode, add the fitness bonus
       float episode_fitness = float(step) / config_.max_steps;
-#if 0 // TODO
+#if 0  // TODO
       if (step == config_.max_steps) {
         episode_fitness += world.fitnessBonus() / config_.max_steps;
       }
@@ -86,31 +86,33 @@ bool DroneVision::evaluatePopulation(darwin::Population* population) const {
   return false;
 }
 
+b2Vec2 DroneVision::randomTargetVelocity() const {
+  random_device rd;
+  default_random_engine rnd(rd());
+  uniform_real_distribution<float> dist(0, config_.target_max_speed);
+  return b2Vec2(dist(rnd), dist(rnd));
+}
+
 // validate the configuration
 // (just a few obvious sanity checks for values which would completly break the domain,
 // nonsensical configurations are still possible)
 void DroneVision::validateConfiguration() {
-#if 0 // TODO
-  if (config_.max_distance <= 0)
-    throw core::Exception("Invalid configuration: max_distance <= 0");
-  if (config_.max_angle >= 90)
-    throw core::Exception("Invalid configuration: max_angle >= 90");
-  if (config_.max_initial_angle >= config_.max_angle)
-    throw core::Exception("Invalid configuration: max_initial_angle >= max_angle");
-  if (config_.pole_length <= 0)
-    throw core::Exception("Invalid configuration: pole_length must be positive");
-  if (config_.pole_density <= 0)
-    throw core::Exception("Invalid configuration: pole_density must be positive");
-  if (config_.wheel_radius <= 0)
-    throw core::Exception("Invalid configuration: wheel_radius must be positive");
-  if (config_.wheel_density < 0)
-    throw core::Exception("Invalid configuration: wheel_density must be positive or 0");
-  if (config_.wheel_friction <= 0)
-    throw core::Exception("Invalid configuration: wheel_friction must be positive");
-#endif
+  if (config_.drone_radius <= 0)
+    throw core::Exception("Invalid configuration: drone_radius <= 0");
+  if (config_.max_move_force <= 0)
+    throw core::Exception("Invalid configuration: max_move_force <= 0");
+  if (config_.max_rotate_torque <= 0)
+    throw core::Exception("Invalid configuration: max_rotate_torque <= 0");
 
-  if (inputs() < 1)
-    throw core::Exception("Invalid configuration: at least one input must be selected");
+  if (config_.camera_fov <= 0 || config_.camera_fov > 360)
+    throw core::Exception("Invalid configuration: camera_fov");
+  if (config_.camera_resolution < 2)
+    throw core::Exception("Invalid configuration: camera_resolution");
+
+  if (config_.target_radius <= 0)
+    throw core::Exception("Invalid configuration: target_radius");
+  if (config_.target_max_speed < 0)
+    throw core::Exception("Invalid configuration: target_max_speed");
 
   if (config_.test_worlds < 1)
     throw core::Exception("Invalid configuration: test_worlds < 1");

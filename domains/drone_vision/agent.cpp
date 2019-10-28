@@ -23,46 +23,33 @@ Agent::Agent(const darwin::Genotype* genotype, Scene* scene)
 void Agent::simStep() {
   const auto& config = scene_->domain()->config();
 
-#if 0 // TODO
   // setup inputs
+  const auto camera = scene_->camera();
+  const auto image = camera->render();
+  CHECK(image.size() == config.camera_resolution);
   int input_index = 0;
-  if (config.input_pole_angle)
-    brain_->setInput(input_index++, scene_->poleAngle());
-  if (config.input_angular_velocity)
-    brain_->setInput(input_index++, scene_->poleAngularVelocity());
-  if (config.input_wheel_distance)
-    brain_->setInput(input_index++, scene_->wheelDistance());
-  if (config.input_wheel_velocity)
-    brain_->setInput(input_index++, scene_->wheelVelocity());
-  if (config.input_distance_from_target)
-    brain_->setInput(input_index++, scene_->wheelDistance() - scene_->targetPosition());
+  for (const auto& receptor : image) {
+    brain_->setInput(input_index++, receptor.color.r);
+    brain_->setInput(input_index++, receptor.color.g);
+    brain_->setInput(input_index++, receptor.color.b);
+    if (config.camera_depth) {
+      brain_->setInput(input_index++, receptor.depth);
+    }
+  }
 
   brain_->think();
 
-  // act based on the output values
-  scene_->turnWheel(brain_->output(0));
-#endif
+  // actions based on the output values
+  scene_->moveDrone(b2Vec2(brain_->output(0), brain_->output(1)));
+  scene_->rotateDrone(brain_->output(2));
 }
 
 int Agent::inputs(const Config& config) {
-  int inputs_count = 0;
-#if 0 // TODO
-  if (config.input_pole_angle)
-    ++inputs_count;
-  if (config.input_angular_velocity)
-    ++inputs_count;
-  if (config.input_wheel_distance)
-    ++inputs_count;
-  if (config.input_wheel_velocity)
-    ++inputs_count;
-  if (config.input_distance_from_target)
-    ++inputs_count;
-#endif
-  return inputs_count;
+  return config.camera_resolution * (config.camera_depth ? 4 : 3);
 }
 
 int Agent::outputs(const Config&) {
-  return 1;
+  return 3;
 }
 
 }  // namespace drone_vision

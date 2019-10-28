@@ -16,18 +16,22 @@
 
 #include <core/darwin.h>
 #include <core/properties.h>
+#include <third_party/box2d/box2d.h>
 
 namespace drone_vision {
 
 //! Drone Vision domain configuration
 struct Config : public core::PropertySet {
   PROPERTY(drone_radius, float, 0.5f, "Drone size");
-  PROPERTY(move_force, float, 5.0f, "The force used to move the drone");
-  PROPERTY(rotate_torque, float, 1.0f, "The torque used to rotate the drone");
+  PROPERTY(max_move_force, float, 5.0f, "Maximum force used to move the drone");
+  PROPERTY(max_rotate_torque, float, 1.0f, "Maximum torque used to rotate the drone");
 
   PROPERTY(camera_fov, float, 120, "Camera field of view (FOV)");
   PROPERTY(camera_resolution, int, 64, "Camera resolution");
   PROPERTY(camera_depth, bool, false, "Use camera depth channel");
+
+  PROPERTY(target_radius, float, 0.3f, "Target size");
+  PROPERTY(target_max_speed, float, 1.0f, "Max target velocity");
 
   PROPERTY(test_worlds, int, 5, "Number of test worlds per generation");
   PROPERTY(max_steps, int, 1000, "Maximum number of steps per episode");
@@ -46,8 +50,7 @@ class DroneVision : public darwin::Domain {
   
   const Config& config() const { return config_; }
   
-  float randomInitialAngle() const;
-  float randomTargetPosition() const;
+  b2Vec2 randomTargetVelocity() const;
   
  private:
   void validateConfiguration();

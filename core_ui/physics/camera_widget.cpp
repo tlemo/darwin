@@ -36,7 +36,7 @@ void CameraWidget::paintEvent(QPaintEvent* event) {
     auto depth_pixels = reinterpret_cast<QRgb*>(depth_image.scanLine(0));
     for (int i = 0; i < camera_image.size(); ++i) {
       const auto& ci = camera_image[i];
-      const float shade = 1.0f - ci.distance;
+      const float shade = 1.0f - ci.depth;
       color_pixels[i] = QColor::fromRgbF(ci.color.r, ci.color.g, ci.color.b).rgb();
       depth_pixels[i] = QColor::fromRgbF(shade, shade, shade).rgb();
     }

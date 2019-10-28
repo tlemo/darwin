@@ -29,7 +29,7 @@ class Agent {
  public:
   Agent(const darwin::Genotype* genotype, Scene* scene);
   void simStep();
-  
+
   static int inputs(const Config& config);
   static int outputs(const Config& config);
 

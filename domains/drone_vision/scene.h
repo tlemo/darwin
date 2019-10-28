@@ -16,9 +16,9 @@
 
 #include "drone_vision.h"
 
-#include <core/properties.h>
 #include <core/physics/camera.h>
 #include <core/physics/scene.h>
+#include <core/properties.h>
 
 namespace drone_vision {
 
@@ -47,9 +47,8 @@ class Scene : public physics::Scene {
   void moveDrone(const b2Vec2& force);
   void rotateDrone(float torque);
 
-  void addBalloon(float x, float y, float radius);
-  void addBox(float x, float y, float sx, float sy);
-  
+  void addTarget(float x, float y, float vx, float vy, float radius);
+
   const DroneVision* domain() const { return domain_; }
 
  private:
