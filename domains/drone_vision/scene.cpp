@@ -16,7 +16,7 @@
 
 namespace drone_vision {
 
-Scene::Scene(const DroneVision* domain)
+Scene::Scene(const b2Vec2& target_velocity, const DroneVision* domain)
     : physics::Scene(b2Vec2(0, 0), physics::Rect(-10, -10, 20, 20)), domain_(domain) {
   const auto& config = domain_->config();
 
@@ -41,42 +41,13 @@ Scene::Scene(const DroneVision* domain)
   wall_shape.Set(b2Vec2(-10, 10), b2Vec2(10, 10));
   walls->CreateFixture(&wall_fixture_def);
 
-  // drone
-  b2BodyDef drone_body_def;
-  drone_body_def.type = b2_dynamicBody;
-  drone_body_def.position.SetZero();
-  drone_body_def.linearDamping = 10.0f;
-  drone_body_def.angularDamping = 10.0f;
-  drone_ = world_.CreateBody(&drone_body_def);
-
-  b2CircleShape drone_shape;
-  drone_shape.m_radius = config.drone_radius;
-
-  b2FixtureDef drone_fixture_def;
-  drone_fixture_def.shape = &drone_shape;
-  drone_fixture_def.density = 0.1f;
-  drone_fixture_def.friction = 1.0f;
-  drone_fixture_def.restitution = 0.2f;
-  drone_fixture_def.material.color = b2Color(0, 0, 1);
-  drone_fixture_def.material.emit_intensity = 0.5f;
-  drone_->CreateFixture(&drone_fixture_def);
+  // drone & target
+  drone_ = createDrone(b2Vec2(0, 0), config.drone_radius);
+  target_ = createTarget(b2Vec2(0, 5), target_velocity, config.target_radius);
 
   // lights
-  b2LightDef light1_def;
-  light1_def.body = walls;
-  light1_def.color = b2Color(1, 1, 1);
-  light1_def.intensity = 2.0f;
-  light1_def.attenuation_distance = 25.0f;
-  light1_def.position = b2Vec2(9, -9);
-  world_.CreateLight(&light1_def);
-
-  b2LightDef light2_def;
-  light2_def.body = walls;
-  light2_def.color = b2Color(1, 1, 1);
-  light2_def.intensity = 2.0f;
-  light2_def.attenuation_distance = 25.0f;
-  light2_def.position = b2Vec2(-9, -9);
-  world_.CreateLight(&light2_def);
+  createLight(walls, b2Vec2(-9, -9), b2Color(1, 1, 1));
+  createLight(walls, b2Vec2(9, 9), b2Color(1, 1, 1));
 
   // sensors
   camera_ = make_unique<Camera>(
@@ -95,11 +66,34 @@ void Scene::rotateDrone(float torque) {
   drone_->ApplyTorque(torque, true);
 }
 
-void Scene::addTarget(float x, float y, float vx, float vy, float radius) {
+b2Body* Scene::createDrone(const b2Vec2& pos, float radius) {
+  b2BodyDef drone_body_def;
+  drone_body_def.type = b2_dynamicBody;
+  drone_body_def.position = pos;
+  drone_body_def.linearDamping = 10.0f;
+  drone_body_def.angularDamping = 10.0f;
+  auto body = world_.CreateBody(&drone_body_def);
+
+  b2CircleShape drone_shape;
+  drone_shape.m_radius = radius;
+
+  b2FixtureDef drone_fixture_def;
+  drone_fixture_def.shape = &drone_shape;
+  drone_fixture_def.density = 0.1f;
+  drone_fixture_def.friction = 1.0f;
+  drone_fixture_def.restitution = 0.2f;
+  drone_fixture_def.material.color = b2Color(0, 0, 1);
+  drone_fixture_def.material.emit_intensity = 0.5f;
+  body->CreateFixture(&drone_fixture_def);
+
+  return body;
+}
+
+b2Body* Scene::createTarget(const b2Vec2& pos, const b2Vec2& v, float radius) {
   b2BodyDef body_def;
   body_def.type = b2_dynamicBody;
-  body_def.position.Set(x, y);
-  body_def.linearVelocity.Set(vx, vy);
+  body_def.position = pos;
+  body_def.linearVelocity = v;
   body_def.linearDamping = 0.0f;
   body_def.angularDamping = 0.0f;
   auto body = world_.CreateBody(&body_def);
@@ -116,6 +110,18 @@ void Scene::addTarget(float x, float y, float vx, float vy, float radius) {
   fixture_def.material.shininess = 10;
   fixture_def.material.emit_intensity = 0.1f;
   body->CreateFixture(&fixture_def);
+
+  return body;
+}
+
+void Scene::createLight(b2Body* body, const b2Vec2& pos, const b2Color& color) {
+  b2LightDef light_def;
+  light_def.body = body;
+  light_def.color = color;
+  light_def.intensity = 2.0f;
+  light_def.attenuation_distance = 25.0f;
+  light_def.position = pos;
+  world_.CreateLight(&light_def);
 }
 
 void Scene::updateVariables() {

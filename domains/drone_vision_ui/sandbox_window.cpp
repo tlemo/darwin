@@ -42,7 +42,7 @@ bool SandboxWindow::setup() {
   if (dlg.exec() != QDialog::Accepted) {
     return false;
   }
-  
+
   const int generation = dlg.generation();
   max_steps_ = dlg.maxSteps();
   CHECK(max_steps_ > 0);
@@ -55,7 +55,7 @@ bool SandboxWindow::setup() {
         "Generation %d champion genotype is not available: %s\n", generation, e.what());
     return false;
   }
-  
+
   setWindowTitle(QString::asprintf("Generation %d", generation));
   setupVariables();
 
@@ -72,11 +72,12 @@ bool SandboxWindow::setup() {
 void SandboxWindow::newScene() {
   CHECK(domain_ != nullptr);
   CHECK(max_steps_ > 0);
-  
+
   setSceneUi(nullptr);
   scene_ui_.reset();
 
-  scene_ = make_unique<drone_vision::Scene>(domain_);
+  const auto target_velocity = domain_->randomTargetVelocity();
+  scene_ = make_unique<drone_vision::Scene>(target_velocity, domain_);
   agent_ = make_unique<drone_vision::Agent>(genotype_.get(), scene_.get());
   step_ = 0;
 
@@ -93,7 +94,7 @@ void SandboxWindow::newScene() {
 
   setWorld(scene_->box2dWorld(), viewport);
 #endif
-  
+
   scene_ui_ = make_unique<SceneUi>(scene_.get());
   setSceneUi(scene_ui_.get());
 }

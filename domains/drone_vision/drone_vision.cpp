@@ -53,9 +53,11 @@ bool DroneVision::evaluatePopulation(darwin::Population* population) const {
   for (int world_index = 0; world_index < config_.test_worlds; ++world_index) {
     darwin::StageScope stage("Evaluate one world", population->size());
     core::log(" ... world %d\n", world_index);
+    
+    const auto target_velocity = randomTargetVelocity();
 
     pp::for_each(*population, [&](int, darwin::Genotype* genotype) {
-      Scene scene(this);
+      Scene scene(target_velocity, this);
       Agent agent(genotype, &scene);
 
       // simulation loop

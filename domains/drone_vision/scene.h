@@ -34,7 +34,7 @@ struct SceneVariables : public core::PropertySet {
 
 class Scene : public physics::Scene {
  public:
-  explicit Scene(const DroneVision* domain);
+  explicit Scene(const b2Vec2& target_velocity, const DroneVision* domain);
 
   const SceneVariables* variables() const override { return &variables_; }
 
@@ -47,15 +47,17 @@ class Scene : public physics::Scene {
   void moveDrone(const b2Vec2& force);
   void rotateDrone(float torque);
 
-  void addTarget(float x, float y, float vx, float vy, float radius);
-
   const DroneVision* domain() const { return domain_; }
 
  private:
+  b2Body* createDrone(const b2Vec2& pos, float radius);
+  b2Body* createTarget(const b2Vec2& pos, const b2Vec2& v, float radius);
+  void createLight(b2Body* body, const b2Vec2& pos, const b2Color& color);
   void updateVariables();
 
  private:
   b2Body* drone_ = nullptr;
+  b2Body* target_ = nullptr;
   unique_ptr<Camera> camera_;
   SceneVariables variables_;
   const DroneVision* domain_ = nullptr;
