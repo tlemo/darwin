@@ -14,6 +14,8 @@
 
 #include "scene.h"
 
+#include <math.h>
+
 namespace drone_vision {
 
 Scene::Scene(const b2Vec2& target_velocity, const DroneVision* domain)
@@ -64,6 +66,14 @@ void Scene::moveDrone(const b2Vec2& force) {
 
 void Scene::rotateDrone(float torque) {
   drone_->ApplyTorque(torque, true);
+}
+
+float Scene::aimAngle() const {
+  const auto global_target_pos = target_->GetWorldPoint(b2Vec2(0, 0));
+  const auto local_target_pos = drone_->GetLocalPoint(global_target_pos);
+
+  // drone direction is "up", so atan2 arguments are intentionally (x, y)
+  return atan2f(local_target_pos.x, local_target_pos.y);
 }
 
 b2Body* Scene::createDrone(const b2Vec2& pos, float radius) {

@@ -47,6 +47,9 @@ class Scene : public physics::Scene {
   void moveDrone(const b2Vec2& force);
   void rotateDrone(float torque);
 
+  //! returns the angle between the drone direction and the target
+  float aimAngle() const;
+
   const DroneVision* domain() const { return domain_; }
 
  private:

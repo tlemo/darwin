@@ -43,7 +43,7 @@ vector<float> TouchSensor::receptors() const {
         const b2Vec2 point = body_->GetLocalPoint(manifold.points[0]);
 
         // calculate the sensor index (clockwise, starting from positive y axis)
-        // (note that the atan2 arguments are intentionally x, y ranther than y, x)
+        // (note that the atan2 arguments are intentionally x, y rather than y, x)
         const double angle = atan2(double(point.x), double(point.y));
         const double sensor_slice = (2 * math::kPi) / resolution_;
         const double div = (angle >= 0 ? angle : (angle + 2 * math::kPi)) / sensor_slice;

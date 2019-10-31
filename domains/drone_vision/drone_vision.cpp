@@ -53,7 +53,7 @@ bool DroneVision::evaluatePopulation(darwin::Population* population) const {
   for (int world_index = 0; world_index < config_.test_worlds; ++world_index) {
     darwin::StageScope stage("Evaluate one world", population->size());
     core::log(" ... world %d\n", world_index);
-    
+
     const auto target_velocity = randomTargetVelocity();
 
     pp::for_each(*population, [&](int, darwin::Genotype* genotype) {
@@ -61,24 +61,24 @@ bool DroneVision::evaluatePopulation(darwin::Population* population) const {
       Agent agent(genotype, &scene);
 
       // simulation loop
+      float episode_fitness = 0;
+      constexpr float kTargetAimBase = 4.0f;
       int step = 0;
       for (; step < config_.max_steps; ++step) {
         agent.simStep();
-        if (!scene.simStep())
+        const float power = cos(scene.aimAngle());
+        episode_fitness += powf(kTargetAimBase, power) - 1 / kTargetAimBase;
+        if (!scene.simStep()) {
           break;
+        }
       }
       CHECK(step > 0);
 
-      // fitness value:
-      // 1. the number of steps keeping the pole balanced, normalized to [0..1]
-      // 2. iff the pole was balanced for the whole episode, add the fitness bonus
-      float episode_fitness = float(step) / config_.max_steps;
-#if 0  // TODO
-      if (step == config_.max_steps) {
-        episode_fitness += world.fitnessBonus() / config_.max_steps;
-      }
-#endif
-      genotype->fitness += episode_fitness / config_.test_worlds;
+      // normalize the fitness to [0, 1]
+      episode_fitness /= kTargetAimBase;
+      episode_fitness /= config_.max_steps;
+      episode_fitness /= config_.test_worlds;
+      genotype->fitness += episode_fitness;
 
       darwin::ProgressManager::reportProgress();
     });
