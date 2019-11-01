@@ -62,20 +62,17 @@ bool DroneVision::evaluatePopulation(darwin::Population* population) const {
 
       // simulation loop
       float episode_fitness = 0;
-      constexpr float kTargetAimBase = 4.0f;
       int step = 0;
       for (; step < config_.max_steps; ++step) {
         agent.simStep();
-        const float power = cos(scene.aimAngle());
-        episode_fitness += powf(kTargetAimBase, power) - 1 / kTargetAimBase;
+        episode_fitness += (cos(scene.aimAngle()) + 1) / 2;
         if (!scene.simStep()) {
           break;
         }
       }
       CHECK(step > 0);
 
-      // normalize the fitness to [0, 1]
-      episode_fitness /= kTargetAimBase;
+      // normalize the fitness to [0, 1], invariant to the number of steps or test worlds
       episode_fitness /= config_.max_steps;
       episode_fitness /= config_.test_worlds;
       genotype->fitness += episode_fitness;
@@ -89,10 +86,12 @@ bool DroneVision::evaluatePopulation(darwin::Population* population) const {
 }
 
 b2Vec2 DroneVision::randomTargetVelocity() const {
+  constexpr float kPi = 3.14159274101f;
   random_device rd;
   default_random_engine rnd(rd());
-  uniform_real_distribution<float> dist(0, config_.target_max_speed);
-  return b2Vec2(dist(rnd), dist(rnd));
+  uniform_real_distribution<float> dist(-kPi, kPi);
+  const float angle = dist(rnd);
+  return b2Vec2(cos(angle), sin(angle)) * config_.target_speed;
 }
 
 // validate the configuration
@@ -101,10 +100,10 @@ b2Vec2 DroneVision::randomTargetVelocity() const {
 void DroneVision::validateConfiguration() {
   if (config_.drone_radius <= 0)
     throw core::Exception("Invalid configuration: drone_radius <= 0");
-  if (config_.max_move_force <= 0)
-    throw core::Exception("Invalid configuration: max_move_force <= 0");
-  if (config_.max_rotate_torque <= 0)
-    throw core::Exception("Invalid configuration: max_rotate_torque <= 0");
+  if (config_.max_move_force < 0)
+    throw core::Exception("Invalid configuration: max_move_force < 0");
+  if (config_.max_rotate_torque < 0)
+    throw core::Exception("Invalid configuration: max_rotate_torque < 0");
 
   if (config_.camera_fov <= 0 || config_.camera_fov > 360)
     throw core::Exception("Invalid configuration: camera_fov");
@@ -113,7 +112,7 @@ void DroneVision::validateConfiguration() {
 
   if (config_.target_radius <= 0)
     throw core::Exception("Invalid configuration: target_radius");
-  if (config_.target_max_speed < 0)
+  if (config_.target_speed < 0)
     throw core::Exception("Invalid configuration: target_max_speed");
 
   if (config_.test_worlds < 1)

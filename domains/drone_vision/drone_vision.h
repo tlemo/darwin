@@ -23,15 +23,15 @@ namespace drone_vision {
 //! Drone Vision domain configuration
 struct Config : public core::PropertySet {
   PROPERTY(drone_radius, float, 0.5f, "Drone size");
-  PROPERTY(max_move_force, float, 5.0f, "Maximum force used to move the drone");
+  PROPERTY(max_move_force, float, 1.0f, "Maximum force used to move the drone");
   PROPERTY(max_rotate_torque, float, 1.0f, "Maximum torque used to rotate the drone");
 
-  PROPERTY(camera_fov, float, 120, "Camera field of view (FOV)");
+  PROPERTY(camera_fov, float, 60, "Camera field of view (FOV)");
   PROPERTY(camera_resolution, int, 64, "Camera resolution");
   PROPERTY(camera_depth, bool, false, "Use camera depth channel");
 
   PROPERTY(target_radius, float, 0.3f, "Target size");
-  PROPERTY(target_max_speed, float, 1.0f, "Max target velocity");
+  PROPERTY(target_speed, float, 8.0f, "Target velocity");
 
   PROPERTY(test_worlds, int, 5, "Number of test worlds per generation");
   PROPERTY(max_steps, int, 1000, "Maximum number of steps per episode");

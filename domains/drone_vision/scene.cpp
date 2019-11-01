@@ -60,11 +60,28 @@ void Scene::postStep(float /*dt*/) {
   updateVariables();
 }
 
-void Scene::moveDrone(const b2Vec2& force) {
+void Scene::moveDrone(b2Vec2 force) {
+  const auto& config = domain_->config();
+  
+  // limit the magnitude of the force
+  const float magnitude = force.Length();
+  if (magnitude > config.max_move_force) {
+    force *= (config.max_move_force / magnitude);
+  }
+  
   drone_->ApplyForceToCenter(drone_->GetWorldVector(force), true);
 }
 
 void Scene::rotateDrone(float torque) {
+  const auto& config = domain_->config();
+
+  // limit the torque
+  if (torque < -config.max_rotate_torque) {
+    torque = -config.max_rotate_torque;
+  } else if (torque > config.max_rotate_torque) {
+    torque = config.max_rotate_torque;
+  }
+
   drone_->ApplyTorque(torque, true);
 }
 

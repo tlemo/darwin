@@ -81,19 +81,10 @@ void SandboxWindow::newScene() {
   agent_ = make_unique<drone_vision::Agent>(genotype_.get(), scene_.get());
   step_ = 0;
 
-#if 0
-  variables_.initial_angle->setValue(QString::asprintf("%.2f", initial_angle));
-  variables_.target_position->setValue(QString::asprintf("%.2f", target_position));
-
-  // calculate viewport extents based on the configuration values
-  const auto& config = domain_->config();
-  constexpr float kMargin = 0.3f;
-  const auto half_width = fmax(config.max_distance + kMargin, config.pole_length);
-  const auto height = config.pole_length + config.wheel_radius + kMargin;
-  QRectF viewport(-half_width, height, 2 * half_width, -height);
-
+  const auto extents = scene_->extents();
+  const QRectF viewport(
+      extents.x, extents.y + extents.height, extents.width, -extents.height);
   setWorld(scene_->box2dWorld(), viewport);
-#endif
 
   scene_ui_ = make_unique<SceneUi>(scene_.get());
   setSceneUi(scene_ui_.get());

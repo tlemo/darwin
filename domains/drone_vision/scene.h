@@ -38,13 +38,13 @@ class Scene : public physics::Scene {
 
   const SceneVariables* variables() const override { return &variables_; }
 
-  const Config* config() const override { return nullptr; }
+  const Config* config() const override { return &domain_->config(); }
 
   const Camera* camera() const override { return camera_.get(); }
 
   void postStep(float dt) override;
 
-  void moveDrone(const b2Vec2& force);
+  void moveDrone(b2Vec2 force);
   void rotateDrone(float torque);
 
   //! returns the angle between the drone direction and the target

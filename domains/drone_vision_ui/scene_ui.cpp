@@ -14,42 +14,47 @@
 
 #include "scene_ui.h"
 
+#include <core/math_2d.h>
+
 #include <QBrush>
 #include <QPainter>
 #include <QPen>
 #include <QPointF>
 #include <QRectF>
-#include <QMouseEvent>
-
-#include <array>
-using namespace std;
 
 namespace drone_vision_ui {
 
 void SceneUi::render(QPainter& painter, const QRectF&) {
-#if 0 // TODO
-  // draw an "arrow" pointing to the target position
-  constexpr float kArrowHalfSize = drone_vision::World::kGroundY / 4;
-  const float target_position = scene_->targetPosition();
-  array<QPointF, 3> points = {
-    QPointF(target_position, 3 * kArrowHalfSize),
-    QPointF(target_position + kArrowHalfSize, kArrowHalfSize),
-    QPointF(target_position - kArrowHalfSize, kArrowHalfSize),
-  };
-  painter.setPen(QPen(Qt::gray, 0));
-  painter.setBrush(Qt::green);
-  painter.drawConvexPolygon(points.data(), int(points.size()));
-#endif  
+  renderDrone(painter);
+  renderCamera(painter, scene_->camera());
 }
 
-void SceneUi::mousePressEvent(const QPointF& pos, QMouseEvent* event) {
-#if 0 // TODO
-  if (event->button() == Qt::LeftButton) {
-    scene_->setTargetPosition(pos.x());
-  } else {
-    emit sigPlayPause();
-  }
-#endif  
+void SceneUi::renderCamera(QPainter& painter, const physics::Camera* camera) const {
+  auto body = camera->body();
+  const float far = camera->far();
+  const float fov = camera->fov();
+  const auto pos = body->GetWorldPoint(b2Vec2(0, 0));
+
+  const QPointF center(pos.x, pos.y);
+  const QRectF frustum_rect(center - QPointF(far, far), center + QPointF(far, far));
+  const double angle = math::radiansToDegrees(body->GetAngle()) + 90 + fov / 2;
+
+  painter.setPen(Qt::NoPen);
+  painter.setBrush(QColor(64, 64, 64, 32));
+  painter.drawPie(frustum_rect, int(-angle * 16), int(fov * 16));
+}
+
+void SceneUi::renderDrone(QPainter& painter) const {
+  auto vars = scene_->variables();
+  auto config = scene_->config();
+  const float radius = config->drone_radius;
+  painter.save();
+  painter.translate(vars->drone_x, vars->drone_y);
+  painter.scale(1, -1);
+  painter.rotate(math::radiansToDegrees(-vars->drone_dir));
+  const QRectF dest_rect(-radius, -radius, radius * 2, radius * 2);
+  painter.drawPixmap(dest_rect, drone_pixmap_, drone_pixmap_.rect());
+  painter.restore();
 }
 
 }  // namespace drone_vision_ui

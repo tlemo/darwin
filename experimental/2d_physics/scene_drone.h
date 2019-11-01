@@ -73,8 +73,6 @@ class Scene : public physics::Scene {
 };
 
 class SceneUi : public physics_ui::Box2dSceneUi {
-  static constexpr float kCartImpulse = 1.0f;
-
  public:
   explicit SceneUi(Scene* scene) : scene_(scene) {}
 

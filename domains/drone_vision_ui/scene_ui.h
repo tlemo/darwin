@@ -23,12 +23,16 @@ class SceneUi : public physics_ui::Box2dSceneUi {
  public:
   SceneUi(drone_vision::Scene* scene) : scene_(scene) {}
 
- private:
   void render(QPainter& painter, const QRectF&) override;
-  void mousePressEvent(const QPointF& pos, QMouseEvent* event) override;
+
+ private:
+  void renderCamera(QPainter& painter, const physics::Camera* camera) const;
+  void renderDrone(QPainter& painter) const;
 
  private:
   drone_vision::Scene* scene_ = nullptr;
+
+  const QPixmap drone_pixmap_{ ":/resources/drone.png" };
 };
 
 }  // namespace drone_vision_ui
