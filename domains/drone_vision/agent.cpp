@@ -39,9 +39,15 @@ void Agent::simStep() {
 
   brain_->think();
 
-  // actions based on the output values
-  scene_->moveDrone(b2Vec2(brain_->output(0), brain_->output(1)));
-  scene_->rotateDrone(brain_->output(2));
+  const float force_x = brain_->output(0);
+  const float force_y = brain_->output(1);
+  CHECK(!isnan(force_x));
+  CHECK(!isnan(force_y));
+  scene_->moveDrone(b2Vec2(force_x, force_y));
+
+  const float torque = brain_->output(2);
+  CHECK(!isnan(torque));
+  scene_->rotateDrone(torque);
 }
 
 int Agent::inputs(const Config& config) {
