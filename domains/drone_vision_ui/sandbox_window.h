@@ -17,6 +17,7 @@
 #include "scene_ui.h"
 
 #include <core_ui/physics/box2d_sandbox_window.h>
+#include <core_ui/physics/camera_widget.h>
 #include <core_ui/properties_widget.h>
 #include <domains/drone_vision/agent.h>
 #include <domains/drone_vision/drone_vision.h>
@@ -58,6 +59,8 @@ class SandboxWindow : public physics_ui::Box2dSandboxWindow {
   Variables variables_;
 
   const drone_vision::DroneVision* domain_ = nullptr;
+
+  physics_ui::CameraWidget* camera_widget_ = nullptr;
 
   shared_ptr<const darwin::Genotype> genotype_;
   unique_ptr<drone_vision::Scene> scene_;

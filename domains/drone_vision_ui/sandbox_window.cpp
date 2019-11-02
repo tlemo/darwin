@@ -63,6 +63,11 @@ bool SandboxWindow::setup() {
   variables_.generation->setValue(generation);
   variables_.max_steps->setValue(max_steps_);
 
+  camera_widget_ = new physics_ui::CameraWidget(this);
+  camera_widget_->setMinimumSize(64, 64);
+  camera_widget_->setMaximumSize(4096, 64);
+  addBottomPane(camera_widget_);
+
   newScene();
   play();
 
@@ -92,6 +97,8 @@ void SandboxWindow::newScene() {
 
   scene_ui_ = make_unique<SceneUi>(scene_.get());
   setSceneUi(scene_ui_.get());
+
+  camera_widget_->setCamera(scene_->camera());
 }
 
 void SandboxWindow::singleStep() {

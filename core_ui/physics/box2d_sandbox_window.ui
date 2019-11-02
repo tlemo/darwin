@@ -131,7 +131,7 @@ background-clip: content;
            <string/>
           </property>
           <property name="icon">
-           <iconset resource="resources.qrc">
+           <iconset resource="../resources.qrc">
             <normaloff>:/resources/mc_play.png</normaloff>:/resources/mc_play.png</iconset>
           </property>
           <property name="iconSize">
@@ -160,7 +160,7 @@ background-clip: content;
            <string/>
           </property>
           <property name="icon">
-           <iconset resource="resources.qrc">
+           <iconset resource="../resources.qrc">
             <normaloff>:/resources/mc_skip_forward.png</normaloff>:/resources/mc_skip_forward.png</iconset>
           </property>
           <property name="iconSize">
@@ -229,7 +229,7 @@ background-clip: content;
            <string/>
           </property>
           <property name="icon">
-           <iconset resource="resources.qrc">
+           <iconset resource="../resources.qrc">
             <normaloff>:/resources/refresh.png</normaloff>:/resources/refresh.png</iconset>
           </property>
           <property name="iconSize">
@@ -265,7 +265,7 @@ background-clip: content;
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="resources.qrc"/>
+  <include location="../resources.qrc"/>
  </resources>
  <connections/>
 </ui>
