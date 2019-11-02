@@ -61,11 +61,9 @@ bool DroneVision::evaluatePopulation(darwin::Population* population) const {
       Agent agent(genotype, &scene);
 
       // simulation loop
-      float episode_fitness = 0;
       int step = 0;
       for (; step < config_.max_steps; ++step) {
         agent.simStep();
-        episode_fitness += (cos(scene.aimAngle()) + 1) / 2;
         if (!scene.simStep()) {
           break;
         }
@@ -73,6 +71,7 @@ bool DroneVision::evaluatePopulation(darwin::Population* population) const {
       CHECK(step > 0);
 
       // normalize the fitness to [0, 1], invariant to the number of steps or test worlds
+      float episode_fitness = scene.fitness();
       episode_fitness /= config_.max_steps;
       episode_fitness /= config_.test_worlds;
       genotype->fitness += episode_fitness;

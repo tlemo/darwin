@@ -47,10 +47,10 @@ class Scene : public physics::Scene {
   void moveDrone(b2Vec2 force);
   void rotateDrone(float torque);
 
-  //! returns the angle between the drone direction and the target
-  float aimAngle() const;
-
   const DroneVision* domain() const { return domain_; }
+
+  //! returns the current fitness value
+  float fitness() const { return fitness_; }
 
  private:
   b2Body* createDrone(const b2Vec2& pos, float radius);
@@ -58,9 +58,13 @@ class Scene : public physics::Scene {
   void createLight(b2Body* body, const b2Vec2& pos, const b2Color& color);
   void updateVariables();
 
+  //! returns the angle between the drone direction and the target
+  float aimAngle() const;
+
  private:
   b2Body* drone_ = nullptr;
   b2Body* target_ = nullptr;
+  float fitness_ = 0;
   unique_ptr<Camera> camera_;
   SceneVariables variables_;
   const DroneVision* domain_ = nullptr;

@@ -57,6 +57,7 @@ Scene::Scene(const b2Vec2& target_velocity, const DroneVision* domain)
 }
 
 void Scene::postStep(float /*dt*/) {
+  fitness_ += fmaxf(cos(aimAngle()), 0);
   updateVariables();
 }
 

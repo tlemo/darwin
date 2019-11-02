@@ -81,9 +81,13 @@ void SandboxWindow::newScene() {
   agent_ = make_unique<drone_vision::Agent>(genotype_.get(), scene_.get());
   step_ = 0;
 
+  variables_.initial_target_velocity->setValue(
+      QString::asprintf("(%.2f, %.2f)", target_velocity.x, target_velocity.y));
+
   const auto extents = scene_->extents();
   const QRectF viewport(
       extents.x, extents.y + extents.height, extents.width, -extents.height);
+
   setWorld(scene_->box2dWorld(), viewport);
 
   scene_ui_ = make_unique<SceneUi>(scene_.get());
@@ -109,24 +113,10 @@ void SandboxWindow::singleStep() {
 }
 
 void SandboxWindow::updateUI() {
-#if 0
-  const float wheel_distance = scene_->wheelDistance();
-  const float wheel_velocity = scene_->wheelVelocity();
-  const float pole_angle = math::radiansToDegrees(scene_->poleAngle());
-  const float angular_velocity = math::radiansToDegrees(scene_->poleAngularVelocity());
-  const float dist_from_target = fabs(wheel_distance - scene_->targetPosition());
-  const float fitness_bonus = scene_->fitnessBonus() / max_steps_;
-
+  const float fitness = scene_->fitness() / step_;
   variables_.state->setValue(stateDescription());
   variables_.step->setValue(step_);
-  variables_.fitness_bonus->setValue(QString::asprintf("%.3f", fitness_bonus));
-  variables_.position->setValue(QString::asprintf("%.3f", wheel_distance));
-  variables_.velocity->setValue(QString::asprintf("%.3f", wheel_velocity));
-  variables_.angle->setValue(QString::asprintf("%.2f", pole_angle));
-  variables_.angular_velocity->setValue(QString::asprintf("%.3f", angular_velocity));
-  variables_.dist_from_target->setValue(QString::asprintf("%.3f", dist_from_target));
-#endif
-
+  variables_.fitness->setValue(QString::asprintf("%.3f", fitness));
   update();
 }
 
@@ -134,18 +124,13 @@ void SandboxWindow::setupVariables() {
   auto config_section = variablesWidget()->addSection("Configuration");
   variables_.generation = config_section->addProperty("Generation");
   variables_.max_steps = config_section->addProperty("Max steps");
-  variables_.initial_angle = config_section->addProperty("Initial angle");
-  variables_.target_position = config_section->addProperty("Target position");
+  variables_.initial_target_velocity =
+      config_section->addProperty("Initial target velocity");
 
   auto game_state_section = variablesWidget()->addSection("Game state");
   variables_.state = game_state_section->addProperty("State");
   variables_.step = game_state_section->addProperty("Simulation step");
-  variables_.fitness_bonus = game_state_section->addProperty("Fitness bonus");
-  variables_.position = game_state_section->addProperty("Wheel position");
-  variables_.velocity = game_state_section->addProperty("Wheel velocity");
-  variables_.angle = game_state_section->addProperty("Pole angle");
-  variables_.angular_velocity = game_state_section->addProperty("Angular velocity");
-  variables_.dist_from_target = game_state_section->addProperty("Distance from target");
+  variables_.fitness = game_state_section->addProperty("Current fitness value");
 }
 
 }  // namespace drone_vision_ui

@@ -31,14 +31,31 @@ struct Config : public core::PropertySet {
   PROPERTY(camera_depth, bool, false, "Use camera depth channel");
 
   PROPERTY(target_radius, float, 0.3f, "Target size");
-  PROPERTY(target_speed, float, 8.0f, "Target velocity");
+  PROPERTY(target_speed, float, 10.0f, "Target velocity");
 
-  PROPERTY(test_worlds, int, 5, "Number of test worlds per generation");
+  PROPERTY(test_worlds, int, 3, "Number of test worlds per generation");
   PROPERTY(max_steps, int, 1000, "Maximum number of steps per episode");
 };
 
 //! Domain: Drone Vision
-//! TODO...
+//!
+//! A simple vision test: look at the red ball, using only the camera pixels as input.
+//! The target ball starts moving in a random direction and will bounce off the walls.
+//!
+//! ![](images/drone_vision_sandbox.png)
+//!
+//! ### Inputs
+//!
+//! The inputs are the color channels from the drone's camera, plus optionally the depth
+//! channel.
+//!
+//! ### Outputs
+//!
+//! Output | Value
+//! ------:|------
+//!    0,1 | force vector (x, y) applied to the drone
+//!      2 | torque applied to turn the drone
+//!
 class DroneVision : public darwin::Domain {
  public:
   explicit DroneVision(const core::PropertySet& config);
