@@ -14,12 +14,13 @@
 
 #include "test_environment.h"
 
-#include <core/utils.h>
 #include <core/darwin.h>
 #include <core/evolution.h>
 #include <core/exception.h>
+#include <core/logging.h>
 #include <core/scope_guard.h>
 #include <core/universe.h>
+#include <core/utils.h>
 
 #include <third_party/gtest/gtest.h>
 
@@ -99,6 +100,8 @@ struct SmokeTest : public testing::TestWithParam<ExperimentConfig> {
                              config_name,
                              experiment_setup.domain_name,
                              experiment_setup.population_name);
+
+    core::log("\n==================== Smoke test: %s ====================\n\n", name);
 
     auto experiment =
         make_shared<darwin::Experiment>(name, experiment_setup, nullopt, universe.get());
