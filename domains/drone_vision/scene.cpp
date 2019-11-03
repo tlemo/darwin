@@ -62,14 +62,14 @@ void Scene::postStep(float /*dt*/) {
 }
 
 void Scene::moveDrone(b2Vec2 force) {
-  const auto& config = domain_->config();
-  
   // limit the magnitude of the force
-  const float magnitude = force.Length();
-  if (magnitude > config.max_move_force) {
-    force *= (config.max_move_force / magnitude);
-  }
-  
+  const float max_value = domain_->config().max_move_force;
+  CHECK(max_value >= 0);
+  force.x = fminf(force.x, max_value);
+  force.x = fmaxf(force.x, -max_value);
+  force.y = fminf(force.y, max_value);
+  force.y = fmaxf(force.y, -max_value);
+
   drone_->ApplyForceToCenter(drone_->GetWorldVector(force), true);
 }
 
