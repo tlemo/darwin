@@ -63,6 +63,7 @@ bool SandboxWindow::setup() {
   variables_.generation->setValue(generation);
   variables_.max_steps->setValue(max_steps_);
 
+  // add a camera widget
   camera_widget_ = new physics_ui::CameraWidget(this);
   camera_widget_->setMinimumSize(64, 64);
   camera_widget_->setMaximumSize(4096, 64);
@@ -120,10 +121,7 @@ void SandboxWindow::singleStep() {
 }
 
 void SandboxWindow::updateUI() {
-  const float fitness = scene_->fitness() / step_;
-  variables_.state->setValue(stateDescription());
-  variables_.step->setValue(step_);
-  variables_.fitness->setValue(QString::asprintf("%.3f", fitness));
+  updateVariables();
   update();
 }
 
@@ -138,6 +136,35 @@ void SandboxWindow::setupVariables() {
   variables_.state = game_state_section->addProperty("State");
   variables_.step = game_state_section->addProperty("Simulation step");
   variables_.fitness = game_state_section->addProperty("Current fitness value");
+}
+
+// this assumes that the set of variables is the same between scene instances
+void SandboxWindow::setupSceneVariables() {
+  CHECK(scene_variables_map_.empty());
+  auto scene_variables_section = variablesWidget()->addSection("Scene");
+  auto scene_variables = scene_->variables();
+  for (const auto& var : scene_variables->properties()) {
+    scene_variables_map_[var->name()] = scene_variables_section->addProperty(var->name());
+  }
+}
+
+void SandboxWindow::updateVariables() {
+  if (scene_ != nullptr) {
+    const float fitness = scene_->fitness() / step_;
+    variables_.state->setValue(stateDescription());
+    variables_.step->setValue(step_);
+    variables_.fitness->setValue(QString::asprintf("%.3f", fitness));
+
+    if (scene_variables_map_.empty()) {
+      setupSceneVariables();
+    }
+
+    auto scene_variables = scene_->variables();
+    for (const auto& var : scene_variables->properties()) {
+      auto property_item = scene_variables_map_.at(var->name());
+      property_item->setValue(var->value());
+    }
+  }
 }
 
 }  // namespace drone_vision_ui

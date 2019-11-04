@@ -28,6 +28,8 @@
 #include <QTimer>
 
 #include <memory>
+#include <unordered_map>
+#include <string>
 using namespace std;
 
 namespace drone_vision_ui {
@@ -54,9 +56,12 @@ class SandboxWindow : public physics_ui::Box2dSandboxWindow {
 
  private:
   void setupVariables();
+  void setupSceneVariables();
+  void updateVariables();
 
  private:
   Variables variables_;
+  unordered_map<string, core_ui::PropertyItem*> scene_variables_map_;
 
   const drone_vision::DroneVision* domain_ = nullptr;
 

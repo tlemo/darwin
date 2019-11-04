@@ -30,6 +30,7 @@ struct SceneVariables : public core::PropertySet {
   PROPERTY(drone_vx, float, 0, "Drone velocity (x component)");
   PROPERTY(drone_vy, float, 0, "Drone velocity (y component)");
   PROPERTY(drone_dir, float, 0, "Heading angle");
+  PROPERTY(target_angle, float, 0, "Angle between drone direction and target");
 };
 
 class Scene : public physics::Scene {

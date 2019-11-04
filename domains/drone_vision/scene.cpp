@@ -158,6 +158,7 @@ void Scene::updateVariables() {
   variables_.drone_vx = drone_->GetLinearVelocity().x;
   variables_.drone_vy = drone_->GetLinearVelocity().y;
   variables_.drone_dir = drone_->GetAngle();
+  variables_.target_angle = aimAngle();
 }
 
 }  // namespace drone_vision

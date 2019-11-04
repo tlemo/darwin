@@ -36,17 +36,17 @@ class PropertyItemBase : public QTreeWidgetItem {
  public:
   //! Parent widget
   PropertiesWidget* parentWidget() const;
-  
+
   //! Parent item (or `nullptr` for top level items)
   PropertyItemBase* parent() const;
-  
+
   //! Returns `true` if the item's value has changed,
   //! or if there are any modified sub-items
   virtual bool isModified() const;
 
   //! Notify the item that it's value (or a sub-item) have been changed
   virtual void valueChanged();
-  
+
  protected:
   explicit PropertyItemBase(PropertyItemBase* parent) : QTreeWidgetItem(parent) {}
 };
@@ -58,7 +58,7 @@ class PropertiesSectionItem : public PropertyItemBase {
  public:
   //! Creates a new property item
   PropertyItem* addProperty(const string& name);
-  
+
   //! Creates a property item bound to a core::Property
   BoundPropertyItem* addProperty(core::Property* property);
 
@@ -92,10 +92,10 @@ class BoundPropertyItem : public PropertyItemBase {
  public:
   //! The corresponding core::Property
   core::Property* property() const { return property_; }
-  
+
   //! Returns `true` if it was set to a value different than the original one
   bool isModified() const override;
-  
+
   void valueChanged() override;
 
  private:
@@ -111,13 +111,13 @@ class BoundPropertyItem : public PropertyItemBase {
 
 class PropertyItemDelegate : public QStyledItemDelegate {
   Q_OBJECT
-  
+
  public:
   using QStyledItemDelegate::QStyledItemDelegate;
 
  private slots:
   void onComboBoxUpdate(int);
-  
+
  private:
   QWidget* createEditor(QWidget* parent,
                         const QStyleOptionViewItem& option,
@@ -140,10 +140,11 @@ class PropertiesWidget : public QTreeWidget {
 
   //! Creates a new properties section
   PropertiesSectionItem* addSection(const string& name);
-  
+
   //! Creates a new properties section based on a core::PropertySet
-  void addPropertiesSection(const string& name, core::PropertySet* property_set);
-  
+  PropertiesSectionItem* addPropertiesSection(const string& name,
+                                              core::PropertySet* property_set);
+
   //! Resets the columns widths to match the current content
   void autoSizeColumns();
 
