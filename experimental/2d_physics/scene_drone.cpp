@@ -6,9 +6,9 @@
 #include <core/math_2d.h>
 
 #include <QPainter>
-#include <QRectF>
 #include <QPointF>
 #include <QPolygonF>
+#include <QRectF>
 
 namespace drone_scene {
 
@@ -33,7 +33,7 @@ Scene::Scene(const core::PropertySet* config)
   wall_fixture_def.restitution = 0.5f;
   wall_fixture_def.material.color = b2Color(1, 1, 0);
   wall_fixture_def.material.emit_intensity = 0.1f;
-  
+
   wall_shape.Set(b2Vec2(-10, -10), b2Vec2(10, -10));
   walls->CreateFixture(&wall_fixture_def);
   wall_shape.Set(b2Vec2(-10, -10), b2Vec2(-10, 10));
@@ -44,41 +44,11 @@ Scene::Scene(const core::PropertySet* config)
   walls->CreateFixture(&wall_fixture_def);
 
   // drone
-  b2BodyDef drone_body_def;
-  drone_body_def.type = b2_dynamicBody;
-  drone_body_def.position.SetZero();
-  drone_body_def.linearDamping = 10.0f;
-  drone_body_def.angularDamping = 10.0f;
-  drone_ = world_.CreateBody(&drone_body_def);
-
-  b2CircleShape drone_shape;
-  drone_shape.m_radius = config_.drone_radius;
-
-  b2FixtureDef drone_fixture_def;
-  drone_fixture_def.shape = &drone_shape;
-  drone_fixture_def.density = 0.1f;
-  drone_fixture_def.friction = 1.0f;
-  drone_fixture_def.restitution = 0.2f;
-  drone_fixture_def.material.color = b2Color(0, 0, 1);
-  drone_fixture_def.material.emit_intensity = 0.5f;
-  drone_->CreateFixture(&drone_fixture_def);
+  drone_ = createDrone(b2Vec2(0, 0), config_.drone_radius);
 
   // lights
-  b2LightDef light1_def;
-  light1_def.body = walls;
-  light1_def.color = b2Color(1, 1, 1);
-  light1_def.intensity = 2.0f;
-  light1_def.attenuation_distance = 25.0f;
-  light1_def.position = b2Vec2(9, -9);
-  world_.CreateLight(&light1_def);
-
-  b2LightDef light2_def;
-  light2_def.body = walls;
-  light2_def.color = b2Color(1, 1, 1);
-  light2_def.intensity = 2.0f;
-  light2_def.attenuation_distance = 25.0f;
-  light2_def.position = b2Vec2(-9, -9);
-  world_.CreateLight(&light2_def);
+  createLight(walls, b2Vec2(-9, -9), b2Color(1, 1, 1));
+  createLight(walls, b2Vec2(9, 9), b2Color(1, 1, 1));
 
   // sensors
   camera_ = make_unique<Camera>(drone_, 120, 0.1f, 30.0f, 512);
@@ -142,6 +112,39 @@ void Scene::addBox(float x, float y, float sx, float sy) {
   fixture_def.material.shininess = 25;
   fixture_def.material.emit_intensity = 0.1f;
   body->CreateFixture(&fixture_def);
+}
+
+b2Body* Scene::createDrone(const b2Vec2& pos, float radius) {
+  b2BodyDef drone_body_def;
+  drone_body_def.type = b2_dynamicBody;
+  drone_body_def.position = pos;
+  drone_body_def.linearDamping = 10.0f;
+  drone_body_def.angularDamping = 10.0f;
+  auto body = world_.CreateBody(&drone_body_def);
+
+  b2CircleShape drone_shape;
+  drone_shape.m_radius = radius;
+
+  b2FixtureDef drone_fixture_def;
+  drone_fixture_def.shape = &drone_shape;
+  drone_fixture_def.density = 0.1f;
+  drone_fixture_def.friction = 1.0f;
+  drone_fixture_def.restitution = 0.2f;
+  drone_fixture_def.material.color = b2Color(0, 0, 1);
+  drone_fixture_def.material.emit_intensity = 0.5f;
+  body->CreateFixture(&drone_fixture_def);
+
+  return body;
+}
+
+void Scene::createLight(b2Body* body, const b2Vec2& pos, const b2Color& color) {
+  b2LightDef light_def;
+  light_def.body = body;
+  light_def.color = color;
+  light_def.intensity = 2.0f;
+  light_def.attenuation_distance = 25.0f;
+  light_def.position = pos;
+  world_.CreateLight(&light_def);
 }
 
 void Scene::updateVariables() {

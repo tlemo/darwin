@@ -60,6 +60,8 @@ class Scene : public physics::Scene {
   void addBox(float x, float y, float sx, float sy);
 
  private:
+  b2Body* createDrone(const b2Vec2& pos, float radius);
+  void createLight(b2Body* body, const b2Vec2& pos, const b2Color& color);
   void updateVariables();
 
  private:
