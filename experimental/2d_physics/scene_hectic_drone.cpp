@@ -7,8 +7,11 @@
 
 #include <QPainter>
 #include <QPointF>
+#include <QLineF>
 #include <QPolygonF>
 #include <QRectF>
+#include <QBrush>
+#include <QPen>
 
 namespace hectic_drone_scene {
 
@@ -55,6 +58,12 @@ Scene::Scene(const core::PropertySet* config)
   touch_sensor_ = make_unique<TouchSensor>(drone_, 16);
   accelerometer_ = make_unique<Accelerometer>(drone_);
   compass_ = make_unique<Compass>(drone_);
+
+  generateTargetPos();
+}
+
+void Scene::preStep() {
+  moveDrone(b2Vec2(0, config_.move_force));
 }
 
 void Scene::postStep(float dt) {
@@ -147,12 +156,21 @@ void Scene::createLight(b2Body* body, const b2Vec2& pos, const b2Color& color) {
   world_.CreateLight(&light_def);
 }
 
+void Scene::generateTargetPos() {
+  const float r = config_.drone_radius;
+  uniform_real_distribution<float> dist(-10 + r, 10 - r);
+  start_pos_ = drone_->GetPosition();
+  target_pos_ = b2Vec2(dist(rnd_), dist(rnd_));
+}
+
 void Scene::updateVariables() {
   variables_.drone_x = drone_->GetPosition().x;
   variables_.drone_y = drone_->GetPosition().y;
   variables_.drone_vx = drone_->GetLinearVelocity().x;
   variables_.drone_vy = drone_->GetLinearVelocity().y;
   variables_.drone_dir = drone_->GetAngle();
+  variables_.start_pos = start_pos_;
+  variables_.target_pos = target_pos_;
 }
 
 void SceneUi::renderCamera(QPainter& painter, const physics::Camera* camera) const {
@@ -183,7 +201,19 @@ void SceneUi::renderDrone(QPainter& painter) const {
   painter.restore();
 }
 
+void SceneUi::renderTarget(QPainter& painter) const {
+  auto vars = scene_->variables();
+  const QPointF start(vars->start_pos.x, vars->start_pos.y);
+  const QPointF target(vars->target_pos.x, vars->target_pos.y);
+  painter.setPen(QPen(Qt::gray, 0, Qt::DotLine));
+  painter.setBrush(Qt::NoBrush);
+  painter.drawLine(start, target);
+  painter.setPen(QPen(Qt::gray, 0));
+  painter.drawEllipse(target, 0.1, 0.1);
+}
+
 void SceneUi::render(QPainter& painter, const QRectF&) {
+  renderTarget(painter);
   renderDrone(painter);
   renderCamera(painter, scene_->camera());
 }

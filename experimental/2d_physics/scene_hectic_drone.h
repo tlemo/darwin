@@ -15,7 +15,21 @@
 
 #include <memory>
 #include <unordered_map>
+#include <random>
+#include <istream>
+#include <ostream>
+#include <iomanip>
 using namespace std;
+
+inline ostream& operator<<(ostream& stream, const b2Vec2& v) {
+  using core::operator<<;
+  return stream << std::setprecision(3) << "{ " << v.x << ", " << v.y << " }";
+}
+
+inline istream& operator>>(istream& stream, b2Vec2& v) {
+  using core::operator>>;
+  return stream >> "{" >> v.x >> "," >> v.y >> "}";
+}
 
 namespace hectic_drone_scene {
 
@@ -36,6 +50,8 @@ struct SceneVariables : public core::PropertySet {
   PROPERTY(drone_vx, float, 0, "Drone velocity (x component)");
   PROPERTY(drone_vy, float, 0, "Drone velocity (y component)");
   PROPERTY(drone_dir, float, 0, "Heading angle");
+  PROPERTY(start_pos, b2Vec2, b2Vec2(0, 0), "Starting position for current segment");
+  PROPERTY(target_pos, b2Vec2, b2Vec2(0, 0), "Target position for current segment");
 };
 
 class Scene : public physics::Scene {
@@ -51,6 +67,7 @@ class Scene : public physics::Scene {
   const Accelerometer* accelerometer() const override { return accelerometer_.get(); }
   const Compass* compass() const override { return compass_.get(); }
 
+  void preStep() override;
   void postStep(float dt) override;
 
   void moveDrone(const b2Vec2& force);
@@ -62,15 +79,22 @@ class Scene : public physics::Scene {
  private:
   b2Body* createDrone(const b2Vec2& pos, float radius);
   void createLight(b2Body* body, const b2Vec2& pos, const b2Color& color);
+  void generateTargetPos();
   void updateVariables();
 
  private:
   b2Body* drone_ = nullptr;
+  b2Vec2 start_pos_;
+  b2Vec2 target_pos_;
+
+  default_random_engine rnd_{ random_device{}() };
+
   unique_ptr<Camera> camera_;
   unique_ptr<TouchSensor> touch_sensor_;
   unique_ptr<Accelerometer> accelerometer_;
   unique_ptr<Compass> compass_;
   SceneVariables variables_;
+
   Config config_;
 };
 
@@ -98,6 +122,7 @@ class SceneUi : public physics_ui::Box2dSceneUi {
  private:
   void renderCamera(QPainter& painter, const physics::Camera* camera) const;
   void renderDrone(QPainter& painter) const;
+  void renderTarget(QPainter& painter) const;
 
  private:
   Scene* scene_ = nullptr;
