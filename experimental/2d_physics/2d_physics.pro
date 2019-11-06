@@ -20,6 +20,7 @@ SOURCES += \
     scene_bouncing.cpp \
     scene_cart_pole.cpp \
     scene_drone.cpp \
+    scene_hectic_drone.cpp \
     scene_electric_fence.cpp \
     scene_particles.cpp \
     tool_window.cpp \
@@ -38,6 +39,7 @@ HEADERS += \
     scene_bouncing.h \
     scene_cart_pole.h \
     scene_drone.h \
+    scene_hectic_drone.h \
     scene_electric_fence.h \
     scene_particles.h \
     script.h \
