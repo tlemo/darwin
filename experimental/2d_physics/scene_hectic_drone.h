@@ -55,6 +55,9 @@ struct SceneVariables : public core::PropertySet {
 };
 
 class Scene : public physics::Scene {
+  static constexpr float kWidth = 20;
+  static constexpr float kHeight = 20;
+
  public:
   explicit Scene(const core::PropertySet* config);
 

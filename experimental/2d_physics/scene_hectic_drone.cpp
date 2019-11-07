@@ -20,7 +20,8 @@ GLOBAL_INITIALIZER {
 }
 
 Scene::Scene(const core::PropertySet* config)
-    : physics::Scene(b2Vec2(0, 0), physics::Rect(-10, -10, 20, 20)) {
+    : physics::Scene(b2Vec2(0, 0),
+                     physics::Rect(-kWidth / 2, -kHeight / 2, kWidth, kHeight)) {
   if (config) {
     config_.copyFrom(*config);
   }
@@ -37,13 +38,15 @@ Scene::Scene(const core::PropertySet* config)
   wall_fixture_def.material.color = b2Color(1, 1, 0);
   wall_fixture_def.material.emit_intensity = 0.1f;
 
-  wall_shape.Set(b2Vec2(-10, -10), b2Vec2(10, -10));
+  constexpr float kHalfWidth = kWidth / 2;
+  constexpr float kHalfHeight = kHeight / 2;
+  wall_shape.Set(b2Vec2(-kHalfWidth, -kHalfHeight), b2Vec2(kHalfWidth, -kHalfHeight));
   walls->CreateFixture(&wall_fixture_def);
-  wall_shape.Set(b2Vec2(-10, -10), b2Vec2(-10, 10));
+  wall_shape.Set(b2Vec2(-kHalfWidth, -kHalfHeight), b2Vec2(-kHalfWidth, kHalfHeight));
   walls->CreateFixture(&wall_fixture_def);
-  wall_shape.Set(b2Vec2(10, -10), b2Vec2(10, 10));
+  wall_shape.Set(b2Vec2(kHalfWidth, -kHalfHeight), b2Vec2(kHalfWidth, kHalfHeight));
   walls->CreateFixture(&wall_fixture_def);
-  wall_shape.Set(b2Vec2(-10, 10), b2Vec2(10, 10));
+  wall_shape.Set(b2Vec2(-kHalfWidth, kHalfHeight), b2Vec2(kHalfWidth, kHalfHeight));
   walls->CreateFixture(&wall_fixture_def);
 
   // drone
@@ -63,7 +66,26 @@ Scene::Scene(const core::PropertySet* config)
 }
 
 void Scene::preStep() {
-  moveDrone(b2Vec2(0, config_.move_force));
+  // if the drone got to the target, generate a new target
+  const auto dist_squared = (drone_->GetPosition() - target_pos_).LengthSquared();
+  if (dist_squared <= config_.drone_radius * config_.drone_radius) {
+    generateTargetPos();
+  }
+
+  // drone direction is "up", so atan2 arguments are intentionally (x, y)
+  const auto local_target_pos = drone_->GetLocalPoint(target_pos_);
+  const auto target_angle = atan2(local_target_pos.x, local_target_pos.y);
+
+  // steer
+  const float aim_offset = float(target_angle / math::kPi);
+  const float torque = -aim_offset * config_.rotate_torque;
+  rotateDrone(torque);
+
+  // move
+  if (fabs(target_angle) < math::kPi / 2) {
+    const double force = ((cos(target_angle * 2) + 1) / 2) * config_.move_force;
+    moveDrone(b2Vec2(0, float(force)));
+  }
 }
 
 void Scene::postStep(float dt) {
@@ -137,7 +159,7 @@ b2Body* Scene::createDrone(const b2Vec2& pos, float radius) {
   b2FixtureDef drone_fixture_def;
   drone_fixture_def.shape = &drone_shape;
   drone_fixture_def.density = 0.1f;
-  drone_fixture_def.friction = 1.0f;
+  drone_fixture_def.friction = 0.0f;
   drone_fixture_def.restitution = 0.2f;
   drone_fixture_def.material.color = b2Color(0, 0, 1);
   drone_fixture_def.material.emit_intensity = 0.5f;
@@ -157,10 +179,11 @@ void Scene::createLight(b2Body* body, const b2Vec2& pos, const b2Color& color) {
 }
 
 void Scene::generateTargetPos() {
-  const float r = config_.drone_radius;
-  uniform_real_distribution<float> dist(-10 + r, 10 - r);
+  const float d = config_.drone_radius * 2;
+  uniform_real_distribution<float> dist_x(-kWidth / 2 + d, kWidth / 2 - d);
+  uniform_real_distribution<float> dist_y(-kHeight / 2 + d, kHeight / 2 - d);
   start_pos_ = drone_->GetPosition();
-  target_pos_ = b2Vec2(dist(rnd_), dist(rnd_));
+  target_pos_ = b2Vec2(dist_x(rnd_), dist_y(rnd_));
 }
 
 void Scene::updateVariables() {
