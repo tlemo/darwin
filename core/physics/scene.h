@@ -75,6 +75,7 @@ class Scene : public core::NonCopyable {
   b2World* box2dWorld() { return &world_; }
   
   // sensors
+  // TODO: get rid of these methods
   virtual const Camera* camera() const { return nullptr; }
   virtual const physics::TouchSensor* touchSensor() const { return nullptr; }
   virtual const physics::Accelerometer* accelerometer() const { return nullptr; }

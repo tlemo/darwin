@@ -43,78 +43,37 @@ Scene::Scene(const b2Vec2& target_velocity, const DroneVision* domain)
   wall_shape.Set(b2Vec2(-10, 10), b2Vec2(10, 10));
   walls->CreateFixture(&wall_fixture_def);
 
-  // drone & target
-  drone_ = createDrone(b2Vec2(0, 0), config.drone_radius);
+  // drone
+  physics::DroneConfig drone_config;
+  drone_config.position = b2Vec2(0, 0);
+  drone_config.radius = config.drone_radius;
+  drone_config.camera = true;
+  drone_config.camera_fov = config.camera_fov;
+  drone_config.camera_resolution = config.camera_resolution;
+  drone_config.max_move_force = config.max_move_force;
+  drone_config.max_rotate_torque = config.max_rotate_torque;
+  drone_ = make_unique<Drone>(&world_, drone_config);
+
+  // target
   target_ = createTarget(b2Vec2(0, 5), target_velocity, config.target_radius);
 
   // lights
   createLight(walls, b2Vec2(-9, -9), b2Color(1, 1, 1));
   createLight(walls, b2Vec2(9, 9), b2Color(1, 1, 1));
-
-  // sensors
-  camera_ = make_unique<Camera>(
-      drone_, config.camera_fov, 0.1f, 30.0f, config.camera_resolution);
 }
 
-void Scene::postStep(float /*dt*/) {
+void Scene::postStep(float dt) {
   fitness_ += fmaxf(cos(aimAngle()), 0);
+  drone_->postStep(dt);
   updateVariables();
-}
-
-void Scene::moveDrone(b2Vec2 force) {
-  // limit the magnitude of the force
-  const float max_value = domain_->config().max_move_force;
-  CHECK(max_value >= 0);
-  force.x = fminf(force.x, max_value);
-  force.x = fmaxf(force.x, -max_value);
-  force.y = fminf(force.y, max_value);
-  force.y = fmaxf(force.y, -max_value);
-
-  drone_->ApplyForceToCenter(drone_->GetWorldVector(force), true);
-}
-
-void Scene::rotateDrone(float torque) {
-  const auto& config = domain_->config();
-
-  // limit the torque
-  if (torque < -config.max_rotate_torque) {
-    torque = -config.max_rotate_torque;
-  } else if (torque > config.max_rotate_torque) {
-    torque = config.max_rotate_torque;
-  }
-
-  drone_->ApplyTorque(torque, true);
 }
 
 float Scene::aimAngle() const {
   const auto global_target_pos = target_->GetWorldPoint(b2Vec2(0, 0));
-  const auto local_target_pos = drone_->GetLocalPoint(global_target_pos);
+  const auto local_target_pos = drone_->body()->GetLocalPoint(global_target_pos);
 
   // drone direction is "up", so atan2 arguments are intentionally (x, y)
   return atan2f(local_target_pos.x, local_target_pos.y);
-}
-
-b2Body* Scene::createDrone(const b2Vec2& pos, float radius) {
-  b2BodyDef drone_body_def;
-  drone_body_def.type = b2_dynamicBody;
-  drone_body_def.position = pos;
-  drone_body_def.linearDamping = 10.0f;
-  drone_body_def.angularDamping = 10.0f;
-  auto body = world_.CreateBody(&drone_body_def);
-
-  b2CircleShape drone_shape;
-  drone_shape.m_radius = radius;
-
-  b2FixtureDef drone_fixture_def;
-  drone_fixture_def.shape = &drone_shape;
-  drone_fixture_def.density = 0.1f;
-  drone_fixture_def.friction = 1.0f;
-  drone_fixture_def.restitution = 0.2f;
-  drone_fixture_def.material.color = b2Color(0, 0, 1);
-  drone_fixture_def.material.emit_intensity = 0.5f;
-  body->CreateFixture(&drone_fixture_def);
-
-  return body;
 }
 
 b2Body* Scene::createTarget(const b2Vec2& pos, const b2Vec2& v, float radius) {
@@ -153,11 +112,12 @@ void Scene::createLight(b2Body* body, const b2Vec2& pos, const b2Color& color) {
 }
 
 void Scene::updateVariables() {
-  variables_.drone_x = drone_->GetPosition().x;
-  variables_.drone_y = drone_->GetPosition().y;
-  variables_.drone_vx = drone_->GetLinearVelocity().x;
-  variables_.drone_vy = drone_->GetLinearVelocity().y;
-  variables_.drone_dir = drone_->GetAngle();
+  const b2Body* drone_body = drone_->body();
+  variables_.drone_x = drone_body->GetPosition().x;
+  variables_.drone_y = drone_body->GetPosition().y;
+  variables_.drone_vx = drone_body->GetLinearVelocity().x;
+  variables_.drone_vy = drone_body->GetLinearVelocity().y;
+  variables_.drone_dir = drone_body->GetAngle();
   variables_.target_angle = aimAngle();
 }
 

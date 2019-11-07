@@ -15,14 +15,19 @@
 #pragma once
 
 #include "drone_vision.h"
+#include "drone.h"
 
 #include <core/physics/camera.h>
 #include <core/physics/scene.h>
 #include <core/properties.h>
 
+#include <memory>
+using namespace std;
+
 namespace drone_vision {
 
 using physics::Camera;
+using physics::Drone;
 
 struct SceneVariables : public core::PropertySet {
   PROPERTY(drone_x, float, 0, "Drone x coordinate");
@@ -41,20 +46,16 @@ class Scene : public physics::Scene {
 
   const Config* config() const override { return &domain_->config(); }
 
-  const Camera* camera() const override { return camera_.get(); }
-
-  void postStep(float dt) override;
-
-  void moveDrone(b2Vec2 force);
-  void rotateDrone(float torque);
+  Drone* drone() { return drone_.get(); }
 
   const DroneVision* domain() const { return domain_; }
 
   //! returns the current fitness value
   float fitness() const { return fitness_; }
 
+  void postStep(float dt) override;
+
  private:
-  b2Body* createDrone(const b2Vec2& pos, float radius);
   b2Body* createTarget(const b2Vec2& pos, const b2Vec2& v, float radius);
   void createLight(b2Body* body, const b2Vec2& pos, const b2Color& color);
   void updateVariables();
@@ -63,10 +64,9 @@ class Scene : public physics::Scene {
   float aimAngle() const;
 
  private:
-  b2Body* drone_ = nullptr;
   b2Body* target_ = nullptr;
   float fitness_ = 0;
-  unique_ptr<Camera> camera_;
+  unique_ptr<Drone> drone_;
   SceneVariables variables_;
   const DroneVision* domain_ = nullptr;
 };

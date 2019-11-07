@@ -24,7 +24,7 @@ void Agent::simStep() {
   const auto& config = scene_->domain()->config();
 
   // setup inputs
-  const auto camera = scene_->camera();
+  const auto camera = scene_->drone()->camera();
   const auto image = camera->render();
   CHECK(image.size() == config.camera_resolution);
   int input_index = 0;
@@ -43,11 +43,11 @@ void Agent::simStep() {
   const float force_y = brain_->output(1);
   CHECK(!isnan(force_x));
   CHECK(!isnan(force_y));
-  scene_->moveDrone(b2Vec2(force_x, force_y));
+  scene_->drone()->move(b2Vec2(force_x, force_y));
 
   const float torque = brain_->output(2);
   CHECK(!isnan(torque));
-  scene_->rotateDrone(torque);
+  scene_->drone()->rotate(torque);
 }
 
 int Agent::inputs(const Config& config) {
