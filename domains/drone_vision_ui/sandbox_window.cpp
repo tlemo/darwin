@@ -99,7 +99,7 @@ void SandboxWindow::newScene() {
   scene_ui_ = make_unique<SceneUi>(scene_.get());
   setSceneUi(scene_ui_.get());
 
-  camera_widget_->setCamera(scene_->camera());
+  camera_widget_->setCamera(scene_->drone()->camera());
 }
 
 void SandboxWindow::singleStep() {

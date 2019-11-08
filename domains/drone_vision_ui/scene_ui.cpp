@@ -25,8 +25,7 @@
 namespace drone_vision_ui {
 
 void SceneUi::render(QPainter& painter, const QRectF&) {
-  renderDrone(painter);
-  renderCamera(painter, scene_->drone()->camera());
+  renderDrone(painter, scene_->drone());
 }
 
 void SceneUi::renderCamera(QPainter& painter, const physics::Camera* camera) const {
@@ -44,14 +43,19 @@ void SceneUi::renderCamera(QPainter& painter, const physics::Camera* camera) con
   painter.drawPie(frustum_rect, int(-angle * 16), int(fov * 16));
 }
 
-void SceneUi::renderDrone(QPainter& painter) const {
-  auto vars = scene_->variables();
-  auto config = scene_->config();
-  const float radius = config->drone_radius;
+void SceneUi::renderDrone(QPainter& painter, const physics::Drone* drone) const {
+  if (auto camera = drone->camera()) {
+    renderCamera(painter, camera);
+  }
+
+  const auto& drone_config = drone->config();
+  const float radius = drone_config.radius;
+  const auto drone_body = drone->body();
+  const auto pos = drone_body->GetPosition();
   painter.save();
-  painter.translate(vars->drone_x, vars->drone_y);
+  painter.translate(pos.x, pos.y);
   painter.scale(1, -1);
-  painter.rotate(math::radiansToDegrees(-vars->drone_dir));
+  painter.rotate(math::radiansToDegrees(-drone_body->GetAngle()));
   const QRectF dest_rect(-radius, -radius, radius * 2, radius * 2);
   painter.drawPixmap(dest_rect, drone_pixmap_, drone_pixmap_.rect());
   painter.restore();

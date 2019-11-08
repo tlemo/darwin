@@ -57,6 +57,9 @@ class Drone : public core::NonCopyable {
   const physics::Compass* compass() const { return compass_.get(); }
 
   b2Body* body() { return body_; }
+  const b2Body* body() const { return body_; }
+
+  const auto& config() const { return config_; }
 
  private:
   b2Body* body_ = nullptr;

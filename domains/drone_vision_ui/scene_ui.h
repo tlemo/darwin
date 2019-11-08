@@ -27,7 +27,7 @@ class SceneUi : public physics_ui::Box2dSceneUi {
 
  private:
   void renderCamera(QPainter& painter, const physics::Camera* camera) const;
-  void renderDrone(QPainter& painter) const;
+  void renderDrone(QPainter& painter, const physics::Drone* drone) const;
 
  private:
   drone_vision::Scene* scene_ = nullptr;
