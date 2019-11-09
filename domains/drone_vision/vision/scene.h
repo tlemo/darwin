@@ -14,8 +14,8 @@
 
 #pragma once
 
-#include "drone_vision.h"
-#include "drone.h"
+#include "domain.h"
+#include "../drone.h"
 
 #include <core/physics/camera.h>
 #include <core/physics/scene.h>

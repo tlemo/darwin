@@ -13,7 +13,7 @@
 // limitations under the License.
 
 #include "agent.h"
-#include "scene.h"
+#include "vision/scene.h"
 
 namespace drone_vision {
 

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "drone_vision.h"
+#include "domain.h"
 #include "agent.h"
 #include "scene.h"
 
@@ -51,7 +51,9 @@ bool DroneVision::evaluatePopulation(darwin::Population* population) const {
 
   // evaluate each genotype (over N worlds)
   for (int world_index = 0; world_index < config_.test_worlds; ++world_index) {
-    darwin::StageScope stage("Evaluate one world", population->size());
+    darwin::StageScope stage(
+        core::format("World %d/%d", world_index + 1, config_.test_worlds),
+        population->size());
     core::log(" ... world %d\n", world_index);
 
     const auto target_velocity = randomTargetVelocity();
@@ -61,14 +63,12 @@ bool DroneVision::evaluatePopulation(darwin::Population* population) const {
       Agent agent(genotype, &scene);
 
       // simulation loop
-      int step = 0;
-      for (; step < config_.max_steps; ++step) {
+      for (int step = 0; step < config_.max_steps; ++step) {
         agent.simStep();
         if (!scene.simStep()) {
           break;
         }
       }
-      CHECK(step > 0);
 
       // normalize the fitness to [0, 1], invariant to the number of steps or test worlds
       float episode_fitness = scene.fitness();

@@ -48,6 +48,7 @@ Scene::Scene(const b2Vec2& target_velocity, const DroneVision* domain)
   drone_config.position = b2Vec2(0, 0);
   drone_config.radius = config.drone_radius;
   drone_config.camera = true;
+  drone_config.camera_depth = config.camera_depth;
   drone_config.camera_fov = config.camera_fov;
   drone_config.camera_resolution = config.camera_resolution;
   drone_config.max_move_force = config.max_move_force;

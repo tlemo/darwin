@@ -9,14 +9,14 @@ CONFIG += staticlib
 
 SOURCES += \
     drone.cpp \
-    drone_vision.cpp \
     agent.cpp \
-    scene.cpp
+    vision\domain.cpp \
+    vision\scene.cpp
 
 HEADERS += \
     drone.h \
-    drone_vision.h \
     agent.h \
-    scene.h
+    vision\domain.h \
+    vision\scene.h
 
 addLibrary(../../core)

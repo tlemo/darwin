@@ -14,7 +14,7 @@
 
 #pragma once
 
-#include "drone_vision.h"
+#include "vision/domain.h"
 
 #include <core/darwin.h>
 

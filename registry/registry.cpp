@@ -29,7 +29,7 @@
 #include <domains/double_cart_pole/double_cart_pole.h>
 #include <domains/unicycle/unicycle.h>
 #include <domains/ballistics/ballistics.h>
-#include <domains/drone_vision/drone_vision.h>
+#include <domains/drone_vision/vision/domain.h>
 
 namespace registry {
 

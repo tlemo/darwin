@@ -15,7 +15,8 @@
 #pragma once
 
 #include <core_ui/physics/box2d_widget.h>
-#include <domains/drone_vision/scene.h>
+#include <domains/drone_vision/vision/scene.h>
+#include <domains/drone_vision/drone.h>
 
 namespace drone_vision_ui {
 

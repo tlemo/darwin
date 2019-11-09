@@ -32,6 +32,7 @@ struct DroneConfig {
   bool camera = false;
   float camera_fov = 90;
   int camera_resolution = 64;
+  bool camera_depth = false;
   bool touch_sensor = false;
   int touch_resolution = 16;
   bool accelerometer = false;

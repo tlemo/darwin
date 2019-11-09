@@ -20,8 +20,8 @@
 #include <core_ui/physics/camera_widget.h>
 #include <core_ui/properties_widget.h>
 #include <domains/drone_vision/agent.h>
-#include <domains/drone_vision/drone_vision.h>
-#include <domains/drone_vision/scene.h>
+#include <domains/drone_vision/vision/domain.h>
+#include <domains/drone_vision/vision/scene.h>
 
 #include <QFrame>
 #include <QIcon>
