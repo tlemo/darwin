@@ -14,9 +14,9 @@
 
 #pragma once
 
+#include <core/physics/drone.h>
 #include <core_ui/physics/box2d_widget.h>
-#include <domains/drone_vision/vision/scene.h>
-#include <domains/drone_vision/drone.h>
+#include <domains/drone_vision/scene.h>
 
 namespace drone_vision_ui {
 

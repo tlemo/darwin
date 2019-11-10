@@ -14,20 +14,17 @@
 
 #pragma once
 
-#include "drone.h"
-
 #include <core/darwin.h>
+#include <core/physics/drone.h>
 
 #include <memory>
 using namespace std;
 
 namespace physics {
 
-class Scene;
-
-class Agent {
+class DroneController {
  public:
-  Agent(const darwin::Genotype* genotype, Drone* drone);
+  DroneController(const darwin::Genotype* genotype, Drone* drone);
   void simStep();
 
   static int inputs(const DroneConfig& config);

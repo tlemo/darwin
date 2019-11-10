@@ -12,14 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "agent.h"
+#include "drone_controller.h"
 
 namespace physics {
 
-Agent::Agent(const darwin::Genotype* genotype, Drone* drone)
+DroneController::DroneController(const darwin::Genotype* genotype, Drone* drone)
     : drone_(drone), brain_(genotype->grow()) {}
 
-void Agent::simStep() {
+void DroneController::simStep() {
   const auto& config = drone_->config();
 
   // setup inputs
@@ -49,7 +49,7 @@ void Agent::simStep() {
   drone_->rotate(torque);
 }
 
-int Agent::inputs(const DroneConfig& config) {
+int DroneController::inputs(const DroneConfig& config) {
   // TODO: add support for the rest of the drone sensors
   CHECK(!config.compass);
   CHECK(!config.touch_sensor);
@@ -57,7 +57,7 @@ int Agent::inputs(const DroneConfig& config) {
   return config.camera_resolution * (config.camera_depth ? 4 : 3);
 }
 
-int Agent::outputs(const DroneConfig&) {
+int DroneController::outputs(const DroneConfig&) {
   // outputs:
   //  0: move_force_x
   //  1: move_force_y

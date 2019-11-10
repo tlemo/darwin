@@ -15,10 +15,10 @@
 #pragma once
 
 #include "domain.h"
-#include "../drone.h"
 
 #include <core/physics/camera.h>
 #include <core/physics/scene.h>
+#include <core/physics/drone.h>
 #include <core/properties.h>
 
 #include <memory>

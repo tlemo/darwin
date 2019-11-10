@@ -14,10 +14,10 @@
 
 #pragma once
 
-#include "../drone.h"
-
 #include <core/darwin.h>
 #include <core/properties.h>
+#include <core/physics/drone.h>
+
 #include <third_party/box2d/box2d.h>
 
 namespace drone_vision {

@@ -8,15 +8,11 @@ TEMPLATE = lib
 CONFIG += staticlib
 
 SOURCES += \
-    drone.cpp \
-    agent.cpp \
-    vision\domain.cpp \
-    vision\scene.cpp
+    domain.cpp \
+    scene.cpp
 
 HEADERS += \
-    drone.h \
-    agent.h \
-    vision\domain.h \
-    vision\scene.h
+    domain.h \
+    scene.h
 
 addLibrary(../../core)

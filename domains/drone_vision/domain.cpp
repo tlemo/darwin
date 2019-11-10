@@ -15,12 +15,11 @@
 #include "domain.h"
 #include "scene.h"
 
-#include "../agent.h"
-
 #include <core/evolution.h>
 #include <core/exception.h>
 #include <core/logging.h>
 #include <core/parallel_for_each.h>
+#include <core/physics/drone_controller.h>
 
 #include <random>
 using namespace std;
@@ -43,11 +42,11 @@ DroneVision::DroneVision(const core::PropertySet& config) {
 }
 
 size_t DroneVision::inputs() const {
-  return physics::Agent::inputs(drone_config_);
+  return physics::DroneController::inputs(drone_config_);
 }
 
 size_t DroneVision::outputs() const {
-  return physics::Agent::outputs(drone_config_);
+  return physics::DroneController::outputs(drone_config_);
 }
 
 bool DroneVision::evaluatePopulation(darwin::Population* population) const {
@@ -71,7 +70,7 @@ bool DroneVision::evaluatePopulation(darwin::Population* population) const {
 
     pp::for_each(*population, [&](int, darwin::Genotype* genotype) {
       Scene scene(target_velocity, this);
-      physics::Agent agent(genotype, scene.drone());
+      physics::DroneController agent(genotype, scene.drone());
 
       // simulation loop
       for (int step = 0; step < config_.max_steps; ++step) {

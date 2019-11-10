@@ -31,7 +31,9 @@ SOURCES += \
     physics/compass.cpp \
     physics/scene.cpp \
     physics/misc.cpp \
-    physics/touch_sensor.cpp
+    physics/touch_sensor.cpp \
+    physics/drone.cpp \
+    physics/drone_controller.cpp
 
 HEADERS += \
     ann_utils.h \
@@ -72,7 +74,9 @@ HEADERS += \
     physics/scene.h \
     physics/misc.h \
     physics/script.h \
-    physics/touch_sensor.h
+    physics/touch_sensor.h \
+    physics/drone.h \
+    physics/drone_controller.h
     
 addLibrary(../third_party/sqlite)
 addLibrary(../third_party/box2d)
