@@ -25,7 +25,15 @@ SOURCES += \
     cgp_islands_selection.cpp \
     truncation_selection.cpp \
     simple_tournament.cpp \
-    swiss_tournament.cpp
+    swiss_tournament.cpp \
+    sim/accelerometer.cpp \
+    sim/camera.cpp \
+    sim/compass.cpp \
+    sim/scene.cpp \
+    sim/misc.cpp \
+    sim/touch_sensor.cpp \
+    sim/drone.cpp \
+    sim/drone_controller.cpp
 
 HEADERS += \
     ann_utils.h \
@@ -59,7 +67,16 @@ HEADERS += \
     truncation_selection.h \
     simple_tournament.h \
     tournament_implementations.h \
-    swiss_tournament.h
+    swiss_tournament.h \
+    sim/accelerometer.h \
+    sim/camera.h \
+    sim/compass.h \
+    sim/scene.h \
+    sim/misc.h \
+    sim/script.h \
+    sim/touch_sensor.h \
+    sim/drone.h \
+    sim/drone_controller.h
     
 addLibrary(../third_party/sqlite)
 addLibrary(../third_party/box2d)

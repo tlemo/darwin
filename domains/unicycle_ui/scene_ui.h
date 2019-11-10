@@ -14,12 +14,12 @@
 
 #pragma once
 
-#include <core_ui/box2d_widget.h>
+#include <core_ui/sim/box2d_widget.h>
 #include <domains/unicycle/world.h>
 
 namespace unicycle_ui {
 
-class SceneUi : public core_ui::Box2dSceneUi {
+class SceneUi : public physics_ui::Box2dSceneUi {
  public:
   SceneUi(unicycle::World* world) : world_(world) {}
 

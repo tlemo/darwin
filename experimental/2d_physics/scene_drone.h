@@ -1,16 +1,14 @@
 
 #pragma once
 
-#include "camera.h"
-#include "touch_sensor.h"
-#include "accelerometer.h"
-#include "compass.h"
-#include "physics.h"
 #include "sandbox_factory.h"
-#include "camera_window.h"
 
+#include <core/sim/scene.h>
+#include <core/sim/accelerometer.h>
+#include <core/sim/camera.h>
+#include <core/sim/compass.h>
+#include <core/sim/touch_sensor.h>
 #include <core/properties.h>
-#include <core_ui/box2d_widget.h>
 
 #include <QKeyEvent>
 #include <QPixmap>
@@ -21,10 +19,10 @@ using namespace std;
 
 namespace drone_scene {
 
-using phys::Camera;
-using phys::TouchSensor;
-using phys::Accelerometer;
-using phys::Compass;
+using sim::Camera;
+using sim::TouchSensor;
+using sim::Accelerometer;
+using sim::Compass;
 
 struct Config : public core::PropertySet {
   PROPERTY(drone_radius, float, 0.5f, "Drone size");
@@ -40,7 +38,7 @@ struct SceneVariables : public core::PropertySet {
   PROPERTY(drone_dir, float, 0, "Heading angle");
 };
 
-class Scene : public phys::Scene {
+class Scene : public sim::Scene {
  public:
   explicit Scene(const core::PropertySet* config);
 
@@ -62,6 +60,8 @@ class Scene : public phys::Scene {
   void addBox(float x, float y, float sx, float sy);
 
  private:
+  b2Body* createDrone(const b2Vec2& pos, float radius);
+  void createLight(b2Body* body, const b2Vec2& pos, const b2Color& color);
   void updateVariables();
 
  private:
@@ -74,9 +74,7 @@ class Scene : public phys::Scene {
   Config config_;
 };
 
-class SceneUi : public core_ui::Box2dSceneUi {
-  static constexpr float kCartImpulse = 1.0f;
-
+class SceneUi : public physics_ui::Box2dSceneUi {
  public:
   explicit SceneUi(Scene* scene) : scene_(scene) {}
 
@@ -98,7 +96,7 @@ class SceneUi : public core_ui::Box2dSceneUi {
   void focusOutEvent() override { key_state_.clear(); }
 
  private:
-  void renderCamera(QPainter& painter, const phys::Camera* camera) const;
+  void renderCamera(QPainter& painter, const sim::Camera* camera) const;
   void renderDrone(QPainter& painter) const;
 
  private:

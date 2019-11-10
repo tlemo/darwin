@@ -14,7 +14,7 @@
 
 #pragma once
 
-#include <core_ui/box2d_sandbox_window.h>
+#include <core_ui/sim/box2d_sandbox_window.h>
 #include <core_ui/properties_widget.h>
 #include <domains/double_cart_pole/agent.h>
 #include <domains/double_cart_pole/double_cart_pole.h>
@@ -29,7 +29,7 @@ using namespace std;
 
 namespace double_cart_pole_ui {
 
-class SandboxWindow : public core_ui::Box2dSandboxWindow {
+class SandboxWindow : public physics_ui::Box2dSandboxWindow {
   struct Variables {
     // configuration
     core_ui::PropertyItem* generation = nullptr;

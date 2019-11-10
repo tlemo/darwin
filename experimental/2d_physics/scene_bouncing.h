@@ -1,10 +1,11 @@
 
 #pragma once
 
-#include "physics.h"
 #include "sandbox_factory.h"
 
-#include <core_ui/box2d_widget.h>
+#include <core/sim/scene.h>
+#include <core/sim/misc.h>
+#include <core_ui/sim/box2d_widget.h>
 
 #include <QKeyEvent>
 #include <QMouseEvent>
@@ -14,12 +15,12 @@ using namespace std;
 
 namespace bouncing_scene {
 
-class Scene : public phys::Scene {
+class Scene : public sim::Scene {
  public:
   Scene();
 };
 
-class SceneUi : public core_ui::Box2dSceneUi {
+class SceneUi : public physics_ui::Box2dSceneUi {
  public:
   explicit SceneUi(Scene* scene) : scene_(scene) {}
 
@@ -28,17 +29,17 @@ class SceneUi : public core_ui::Box2dSceneUi {
     const auto y = float(pos.y());
     
     if ((event->buttons() & Qt::LeftButton) != 0) {
-      phys::addBall(x, y, 3, scene_->box2dWorld());
+      sim::addBall(x, y, 3, scene_->box2dWorld());
     }
 
     if ((event->buttons() & Qt::RightButton) != 0) {
-      phys::addBox(x, y, 10, 2, scene_->box2dWorld());
+      sim::addBox(x, y, 10, 2, scene_->box2dWorld());
     }
   }
 
   void keyPressEvent(QKeyEvent* event) override {
     if (event->key() == Qt::Key_Space) {
-      phys::addBullet(-95, 5, 100 * 100, 0, scene_->box2dWorld());
+      sim::addBullet(-95, 5, 100 * 100, 0, scene_->box2dWorld());
     }
   }
 

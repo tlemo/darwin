@@ -16,7 +16,7 @@
 
 #include "scene_ui.h"
 
-#include <core_ui/box2d_sandbox_window.h>
+#include <core_ui/sim/box2d_sandbox_window.h>
 #include <core_ui/properties_widget.h>
 #include <domains/unicycle/agent.h>
 #include <domains/unicycle/unicycle.h>
@@ -31,7 +31,7 @@ using namespace std;
 
 namespace unicycle_ui {
 
-class SandboxWindow : public core_ui::Box2dSandboxWindow {
+class SandboxWindow : public physics_ui::Box2dSandboxWindow {
   struct Variables {
     // configuration
     core_ui::PropertyItem* generation = nullptr;

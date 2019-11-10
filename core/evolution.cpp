@@ -19,13 +19,13 @@
 #include <assert.h>
 #include <math.h>
 #include <time.h>
+#include <algorithm>
 #include <fstream>
 #include <limits>
 #include <memory>
 #include <sstream>
 #include <system_error>
 #include <thread>
-#include <algorithm>
 using namespace std;
 
 namespace darwin {
@@ -37,7 +37,7 @@ GenerationSummary::GenerationSummary(const Population* population,
     : calibration_fitness(calibration_fitness) {
   const size_t size = population->size();
   CHECK(size > 0);
-  
+
   const auto& ranking_index = population->rankingIndex();
   generation = population->generation();
   best_fitness = population->genotype(ranking_index[0])->fitness;
@@ -242,7 +242,7 @@ bool Evolution::newExperiment(shared_ptr<Experiment> experiment,
             experiment->setup()->population_size);
 
   CHECK(config.max_generations >= 0);
-  
+
   {
     unique_lock<mutex> guard(lock_);
 
@@ -301,7 +301,7 @@ void Evolution::mainThread() {
   // the "evolution as a service" loop
   for (;;) {
     bool canceled = false;
-    
+
     try {
       evolutionCycle();
       core::log("\nEvolution complete.\n\n");
@@ -309,7 +309,7 @@ void Evolution::mainThread() {
       core::log("\nRestarting the evolution lifecycle...\n\n");
       canceled = true;
     }
-    
+
     // stop the evolution
     {
       unique_lock<mutex> guard(lock_);
@@ -365,8 +365,20 @@ void Evolution::evolutionCycle() {
         break;
     }
 
+    // validate the fitness values
+    const auto& ranking_index = population_->rankingIndex();
+    for (size_t i = 0; i < ranking_index.size(); ++i) {
+      const float fitness_value = population_->genotype(ranking_index[i])->fitness;
+      CHECK(isfinite(fitness_value));
+      if (i > 0) {
+        // values should be ranked in descending fitness order
+        const float prev_value = population_->genotype(ranking_index[i - 1])->fitness;
+        CHECK(fitness_value <= prev_value);
+      }
+    }
+
     // extra fitness values (optional)
-    const auto champion_index = population_->rankingIndex()[0];
+    const auto champion_index = ranking_index[0];
     const Genotype* champion = population_->genotype(champion_index);
     shared_ptr<core::PropertySet> calibration_fitness =
         domain_->calibrateGenotype(champion);

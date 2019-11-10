@@ -10,7 +10,7 @@ GLOBAL_INITIALIZER {
 }
 
 Scene::Scene(const core::PropertySet* config)
-    : phys::Scene(b2Vec2(0, -9.8f), phys::Rect(-5, 0, 10, 5)) {
+    : sim::Scene(b2Vec2(0, -9.8f), sim::Rect(-5, 0, 10, 5)) {
   if (config) {
     config_.copyFrom(*config);
   }

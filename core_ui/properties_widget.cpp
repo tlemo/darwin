@@ -80,12 +80,14 @@ PropertiesSectionItem* PropertiesWidget::addSection(const string& name) {
   return section;
 }
 
-void PropertiesWidget::addPropertiesSection(const string& name,
-                                            core::PropertySet* property_set) {
+PropertiesSectionItem* PropertiesWidget::addPropertiesSection(
+    const string& name,
+    core::PropertySet* property_set) {
   auto section = addSection(name);
   for (core::Property* property : property_set->properties()) {
     section->addProperty(property);
   }
+  return section;
 }
 
 void PropertiesWidget::autoSizeColumns() {

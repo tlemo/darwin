@@ -1,17 +1,17 @@
 
 #pragma once
 
-#include "camera.h"
 #include "tool_window.h"
+
+#include <core_ui/sim/camera_widget.h>
 
 class CameraWindow : public ToolWindow {
  public:
-  explicit CameraWindow(QWidget* parent, const phys::Camera* camera = nullptr);
+  explicit CameraWindow(QWidget* parent);
 
  private:
-  void paintEvent(QPaintEvent* event) override;
   void onSandboxChange(SandboxWindow* sandbox_window) override;
 
  private:
-  const phys::Camera* camera_ = nullptr;
+  physics_ui::CameraWidget* camera_widget_ = nullptr;
 };

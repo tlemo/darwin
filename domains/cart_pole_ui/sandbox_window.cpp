@@ -18,7 +18,7 @@
 #include <core/evolution.h>
 #include <core/logging.h>
 #include <core/math_2d.h>
-#include <core_ui/box2d_sandbox_dialog.h>
+#include <core_ui/sim/box2d_sandbox_dialog.h>
 
 #include <QString>
 
@@ -37,7 +37,7 @@ bool SandboxWindow::setup() {
   const auto default_generation = snapshot.generation - 1;
   const auto default_max_steps = cart_pole_->config().max_steps;
 
-  core_ui::Box2dSandboxDialog dlg(default_generation, default_max_steps);
+  physics_ui::Box2dSandboxDialog dlg(default_generation, default_max_steps);
   if (dlg.exec() != QDialog::Accepted) {
     return false;
   }
