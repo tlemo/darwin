@@ -1,4 +1,12 @@
 
+## Nov 10th, 2019
+
+New domain: [drone_vision][8] created using the new sim::Scene & associated building
+blocks (sim::Camera, sim::Drone). The agent's goal is to "simply" track a bouncing ball
+using only the camera pixels.
+
+![DroneVision demo](docs/images/drone_vision_demo.gif)
+
 ## Oct 5th, 2019
 
 A new `experimental` directory is the place for subprojects which are not strictly
@@ -126,3 +134,4 @@ Initial release
 [5]: https://tlemo.github.io/darwin/classtournament_1_1_swiss_tournament.html
 [6]: https://tlemo.github.io/darwin/classballistics_1_1_ballistics.html
 [7]: https://en.wikipedia.org/wiki/Projectile_motion
+[8]: https://tlemo.github.io/darwin/classdrone__vision_1_1_drone_vision.html
