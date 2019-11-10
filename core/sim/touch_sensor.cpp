@@ -19,7 +19,7 @@
 
 #include <math.h>
 
-namespace physics {
+namespace sim {
 
 TouchSensor::TouchSensor(b2Body* body, int resolution)
     : body_(body), resolution_(resolution) {
@@ -67,4 +67,4 @@ vector<float> TouchSensor::receptors() const {
   return receptors;
 }
 
-}  // namespace physics
+}  // namespace sim

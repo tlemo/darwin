@@ -16,7 +16,7 @@
 
 #include <core/math_2d.h>
 #include <core/utils.h>
-#include <core_ui/physics/box2d_renderer.h>
+#include <core_ui/sim/box2d_renderer.h>
 
 #include <QBrush>
 #include <QPainter>

@@ -14,32 +14,33 @@
 
 #pragma once
 
-#include <core/physics/compass.h>
+#include <core/sim/accelerometer.h>
 #include <core_ui/canvas.h>
 
 namespace physics_ui {
 
-//! Visualization for a physics::Compass object
-class CompassWidget : public core_ui::Canvas {
+//! Visualization for a sim::Accelerometer object
+class AccelerometerWidget : public core_ui::Canvas {
   static constexpr double kCanvasWidth = 20;
   static constexpr double kCanvasHeight = 20;
 
   static constexpr double kSensorWidth = 15;
   static constexpr double kSensorHeight = 15;
 
-  static constexpr double kCompassLength = 7;
-  static constexpr double kCompassWidth = 0.4;
+  static constexpr double kSkinSize = 0.7;
+  static constexpr double kVectorLength = 6;
+  static constexpr double kVectorWidth = 0.4;
 
  public:
-  explicit CompassWidget(QWidget* parent);
+  explicit AccelerometerWidget(QWidget* parent);
 
-  void setSensor(const physics::Compass* sensor);
+  void setSensor(const sim::Accelerometer* sensor);
 
  private:
   void paintEvent(QPaintEvent* event) override;
 
  private:
-  const physics::Compass* sensor_ = nullptr;
+  const sim::Accelerometer* sensor_ = nullptr;
 };
 
 }  // namespace physics_ui

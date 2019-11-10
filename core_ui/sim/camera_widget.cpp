@@ -20,7 +20,7 @@
 
 namespace physics_ui {
 
-void CameraWidget::setCamera(const physics::Camera* camera) {
+void CameraWidget::setCamera(const sim::Camera* camera) {
   camera_ = camera;
   update();
 }

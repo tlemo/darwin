@@ -19,7 +19,7 @@
 namespace drone_vision {
 
 Scene::Scene(const b2Vec2& target_velocity, const DroneVision* domain)
-    : physics::Scene(b2Vec2(0, 0), physics::Rect(-10, -10, 20, 20)), domain_(domain) {
+    : sim::Scene(b2Vec2(0, 0), sim::Rect(-10, -10, 20, 20)), domain_(domain) {
   const auto& config = domain_->config();
 
   // walls

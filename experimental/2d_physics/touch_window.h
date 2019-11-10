@@ -3,7 +3,7 @@
 
 #include "tool_window.h"
 
-#include <core_ui/physics/touch_widget.h>
+#include <core_ui/sim/touch_widget.h>
 
 class TouchWindow : public ToolWindow {
  public:

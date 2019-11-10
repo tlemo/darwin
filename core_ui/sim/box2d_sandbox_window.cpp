@@ -15,7 +15,7 @@
 #include "box2d_sandbox_window.h"
 #include "ui_box2d_sandbox_window.h"
 
-#include <core_ui/physics/box2d_widget.h>
+#include <core_ui/sim/box2d_widget.h>
 
 #include <core/darwin.h>
 #include <core/evolution.h>

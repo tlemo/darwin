@@ -12,16 +12,32 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "compass.h"
+#include "scene.h"
 
-#include <core/utils.h>
+namespace sim {
 
-namespace physics {
+bool Scene::simStep() {
+  if (timestamp_ == 0) {
+    script_.start();
+  }
 
-Compass::Compass(b2Body* body) : body_(body) {}
+  preStep();
 
-const b2Vec2 Compass::heading() const {
-  return body_->GetLocalVector(b2Vec2(0, 1));
+  constexpr float32 time_step = 1.0f / 50.0f;
+  constexpr int32 velocity_iterations = 10;
+  constexpr int32 position_iterations = 10;
+
+  script_.play(timestamp_);
+
+  // Box2D simulation step
+  world_.Step(time_step, velocity_iterations, position_iterations);
+  timestamp_ += time_step;
+
+  // TODO: process the contacts
+  // TODO: pause/resume/done/reset?
+
+  postStep(time_step);
+  return true;
 }
 
-}  // namespace physics
+}  // namespace sim

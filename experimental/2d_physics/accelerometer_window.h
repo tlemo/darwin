@@ -3,7 +3,7 @@
 
 #include "tool_window.h"
 
-#include <core_ui/physics/accelerometer_widget.h>
+#include <core_ui/sim/accelerometer_widget.h>
 
 class AccelerometerWindow : public ToolWindow {
  public:

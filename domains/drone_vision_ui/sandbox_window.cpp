@@ -18,7 +18,7 @@
 #include <core/evolution.h>
 #include <core/logging.h>
 #include <core/math_2d.h>
-#include <core_ui/physics/box2d_sandbox_dialog.h>
+#include <core_ui/sim/box2d_sandbox_dialog.h>
 
 #include <QString>
 
@@ -84,7 +84,7 @@ void SandboxWindow::newScene() {
 
   const auto target_velocity = domain_->randomTargetVelocity();
   scene_ = make_unique<drone_vision::Scene>(target_velocity, domain_);
-  agent_ = make_unique<physics::DroneController>(genotype_.get(), scene_->drone());
+  agent_ = make_unique<sim::DroneController>(genotype_.get(), scene_->drone());
   step_ = 0;
 
   variables_.initial_target_velocity->setValue(

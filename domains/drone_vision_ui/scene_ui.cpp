@@ -28,7 +28,7 @@ void SceneUi::render(QPainter& painter, const QRectF&) {
   renderDrone(painter, scene_->drone());
 }
 
-void SceneUi::renderCamera(QPainter& painter, const physics::Camera* camera) const {
+void SceneUi::renderCamera(QPainter& painter, const sim::Camera* camera) const {
   auto body = camera->body();
   const float far = camera->far();
   const float fov = camera->fov();
@@ -43,7 +43,7 @@ void SceneUi::renderCamera(QPainter& painter, const physics::Camera* camera) con
   painter.drawPie(frustum_rect, int(-angle * 16), int(fov * 16));
 }
 
-void SceneUi::renderDrone(QPainter& painter, const physics::Drone* drone) const {
+void SceneUi::renderDrone(QPainter& painter, const sim::Drone* drone) const {
   if (auto camera = drone->camera()) {
     renderCamera(painter, camera);
   }

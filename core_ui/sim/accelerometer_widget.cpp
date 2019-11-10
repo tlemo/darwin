@@ -26,7 +26,7 @@ AccelerometerWidget::AccelerometerWidget(QWidget* parent) : Canvas(parent) {
   setViewport(QRectF(-kCanvasWidth / 2, kCanvasHeight / 2, kCanvasWidth, -kCanvasHeight));
 }
 
-void AccelerometerWidget::setSensor(const physics::Accelerometer* sensor) {
+void AccelerometerWidget::setSensor(const sim::Accelerometer* sensor) {
   sensor_ = sensor;
   update();
 }

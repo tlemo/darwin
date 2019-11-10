@@ -16,7 +16,7 @@
 
 #include <third_party/box2d/box2d.h>
 
-namespace physics {
+namespace sim {
 
 //! Basic accelerometer 
 //! 
@@ -53,4 +53,4 @@ class Accelerometer {
   float last_angular_velocity_;
 };
 
-}  // namespace physics
+}  // namespace sim

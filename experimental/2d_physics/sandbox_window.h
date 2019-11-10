@@ -4,7 +4,7 @@
 #include "sandbox_factory.h"
 
 #include <core/properties.h>
-#include <core_ui/physics/box2d_sandbox_window.h>
+#include <core_ui/sim/box2d_sandbox_window.h>
 #include <core_ui/properties_widget.h>
 
 #include <unordered_map>

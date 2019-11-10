@@ -20,8 +20,8 @@ GLOBAL_INITIALIZER {
 }
 
 Scene::Scene(const core::PropertySet* config)
-    : physics::Scene(b2Vec2(0, 0),
-                     physics::Rect(-kWidth / 2, -kHeight / 2, kWidth, kHeight)) {
+    : sim::Scene(b2Vec2(0, 0),
+                     sim::Rect(-kWidth / 2, -kHeight / 2, kWidth, kHeight)) {
   if (config) {
     config_.copyFrom(*config);
   }
@@ -196,7 +196,7 @@ void Scene::updateVariables() {
   variables_.target_pos = target_pos_;
 }
 
-void SceneUi::renderCamera(QPainter& painter, const physics::Camera* camera) const {
+void SceneUi::renderCamera(QPainter& painter, const sim::Camera* camera) const {
   auto body = camera->body();
   const float far = camera->far();
   const float fov = camera->fov();

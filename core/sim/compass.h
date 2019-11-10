@@ -16,13 +16,19 @@
 
 #include <third_party/box2d/box2d.h>
 
-namespace physics {
+namespace sim {
 
-// TODO: refactor these helpers
-b2Body* addBall(float x, float y, float r, b2World* world);
-b2Body* addBox(float x, float y, float w, float h, b2World* world);
-b2Body* addCross(float x, float y, float w, float h, b2World* world);
-b2Body* addBullet(float x, float y, float dx, float dy, b2World* world);
-b2Body* addBoxProjectile(float x, float y, float dx, float dy, b2World* world);
+//! Tracks the local direction of the global "North" (x=0, y=1) vector
+class Compass {
+ public:
+  Compass(b2Body* body);
 
-}  // namespace physics
+  b2Body* body() const { return body_; }
+
+  const b2Vec2 heading() const;
+
+ private:
+  b2Body* body_ = nullptr;
+};
+
+}  // namespace sim

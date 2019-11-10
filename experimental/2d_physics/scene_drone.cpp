@@ -17,7 +17,7 @@ GLOBAL_INITIALIZER {
 }
 
 Scene::Scene(const core::PropertySet* config)
-    : physics::Scene(b2Vec2(0, 0), physics::Rect(-10, -10, 20, 20)) {
+    : sim::Scene(b2Vec2(0, 0), sim::Rect(-10, -10, 20, 20)) {
   if (config) {
     config_.copyFrom(*config);
   }
@@ -155,7 +155,7 @@ void Scene::updateVariables() {
   variables_.drone_dir = drone_->GetAngle();
 }
 
-void SceneUi::renderCamera(QPainter& painter, const physics::Camera* camera) const {
+void SceneUi::renderCamera(QPainter& painter, const sim::Camera* camera) const {
   auto body = camera->body();
   const float far = camera->far();
   const float fov = camera->fov();

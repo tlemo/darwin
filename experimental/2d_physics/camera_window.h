@@ -3,7 +3,7 @@
 
 #include "tool_window.h"
 
-#include <core_ui/physics/camera_widget.h>
+#include <core_ui/sim/camera_widget.h>
 
 class CameraWindow : public ToolWindow {
  public:

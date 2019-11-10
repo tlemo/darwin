@@ -14,7 +14,7 @@
 
 #include "misc.h"
 
-namespace physics {
+namespace sim {
 
 b2Body* addBall(float x, float y, float r, b2World* world) {
   b2BodyDef body_def;
@@ -126,4 +126,4 @@ b2Body* addBoxProjectile(float x, float y, float dx, float dy, b2World* world) {
   return body;
 }
 
-}  // namespace physics
+}  // namespace sim

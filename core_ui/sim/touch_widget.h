@@ -14,33 +14,31 @@
 
 #pragma once
 
-#include <core/physics/accelerometer.h>
+#include <core/sim/touch_sensor.h>
 #include <core_ui/canvas.h>
 
 namespace physics_ui {
 
-//! Visualization for a physics::Accelerometer object
-class AccelerometerWidget : public core_ui::Canvas {
+//! Visualization for a sim::TouchSensor object
+class TouchSensorWidget : public core_ui::Canvas {
   static constexpr double kCanvasWidth = 20;
   static constexpr double kCanvasHeight = 20;
 
   static constexpr double kSensorWidth = 15;
   static constexpr double kSensorHeight = 15;
 
-  static constexpr double kSkinSize = 0.7;
-  static constexpr double kVectorLength = 6;
-  static constexpr double kVectorWidth = 0.4;
+  static constexpr double kSkinSize = 1.5;
 
  public:
-  explicit AccelerometerWidget(QWidget* parent);
+  explicit TouchSensorWidget(QWidget* parent);
 
-  void setSensor(const physics::Accelerometer* sensor);
+  void setSensor(const sim::TouchSensor* sensor);
 
  private:
   void paintEvent(QPaintEvent* event) override;
 
  private:
-  const physics::Accelerometer* sensor_ = nullptr;
+  const sim::TouchSensor* sensor_ = nullptr;
 };
 
 }  // namespace physics_ui

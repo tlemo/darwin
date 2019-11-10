@@ -14,31 +14,24 @@
 
 #pragma once
 
-#include <core/physics/touch_sensor.h>
-#include <core_ui/canvas.h>
+#include <core/sim/camera.h>
+
+#include <QWidget>
 
 namespace physics_ui {
 
-//! Visualization for a physics::TouchSensor object
-class TouchSensorWidget : public core_ui::Canvas {
-  static constexpr double kCanvasWidth = 20;
-  static constexpr double kCanvasHeight = 20;
-
-  static constexpr double kSensorWidth = 15;
-  static constexpr double kSensorHeight = 15;
-
-  static constexpr double kSkinSize = 1.5;
-
+//! Visualization for a sim::Camera object
+class CameraWidget : public QWidget {
  public:
-  explicit TouchSensorWidget(QWidget* parent);
+  explicit CameraWidget(QWidget* parent) : QWidget(parent) {}
 
-  void setSensor(const physics::TouchSensor* sensor);
+  void setCamera(const sim::Camera* camera);
 
  private:
   void paintEvent(QPaintEvent* event) override;
 
  private:
-  const physics::TouchSensor* sensor_ = nullptr;
+  const sim::Camera* camera_ = nullptr;
 };
 
 }  // namespace physics_ui

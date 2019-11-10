@@ -16,7 +16,7 @@
 
 #include <core/utils.h>
 
-namespace physics {
+namespace sim {
 
 Accelerometer::Accelerometer(b2Body* body) : body_(body) {
   linear_acceleration_.SetZero();
@@ -54,4 +54,4 @@ void Accelerometer::update(float dt) {
   last_angular_velocity_ = angular_velocity;
 }
 
-}  // namespace physics
+}  // namespace sim

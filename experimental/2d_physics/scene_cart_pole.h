@@ -3,8 +3,8 @@
 
 #include "sandbox_factory.h"
 
-#include <core/physics/scene.h>
-#include <core_ui/physics/box2d_widget.h>
+#include <core/sim/scene.h>
+#include <core_ui/sim/box2d_widget.h>
 #include <core/properties.h>
 
 #include <QKeyEvent>
@@ -26,7 +26,7 @@ struct SceneVariables : public core::PropertySet {
   PROPERTY(pole_angular_velocity, float, 0, "Pole angular velocity");
 };
 
-class Scene : public physics::Scene {
+class Scene : public sim::Scene {
  public:
   explicit Scene(const core::PropertySet* config);
 

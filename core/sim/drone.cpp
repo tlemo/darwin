@@ -16,7 +16,7 @@
 
 #include <math.h>
 
-namespace physics {
+namespace sim {
 
 Drone::Drone(b2World* world, const DroneConfig& config) : config_(config) {
   b2BodyDef drone_body_def;
@@ -83,4 +83,4 @@ void Drone::postStep(float dt) {
   }
 }
 
-}  // namespace physics
+}  // namespace sim

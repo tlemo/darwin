@@ -14,12 +14,12 @@
 
 #pragma once
 
-#include <core/physics/script.h>
+#include <core/sim/script.h>
 #include <core/properties.h>
 #include <core/utils.h>
 #include <third_party/box2d/box2d.h>
 
-namespace physics {
+namespace sim {
 
 class Camera;
 class TouchSensor;
@@ -77,9 +77,9 @@ class Scene : public core::NonCopyable {
   // sensors
   // TODO: get rid of these methods
   virtual const Camera* camera() const { return nullptr; }
-  virtual const physics::TouchSensor* touchSensor() const { return nullptr; }
-  virtual const physics::Accelerometer* accelerometer() const { return nullptr; }
-  virtual const physics::Compass* compass() const { return nullptr; }
+  virtual const sim::TouchSensor* touchSensor() const { return nullptr; }
+  virtual const sim::Accelerometer* accelerometer() const { return nullptr; }
+  virtual const sim::Compass* compass() const { return nullptr; }
 
   bool simStep();
 
@@ -91,4 +91,4 @@ class Scene : public core::NonCopyable {
   ContactListener contact_listener_;
 };
 
-}  // namespace physics
+}  // namespace sim

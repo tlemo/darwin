@@ -14,7 +14,7 @@
 
 #include "drone_controller.h"
 
-namespace physics {
+namespace sim {
 
 DroneController::DroneController(const darwin::Genotype* genotype, Drone* drone)
     : drone_(drone), brain_(genotype->grow()) {}
@@ -65,4 +65,4 @@ int DroneController::outputs(const DroneConfig&) {
   return 3;
 }
 
-}  // namespace physics
+}  // namespace sim

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "touch_widget.h"
+#include "compass_widget.h"
 
 #include <QLineF>
 #include <QPainter>
@@ -22,16 +22,16 @@
 
 namespace physics_ui {
 
-TouchSensorWidget::TouchSensorWidget(QWidget* parent) : Canvas(parent) {
+CompassWidget::CompassWidget(QWidget* parent) : Canvas(parent) {
   setViewport(QRectF(-kCanvasWidth / 2, kCanvasHeight / 2, kCanvasWidth, -kCanvasHeight));
 }
 
-void TouchSensorWidget::setSensor(const physics::TouchSensor* sensor) {
+void CompassWidget::setSensor(const sim::Compass* sensor) {
   sensor_ = sensor;
   update();
 }
 
-void TouchSensorWidget::paintEvent(QPaintEvent* event) {
+void CompassWidget::paintEvent(QPaintEvent* event) {
   Canvas::paintEvent(event);
   if (sensor_ != nullptr) {
     QPainter painter(this);
@@ -55,27 +55,12 @@ void TouchSensorWidget::paintEvent(QPaintEvent* event) {
     painter.setBrush(Qt::NoBrush);
     painter.drawLine(QLineF(0, -kCanvasHeight / 2, 0, kCanvasHeight / 2));
     painter.drawLine(QLineF(-kCanvasWidth / 2, 0, kCanvasWidth / 2, 0));
+    painter.drawEllipse(sensor_rect);
 
-    // receptor values
-    painter.setPen(QPen(Qt::gray, 0));
-    const auto receptors = sensor_->receptors();
-    if (receptors.size() == 1) {
-      painter.setBrush(receptors[0] > 0 ? Qt::green : Qt::white);
-      painter.drawEllipse(sensor_rect);
-    } else {
-      const double slice_angle = 360.0 / receptors.size();
-      for (size_t i = 0; i < receptors.size(); ++i) {
-        const double angle = i * slice_angle - 90;
-        Q_ASSERT(receptors[i] >= 0);
-        painter.setBrush(receptors[i] > 0 ? Qt::green : Qt::white);
-        painter.drawPie(sensor_rect, int(angle * 16), int(slice_angle * 16));
-      }
-    }
-
-    painter.setPen(QPen(Qt::gray, 0));
-    painter.setBrush(Qt::white);
-    painter.drawEllipse(
-        sensor_rect.adjusted(+kSkinSize, +kSkinSize, -kSkinSize, -kSkinSize));
+    // heading
+    const auto heading = sensor_->heading() * kCompassLength;
+    painter.setPen(QPen(Qt::blue, kCompassWidth, Qt::SolidLine, Qt::RoundCap));
+    painter.drawLine(QLineF(0, 0, heading.x, heading.y));
   }
 }
 

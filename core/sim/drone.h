@@ -14,15 +14,15 @@
 
 #pragma once
 
-#include <core/physics/camera.h>
-#include <core/physics/accelerometer.h>
-#include <core/physics/touch_sensor.h>
-#include <core/physics/compass.h>
+#include <core/sim/camera.h>
+#include <core/sim/accelerometer.h>
+#include <core/sim/touch_sensor.h>
+#include <core/sim/compass.h>
 #include <core/utils.h>
 
 #include <third_party/box2d/box2d.h>
 
-namespace physics {
+namespace sim {
 
 struct DroneConfig {
   b2Vec2 position{};
@@ -51,9 +51,9 @@ class Drone : public core::NonCopyable {
 
   // sensors
   const Camera* camera() const { return camera_.get(); }
-  const physics::TouchSensor* touchSensor() const { return touch_sensor_.get(); }
-  const physics::Accelerometer* accelerometer() const { return accelerometer_.get(); }
-  const physics::Compass* compass() const { return compass_.get(); }
+  const sim::TouchSensor* touchSensor() const { return touch_sensor_.get(); }
+  const sim::Accelerometer* accelerometer() const { return accelerometer_.get(); }
+  const sim::Compass* compass() const { return compass_.get(); }
 
   b2Body* body() { return body_; }
   const b2Body* body() const { return body_; }
@@ -69,4 +69,4 @@ class Drone : public core::NonCopyable {
   DroneConfig config_;
 };
 
-}  // namespace physics
+}  // namespace sim

@@ -3,11 +3,11 @@
 
 #include "sandbox_factory.h"
 
-#include <core/physics/scene.h>
-#include <core/physics/accelerometer.h>
-#include <core/physics/camera.h>
-#include <core/physics/compass.h>
-#include <core/physics/touch_sensor.h>
+#include <core/sim/scene.h>
+#include <core/sim/accelerometer.h>
+#include <core/sim/camera.h>
+#include <core/sim/compass.h>
+#include <core/sim/touch_sensor.h>
 #include <core/properties.h>
 
 #include <QKeyEvent>
@@ -33,10 +33,10 @@ inline istream& operator>>(istream& stream, b2Vec2& v) {
 
 namespace hectic_drone_scene {
 
-using physics::Camera;
-using physics::TouchSensor;
-using physics::Accelerometer;
-using physics::Compass;
+using sim::Camera;
+using sim::TouchSensor;
+using sim::Accelerometer;
+using sim::Compass;
 
 struct Config : public core::PropertySet {
   PROPERTY(drone_radius, float, 0.5f, "Drone size");
@@ -54,7 +54,7 @@ struct SceneVariables : public core::PropertySet {
   PROPERTY(target_pos, b2Vec2, b2Vec2(0, 0), "Target position for current segment");
 };
 
-class Scene : public physics::Scene {
+class Scene : public sim::Scene {
   static constexpr float kWidth = 20;
   static constexpr float kHeight = 20;
 
@@ -123,7 +123,7 @@ class SceneUi : public physics_ui::Box2dSceneUi {
   void focusOutEvent() override { key_state_.clear(); }
 
  private:
-  void renderCamera(QPainter& painter, const physics::Camera* camera) const;
+  void renderCamera(QPainter& painter, const sim::Camera* camera) const;
   void renderDrone(QPainter& painter) const;
   void renderTarget(QPainter& painter) const;
 

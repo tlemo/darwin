@@ -19,7 +19,7 @@
 #include <vector>
 using namespace std;
 
-namespace physics {
+namespace sim {
 
 //! A single color & depth "pixel"
 struct Receptor {
@@ -76,4 +76,4 @@ class Camera {
   b2Color ambient_light_{ 0.2f, 0.2f, 0.2f };
 };
 
-}  // namespace physics
+}  // namespace sim

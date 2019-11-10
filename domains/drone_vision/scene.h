@@ -16,9 +16,9 @@
 
 #include "domain.h"
 
-#include <core/physics/camera.h>
-#include <core/physics/scene.h>
-#include <core/physics/drone.h>
+#include <core/sim/camera.h>
+#include <core/sim/scene.h>
+#include <core/sim/drone.h>
 #include <core/properties.h>
 
 #include <memory>
@@ -26,8 +26,8 @@ using namespace std;
 
 namespace drone_vision {
 
-using physics::Camera;
-using physics::Drone;
+using sim::Camera;
+using sim::Drone;
 
 struct SceneVariables : public core::PropertySet {
   PROPERTY(drone_x, float, 0, "Drone x coordinate");
@@ -38,7 +38,7 @@ struct SceneVariables : public core::PropertySet {
   PROPERTY(target_angle, float, 0, "Angle between drone direction and target");
 };
 
-class Scene : public physics::Scene {
+class Scene : public sim::Scene {
  public:
   explicit Scene(const b2Vec2& target_velocity, const DroneVision* domain);
 

@@ -1,4 +1,4 @@
-// Copyright The Darwin Neuroevolution Framework Authors.
+// Copyright 2019 The Darwin Neuroevolution Framework Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,24 +14,25 @@
 
 #pragma once
 
-#include <core/physics/camera.h>
+#include <core/darwin.h>
+#include <core/sim/drone.h>
 
-#include <QWidget>
+#include <memory>
+using namespace std;
 
-namespace physics_ui {
+namespace sim {
 
-//! Visualization for a physics::Camera object
-class CameraWidget : public QWidget {
+class DroneController {
  public:
-  explicit CameraWidget(QWidget* parent) : QWidget(parent) {}
+  DroneController(const darwin::Genotype* genotype, Drone* drone);
+  void simStep();
 
-  void setCamera(const physics::Camera* camera);
+  static int inputs(const DroneConfig& config);
+  static int outputs(const DroneConfig& config);
 
  private:
-  void paintEvent(QPaintEvent* event) override;
-
- private:
-  const physics::Camera* camera_ = nullptr;
+  Drone* drone_ = nullptr;
+  unique_ptr<darwin::Brain> brain_;
 };
 
-}  // namespace physics_ui
+}  // namespace sim

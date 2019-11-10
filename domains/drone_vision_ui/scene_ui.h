@@ -14,8 +14,8 @@
 
 #pragma once
 
-#include <core/physics/drone.h>
-#include <core_ui/physics/box2d_widget.h>
+#include <core/sim/drone.h>
+#include <core_ui/sim/box2d_widget.h>
 #include <domains/drone_vision/scene.h>
 
 namespace drone_vision_ui {
@@ -27,8 +27,8 @@ class SceneUi : public physics_ui::Box2dSceneUi {
   void render(QPainter& painter, const QRectF&) override;
 
  private:
-  void renderCamera(QPainter& painter, const physics::Camera* camera) const;
-  void renderDrone(QPainter& painter, const physics::Drone* drone) const;
+  void renderCamera(QPainter& painter, const sim::Camera* camera) const;
+  void renderDrone(QPainter& painter, const sim::Drone* drone) const;
 
  private:
   drone_vision::Scene* scene_ = nullptr;

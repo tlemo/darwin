@@ -260,7 +260,7 @@ background-clip: content;
   <customwidget>
    <class>physics_ui::Box2dWidget</class>
    <extends>QFrame</extends>
-   <header>core_ui/physics/box2d_widget.h</header>
+   <header>core_ui/sim/box2d_widget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

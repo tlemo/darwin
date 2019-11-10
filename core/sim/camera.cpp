@@ -16,7 +16,7 @@
 
 #include <core/utils.h>
 
-namespace physics {
+namespace sim {
 
 constexpr float kPi = 3.14159274101f;
 constexpr float kDegreesToRadians = kPi / 180.0f;
@@ -182,4 +182,4 @@ vector<Receptor> Camera::render() const {
   return image;
 }
 
-}  // namespace physics
+}  // namespace sim

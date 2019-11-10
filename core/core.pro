@@ -26,14 +26,14 @@ SOURCES += \
     truncation_selection.cpp \
     simple_tournament.cpp \
     swiss_tournament.cpp \
-    physics/accelerometer.cpp \
-    physics/camera.cpp \
-    physics/compass.cpp \
-    physics/scene.cpp \
-    physics/misc.cpp \
-    physics/touch_sensor.cpp \
-    physics/drone.cpp \
-    physics/drone_controller.cpp
+    sim/accelerometer.cpp \
+    sim/camera.cpp \
+    sim/compass.cpp \
+    sim/scene.cpp \
+    sim/misc.cpp \
+    sim/touch_sensor.cpp \
+    sim/drone.cpp \
+    sim/drone_controller.cpp
 
 HEADERS += \
     ann_utils.h \
@@ -68,15 +68,15 @@ HEADERS += \
     simple_tournament.h \
     tournament_implementations.h \
     swiss_tournament.h \
-    physics/accelerometer.h \
-    physics/camera.h \
-    physics/compass.h \
-    physics/scene.h \
-    physics/misc.h \
-    physics/script.h \
-    physics/touch_sensor.h \
-    physics/drone.h \
-    physics/drone_controller.h
+    sim/accelerometer.h \
+    sim/camera.h \
+    sim/compass.h \
+    sim/scene.h \
+    sim/misc.h \
+    sim/script.h \
+    sim/touch_sensor.h \
+    sim/drone.h \
+    sim/drone_controller.h
     
 addLibrary(../third_party/sqlite)
 addLibrary(../third_party/box2d)

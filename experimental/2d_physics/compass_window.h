@@ -3,7 +3,7 @@
 
 #include "tool_window.h"
 
-#include <core_ui/physics/compass_widget.h>
+#include <core_ui/sim/compass_widget.h>
 
 class CompassWindow : public ToolWindow {
  public:

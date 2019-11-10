@@ -20,7 +20,7 @@
 #include <map>
 using namespace std;
 
-namespace physics {
+namespace sim {
 
 //! Basic action scripting
 //! 
@@ -69,4 +69,4 @@ class Script {
   float timestamp_ = kInvalidTimestamp;
 };
 
-}  // namespace physics
+}  // namespace sim

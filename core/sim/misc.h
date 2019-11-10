@@ -1,4 +1,4 @@
-// Copyright 2019 The Darwin Neuroevolution Framework Authors.
+// Copyright The Darwin Neuroevolution Framework Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,25 +14,15 @@
 
 #pragma once
 
-#include <core/darwin.h>
-#include <core/physics/drone.h>
+#include <third_party/box2d/box2d.h>
 
-#include <memory>
-using namespace std;
+namespace sim {
 
-namespace physics {
+// TODO: refactor these helpers
+b2Body* addBall(float x, float y, float r, b2World* world);
+b2Body* addBox(float x, float y, float w, float h, b2World* world);
+b2Body* addCross(float x, float y, float w, float h, b2World* world);
+b2Body* addBullet(float x, float y, float dx, float dy, b2World* world);
+b2Body* addBoxProjectile(float x, float y, float dx, float dy, b2World* world);
 
-class DroneController {
- public:
-  DroneController(const darwin::Genotype* genotype, Drone* drone);
-  void simStep();
-
-  static int inputs(const DroneConfig& config);
-  static int outputs(const DroneConfig& config);
-
- private:
-  Drone* drone_ = nullptr;
-  unique_ptr<darwin::Brain> brain_;
-};
-
-}  // namespace physics
+}  // namespace sim

@@ -18,7 +18,7 @@
 #include <core/evolution.h>
 #include <core/logging.h>
 #include <core/math_2d.h>
-#include <core_ui/physics/box2d_sandbox_dialog.h>
+#include <core_ui/sim/box2d_sandbox_dialog.h>
 
 #include <QString>
 

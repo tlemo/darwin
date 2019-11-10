@@ -16,9 +16,9 @@
 
 #include "scene_ui.h"
 
-#include <core/physics/drone_controller.h>
-#include <core_ui/physics/box2d_sandbox_window.h>
-#include <core_ui/physics/camera_widget.h>
+#include <core/sim/drone_controller.h>
+#include <core_ui/sim/box2d_sandbox_window.h>
+#include <core_ui/sim/camera_widget.h>
 #include <core_ui/properties_widget.h>
 #include <domains/drone_vision/domain.h>
 #include <domains/drone_vision/scene.h>
@@ -69,7 +69,7 @@ class SandboxWindow : public physics_ui::Box2dSandboxWindow {
 
   shared_ptr<const darwin::Genotype> genotype_;
   unique_ptr<drone_vision::Scene> scene_;
-  unique_ptr<physics::DroneController> agent_;
+  unique_ptr<sim::DroneController> agent_;
   unique_ptr<SceneUi> scene_ui_;
   int step_ = -1;
   int max_steps_ = -1;

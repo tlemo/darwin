@@ -15,7 +15,7 @@
 #include <third_party/box2d/box2d.h>
 
 #include <core/utils.h>
-#include <core/physics/script.h>
+#include <core/sim/script.h>
 #include <third_party/gtest/gtest.h>
 
 #include <unordered_set>
@@ -153,7 +153,7 @@ TEST(Box2dTest, RoundProjectiles) {
   world.SetContactListener(&contact_listener);
 
   // script (shooting projectiles)
-  physics::Script script;
+  sim::Script script;
   constexpr int kProjectilesCount = 200;
   for (int i = 0; i < kProjectilesCount; ++i) {
     script.record(i / 20.0f, [&, i](float) {
@@ -243,7 +243,7 @@ TEST(Box2dTest, BoxProjectiles) {
   world.SetContactListener(&contact_listener);
 
   // script (shooting projectiles)
-  physics::Script script;
+  sim::Script script;
   constexpr int kProjectilesCount = 50;
   for (int i = 0; i < kProjectilesCount; ++i) {
     script.record(i / 10.0f, [&, i](float) {

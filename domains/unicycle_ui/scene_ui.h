@@ -14,7 +14,7 @@
 
 #pragma once
 
-#include <core_ui/physics/box2d_widget.h>
+#include <core_ui/sim/box2d_widget.h>
 #include <domains/unicycle/world.h>
 
 namespace unicycle_ui {
