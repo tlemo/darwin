@@ -22,7 +22,8 @@
 #include <domains/double_cart_pole_ui/double_cart_pole_ui.h>
 #include <domains/unicycle_ui/unicycle_ui.h>
 #include <domains/ballistics_ui/ballistics_ui.h>
-#include <domains/drone_vision_ui/drone_vision_ui.h>
+#include <domains/drone_vision_ui/domain_ui.h>
+#include <domains/drone_follow_ui/domain_ui.h>
 
 namespace registry_ui {
 
@@ -36,6 +37,7 @@ void init() {
   unicycle_ui::init();
   ballistics_ui::init();
   drone_vision_ui::init();
+  drone_follow_ui::init();
 }
 
 }  // namespace registry_ui

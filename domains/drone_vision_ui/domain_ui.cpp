@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "drone_vision_ui.h"
+#include "domain_ui.h"
 #include "sandbox_window.h"
 
 #include <core/darwin.h>
