@@ -22,8 +22,6 @@
 
 #include <third_party/box2d/box2d.h>
 
-#include <math.h>
-
 namespace physics {
 
 struct DroneConfig {

@@ -14,6 +14,8 @@
 
 #pragma once
 
+#include "../drone.h"
+
 #include <core/darwin.h>
 #include <core/properties.h>
 #include <third_party/box2d/box2d.h>
@@ -66,6 +68,7 @@ class DroneVision : public darwin::Domain {
   bool evaluatePopulation(darwin::Population* population) const override;
   
   const Config& config() const { return config_; }
+  const physics::DroneConfig& droneConfig() const { return drone_config_; }
   
   b2Vec2 randomTargetVelocity() const;
   
@@ -74,6 +77,7 @@ class DroneVision : public darwin::Domain {
 
  private:
   Config config_;
+  physics::DroneConfig drone_config_;
 };
 
 class Factory : public darwin::DomainFactory {

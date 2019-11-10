@@ -13,8 +13,9 @@
 // limitations under the License.
 
 #include "domain.h"
-#include "agent.h"
 #include "scene.h"
+
+#include "../agent.h"
 
 #include <core/evolution.h>
 #include <core/exception.h>
@@ -29,14 +30,24 @@ namespace drone_vision {
 DroneVision::DroneVision(const core::PropertySet& config) {
   config_.copyFrom(config);
   validateConfiguration();
+  
+  // setup drone configuration
+  drone_config_.position = b2Vec2(0, 0);
+  drone_config_.radius = config_.drone_radius;
+  drone_config_.camera = true;
+  drone_config_.camera_depth = config_.camera_depth;
+  drone_config_.camera_fov = config_.camera_fov;
+  drone_config_.camera_resolution = config_.camera_resolution;
+  drone_config_.max_move_force = config_.max_move_force;
+  drone_config_.max_rotate_torque = config_.max_rotate_torque;
 }
 
 size_t DroneVision::inputs() const {
-  return Agent::inputs(config_);
+  return physics::Agent::inputs(drone_config_);
 }
 
 size_t DroneVision::outputs() const {
-  return Agent::outputs(config_);
+  return physics::Agent::outputs(drone_config_);
 }
 
 bool DroneVision::evaluatePopulation(darwin::Population* population) const {
@@ -60,7 +71,7 @@ bool DroneVision::evaluatePopulation(darwin::Population* population) const {
 
     pp::for_each(*population, [&](int, darwin::Genotype* genotype) {
       Scene scene(target_velocity, this);
-      Agent agent(genotype, &scene);
+      physics::Agent agent(genotype, scene.drone());
 
       // simulation loop
       for (int step = 0; step < config_.max_steps; ++step) {

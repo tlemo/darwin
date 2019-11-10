@@ -14,6 +14,8 @@
 
 #include "drone.h"
 
+#include <math.h>
+
 namespace physics {
 
 Drone::Drone(b2World* world, const DroneConfig& config) : config_(config) {

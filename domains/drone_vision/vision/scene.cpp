@@ -44,16 +44,7 @@ Scene::Scene(const b2Vec2& target_velocity, const DroneVision* domain)
   walls->CreateFixture(&wall_fixture_def);
 
   // drone
-  physics::DroneConfig drone_config;
-  drone_config.position = b2Vec2(0, 0);
-  drone_config.radius = config.drone_radius;
-  drone_config.camera = true;
-  drone_config.camera_depth = config.camera_depth;
-  drone_config.camera_fov = config.camera_fov;
-  drone_config.camera_resolution = config.camera_resolution;
-  drone_config.max_move_force = config.max_move_force;
-  drone_config.max_rotate_torque = config.max_rotate_torque;
-  drone_ = make_unique<Drone>(&world_, drone_config);
+  drone_ = make_unique<Drone>(&world_, domain_->droneConfig());
 
   // target
   target_ = createTarget(b2Vec2(0, 5), target_velocity, config.target_radius);

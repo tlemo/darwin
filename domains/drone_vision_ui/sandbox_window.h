@@ -69,7 +69,7 @@ class SandboxWindow : public physics_ui::Box2dSandboxWindow {
 
   shared_ptr<const darwin::Genotype> genotype_;
   unique_ptr<drone_vision::Scene> scene_;
-  unique_ptr<drone_vision::Agent> agent_;
+  unique_ptr<physics::Agent> agent_;
   unique_ptr<SceneUi> scene_ui_;
   int step_ = -1;
   int max_steps_ = -1;

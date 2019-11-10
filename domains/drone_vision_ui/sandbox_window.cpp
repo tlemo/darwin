@@ -84,7 +84,7 @@ void SandboxWindow::newScene() {
 
   const auto target_velocity = domain_->randomTargetVelocity();
   scene_ = make_unique<drone_vision::Scene>(target_velocity, domain_);
-  agent_ = make_unique<drone_vision::Agent>(genotype_.get(), scene_.get());
+  agent_ = make_unique<physics::Agent>(genotype_.get(), scene_->drone());
   step_ = 0;
 
   variables_.initial_target_velocity->setValue(

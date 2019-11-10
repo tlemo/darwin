@@ -14,28 +14,28 @@
 
 #pragma once
 
-#include "vision/domain.h"
+#include "drone.h"
 
 #include <core/darwin.h>
 
 #include <memory>
 using namespace std;
 
-namespace drone_vision {
+namespace physics {
 
 class Scene;
 
 class Agent {
  public:
-  Agent(const darwin::Genotype* genotype, Scene* scene);
+  Agent(const darwin::Genotype* genotype, Drone* drone);
   void simStep();
 
-  static int inputs(const Config& config);
-  static int outputs(const Config& config);
+  static int inputs(const DroneConfig& config);
+  static int outputs(const DroneConfig& config);
 
  private:
-  Scene* scene_ = nullptr;
+  Drone* drone_ = nullptr;
   unique_ptr<darwin::Brain> brain_;
 };
 
-}  // namespace drone_vision
+}  // namespace physics
