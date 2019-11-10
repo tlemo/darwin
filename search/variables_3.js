@@ -11,5 +11,6 @@ var searchData=
   ['domain_5fhint',['domain_hint',['../structdarwin_1_1_experiment_setup.html#a141e9135c435b9d37b1ad39361ca4db9',1,'darwin::ExperimentSetup']]],
   ['domain_5fname',['domain_name',['../structdarwin_1_1_experiment_setup.html#a6c4bf33c671292376febf46778b1b202',1,'darwin::ExperimentSetup']]],
   ['domains',['domains',['../structdarwin_1_1_registry.html#a977c7cb6eb1c65679a6d3bf8bf00e476',1,'darwin::Registry']]],
-  ['domains_5fui',['domains_ui',['../structdarwin_1_1_registry.html#a8f87dc1f11012512fde65b639fb46b6f',1,'darwin::Registry']]]
+  ['domains_5fui',['domains_ui',['../structdarwin_1_1_registry.html#a8f87dc1f11012512fde65b639fb46b6f',1,'darwin::Registry']]],
+  ['drone_5fradius',['drone_radius',['../structdrone__vision_1_1_config.html#a9803e748665d71e5cc5b4922eb4c750d',1,'drone_vision::Config']]]
 ];
