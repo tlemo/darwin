@@ -22,6 +22,9 @@
 
 #include <QString>
 
+#include <random>
+using namespace std;
+
 namespace drone_follow_ui {
 
 bool SandboxWindow::setup() {
@@ -32,7 +35,7 @@ bool SandboxWindow::setup() {
   CHECK(state() == State::None);
 
   auto snapshot = darwin::evolution()->snapshot();
-  domain_ = dynamic_cast<const drone_follow::DroneVision*>(snapshot.domain);
+  domain_ = dynamic_cast<const drone_follow::DroneFollow*>(snapshot.domain);
   CHECK(domain_ != nullptr);
 
   const auto default_generation = snapshot.generation - 1;
@@ -82,13 +85,10 @@ void SandboxWindow::newScene() {
   setSceneUi(nullptr);
   scene_ui_.reset();
 
-  const auto target_velocity = domain_->randomTargetVelocity();
-  scene_ = make_unique<drone_follow::Scene>(target_velocity, domain_);
+  const auto random_seed = std::random_device{}();
+  scene_ = make_unique<drone_follow::Scene>(random_seed, domain_);
   agent_ = make_unique<sim::DroneController>(genotype_.get(), scene_->drone());
   step_ = 0;
-
-  variables_.initial_target_velocity->setValue(
-      QString::asprintf("(%.2f, %.2f)", target_velocity.x, target_velocity.y));
 
   const auto extents = scene_->extents();
   const QRectF viewport(
@@ -129,8 +129,6 @@ void SandboxWindow::setupVariables() {
   auto config_section = variablesWidget()->addSection("Configuration");
   variables_.generation = config_section->addProperty("Generation");
   variables_.max_steps = config_section->addProperty("Max steps");
-  variables_.initial_target_velocity =
-      config_section->addProperty("Initial target velocity");
 
   auto game_state_section = variablesWidget()->addSection("Game state");
   variables_.state = game_state_section->addProperty("State");

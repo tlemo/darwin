@@ -26,7 +26,7 @@ using namespace std;
 
 namespace drone_follow {
 
-DroneVision::DroneVision(const core::PropertySet& config) {
+DroneFollow::DroneFollow(const core::PropertySet& config) {
   config_.copyFrom(config);
   validateConfiguration();
   
@@ -41,15 +41,15 @@ DroneVision::DroneVision(const core::PropertySet& config) {
   drone_config_.max_rotate_torque = config_.max_rotate_torque;
 }
 
-size_t DroneVision::inputs() const {
+size_t DroneFollow::inputs() const {
   return sim::DroneController::inputs(drone_config_);
 }
 
-size_t DroneVision::outputs() const {
+size_t DroneFollow::outputs() const {
   return sim::DroneController::outputs(drone_config_);
 }
 
-bool DroneVision::evaluatePopulation(darwin::Population* population) const {
+bool DroneFollow::evaluatePopulation(darwin::Population* population) const {
   darwin::StageScope stage("Evaluate population");
 
   const int generation = population->generation();
@@ -66,10 +66,10 @@ bool DroneVision::evaluatePopulation(darwin::Population* population) const {
         population->size());
     core::log(" ... world %d\n", world_index);
 
-    const auto target_velocity = randomTargetVelocity();
+    const auto random_seed = std::random_device{}();
 
     pp::for_each(*population, [&](int, darwin::Genotype* genotype) {
-      Scene scene(target_velocity, this);
+      Scene scene(random_seed, this);
       sim::DroneController agent(genotype, scene.drone());
 
       // simulation loop
@@ -94,19 +94,10 @@ bool DroneVision::evaluatePopulation(darwin::Population* population) const {
   return false;
 }
 
-b2Vec2 DroneVision::randomTargetVelocity() const {
-  constexpr float kPi = 3.14159274101f;
-  random_device rd;
-  default_random_engine rnd(rd());
-  uniform_real_distribution<float> dist(-kPi, kPi);
-  const float angle = dist(rnd);
-  return b2Vec2(cos(angle), sin(angle)) * config_.target_speed;
-}
-
 // validate the configuration
 // (just a few obvious sanity checks for values which would completly break the domain,
 // nonsensical configurations are still possible)
-void DroneVision::validateConfiguration() {
+void DroneFollow::validateConfiguration() {
   if (config_.drone_radius <= 0)
     throw core::Exception("Invalid configuration: drone_radius <= 0");
   if (config_.max_move_force < 0)
@@ -119,10 +110,8 @@ void DroneVision::validateConfiguration() {
   if (config_.camera_resolution < 2)
     throw core::Exception("Invalid configuration: camera_resolution");
 
-  if (config_.target_radius <= 0)
-    throw core::Exception("Invalid configuration: target_radius");
-  if (config_.target_speed < 0)
-    throw core::Exception("Invalid configuration: target_max_speed");
+  if (config_.target_distance <= config_.drone_radius * 2)
+    throw core::Exception("Invalid configuration: target_distance");
 
   if (config_.test_worlds < 1)
     throw core::Exception("Invalid configuration: test_worlds < 1");
@@ -131,7 +120,7 @@ void DroneVision::validateConfiguration() {
 }
 
 unique_ptr<darwin::Domain> Factory::create(const core::PropertySet& config) {
-  return make_unique<DroneVision>(config);
+  return make_unique<DroneFollow>(config);
 }
 
 unique_ptr<core::PropertySet> Factory::defaultConfig(darwin::ComplexityHint hint) const {

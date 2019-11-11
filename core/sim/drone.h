@@ -37,6 +37,7 @@ struct DroneConfig {
   bool compass = false;
   float max_move_force = 5.0f;
   float max_rotate_torque = 1.0f;
+  b2Color color;
 };
 
 class Drone : public core::NonCopyable {

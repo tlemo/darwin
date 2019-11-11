@@ -39,7 +39,6 @@ class SandboxWindow : public physics_ui::Box2dSandboxWindow {
     // configuration
     core_ui::PropertyItem* generation = nullptr;
     core_ui::PropertyItem* max_steps = nullptr;
-    core_ui::PropertyItem* initial_target_velocity = nullptr;
 
     // simulation state
     core_ui::PropertyItem* state = nullptr;
@@ -63,7 +62,7 @@ class SandboxWindow : public physics_ui::Box2dSandboxWindow {
   Variables variables_;
   unordered_map<string, core_ui::PropertyItem*> scene_variables_map_;
 
-  const drone_follow::DroneVision* domain_ = nullptr;
+  const drone_follow::DroneFollow* domain_ = nullptr;
 
   physics_ui::CameraWidget* camera_widget_ = nullptr;
 

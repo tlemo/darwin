@@ -34,8 +34,9 @@ Drone::Drone(b2World* world, const DroneConfig& config) : config_(config) {
   drone_fixture_def.density = 0.1f;
   drone_fixture_def.friction = 1.0f;
   drone_fixture_def.restitution = 0.2f;
-  drone_fixture_def.material.color = b2Color(0, 0, 1);
+  drone_fixture_def.material.color = config_.color;
   drone_fixture_def.material.emit_intensity = 0.5f;
+  drone_fixture_def.material.shininess = 10;
   body_->CreateFixture(&drone_fixture_def);
 
   if (config_.camera) {

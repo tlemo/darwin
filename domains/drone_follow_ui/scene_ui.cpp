@@ -26,6 +26,7 @@ namespace drone_follow_ui {
 
 void SceneUi::render(QPainter& painter, const QRectF&) {
   renderDrone(painter, scene_->drone());
+  renderDrone(painter, scene_->targetDrone());
 }
 
 void SceneUi::renderCamera(QPainter& painter, const sim::Camera* camera) const {

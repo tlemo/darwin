@@ -20,8 +20,7 @@ GLOBAL_INITIALIZER {
 }
 
 Scene::Scene(const core::PropertySet* config)
-    : sim::Scene(b2Vec2(0, 0),
-                     sim::Rect(-kWidth / 2, -kHeight / 2, kWidth, kHeight)) {
+    : sim::Scene(b2Vec2(0, 0), sim::Rect(-kWidth / 2, -kHeight / 2, kWidth, kHeight)) {
   if (config) {
     config_.copyFrom(*config);
   }
