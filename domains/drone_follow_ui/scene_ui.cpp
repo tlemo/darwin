@@ -25,6 +25,15 @@
 namespace drone_follow_ui {
 
 void SceneUi::render(QPainter& painter, const QRectF&) {
+  // draw a line from the drone to the target drone
+  const auto drone_pos = scene_->drone()->body()->GetPosition();
+  const auto target_drone_pos = scene_->targetDrone()->body()->GetPosition();
+  const QPointF drone_point(drone_pos.x, drone_pos.y);
+  const QPointF target_drone_point(target_drone_pos.x, target_drone_pos.y);
+  painter.setPen(QPen(Qt::gray, 0, Qt::DotLine));
+  painter.setBrush(Qt::NoBrush);
+  painter.drawLine(drone_point, target_drone_point);
+
   renderDrone(painter, scene_->drone());
   renderDrone(painter, scene_->targetDrone());
 }
