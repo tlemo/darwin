@@ -37,6 +37,10 @@ DroneFollow::DroneFollow(const core::PropertySet& config) {
   drone_config_.camera_depth = config_.camera_depth;
   drone_config_.camera_fov = config_.camera_fov;
   drone_config_.camera_resolution = config_.camera_resolution;
+  drone_config_.touch_sensor = config_.touch_sensor;
+  drone_config_.touch_resolution = config_.touch_resolution;
+  drone_config_.accelerometer = config_.accelerometer;
+  drone_config_.compass = config_.compass;
   drone_config_.max_move_force = config_.max_move_force;
   drone_config_.max_rotate_torque = config_.max_rotate_torque;
 }
@@ -110,8 +114,8 @@ void DroneFollow::validateConfiguration() {
   if (config_.camera_resolution < 2)
     throw core::Exception("Invalid configuration: camera_resolution");
 
-  if (config_.target_distance <= config_.drone_radius * 2)
-    throw core::Exception("Invalid configuration: target_distance");
+  if (config_.target_distance < config_.drone_radius * 2)
+    throw core::Exception("Invalid configuration: target_distance too close");
 
   if (config_.test_worlds < 1)
     throw core::Exception("Invalid configuration: test_worlds < 1");
@@ -137,6 +141,10 @@ unique_ptr<core::PropertySet> Factory::defaultConfig(darwin::ComplexityHint hint
     case darwin::ComplexityHint::Extra:
       config->test_worlds = 10;
       config->max_steps = 10000;
+      config->compass = true;
+      config->touch_sensor = true;
+      config->accelerometer = true;
+      config->camera_depth = true;
       break;
   }
   return config;

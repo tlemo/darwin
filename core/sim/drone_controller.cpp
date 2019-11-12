@@ -23,19 +23,44 @@ void DroneController::simStep() {
   const auto& config = drone_->config();
 
   // setup inputs
-  const auto camera = drone_->camera();
-  const auto image = camera->render();
-  CHECK(image.size() == config.camera_resolution);
   int input_index = 0;
-  for (const auto& receptor : image) {
-    brain_->setInput(input_index++, receptor.color.r);
-    brain_->setInput(input_index++, receptor.color.g);
-    brain_->setInput(input_index++, receptor.color.b);
-    if (config.camera_depth) {
-      brain_->setInput(input_index++, receptor.depth);
+
+  if (config.camera) {
+    const auto camera = drone_->camera();
+    const auto image = camera->render();
+    CHECK(image.size() == config.camera_resolution);
+    for (const auto& receptor : image) {
+      brain_->setInput(input_index++, receptor.color.r);
+      brain_->setInput(input_index++, receptor.color.g);
+      brain_->setInput(input_index++, receptor.color.b);
+      if (config.camera_depth) {
+        brain_->setInput(input_index++, receptor.depth);
+      }
     }
   }
 
+  if (config.touch_sensor) {
+    const auto receptors = drone_->touchSensor()->receptors();
+    for (float value : receptors) {
+      brain_->setInput(input_index++, value);
+    }
+  }
+
+  if (config.compass) {
+    const auto& heading = drone_->compass()->heading();
+    brain_->setInput(input_index++, heading.x);
+    brain_->setInput(input_index++, heading.y);
+  }
+
+  if (config.accelerometer) {
+    const auto linear_acc = drone_->accelerometer()->linearAcceleration();
+    const auto angular_acc = drone_->accelerometer()->angularAcceleration();
+    brain_->setInput(input_index++, linear_acc.x);
+    brain_->setInput(input_index++, linear_acc.y);
+    brain_->setInput(input_index++, angular_acc);
+  }
+
+  // think!
   brain_->think();
 
   const float force_x = brain_->output(0);
@@ -50,11 +75,26 @@ void DroneController::simStep() {
 }
 
 int DroneController::inputs(const DroneConfig& config) {
-  // TODO: add support for the rest of the drone sensors
-  CHECK(!config.compass);
-  CHECK(!config.touch_sensor);
-  CHECK(!config.accelerometer);
-  return config.camera_resolution * (config.camera_depth ? 4 : 3);
+  int inputs = 0;
+
+  if (config.camera) {
+    inputs += config.camera_resolution * (config.camera_depth ? 4 : 3);
+  }
+
+  if (config.touch_sensor) {
+    inputs += config.touch_resolution;
+  }
+
+  if (config.compass) {
+    inputs += 2;
+  }
+
+  if (config.accelerometer) {
+    inputs += 3;
+  }
+
+  CHECK(inputs > 0);
+  return inputs;
 }
 
 int DroneController::outputs(const DroneConfig&) {

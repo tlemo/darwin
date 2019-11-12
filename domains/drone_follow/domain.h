@@ -31,6 +31,11 @@ struct Config : public core::PropertySet {
   PROPERTY(camera_fov, float, 60, "Camera field of view (FOV)");
   PROPERTY(camera_resolution, int, 64, "Camera resolution");
   PROPERTY(camera_depth, bool, false, "Use camera depth channel");
+  
+  PROPERTY(touch_sensor, bool, false, "Use the drone's touch sensor");
+  PROPERTY(touch_resolution, int, 8, "Touch sensor resolution");
+  PROPERTY(accelerometer, bool, false, "Use the drone's accelerometer");
+  PROPERTY(compass, bool, false, "Use the drone's compass");
 
   PROPERTY(target_distance, float, 5.0f, "The ideal following distance");
 
@@ -40,17 +45,20 @@ struct Config : public core::PropertySet {
 
 //! Domain: Drone Follow
 //!
-//! TODO ........................
-//!
-//! A simple vision test: look at the red ball, using only the camera pixels as input.
-//! The target ball starts moving in a random direction and will bounce off the walls.
+//! Follow another drone while keeping close to a fixed distance. The target drone is
+//! tracking a random path.
 //!
 //! ![](images/drone_vision_sandbox.png)
 //!
 //! ### Inputs
 //!
-//! The inputs are the color channels from the drone's camera, plus optionally the depth
-//! channel.
+//! The inputs are handeled through DroneController
+//! 
+//! 1. Camera: the color channels from the drone's camera, plus optionally the depth
+//!   channel.
+//! 2. Touch sensor (optional)
+//! 3. Compass (optional)
+//! 4. Accelerometer (optional)
 //!
 //! ### Outputs
 //!
