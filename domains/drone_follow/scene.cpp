@@ -54,7 +54,7 @@ Scene::Scene(Seed seed, const DroneFollow* domain)
 
   // target drone
   sim::DroneConfig target_drone_config;
-  target_drone_config.position = b2Vec2(0, config.target_distance);
+  target_drone_config.position = b2Vec2(0, 0);
   target_drone_config.radius = config.drone_radius;
   target_drone_config.max_move_force = config.max_move_force;
   target_drone_config.max_rotate_torque = config.max_rotate_torque;

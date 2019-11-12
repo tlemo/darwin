@@ -31,7 +31,7 @@ DroneFollow::DroneFollow(const core::PropertySet& config) {
   validateConfiguration();
   
   // setup drone configuration
-  drone_config_.position = b2Vec2(0, 0);
+  drone_config_.position = b2Vec2(0, -config_.target_distance);
   drone_config_.radius = config_.drone_radius;
   drone_config_.camera = true;
   drone_config_.camera_depth = config_.camera_depth;
