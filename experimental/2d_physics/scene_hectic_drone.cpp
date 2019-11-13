@@ -244,13 +244,35 @@ void SceneUi::renderTarget(QPainter& painter) const {
   painter.drawEllipse(target, 0.1, 0.1);
 }
 
+void SceneUi::renderPath(QPainter& painter) const {
+  painter.setBrush(Qt::NoBrush);
+  painter.setPen(QPen(Qt::blue, 0, Qt::DotLine));
+  painter.drawPath(drone_path_);
+}
+
+SceneUi::SceneUi(Scene* scene) : scene_(scene) {
+  const auto vars = scene_->variables();
+  drone_path_.moveTo(vars->drone_x, vars->drone_y);
+}
+
 void SceneUi::render(QPainter& painter, const QRectF&) {
+  renderPath(painter);
   renderTarget(painter);
   renderDrone(painter);
   renderCamera(painter, scene_->camera());
 }
 
 void SceneUi::step() {
+  const auto vars = scene_->variables();
+
+  // update path
+  constexpr double kMinDist = 0.1;
+  const QPointF drone_pos(vars->drone_x, vars->drone_y);
+  if (QLineF(drone_pos, drone_path_.currentPosition()).length() > kMinDist) {
+    drone_path_.lineTo(drone_pos);
+  }
+
+  // keyboard inputs
   const float move_force = scene_->config()->move_force;
   const float rotate_torque = scene_->config()->rotate_torque;
   if (keyPressed(Qt::Key_Left)) {
