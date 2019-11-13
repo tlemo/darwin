@@ -43,6 +43,7 @@ DroneFollow::DroneFollow(const core::PropertySet& config) {
   drone_config_.compass = config_.compass;
   drone_config_.max_move_force = config_.max_move_force;
   drone_config_.max_rotate_torque = config_.max_rotate_torque;
+  drone_config_.lights = config_.drone_lights;
 }
 
 size_t DroneFollow::inputs() const {

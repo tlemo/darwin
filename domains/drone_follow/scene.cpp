@@ -59,6 +59,7 @@ Scene::Scene(Seed seed, const DroneFollow* domain)
   target_drone_config.max_move_force = config.max_move_force;
   target_drone_config.max_rotate_torque = config.max_rotate_torque;
   target_drone_config.color = b2Color(0, 0, 1);
+  target_drone_config.friction = 0;
   target_drone_ = make_unique<Drone>(&world_, target_drone_config);
 
   // lights
