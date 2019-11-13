@@ -60,6 +60,7 @@ Scene::Scene(Seed seed, const DroneFollow* domain)
   target_drone_config.max_rotate_torque = config.max_rotate_torque;
   target_drone_config.color = b2Color(0, 0, 1);
   target_drone_config.friction = 0;
+  target_drone_config.lights = config.drone_lights;
   target_drone_ = make_unique<Drone>(&world_, target_drone_config);
 
   // lights
@@ -134,7 +135,8 @@ void Scene::updateFitness() {
 }
 
 void Scene::generateTargetPos() {
-  for (;;) {
+  constexpr int kMaxTries = 100;
+  for (int i = 0; i < kMaxTries; ++i) {
     // generate a new, random target
     const auto& config = target_drone_->config();
     const float d = config.radius * 2;
