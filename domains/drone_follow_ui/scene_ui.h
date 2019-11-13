@@ -18,13 +18,16 @@
 #include <core_ui/sim/box2d_widget.h>
 #include <domains/drone_follow/scene.h>
 
+#include <QPainterPath>
+
 namespace drone_follow_ui {
 
 class SceneUi : public physics_ui::Box2dSceneUi {
  public:
-  SceneUi(drone_follow::Scene* scene) : scene_(scene) {}
+  SceneUi(drone_follow::Scene* scene);
 
   void render(QPainter& painter, const QRectF&) override;
+  void step() override;
 
  private:
   void renderCamera(QPainter& painter, const sim::Camera* camera) const;
@@ -32,6 +35,9 @@ class SceneUi : public physics_ui::Box2dSceneUi {
 
  private:
   drone_follow::Scene* scene_ = nullptr;
+
+  QPainterPath drone_path_;
+  QPainterPath target_drone_path_;
 
   const QPixmap drone_pixmap_{ ":/resources/drone.png" };
 };

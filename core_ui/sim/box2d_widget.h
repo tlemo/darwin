@@ -45,6 +45,7 @@ class Box2dSceneUi : public QObject {
   virtual void focusOutEvent() {}
   
   // simulation step
+  // TODO: revisit this
   virtual void step() {}
 
  signals:

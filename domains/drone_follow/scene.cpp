@@ -58,7 +58,7 @@ Scene::Scene(Seed seed, const DroneFollow* domain)
   target_drone_config.radius = config.drone_radius;
   target_drone_config.max_move_force = config.max_move_force;
   target_drone_config.max_rotate_torque = config.max_rotate_torque;
-  target_drone_config.color = b2Color(1, 0, 0);
+  target_drone_config.color = b2Color(0, 0, 1);
   target_drone_ = make_unique<Drone>(&world_, target_drone_config);
 
   // lights
@@ -133,12 +133,22 @@ void Scene::updateFitness() {
 }
 
 void Scene::generateTargetPos() {
-  const auto& config = target_drone_->config();
-  const float d = config.radius * 2;
-  uniform_real_distribution<float> dist_x(-kWidth / 2 + d, kWidth / 2 - d);
-  uniform_real_distribution<float> dist_y(-kHeight / 2 + d, kHeight / 2 - d);
-  start_pos_ = target_drone_->body()->GetPosition();
-  target_pos_ = b2Vec2(dist_x(rnd_), dist_y(rnd_));
+  for (;;) {
+    // generate a new, random target
+    const auto& config = target_drone_->config();
+    const float d = config.radius * 2;
+    uniform_real_distribution<float> dist_x(-kWidth / 2 + d, kWidth / 2 - d);
+    uniform_real_distribution<float> dist_y(-kHeight / 2 + d, kHeight / 2 - d);
+    start_pos_ = target_drone_->body()->GetPosition();
+    target_pos_ = b2Vec2(dist_x(rnd_), dist_y(rnd_));
+
+    // make sure the new target is not sharply behind the drone
+    const auto local_target_pos = target_drone_->body()->GetLocalPoint(target_pos_);
+    const auto target_angle = atan2(local_target_pos.x, local_target_pos.y);
+    if (fabs(target_angle) < math::kPi / 2) {
+      break;
+    }
+  }
 }
 
 }  // namespace drone_follow

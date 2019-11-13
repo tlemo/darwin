@@ -39,6 +39,30 @@ Drone::Drone(b2World* world, const DroneConfig& config) : config_(config) {
   drone_fixture_def.material.shininess = 10;
   body_->CreateFixture(&drone_fixture_def);
 
+  // left light
+  b2CircleShape left_light_shape;
+  left_light_shape.m_radius = config_.radius / 4;
+  left_light_shape.m_p = b2Vec2(-config_.radius, 0);
+
+  b2FixtureDef left_light_def;
+  left_light_def.shape = &left_light_shape;
+  left_light_def.material.color = b2Color(1, 0, 0);
+  left_light_def.material.emit_intensity = 1;
+  left_light_def.filter.maskBits = 0;
+  body_->CreateFixture(&left_light_def);
+
+  // right light
+  b2CircleShape right_light_shape;
+  right_light_shape.m_radius = config_.radius / 4;
+  right_light_shape.m_p = b2Vec2(config_.radius, 0);
+
+  b2FixtureDef right_light_def;
+  right_light_def.shape = &right_light_shape;
+  right_light_def.material.color = b2Color(0, 1, 0);
+  right_light_def.material.emit_intensity = 1;
+  right_light_def.filter.maskBits = 0;
+  body_->CreateFixture(&right_light_def);
+
   if (config_.camera) {
     camera_ = make_unique<Camera>(
         body_, config_.camera_fov, 0.1f, 30.0f, config_.camera_resolution);

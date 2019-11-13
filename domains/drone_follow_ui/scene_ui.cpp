@@ -20,22 +20,54 @@
 #include <QPainter>
 #include <QPen>
 #include <QPointF>
+#include <QLineF>
 #include <QRectF>
 
 namespace drone_follow_ui {
 
+static QPointF dronePosition(const sim::Drone* drone) {
+  const auto v = drone->body()->GetPosition();
+  return QPointF(v.x, v.y);
+}
+
+static double dist(const QPointF& a, const QPointF& b) {
+  return QLineF(a, b).length();
+}
+
+SceneUi::SceneUi(drone_follow::Scene* scene) : scene_(scene) {
+  drone_path_.moveTo(dronePosition(scene_->drone()));
+  target_drone_path_.moveTo(dronePosition(scene_->targetDrone()));
+}
+
 void SceneUi::render(QPainter& painter, const QRectF&) {
-  // draw a line from the drone to the target drone
-  const auto drone_pos = scene_->drone()->body()->GetPosition();
-  const auto target_drone_pos = scene_->targetDrone()->body()->GetPosition();
-  const QPointF drone_point(drone_pos.x, drone_pos.y);
-  const QPointF target_drone_point(target_drone_pos.x, target_drone_pos.y);
-  painter.setPen(QPen(Qt::gray, 0, Qt::DotLine));
+  // draw a line from the drone to the target drone`
+  const auto drone_pos = dronePosition(scene_->drone());
+  const auto target_drone_pos = dronePosition(scene_->targetDrone());
+  painter.setPen(QPen(Qt::lightGray, 0, Qt::DotLine));
   painter.setBrush(Qt::NoBrush);
-  painter.drawLine(drone_point, target_drone_point);
+  painter.drawLine(drone_pos, target_drone_pos);
+
+  // render drone paths
+  painter.setBrush(Qt::NoBrush);
+  painter.setPen(QPen(Qt::blue, 0, Qt::DotLine));
+  painter.drawPath(drone_path_);
+  painter.setPen(QPen(Qt::red, 0, Qt::DotLine));
+  painter.drawPath(target_drone_path_);
 
   renderDrone(painter, scene_->drone());
   renderDrone(painter, scene_->targetDrone());
+}
+
+void SceneUi::step() {
+  constexpr double kMinDist = 0.1;
+  const auto drone_pos = dronePosition(scene_->drone());
+  if (dist(drone_pos, drone_path_.currentPosition()) > kMinDist) {
+    drone_path_.lineTo(drone_pos);
+  }
+  const auto target_drone_pos = dronePosition(scene_->targetDrone());
+  if (dist(target_drone_pos, target_drone_path_.currentPosition()) > kMinDist) {
+    target_drone_path_.lineTo(target_drone_pos);
+  }
 }
 
 void SceneUi::renderCamera(QPainter& painter, const sim::Camera* camera) const {

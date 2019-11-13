@@ -178,11 +178,21 @@ void Scene::createLight(b2Body* body, const b2Vec2& pos, const b2Color& color) {
 }
 
 void Scene::generateTargetPos() {
-  const float d = config_.drone_radius * 2;
-  uniform_real_distribution<float> dist_x(-kWidth / 2 + d, kWidth / 2 - d);
-  uniform_real_distribution<float> dist_y(-kHeight / 2 + d, kHeight / 2 - d);
-  start_pos_ = drone_->GetPosition();
-  target_pos_ = b2Vec2(dist_x(rnd_), dist_y(rnd_));
+  for (;;) {
+    // generate a new, random target point
+    const float d = config_.drone_radius * 2;
+    uniform_real_distribution<float> dist_x(-kWidth / 2 + d, kWidth / 2 - d);
+    uniform_real_distribution<float> dist_y(-kHeight / 2 + d, kHeight / 2 - d);
+    start_pos_ = drone_->GetPosition();
+    target_pos_ = b2Vec2(dist_x(rnd_), dist_y(rnd_));
+
+    // make sure the new target is not sharply behind the drone
+    const auto local_target_pos = drone_->GetLocalPoint(target_pos_);
+    const auto target_angle = atan2(local_target_pos.x, local_target_pos.y);
+    if (fabs(target_angle) < math::kPi / 2) {
+      break;
+    }
+  }
 }
 
 void Scene::updateVariables() {

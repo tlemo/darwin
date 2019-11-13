@@ -117,6 +117,10 @@ void SandboxWindow::singleStep() {
     stop(State::Completed);
   }
 
+  if (scene_ui_) {
+    scene_ui_->step();
+  }
+
   updateUI();
 }
 
