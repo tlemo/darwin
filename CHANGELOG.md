@@ -1,4 +1,12 @@
 
+## Nov 13th, 2019
+
+Another drone-based domain: [drone_follow][9]. Follow another drone which moves on a
+random path (keeping a fixed distance). The only inputs are drone's sensors (camera plus
+optionally touch, compass or accelerometer sensors)
+
+![DroneFollow demo](docs/images/drone_follow_demo.gif)
+
 ## Nov 10th, 2019
 
 New domain: [drone_vision][8] created using the new sim::Scene & associated building
@@ -135,3 +143,4 @@ Initial release
 [6]: https://tlemo.github.io/darwin/classballistics_1_1_ballistics.html
 [7]: https://en.wikipedia.org/wiki/Projectile_motion
 [8]: https://tlemo.github.io/darwin/classdrone__vision_1_1_drone_vision.html
+[9]: https://tlemo.github.io/darwin/classdrone__follow_1_1_drone_follow.html
