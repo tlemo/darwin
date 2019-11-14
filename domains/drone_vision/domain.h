@@ -34,6 +34,9 @@ struct Config : public core::PropertySet {
 
   PROPERTY(target_radius, float, 0.3f, "Target size");
   PROPERTY(target_speed, float, 10.0f, "Target velocity");
+  
+  PROPERTY(scene_columns, bool, false, "Scene includes a few fixed columns");
+  PROPERTY(scene_debris, bool, false, "Scene includes random debris");
 
   PROPERTY(test_worlds, int, 3, "Number of test worlds per generation");
   PROPERTY(max_steps, int, 1000, "Maximum number of steps per episode");

@@ -22,6 +22,7 @@
 #include <core/properties.h>
 
 #include <memory>
+#include <random>
 using namespace std;
 
 namespace drone_vision {
@@ -57,6 +58,11 @@ class Scene : public sim::Scene {
 
  private:
   b2Body* createTarget(const b2Vec2& pos, const b2Vec2& v, float radius);
+  void createDebris();
+  void createRoundDebris(const b2Vec2& pos, float radius);
+  void createBoxDebris(const b2Vec2& pos, float width, float height);
+  void createColumns();
+  void createColumnFixture(b2Body* body, const b2Vec2& pos, const b2Color& color);
   void createLight(b2Body* body, const b2Vec2& pos, const b2Color& color);
   void updateVariables();
 
@@ -69,6 +75,7 @@ class Scene : public sim::Scene {
   unique_ptr<Drone> drone_;
   SceneVariables variables_;
   const DroneVision* domain_ = nullptr;
+  default_random_engine rnd_{ random_device{}() };
 };
 
 }  // namespace drone_vision
