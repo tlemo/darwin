@@ -49,7 +49,7 @@ struct Config : public core::PropertySet {
 //! Follow another drone while keeping close to a fixed distance. The target drone is
 //! tracking a random path.
 //!
-//! ![](images/drone_vision_sandbox.png)
+//! ![](images/drone_follow_sandbox.png)
 //!
 //! ### Inputs
 //!
