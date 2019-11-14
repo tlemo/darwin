@@ -46,6 +46,9 @@ Scene::Scene(const core::PropertySet* config)
   // drone
   drone_ = createDrone(b2Vec2(0, 0), config_.drone_radius);
 
+  // dummy drone
+  createDrone(b2Vec2(0, 5), config_.drone_radius);
+
   // lights
   createLight(walls, b2Vec2(-9, -9), b2Color(1, 1, 1));
   createLight(walls, b2Vec2(9, 9), b2Color(1, 1, 1));
@@ -133,6 +136,30 @@ b2Body* Scene::createDrone(const b2Vec2& pos, float radius) {
   drone_fixture_def.material.color = b2Color(0, 0, 1);
   drone_fixture_def.material.emit_intensity = 0.5f;
   body->CreateFixture(&drone_fixture_def);
+
+  // left light
+  b2CircleShape left_light_shape;
+  left_light_shape.m_radius = radius / 4;
+  left_light_shape.m_p = b2Vec2(-radius, 0);
+
+  b2FixtureDef left_light_def;
+  left_light_def.shape = &left_light_shape;
+  left_light_def.material.color = b2Color(1, 0, 0);
+  left_light_def.material.emit_intensity = 1;
+  left_light_def.filter.maskBits = 0;
+  body->CreateFixture(&left_light_def);
+
+  // right light
+  b2CircleShape right_light_shape;
+  right_light_shape.m_radius = radius / 4;
+  right_light_shape.m_p = b2Vec2(radius, 0);
+
+  b2FixtureDef right_light_def;
+  right_light_def.shape = &right_light_shape;
+  right_light_def.material.color = b2Color(0, 1, 0);
+  right_light_def.material.emit_intensity = 1;
+  right_light_def.filter.maskBits = 0;
+  body->CreateFixture(&right_light_def);
 
   return body;
 }

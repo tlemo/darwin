@@ -3,7 +3,7 @@ include(../../common.pri)
 
 QT += core gui charts widgets
 
-TARGET = drone_vision_ui
+TARGET = drone_follow_ui
 TEMPLATE = lib
 CONFIG += staticlib
 
@@ -17,6 +17,6 @@ HEADERS += \
     sandbox_window.h \
     scene_ui.h
 
-addLibrary(../drone_vision)
+addLibrary(../drone_follow)
 addLibrary(../../core_ui)
 addLibrary(../../core)

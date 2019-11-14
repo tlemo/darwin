@@ -36,6 +36,8 @@ addLibrary(../domains/ballistics_ui)
 addLibrary(../domains/ballistics)
 addLibrary(../domains/drone_vision_ui)
 addLibrary(../domains/drone_vision)
+addLibrary(../domains/drone_follow_ui)
+addLibrary(../domains/drone_follow)
 
 addLibrary(../populations/cgp)
 addLibrary(../populations/cne)

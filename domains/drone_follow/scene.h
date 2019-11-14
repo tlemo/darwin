@@ -25,7 +25,7 @@
 #include <random>
 using namespace std;
 
-namespace drone_vision {
+namespace drone_follow {
 
 using sim::Camera;
 using sim::Drone;
@@ -36,46 +36,52 @@ struct SceneVariables : public core::PropertySet {
   PROPERTY(drone_vx, float, 0, "Drone velocity (x component)");
   PROPERTY(drone_vy, float, 0, "Drone velocity (y component)");
   PROPERTY(drone_dir, float, 0, "Heading angle");
-  PROPERTY(target_angle, float, 0, "Angle between drone direction and target");
+  PROPERTY(target_dist, float, 0, "Distance from target");
 };
 
 class Scene : public sim::Scene {
+  static constexpr float kWidth = 20;
+  static constexpr float kHeight = 20;
+
  public:
-  explicit Scene(const b2Vec2& target_velocity, const DroneVision* domain);
+  using Seed = std::random_device::result_type;
+
+ public:
+  explicit Scene(Seed seed, const DroneFollow* domain);
 
   const SceneVariables* variables() const override { return &variables_; }
 
   const Config* config() const override { return &domain_->config(); }
 
   Drone* drone() { return drone_.get(); }
+  Drone* targetDrone() { return target_drone_.get(); }
 
-  const DroneVision* domain() const { return domain_; }
+  const DroneFollow* domain() const { return domain_; }
 
   //! returns the current fitness value
   float fitness() const { return fitness_; }
 
+  void preStep() override;
   void postStep(float dt) override;
 
  private:
-  b2Body* createTarget(const b2Vec2& pos, const b2Vec2& v, float radius);
-  void createDebris();
-  void createRoundDebris(const b2Vec2& pos, float radius);
-  void createBoxDebris(const b2Vec2& pos, float width, float height);
-  void createColumns();
-  void createColumnFixture(b2Body* body, const b2Vec2& pos, const b2Color& color);
   void createLight(b2Body* body, const b2Vec2& pos, const b2Color& color);
   void updateVariables();
-
-  //! returns the angle between the drone direction and the target
-  float aimAngle() const;
+  float targetDistance() const;
+  void updateFitness();
+  void generateTargetPos();
 
  private:
-  b2Body* target_ = nullptr;
   float fitness_ = 0;
   unique_ptr<Drone> drone_;
+
+  default_random_engine rnd_;
+  unique_ptr<Drone> target_drone_;
+  b2Vec2 start_pos_;
+  b2Vec2 target_pos_;
+
   SceneVariables variables_;
-  const DroneVision* domain_ = nullptr;
-  default_random_engine rnd_{ random_device{}() };
+  const DroneFollow* domain_ = nullptr;
 };
 
-}  // namespace drone_vision
+}  // namespace drone_follow

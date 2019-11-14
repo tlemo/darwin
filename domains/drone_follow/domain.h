@@ -20,39 +20,46 @@
 
 #include <third_party/box2d/box2d.h>
 
-namespace drone_vision {
+namespace drone_follow {
 
 //! Drone Vision domain configuration
 struct Config : public core::PropertySet {
   PROPERTY(drone_radius, float, 0.5f, "Drone size");
-  PROPERTY(max_move_force, float, 1.0f, "Maximum force used to move the drone");
+  PROPERTY(drone_lights, bool, true, "Drone has navigation lights");
+  PROPERTY(max_move_force, float, 5.0f, "Maximum force used to move the drone");
   PROPERTY(max_rotate_torque, float, 1.0f, "Maximum torque used to rotate the drone");
 
   PROPERTY(camera_fov, float, 60, "Camera field of view (FOV)");
   PROPERTY(camera_resolution, int, 64, "Camera resolution");
   PROPERTY(camera_depth, bool, false, "Use camera depth channel");
-
-  PROPERTY(target_radius, float, 0.3f, "Target size");
-  PROPERTY(target_speed, float, 10.0f, "Target velocity");
   
-  PROPERTY(scene_columns, bool, false, "Scene includes a few fixed columns");
-  PROPERTY(scene_debris, bool, false, "Scene includes random debris");
+  PROPERTY(touch_sensor, bool, false, "Use the drone's touch sensor");
+  PROPERTY(touch_resolution, int, 8, "Touch sensor resolution");
+  PROPERTY(accelerometer, bool, false, "Use the drone's accelerometer");
+  PROPERTY(compass, bool, false, "Use the drone's compass");
+
+  PROPERTY(target_distance, float, 5.0f, "The ideal following distance");
 
   PROPERTY(test_worlds, int, 3, "Number of test worlds per generation");
   PROPERTY(max_steps, int, 1000, "Maximum number of steps per episode");
 };
 
-//! Domain: Drone Vision
+//! Domain: Drone Follow
 //!
-//! A simple vision test: look at the red ball, using only the camera pixels as input.
-//! The target ball starts moving in a random direction and will bounce off the walls.
+//! Follow another drone while keeping close to a fixed distance. The target drone is
+//! tracking a random path.
 //!
-//! ![](images/drone_vision_sandbox.png)
+//! ![](images/drone_follow_sandbox.png)
 //!
 //! ### Inputs
 //!
-//! The inputs are the color channels from the drone's camera, plus optionally the depth
-//! channel.
+//! The inputs are handeled through DroneController
+//! 
+//! 1. Camera: the color channels from the drone's camera, plus optionally the depth
+//!   channel.
+//! 2. Touch sensor (optional)
+//! 3. Compass (optional)
+//! 4. Accelerometer (optional)
 //!
 //! ### Outputs
 //!
@@ -61,9 +68,9 @@ struct Config : public core::PropertySet {
 //!    0,1 | force vector (x, y) applied to the drone
 //!      2 | torque applied to turn the drone
 //!
-class DroneVision : public darwin::Domain {
+class DroneFollow : public darwin::Domain {
  public:
-  explicit DroneVision(const core::PropertySet& config);
+  explicit DroneFollow(const core::PropertySet& config);
 
   size_t inputs() const override;
   size_t outputs() const override;
@@ -72,8 +79,6 @@ class DroneVision : public darwin::Domain {
   
   const Config& config() const { return config_; }
   const sim::DroneConfig& droneConfig() const { return drone_config_; }
-  
-  b2Vec2 randomTargetVelocity() const;
   
  private:
   void validateConfiguration();
@@ -89,7 +94,7 @@ class Factory : public darwin::DomainFactory {
 };
 
 inline void init() {
-  darwin::registry()->domains.add<Factory>("drone_vision");
+  darwin::registry()->domains.add<Factory>("drone_follow");
 }
 
-}  // namespace drone_vision
+}  // namespace drone_follow

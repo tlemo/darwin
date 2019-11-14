@@ -20,8 +20,7 @@ GLOBAL_INITIALIZER {
 }
 
 Scene::Scene(const core::PropertySet* config)
-    : sim::Scene(b2Vec2(0, 0),
-                     sim::Rect(-kWidth / 2, -kHeight / 2, kWidth, kHeight)) {
+    : sim::Scene(b2Vec2(0, 0), sim::Rect(-kWidth / 2, -kHeight / 2, kWidth, kHeight)) {
   if (config) {
     config_.copyFrom(*config);
   }
@@ -179,11 +178,21 @@ void Scene::createLight(b2Body* body, const b2Vec2& pos, const b2Color& color) {
 }
 
 void Scene::generateTargetPos() {
-  const float d = config_.drone_radius * 2;
-  uniform_real_distribution<float> dist_x(-kWidth / 2 + d, kWidth / 2 - d);
-  uniform_real_distribution<float> dist_y(-kHeight / 2 + d, kHeight / 2 - d);
-  start_pos_ = drone_->GetPosition();
-  target_pos_ = b2Vec2(dist_x(rnd_), dist_y(rnd_));
+  for (;;) {
+    // generate a new, random target point
+    const float d = config_.drone_radius * 2;
+    uniform_real_distribution<float> dist_x(-kWidth / 2 + d, kWidth / 2 - d);
+    uniform_real_distribution<float> dist_y(-kHeight / 2 + d, kHeight / 2 - d);
+    start_pos_ = drone_->GetPosition();
+    target_pos_ = b2Vec2(dist_x(rnd_), dist_y(rnd_));
+
+    // make sure the new target is not sharply behind the drone
+    const auto local_target_pos = drone_->GetLocalPoint(target_pos_);
+    const auto target_angle = atan2(local_target_pos.x, local_target_pos.y);
+    if (fabs(target_angle) < math::kPi / 2) {
+      break;
+    }
+  }
 }
 
 void Scene::updateVariables() {
@@ -235,13 +244,35 @@ void SceneUi::renderTarget(QPainter& painter) const {
   painter.drawEllipse(target, 0.1, 0.1);
 }
 
+void SceneUi::renderPath(QPainter& painter) const {
+  painter.setBrush(Qt::NoBrush);
+  painter.setPen(QPen(Qt::blue, 0, Qt::DotLine));
+  painter.drawPath(drone_path_);
+}
+
+SceneUi::SceneUi(Scene* scene) : scene_(scene) {
+  const auto vars = scene_->variables();
+  drone_path_.moveTo(vars->drone_x, vars->drone_y);
+}
+
 void SceneUi::render(QPainter& painter, const QRectF&) {
+  renderPath(painter);
   renderTarget(painter);
   renderDrone(painter);
   renderCamera(painter, scene_->camera());
 }
 
 void SceneUi::step() {
+  const auto vars = scene_->variables();
+
+  // update path
+  constexpr double kMinDist = 0.1;
+  const QPointF drone_pos(vars->drone_x, vars->drone_y);
+  if (QLineF(drone_pos, drone_path_.currentPosition()).length() > kMinDist) {
+    drone_path_.lineTo(drone_pos);
+  }
+
+  // keyboard inputs
   const float move_force = scene_->config()->move_force;
   const float rotate_torque = scene_->config()->rotate_torque;
   if (keyPressed(Qt::Key_Left)) {

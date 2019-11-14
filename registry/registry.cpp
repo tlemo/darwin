@@ -30,6 +30,7 @@
 #include <domains/unicycle/unicycle.h>
 #include <domains/ballistics/ballistics.h>
 #include <domains/drone_vision/domain.h>
+#include <domains/drone_follow/domain.h>
 
 namespace registry {
 
@@ -46,6 +47,7 @@ void init() {
   unicycle::init();
   ballistics::init();
   drone_vision::init();
+  drone_follow::init();
 
   // populations
   cgp::init();

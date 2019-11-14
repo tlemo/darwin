@@ -35,8 +35,13 @@ struct DroneConfig {
   int touch_resolution = 16;
   bool accelerometer = false;
   bool compass = false;
+  bool lights = false;
   float max_move_force = 5.0f;
   float max_rotate_torque = 1.0f;
+  float density = 0.1f;
+  float friction = 1.0f;
+  float restitution = 0.2f;
+  b2Color color;
 };
 
 class Drone : public core::NonCopyable {

@@ -31,12 +31,39 @@ Drone::Drone(b2World* world, const DroneConfig& config) : config_(config) {
 
   b2FixtureDef drone_fixture_def;
   drone_fixture_def.shape = &drone_shape;
-  drone_fixture_def.density = 0.1f;
-  drone_fixture_def.friction = 1.0f;
-  drone_fixture_def.restitution = 0.2f;
-  drone_fixture_def.material.color = b2Color(0, 0, 1);
+  drone_fixture_def.density = config.density;
+  drone_fixture_def.friction = config.friction;
+  drone_fixture_def.restitution = config.restitution;
+  drone_fixture_def.material.color = config_.color;
   drone_fixture_def.material.emit_intensity = 0.5f;
+  drone_fixture_def.material.shininess = 10;
   body_->CreateFixture(&drone_fixture_def);
+
+  if (config.lights) {
+    // left light
+    b2CircleShape left_light_shape;
+    left_light_shape.m_radius = config_.radius / 4;
+    left_light_shape.m_p = b2Vec2(-config_.radius, 0);
+
+    b2FixtureDef left_light_def;
+    left_light_def.shape = &left_light_shape;
+    left_light_def.material.color = b2Color(1, 0, 0);
+    left_light_def.material.emit_intensity = 1;
+    left_light_def.filter.maskBits = 0;
+    body_->CreateFixture(&left_light_def);
+
+    // right light
+    b2CircleShape right_light_shape;
+    right_light_shape.m_radius = config_.radius / 4;
+    right_light_shape.m_p = b2Vec2(config_.radius, 0);
+
+    b2FixtureDef right_light_def;
+    right_light_def.shape = &right_light_shape;
+    right_light_def.material.color = b2Color(0, 1, 0);
+    right_light_def.material.emit_intensity = 1;
+    right_light_def.filter.maskBits = 0;
+    body_->CreateFixture(&right_light_def);
+  }
 
   if (config_.camera) {
     camera_ = make_unique<Camera>(

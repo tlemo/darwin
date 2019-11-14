@@ -17,6 +17,8 @@ SUBDIRS += \
     double_cart_pole_ui \
     unicycle \
     unicycle_ui \
+    drone_follow \
+    drone_follow_ui \
     drone_vision \
     drone_vision_ui \
     ballistics \
@@ -32,3 +34,4 @@ double_cart_pole_ui.depends = double_cart_pole
 unicycle_ui.depends = unicycle
 ballistics_ui.depends = ballistics
 drone_vision_ui.depends = drone_vision
+drone_follow_ui.depends = drone_follow

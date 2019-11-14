@@ -103,7 +103,7 @@ class Scene : public sim::Scene {
 
 class SceneUi : public physics_ui::Box2dSceneUi {
  public:
-  explicit SceneUi(Scene* scene) : scene_(scene) {}
+  explicit SceneUi(Scene* scene);
 
   bool keyPressed(int key) const {
     const auto it = key_state_.find(key);
@@ -126,10 +126,12 @@ class SceneUi : public physics_ui::Box2dSceneUi {
   void renderCamera(QPainter& painter, const sim::Camera* camera) const;
   void renderDrone(QPainter& painter) const;
   void renderTarget(QPainter& painter) const;
+  void renderPath(QPainter& painter) const;
 
  private:
   Scene* scene_ = nullptr;
   unordered_map<int, bool> key_state_;
+  QPainterPath drone_path_;
   QPixmap drone_pixmap_{ ":/resources/drone.png" };
 };
 
