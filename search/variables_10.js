@@ -2,6 +2,8 @@ var searchData=
 [
   ['save_5fchampion_5fgenotype',['save_champion_genotype',['../structdarwin_1_1_evolution_config.html#a51a9827127ba7d8722a438614f0a22b3',1,'darwin::EvolutionConfig']]],
   ['save_5fgenealogy',['save_genealogy',['../structdarwin_1_1_evolution_config.html#ad47b308fc8ea84cecb9e38573e830e2e',1,'darwin::EvolutionConfig']]],
+  ['scene_5fcolumns',['scene_columns',['../structdrone__vision_1_1_config.html#a97b1d94287b49e9c1d2159e9fd584ca5',1,'drone_vision::Config']]],
+  ['scene_5fdebris',['scene_debris',['../structdrone__vision_1_1_config.html#abaa5cda34ced7ce38081b6f885fefe1b',1,'drone_vision::Config']]],
   ['serve_5fspeed',['serve_speed',['../structpong_1_1_config.html#aafdc8c76be52b4446a43327ed05b8d4e',1,'pong::Config']]],
   ['sets_5fper_5fgame',['sets_per_game',['../structpong_1_1_config.html#a839a65b148040016f798a5c2461e1077',1,'pong::Config']]],
   ['sets_5frequired_5fto_5fwin',['sets_required_to_win',['../structpong_1_1_config.html#a02feacd86496c28cd4e5e6864e8f50fe',1,'pong::Config']]],

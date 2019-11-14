@@ -32,6 +32,8 @@ var searchData=
   ['domainuifactory',['DomainUiFactory',['../classdarwin_1_1_domain_ui_factory.html',1,'darwin::DomainUiFactory'],['../classdarwin_1_1_experiment.html#ad50fa6639d87a99cdb517a1b5d01849d',1,'darwin::Experiment::domainUiFactory()']]],
   ['doublecartpole',['DoubleCartPole',['../classdouble__cart__pole_1_1_double_cart_pole.html',1,'double_cart_pole']]],
   ['draw',['Draw',['../namespacetournament.html#afb2d89307ef2ac4c6e727eb2c88b304ca2d03c2d5a7ec65ef4619e0582c272ec2',1,'tournament']]],
-  ['drone_5fradius',['drone_radius',['../structdrone__vision_1_1_config.html#a9803e748665d71e5cc5b4922eb4c750d',1,'drone_vision::Config']]],
+  ['drone_5flights',['drone_lights',['../structdrone__follow_1_1_config.html#af91b3ed76bc69c46014fb186af32c1e3',1,'drone_follow::Config']]],
+  ['drone_5fradius',['drone_radius',['../structdrone__follow_1_1_config.html#a86f4b2af1caae3cb1dcd1a18b3de1b63',1,'drone_follow::Config::drone_radius()'],['../structdrone__vision_1_1_config.html#a9803e748665d71e5cc5b4922eb4c750d',1,'drone_vision::Config::drone_radius()']]],
+  ['dronefollow',['DroneFollow',['../classdrone__follow_1_1_drone_follow.html',1,'drone_follow']]],
   ['dronevision',['DroneVision',['../classdrone__vision_1_1_drone_vision.html',1,'drone_vision']]]
 ];
