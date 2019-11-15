@@ -85,6 +85,7 @@ class Box2dWidget : public core_ui::Canvas {
   void focusOutEvent(QFocusEvent*) override;
   
   void renderDebugLayer(QPainter& painter) const;
+  void renderGeneric(QPainter& painter) const;
 
  private:
   b2World* world_ = nullptr;

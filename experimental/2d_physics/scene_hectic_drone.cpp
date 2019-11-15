@@ -8,7 +8,6 @@
 #include <QPainter>
 #include <QPointF>
 #include <QLineF>
-#include <QPolygonF>
 #include <QRectF>
 #include <QBrush>
 #include <QPen>

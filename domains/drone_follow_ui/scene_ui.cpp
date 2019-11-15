@@ -19,15 +19,19 @@
 #include <QBrush>
 #include <QPainter>
 #include <QPen>
+#include <QColor>
 #include <QPointF>
 #include <QLineF>
 #include <QRectF>
 
 namespace drone_follow_ui {
 
-static QPointF dronePosition(const sim::Drone* drone) {
-  const auto v = drone->body()->GetPosition();
+static QPointF vecToPoint(const b2Vec2& v) {
   return QPointF(v.x, v.y);
+}
+
+static QPointF dronePosition(const sim::Drone* drone) {
+  return vecToPoint(drone->body()->GetPosition());
 }
 
 static double dist(const QPointF& a, const QPointF& b) {
@@ -101,6 +105,10 @@ void SceneUi::renderDrone(QPainter& painter, const sim::Drone* drone) const {
   const QRectF dest_rect(-radius, -radius, radius * 2, radius * 2);
   painter.drawPixmap(dest_rect, drone_pixmap_, drone_pixmap_.rect());
   painter.restore();
+
+  const auto& color = drone_config.color;
+  painter.setPen(QPen(QColor::fromRgbF(color.r, color.g, color.b), 0, Qt::DotLine));
+  painter.drawEllipse(vecToPoint(pos), radius, radius);
 }
 
 }  // namespace drone_follow_ui

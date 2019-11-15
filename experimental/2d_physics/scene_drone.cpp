@@ -7,7 +7,6 @@
 
 #include <QPainter>
 #include <QPointF>
-#include <QPolygonF>
 #include <QRectF>
 
 namespace drone_scene {

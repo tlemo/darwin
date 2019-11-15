@@ -24,6 +24,7 @@ Drone::Drone(b2World* world, const DroneConfig& config) : config_(config) {
   drone_body_def.position = config_.position;
   drone_body_def.linearDamping = 10.0f;
   drone_body_def.angularDamping = 10.0f;
+  drone_body_def.useDefaultRendering = false;
   body_ = world->CreateBody(&drone_body_def);
 
   b2CircleShape drone_shape;

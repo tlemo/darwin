@@ -59,6 +59,10 @@ void SceneUi::renderDrone(QPainter& painter, const sim::Drone* drone) const {
   const QRectF dest_rect(-radius, -radius, radius * 2, radius * 2);
   painter.drawPixmap(dest_rect, drone_pixmap_, drone_pixmap_.rect());
   painter.restore();
+
+  const auto& color = drone_config.color;
+  painter.setPen(QPen(QColor::fromRgbF(color.r, color.g, color.b), 0, Qt::DotLine));
+  painter.drawEllipse(QPointF(pos.x, pos.y), radius, radius);
 }
 
 }  // namespace drone_vision_ui
