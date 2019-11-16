@@ -7,8 +7,8 @@
 
 SandboxWindow::SandboxWindow(MainWindow* main_window, SandboxFactory* factory)
     : main_window_(main_window), factory_(factory) {
-  box2dWidget()->setDebugRender(true);
   config_ = factory_->defaultConfig();
+  setDebugRendering(false);
   newScene();
   play();
 }

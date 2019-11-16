@@ -99,14 +99,14 @@ background-clip: content;
         <widget class="QFrame" name="frame">
          <property name="minimumSize">
           <size>
-           <width>141</width>
-           <height>81</height>
+           <width>171</width>
+           <height>111</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
            <width>16777215</width>
-           <height>81</height>
+           <height>111</height>
           </size>
          </property>
          <property name="frameShape">
@@ -242,6 +242,22 @@ background-clip: content;
            <bool>true</bool>
           </property>
          </widget>
+         <widget class="QCheckBox" name="debug_rendering">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>80</y>
+            <width>151</width>
+            <height>17</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Debug rendering</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
         </widget>
        </item>
       </layout>
@@ -264,6 +280,13 @@ background-clip: content;
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>play_pause</tabstop>
+  <tabstop>single_step</tabstop>
+  <tabstop>restart</tabstop>
+  <tabstop>simulation_speed</tabstop>
+  <tabstop>debug_rendering</tabstop>
+ </tabstops>
  <resources>
   <include location="../resources.qrc"/>
  </resources>

@@ -47,7 +47,7 @@ class SandboxWindow : public physics_ui::Box2dSandboxWindow {
   };
 
  public:
-  SandboxWindow() { box2dWidget()->setDebugRender(false); }
+  SandboxWindow() { setDebugRendering(false); }
 
   bool setup();
 
