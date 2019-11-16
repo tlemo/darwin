@@ -42,7 +42,6 @@ HEADERS += \
     new_scene_dialog.h \
     sandbox_factory.h \
     sandbox_window.h \
-    script.h \
     tool_window.h \
     accelerometer_window.h \
     camera_window.h \
