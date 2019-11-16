@@ -1,5 +1,5 @@
 
-#include "scene_particles.h"
+#include "particles.h"
 
 #include <core/global_initializer.h>
 

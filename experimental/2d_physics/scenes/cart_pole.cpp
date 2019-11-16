@@ -1,5 +1,5 @@
 
-#include "scene_cart_pole.h"
+#include "cart_pole.h"
 
 #include <core/global_initializer.h>
 

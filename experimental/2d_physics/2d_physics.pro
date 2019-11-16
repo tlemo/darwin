@@ -12,17 +12,17 @@ DEFINES += QT_DEPRECATED_WARNINGS
 DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000
 
 SOURCES += \
+    scenes/bouncing.cpp \
+    scenes/cart_pole.cpp \
+    scenes/drone.cpp \
+    scenes/hectic_drone.cpp \
+    scenes/electric_fence.cpp \
+    scenes/particles.cpp \
     main.cpp \
     main_window.cpp \
     new_sandbox_dialog.cpp \
     new_scene_dialog.cpp \
     sandbox_window.cpp \
-    scene_bouncing.cpp \
-    scene_cart_pole.cpp \
-    scene_drone.cpp \
-    scene_hectic_drone.cpp \
-    scene_electric_fence.cpp \
-    scene_particles.cpp \
     tool_window.cpp \
     accelerometer_window.cpp \
     camera_window.cpp \
@@ -31,17 +31,17 @@ SOURCES += \
     
 
 HEADERS += \
+    scenes/bouncing.h \
+    scenes/cart_pole.h \
+    scenes/drone.h \
+    scenes/hectic_drone.h \
+    scenes/electric_fence.h \
+    scenes/particles.h \
     main_window.h \
     new_sandbox_dialog.h \
     new_scene_dialog.h \
     sandbox_factory.h \
     sandbox_window.h \
-    scene_bouncing.h \
-    scene_cart_pole.h \
-    scene_drone.h \
-    scene_hectic_drone.h \
-    scene_electric_fence.h \
-    scene_particles.h \
     script.h \
     tool_window.h \
     accelerometer_window.h \
