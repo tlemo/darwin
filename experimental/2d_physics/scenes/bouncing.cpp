@@ -1,5 +1,5 @@
 
-#include "scene_bouncing.h"
+#include "bouncing.h"
 
 #include <core/global_initializer.h>
 

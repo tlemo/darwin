@@ -23,6 +23,7 @@
 #include <QPen>
 #include <QPointF>
 #include <QMouseEvent>
+#include <QPolygonF>
 
 #include <math.h>
 
@@ -66,6 +67,58 @@ void Box2dWidget::renderDebugLayer(QPainter& painter) const {
   world_->SetDebugDraw(nullptr);
 }
 
+static QPointF vecToPoint(const b2Vec2& v) {
+  return QPointF(v.x, v.y);
+}
+
+static void renderBody(QPainter& painter, const b2Body* body) {
+  for (const b2Fixture* fixture = body->GetFixtureList(); fixture != nullptr;
+       fixture = fixture->GetNext()) {
+    // setup pen and brush
+    const auto& color = fixture->GetMaterial().color;
+    painter.setPen(QPen(QColor::fromRgbF(color.r, color.g, color.b), 0));
+    painter.setBrush(QColor::fromRgbF(color.r, color.g, color.b, 0.4));
+
+    // draw the fixture's shape
+    switch (fixture->GetType()) {
+      case b2Shape::e_circle: {
+        auto shape = static_cast<const b2CircleShape*>(fixture->GetShape());
+        auto center = vecToPoint(body->GetWorldPoint(shape->m_p));
+        painter.drawEllipse(center, shape->m_radius, shape->m_radius);
+        break;
+      }
+      case b2Shape::e_edge: {
+        auto shape = static_cast<const b2EdgeShape*>(fixture->GetShape());
+        auto p1 = vecToPoint(body->GetWorldPoint(shape->m_vertex1));
+        auto p2 = vecToPoint(body->GetWorldPoint(shape->m_vertex2));
+        painter.drawLine(p1, p2);
+        break;
+      }
+      case b2Shape::e_polygon: {
+        auto shape = static_cast<const b2PolygonShape*>(fixture->GetShape());
+        QPolygonF polygon;
+        for (int i = 0; i < shape->m_count; ++i) {
+          auto point = vecToPoint(body->GetWorldPoint(shape->m_vertices[i]));
+          polygon.append(point);
+        }
+        painter.drawPolygon(polygon);
+        break;
+      }
+      default:
+        FATAL("Unexpected fixture shape");
+    }
+  }
+}
+
+void Box2dWidget::renderGeneric(QPainter& painter) const {
+  for (const b2Body* body = world_->GetBodyList(); body != nullptr;
+       body = body->GetNext()) {
+    if (body->UseDefaultRendering()) {
+      renderBody(painter, body);
+    }
+  }
+}
+
 void Box2dWidget::paintEvent(QPaintEvent*) {
   QPainter painter(this);
 
@@ -79,7 +132,7 @@ void Box2dWidget::paintEvent(QPaintEvent*) {
   painter.drawRect(rect());
 
   painter.setTransform(transformFromViewport());
-  
+
   // viewport background
   painter.setPen(Qt::NoPen);
   painter.setBrush(kViewportColor);
@@ -91,9 +144,10 @@ void Box2dWidget::paintEvent(QPaintEvent*) {
       scene_ui_->render(painter, viewport());
     }
 
-    // debug rendering layer
     if (enable_debug_render_) {
       renderDebugLayer(painter);
+    } else {
+      renderGeneric(painter);
     }
   }
 }

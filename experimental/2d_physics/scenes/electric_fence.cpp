@@ -1,5 +1,5 @@
 
-#include "scene_electric_fence.h"
+#include "electric_fence.h"
 
 #include <core/global_initializer.h>
 

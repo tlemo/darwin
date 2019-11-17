@@ -65,7 +65,13 @@ class Scene : public sim::Scene {
   void postStep(float dt) override;
 
  private:
+  unique_ptr<Drone> createTargetDrone();
   void createLight(b2Body* body, const b2Vec2& pos, const b2Color& color);
+  void createDebris();
+  void createRoundDebris(const b2Vec2& pos, float radius);
+  void createBoxDebris(const b2Vec2& pos, float width, float height);
+  void createColumns();
+  void createColumnFixture(b2Body* body, const b2Vec2& pos, const b2Color& color);
   void updateVariables();
   float targetDistance() const;
   void updateFitness();

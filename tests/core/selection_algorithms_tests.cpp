@@ -30,7 +30,7 @@ using namespace std;
 namespace selection_algorithms_tests {
 
 struct TestGenotypeFactory : public selection::GenotypeFactory {
-  const int population_size;
+  int population_size = 0;
   bool valid_genotype = false;
 
   explicit TestGenotypeFactory(int population_size) : population_size(population_size) {}

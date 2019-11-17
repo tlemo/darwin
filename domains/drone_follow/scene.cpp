@@ -49,19 +49,19 @@ Scene::Scene(Seed seed, const DroneFollow* domain)
   wall_shape.Set(b2Vec2(-kHalfWidth, kHalfHeight), b2Vec2(kHalfWidth, kHalfHeight));
   walls->CreateFixture(&wall_fixture_def);
 
+  if (config.scene_columns) {
+    createColumns();
+  }
+
+  if (config.scene_debris) {
+    createDebris();
+  }
+
   // drone
   drone_ = make_unique<Drone>(&world_, domain_->droneConfig());
 
   // target drone
-  sim::DroneConfig target_drone_config;
-  target_drone_config.position = b2Vec2(0, 0);
-  target_drone_config.radius = config.drone_radius;
-  target_drone_config.max_move_force = config.max_move_force;
-  target_drone_config.max_rotate_torque = config.max_rotate_torque;
-  target_drone_config.color = b2Color(0, 0, 1);
-  target_drone_config.friction = 0;
-  target_drone_config.lights = config.drone_lights;
-  target_drone_ = make_unique<Drone>(&world_, target_drone_config);
+  target_drone_ = createTargetDrone();
 
   // lights
   createLight(walls, b2Vec2(-9, -9), b2Color(1, 1, 1));
@@ -102,6 +102,19 @@ void Scene::postStep(float dt) {
   updateVariables();
 }
 
+unique_ptr<Drone> Scene::createTargetDrone() {
+  const auto& config = domain_->config();
+  sim::DroneConfig target_drone_config;
+  target_drone_config.position = b2Vec2(0, 0);
+  target_drone_config.radius = config.drone_radius;
+  target_drone_config.max_move_force = config.max_move_force;
+  target_drone_config.max_rotate_torque = config.max_rotate_torque;
+  target_drone_config.color = b2Color(0, 0, 1);
+  target_drone_config.friction = 0;
+  target_drone_config.lights = config.drone_lights;
+  return make_unique<Drone>(&world_, target_drone_config);
+}
+
 void Scene::createLight(b2Body* body, const b2Vec2& pos, const b2Color& color) {
   b2LightDef light_def;
   light_def.body = body;
@@ -110,6 +123,104 @@ void Scene::createLight(b2Body* body, const b2Vec2& pos, const b2Color& color) {
   light_def.attenuation_distance = 25.0f;
   light_def.position = pos;
   world_.CreateLight(&light_def);
+}
+
+void Scene::createDebris() {
+  createRoundDebris(b2Vec2(-8, 8), 0.1f);
+  createRoundDebris(b2Vec2(-8, -8), 0.1f);
+  createRoundDebris(b2Vec2(8, 8), 0.1f);
+  createRoundDebris(b2Vec2(8, -8), 0.1f);
+
+  createBoxDebris(b2Vec2(-4, 4), 0.1f, 0.2f);
+  createBoxDebris(b2Vec2(-4, -4), 0.2f, 0.1f);
+  createBoxDebris(b2Vec2(4, 4), 0.2f, 0.1f);
+  createBoxDebris(b2Vec2(4, -4), 0.1f, 0.2f);
+}
+
+void Scene::createRoundDebris(const b2Vec2& pos, float radius) {
+  uniform_real_distribution<float> dist(-2, 2);
+
+  b2BodyDef body_def;
+  body_def.type = b2_dynamicBody;
+  body_def.position = pos;
+  body_def.linearVelocity.Set(dist(rnd_), dist(rnd_));
+  body_def.linearDamping = 0.0f;
+  body_def.angularDamping = 0.0f;
+  auto body = world_.CreateBody(&body_def);
+
+  b2CircleShape shape;
+  shape.m_radius = radius;
+
+  b2FixtureDef fixture_def;
+  fixture_def.shape = &shape;
+  fixture_def.density = 0.02f;
+  fixture_def.friction = 0.0f;
+  fixture_def.restitution = 1.0f;
+  fixture_def.material.color = b2Color(0, 1, 1);
+  fixture_def.material.shininess = 10;
+  fixture_def.material.emit_intensity = 0.3f;
+  body->CreateFixture(&fixture_def);
+}
+
+void Scene::createBoxDebris(const b2Vec2& pos, float width, float height) {
+  uniform_real_distribution<float> dist_v(-2, 2);
+  uniform_real_distribution<float> dist_r(-1, 1);
+
+  b2BodyDef body_def;
+  body_def.type = b2_dynamicBody;
+  body_def.position = pos;
+  body_def.linearVelocity.Set(dist_v(rnd_), dist_v(rnd_));
+  body_def.angularVelocity = dist_r(rnd_);
+  body_def.linearDamping = 0.0f;
+  body_def.angularDamping = 0.0f;
+  auto body = world_.CreateBody(&body_def);
+
+  b2PolygonShape shape;
+  shape.SetAsBox(width, height);
+
+  b2FixtureDef fixture_def;
+  fixture_def.shape = &shape;
+  fixture_def.density = 0.02f;
+  fixture_def.friction = 0.0f;
+  fixture_def.restitution = 1.0f;
+  fixture_def.material.color = b2Color(0, 1, 1);
+  fixture_def.material.shininess = 10;
+  fixture_def.material.emit_intensity = 0.3f;
+  body->CreateFixture(&fixture_def);
+}
+
+void Scene::createColumns() {
+  b2BodyDef body_def;
+  auto body = world_.CreateBody(&body_def);
+
+  const b2Color green(0, 1, 0);
+  createColumnFixture(body, b2Vec2(-6, 6), green);
+  createColumnFixture(body, b2Vec2(-6, 0), green);
+  createColumnFixture(body, b2Vec2(-6, -6), green);
+  createColumnFixture(body, b2Vec2(-3, 3), green);
+  createColumnFixture(body, b2Vec2(-3, -3), green);
+
+  const b2Color blue(0, 0, 1);
+  createColumnFixture(body, b2Vec2(6, 6), blue);
+  createColumnFixture(body, b2Vec2(6, 0), blue);
+  createColumnFixture(body, b2Vec2(6, -6), blue);
+  createColumnFixture(body, b2Vec2(3, 3), blue);
+  createColumnFixture(body, b2Vec2(3, -3), blue);
+}
+
+void Scene::createColumnFixture(b2Body* body, const b2Vec2& pos, const b2Color& color) {
+  b2CircleShape shape;
+  shape.m_radius = 0.2f;
+  shape.m_p = pos;
+
+  b2FixtureDef fixture_def;
+  fixture_def.shape = &shape;
+  fixture_def.friction = 1.0f;
+  fixture_def.restitution = 0.5f;
+  fixture_def.material.color = color;
+  fixture_def.material.emit_intensity = 0.2f;
+  fixture_def.material.shininess = 5;
+  body->CreateFixture(&fixture_def);
 }
 
 void Scene::updateVariables() {

@@ -52,6 +52,8 @@ class Box2dSandboxWindow : public QFrame {
   virtual ~Box2dSandboxWindow();
 
   void addBottomPane(QWidget* widget);
+  
+  void setDebugRendering(bool enable);
 
  protected:
   void focusInEvent(QFocusEvent* event) override;
@@ -97,7 +99,8 @@ class Box2dSandboxWindow : public QFrame {
   void on_single_step_clicked();
   void on_restart_clicked();
   void on_simulation_speed_valueChanged(int value);
-
+  void on_debug_rendering_toggled(bool checked);
+  
  private:
   Ui::Box2dSandboxWindow* ui = nullptr;
   QTimer timer_;

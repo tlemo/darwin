@@ -64,8 +64,8 @@ Scene::Scene(const b2Vec2& target_velocity, const DroneVision* domain)
 }
 
 void Scene::postStep(float dt) {
-  fitness_ += fmaxf(cos(aimAngle()), 0);
   drone_->postStep(dt);
+  updateFitness();
   updateVariables();
 }
 
@@ -107,7 +107,7 @@ void Scene::createDebris() {
   createRoundDebris(b2Vec2(-8, -8), 0.1f);
   createRoundDebris(b2Vec2(8, 8), 0.1f);
   createRoundDebris(b2Vec2(8, -8), 0.1f);
-  
+
   createBoxDebris(b2Vec2(-4, 4), 0.1f, 0.2f);
   createBoxDebris(b2Vec2(-4, -4), 0.2f, 0.1f);
   createBoxDebris(b2Vec2(4, 4), 0.2f, 0.1f);
@@ -208,6 +208,10 @@ void Scene::createLight(b2Body* body, const b2Vec2& pos, const b2Color& color) {
   light_def.attenuation_distance = 25.0f;
   light_def.position = pos;
   world_.CreateLight(&light_def);
+}
+
+void Scene::updateFitness() {
+  fitness_ += 1 - fabsf(tanhf(2 * aimAngle()));
 }
 
 void Scene::updateVariables() {

@@ -64,6 +64,7 @@ class Scene : public sim::Scene {
   void createColumns();
   void createColumnFixture(b2Body* body, const b2Vec2& pos, const b2Color& color);
   void createLight(b2Body* body, const b2Vec2& pos, const b2Color& color);
+  void updateFitness();
   void updateVariables();
 
   //! returns the angle between the drone direction and the target

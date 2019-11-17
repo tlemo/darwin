@@ -29,6 +29,7 @@ namespace physics_ui {
 Box2dSandboxWindow::Box2dSandboxWindow()
     : QFrame(nullptr), ui(new Ui::Box2dSandboxWindow) {
   ui->setupUi(this);
+  box2dWidget()->setDebugRender(ui->debug_rendering->isChecked());
 
   connect(ui->world_widget,
           &Box2dWidget::sigPlayPause,
@@ -46,6 +47,10 @@ Box2dSandboxWindow::~Box2dSandboxWindow() {
 void Box2dSandboxWindow::addBottomPane(QWidget* widget) {
   Q_ASSERT(widget->parentWidget() == this);
   ui->layout->addWidget(widget);
+}
+
+void Box2dSandboxWindow::setDebugRendering(bool enable) {
+  ui->debug_rendering->setChecked(enable);
 }
 
 void Box2dSandboxWindow::focusInEvent(QFocusEvent* /*event*/) {
@@ -156,6 +161,10 @@ void Box2dSandboxWindow::on_restart_clicked() {
 void Box2dSandboxWindow::on_simulation_speed_valueChanged(int value) {
   timer_.setInterval(value);
   updateUI();
+}
+
+void Box2dSandboxWindow::on_debug_rendering_toggled(bool checked) {
+  box2dWidget()->setDebugRender(checked);
 }
 
 }  // namespace physics_ui

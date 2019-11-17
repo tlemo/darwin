@@ -40,6 +40,9 @@ struct Config : public core::PropertySet {
 
   PROPERTY(target_distance, float, 5.0f, "The ideal following distance");
 
+  PROPERTY(scene_columns, bool, false, "Scene includes a few fixed columns");
+  PROPERTY(scene_debris, bool, false, "Scene includes random debris");
+
   PROPERTY(test_worlds, int, 3, "Number of test worlds per generation");
   PROPERTY(max_steps, int, 1000, "Maximum number of steps per episode");
 };

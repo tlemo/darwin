@@ -47,6 +47,8 @@ class SandboxWindow : public physics_ui::Box2dSandboxWindow {
   };
 
  public:
+  SandboxWindow() { setDebugRendering(false); }
+
   bool setup();
 
   void newScene() override;
