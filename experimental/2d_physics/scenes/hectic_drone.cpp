@@ -1,5 +1,6 @@
 
 #include "hectic_drone.h"
+#include "sandbox_factory.h"
 
 #include <core/global_initializer.h>
 #include <core/math_2d.h>
@@ -12,6 +13,18 @@
 #include <QPen>
 
 namespace hectic_drone_scene {
+
+class Factory : public SandboxFactory {
+  SandboxScenePackage createScenePackage(const core::PropertySet* config) override {
+    auto scene = make_unique<Scene>(config);
+    auto scene_ui = make_unique<SceneUi>(scene.get());
+    return { std::move(scene), std::move(scene_ui) };
+  }
+
+  unique_ptr<core::PropertySet> defaultConfig() const override {
+    return make_unique<Config>();
+  }
+};
 
 GLOBAL_INITIALIZER {
   scenesRegistry().add<Factory>("Hectic Drone");

@@ -1,14 +1,13 @@
 
 #pragma once
 
-#include "sandbox_factory.h"
-
 #include <core/sim/scene.h>
 #include <core/sim/accelerometer.h>
 #include <core/sim/camera.h>
 #include <core/sim/compass.h>
 #include <core/sim/touch_sensor.h>
 #include <core/properties.h>
+#include <core_ui/sim/box2d_widget.h>
 
 #include <QKeyEvent>
 #include <QPixmap>
@@ -33,10 +32,10 @@ inline istream& operator>>(istream& stream, b2Vec2& v) {
 
 namespace hectic_drone_scene {
 
-using sim::Camera;
-using sim::TouchSensor;
 using sim::Accelerometer;
+using sim::Camera;
 using sim::Compass;
+using sim::TouchSensor;
 
 struct Config : public core::PropertySet {
   PROPERTY(drone_radius, float, 0.5f, "Drone size");
@@ -133,18 +132,6 @@ class SceneUi : public physics_ui::Box2dSceneUi {
   unordered_map<int, bool> key_state_;
   QPainterPath drone_path_;
   QPixmap drone_pixmap_{ ":/resources/drone.png" };
-};
-
-class Factory : public SandboxFactory {
-  SandboxScenePackage createScenePackage(const core::PropertySet* config) override {
-    auto scene = make_unique<Scene>(config);
-    auto scene_ui = make_unique<SceneUi>(scene.get());
-    return { std::move(scene), std::move(scene_ui) };
-  }
-
-  unique_ptr<core::PropertySet> defaultConfig() const override {
-    return make_unique<Config>();
-  }
 };
 
 }  // namespace hectic_drone_scene
