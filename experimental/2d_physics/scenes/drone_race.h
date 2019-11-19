@@ -28,7 +28,7 @@ struct Config : public core::PropertySet {
 
   PROPERTY(track_width, float, 1.8f, "Track width");
   PROPERTY(track_complexity, int, 10, "The approximate number of turns");
-  PROPERTY(track_resolution, int, 250, "Number of track segments");
+  PROPERTY(track_resolution, int, 500, "Number of track segments");
 };
 
 struct SceneVariables : public core::PropertySet {
@@ -70,6 +70,8 @@ class Scene : public sim::Scene {
   void rotateDrone(float torque);
 
   sim::Drone* drone() { return drone_.get(); }
+  
+  const vector<TrackNode>& trackNodes() const { return track_nodes_; }
 
  private:
   unique_ptr<sim::Drone> createDrone();
@@ -93,7 +95,7 @@ class SceneUi : public physics_ui::Box2dSceneUi {
 
   bool keyPressed(int key) const;
 
-  void render(QPainter& painter, const QRectF&) override;
+  void render(QPainter& painter, const QRectF& viewport) override;
 
   void step() override;
 
@@ -106,6 +108,7 @@ class SceneUi : public physics_ui::Box2dSceneUi {
   void renderCamera(QPainter& painter, const sim::Camera* camera) const;
   void renderDrone(QPainter& painter, const sim::Drone* drone) const;
   void renderPath(QPainter& painter) const;
+  void renderTrack(QPainter& painter) const;
 
  private:
   Scene* scene_ = nullptr;

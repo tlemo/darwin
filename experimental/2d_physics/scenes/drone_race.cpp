@@ -12,6 +12,7 @@
 #include <QRectF>
 #include <QBrush>
 #include <QPen>
+#include <QColor>
 #include <QPainterPath>
 
 namespace drone_race_scene {
@@ -58,7 +59,7 @@ void Scene::rotateDrone(float torque) {
 
 unique_ptr<sim::Drone> Scene::createDrone() {
   CHECK(!track_nodes_.empty());
-  
+
   const auto start_node = track_nodes_[0];
   const auto start_pos = start_node.offsetPos(config_.track_width / 2);
   const auto start_angle = atan2f(start_node.normal.y, start_node.normal.x);
@@ -241,6 +242,36 @@ void SceneUi::renderPath(QPainter& painter) const {
   painter.drawPath(drone_path_);
 }
 
+void SceneUi::renderTrack(QPainter& painter) const {
+  QPainterPath track_path;
+  const auto& track_nodes = scene_->trackNodes();
+
+  // inner track edge
+  for (size_t i = 0; i < track_nodes.size(); ++i) {
+    const auto& node = track_nodes[i];
+    if (i == 0) {
+      track_path.moveTo(node.pos.x, node.pos.y);
+    } else {
+      track_path.lineTo(node.pos.x, node.pos.y);
+    }
+  }
+  
+  // outer track edge
+  for (size_t i = 0; i < track_nodes.size(); ++i) {
+    const auto& node = track_nodes[i];
+    const auto pos = node.offsetPos(scene_->config()->track_width);
+    if (i == 0) {
+      track_path.moveTo(pos.x, pos.y);
+    } else {
+      track_path.lineTo(pos.x, pos.y);
+    }
+  }
+  
+  painter.setPen(Qt::NoPen);
+  painter.setBrush(QColor(240, 240, 240));
+  painter.drawPath(track_path);
+}
+
 SceneUi::SceneUi(Scene* scene) : scene_(scene) {
   const auto vars = scene_->variables();
   drone_path_.moveTo(vars->drone_x, vars->drone_y);
@@ -251,7 +282,12 @@ bool SceneUi::keyPressed(int key) const {
   return it != key_state_.end() ? it->second : false;
 }
 
-void SceneUi::render(QPainter& painter, const QRectF&) {
+void SceneUi::render(QPainter& painter, const QRectF& viewport) {
+  painter.setPen(Qt::NoPen);
+  painter.setBrush(Qt::white);
+  painter.drawRect(viewport);
+
+  renderTrack(painter);
   renderPath(painter);
   renderDrone(painter, scene_->drone());
 }
