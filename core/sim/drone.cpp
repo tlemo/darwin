@@ -22,6 +22,7 @@ Drone::Drone(b2World* world, const DroneConfig& config) : config_(config) {
   b2BodyDef drone_body_def;
   drone_body_def.type = b2_dynamicBody;
   drone_body_def.position = config_.position;
+  drone_body_def.angle = config_.angle;
   drone_body_def.linearDamping = 10.0f;
   drone_body_def.angularDamping = 10.0f;
   drone_body_def.useDefaultRendering = false;

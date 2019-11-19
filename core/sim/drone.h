@@ -26,6 +26,7 @@ namespace sim {
 
 struct DroneConfig {
   b2Vec2 position{};
+  float angle = 0;
   float radius = 0;
   bool camera = false;
   float camera_fov = 90;

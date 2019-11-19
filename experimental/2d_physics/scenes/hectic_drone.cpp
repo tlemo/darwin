@@ -73,6 +73,7 @@ Scene::Scene(const core::PropertySet* config)
   compass_ = make_unique<Compass>(drone_);
 
   generateTargetPos();
+  updateVariables();
 }
 
 void Scene::preStep() {
