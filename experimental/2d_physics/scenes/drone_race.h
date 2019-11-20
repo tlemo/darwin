@@ -37,6 +37,7 @@ struct SceneVariables : public core::PropertySet {
   PROPERTY(drone_vx, float, 0, "Drone velocity (x component)");
   PROPERTY(drone_vy, float, 0, "Drone velocity (y component)");
   PROPERTY(drone_dir, float, 0, "Heading angle");
+  PROPERTY(current_segment, int, 0, "Current track segment");
 };
 
 class Scene : public sim::Scene {
@@ -72,11 +73,13 @@ class Scene : public sim::Scene {
   sim::Drone* drone() { return drone_.get(); }
   
   const vector<TrackNode>& trackNodes() const { return track_nodes_; }
+  int nodeIndex(int segment) const;
 
  private:
   unique_ptr<sim::Drone> createDrone();
   void generateRandomTrack();
   void createTrackFixtures();
+  void updateTrackSegment();
   void updateVariables();
 
  private:
@@ -84,6 +87,7 @@ class Scene : public sim::Scene {
   vector<TrackNode> track_nodes_;
 
   unique_ptr<sim::Drone> drone_;
+  int current_track_segment_ = 0;
 
   SceneVariables variables_;
   Config config_;
@@ -109,6 +113,7 @@ class SceneUi : public physics_ui::Box2dSceneUi {
   void renderDrone(QPainter& painter, const sim::Drone* drone) const;
   void renderPath(QPainter& painter) const;
   void renderTrack(QPainter& painter) const;
+  void renderCurrentSegment(QPainter& painter) const;
 
  private:
   Scene* scene_ = nullptr;

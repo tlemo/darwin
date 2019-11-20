@@ -46,6 +46,7 @@ Scene::Scene(const core::PropertySet* config)
 
 void Scene::postStep(float dt) {
   drone_->postStep(dt);
+  updateTrackSegment();
   updateVariables();
 }
 
@@ -191,12 +192,42 @@ void Scene::createTrackFixtures() {
   }
 }
 
+int Scene::nodeIndex(int segment) const {
+  const int n = int(track_nodes_.size());
+  int index = segment;
+  while (index < 0) {
+    index += n;
+  }
+  return index % n;
+}
+
+void Scene::updateTrackSegment() {
+  const b2Vec2 pos = drone_->body()->GetPosition();
+  bool done = false;
+
+  // advance the segment?
+  auto node = track_nodes_[nodeIndex(current_track_segment_ + 1)];
+  while (b2Cross(node.normal, pos - node.pos) >= 0) {
+    node = track_nodes_[nodeIndex(++current_track_segment_ + 1)];
+    done = true;
+  }
+
+  // move backwards?
+  if (!done) {
+    auto node = track_nodes_[nodeIndex(current_track_segment_)];
+    while (b2Cross(node.normal, pos - node.pos) < 0) {
+      node = track_nodes_[nodeIndex(--current_track_segment_)];
+    }
+  }
+}
+
 void Scene::updateVariables() {
   variables_.drone_x = drone_->body()->GetPosition().x;
   variables_.drone_y = drone_->body()->GetPosition().y;
   variables_.drone_vx = drone_->body()->GetLinearVelocity().x;
   variables_.drone_vy = drone_->body()->GetLinearVelocity().y;
   variables_.drone_dir = drone_->body()->GetAngle();
+  variables_.current_segment = current_track_segment_;
 }
 
 void SceneUi::renderCamera(QPainter& painter, const sim::Camera* camera) const {
@@ -255,7 +286,7 @@ void SceneUi::renderTrack(QPainter& painter) const {
       track_path.lineTo(node.pos.x, node.pos.y);
     }
   }
-  
+
   // outer track edge
   for (size_t i = 0; i < track_nodes.size(); ++i) {
     const auto& node = track_nodes[i];
@@ -266,10 +297,22 @@ void SceneUi::renderTrack(QPainter& painter) const {
       track_path.lineTo(pos.x, pos.y);
     }
   }
-  
+
   painter.setPen(Qt::NoPen);
   painter.setBrush(QColor(240, 240, 240));
   painter.drawPath(track_path);
+}
+
+void SceneUi::renderCurrentSegment(QPainter& painter) const {
+  constexpr float kOffset = 0.4f;
+  const auto vars = scene_->variables();
+  const auto index = scene_->nodeIndex(vars->current_segment);
+  const auto& node = scene_->trackNodes()[index];
+  const auto p1 = node.offsetPos(-kOffset);
+  const auto p2 = node.offsetPos(scene_->config()->track_width + kOffset);
+  painter.setBrush(Qt::NoBrush);
+  painter.setPen(QPen(Qt::green, 0));
+  painter.drawLine(QPointF(p1.x, p1.y), QPointF(p2.x, p2.y));
 }
 
 SceneUi::SceneUi(Scene* scene) : scene_(scene) {
@@ -289,6 +332,7 @@ void SceneUi::render(QPainter& painter, const QRectF& viewport) {
 
   renderTrack(painter);
   renderPath(painter);
+  renderCurrentSegment(painter);
   renderDrone(painter, scene_->drone());
 }
 
