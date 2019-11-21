@@ -21,6 +21,8 @@ SUBDIRS += \
     drone_follow_ui \
     drone_vision \
     drone_vision_ui \
+    drone_track \
+    drone_track_ui \
     ballistics \
     ballistics_ui \
     test_domain
@@ -35,3 +37,4 @@ unicycle_ui.depends = unicycle
 ballistics_ui.depends = ballistics
 drone_vision_ui.depends = drone_vision
 drone_follow_ui.depends = drone_follow
+drone_track_ui.depends = drone_track
