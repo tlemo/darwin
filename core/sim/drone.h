@@ -26,6 +26,7 @@ namespace sim {
 
 struct DroneConfig {
   b2Vec2 position{};
+  float angle = 0;
   float radius = 0;
   bool camera = false;
   float camera_fov = 90;
@@ -71,7 +72,7 @@ class Drone : public core::NonCopyable {
   unique_ptr<TouchSensor> touch_sensor_;
   unique_ptr<Accelerometer> accelerometer_;
   unique_ptr<Compass> compass_;
-  DroneConfig config_;
+  const DroneConfig config_;
 };
 
 }  // namespace sim

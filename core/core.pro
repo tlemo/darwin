@@ -80,4 +80,5 @@ HEADERS += \
     
 addLibrary(../third_party/sqlite)
 addLibrary(../third_party/box2d)
+addLibrary(../third_party/tinyspline)
 addSystemLibraries()

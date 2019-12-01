@@ -7,3 +7,6 @@
 [submodule "box2d"]
 	path = third_party/box2d/src
 	url = https://github.com/tlemo/Box2D.git
+[submodule "tinyspline"]
+	path = third_party/tinyspline/repo
+	url = https://github.com/tlemo/tinyspline.git

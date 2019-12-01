@@ -15,6 +15,7 @@ SOURCES += \
     scenes/bouncing.cpp \
     scenes/cart_pole.cpp \
     scenes/drone.cpp \
+    scenes/drone_race.cpp \
     scenes/hectic_drone.cpp \
     scenes/electric_fence.cpp \
     scenes/particles.cpp \
@@ -34,6 +35,7 @@ HEADERS += \
     scenes/bouncing.h \
     scenes/cart_pole.h \
     scenes/drone.h \
+    scenes/drone_race.h \
     scenes/hectic_drone.h \
     scenes/electric_fence.h \
     scenes/particles.h \

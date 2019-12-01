@@ -6,5 +6,6 @@ SOURCES += \
     sqlite_tests.cpp \
     pugixml_tests.cpp \
     json_tests.cpp \
-    box2d_tests.cpp
+    box2d_tests.cpp \
+    tinyspline_tests.cpp
     

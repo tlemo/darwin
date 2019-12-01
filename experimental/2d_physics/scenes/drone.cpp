@@ -56,6 +56,8 @@ Scene::Scene(const core::PropertySet* config)
   touch_sensor_ = make_unique<TouchSensor>(drone_, 16);
   accelerometer_ = make_unique<Accelerometer>(drone_);
   compass_ = make_unique<Compass>(drone_);
+  
+  updateVariables();
 }
 
 void Scene::postStep(float dt) {

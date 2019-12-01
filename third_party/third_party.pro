@@ -6,4 +6,5 @@ SUBDIRS += \
     pugixml \
     json \
     sqlite \
-    box2d
+    box2d \
+    tinyspline
