@@ -72,7 +72,7 @@ class Drone : public core::NonCopyable {
   unique_ptr<TouchSensor> touch_sensor_;
   unique_ptr<Accelerometer> accelerometer_;
   unique_ptr<Compass> compass_;
-  DroneConfig config_;
+  const DroneConfig config_;
 };
 
 }  // namespace sim

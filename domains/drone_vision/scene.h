@@ -16,7 +16,6 @@
 
 #include "domain.h"
 
-#include <core/sim/camera.h>
 #include <core/sim/scene.h>
 #include <core/sim/drone.h>
 #include <core/properties.h>
@@ -27,7 +26,6 @@ using namespace std;
 
 namespace drone_vision {
 
-using sim::Camera;
 using sim::Drone;
 
 struct SceneVariables : public core::PropertySet {

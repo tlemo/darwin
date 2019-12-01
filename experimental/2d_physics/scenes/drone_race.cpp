@@ -140,7 +140,7 @@ void Scene::generateRandomTrack() {
     const auto prev_v = track_nodes_[i].pos - track_nodes_[prev_i].pos;
     const auto prev_n = b2Vec2(prev_v.y, -prev_v.x).Normalized();
 
-    track_nodes_[i].normal = (prev_n + next_n) * 0.5;
+    track_nodes_[i].normal = (prev_n + next_n) * 0.5f;
   }
 }
 
