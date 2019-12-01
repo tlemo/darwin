@@ -11,15 +11,18 @@ The current implementation is a combination of portable C++ (running on Linux,
 Windows and macOS), augmented by a collection of Python [scripts](scripts/docs/scripts.md)
 for post-processing recorded evolution traces.
 
+## What's New
+
+Please see the [changelog](CHANGELOG.md) for the latest updates.
+
 ## Getting Started
 
 > Read the setup instructions before cloning the repository
 
 - [Setup Instructions](docs/setup.md)
-- [Implementation Reference][1]
+- [Documentation][1]
 - [Scripts](scripts/docs/scripts.md)
 - [Contributing](CONTRIBUTING.md)
-- [Changelog](CHANGELOG.md)
 
 ## Evolutionary Algorithms and Neuroevolution
 

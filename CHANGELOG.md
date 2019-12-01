@@ -1,4 +1,17 @@
 
+## Nov 30th, 2019
+
+[drone_track][10] is a new domain starring the drone, this time racing around a 
+track.
+
+Consistent with the rest of the built-in domains implemented in Darwin, the
+test tracks are procedurally generated, which means that the trained model can't simply
+"memorize" the track layout and has to generalize (procedural environment generation 
+proves to be a great answer to overfitting)
+
+![DroneTrack demo](docs/images/drone_track_demo.gif)
+
+
 ## Nov 13th, 2019
 
 Another drone-based domain: [drone_follow][9]. Follow another drone which moves on a
@@ -144,3 +157,4 @@ Initial release
 [7]: https://en.wikipedia.org/wiki/Projectile_motion
 [8]: https://tlemo.github.io/darwin/classdrone__vision_1_1_drone_vision.html
 [9]: https://tlemo.github.io/darwin/classdrone__follow_1_1_drone_follow.html
+[10]: https://tlemo.github.io/darwin/classdrone__track_1_1_drone_track.html
