@@ -26,19 +26,19 @@ class SceneUi : public physics_ui::Box2dSceneUi {
  public:
   SceneUi(drone_track::Scene* scene);
 
-  void render(QPainter& painter, const QRectF&) override;
+  void render(QPainter& painter, const QRectF& viewport) override;
   void step() override;
 
  private:
   void renderCamera(QPainter& painter, const sim::Camera* camera) const;
   void renderDrone(QPainter& painter, const sim::Drone* drone) const;
+  void renderPath(QPainter& painter) const;
+  void renderTrack(QPainter& painter) const;
+  void renderCurrentSegment(QPainter& painter) const;
 
  private:
   drone_track::Scene* scene_ = nullptr;
-
   QPainterPath drone_path_;
-  QPainterPath target_drone_path_;
-
   const QPixmap drone_pixmap_{ ":/resources/drone.png" };
 };
 

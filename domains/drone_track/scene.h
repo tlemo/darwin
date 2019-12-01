@@ -15,8 +15,8 @@
 #pragma once
 
 #include "domain.h"
+#include "track.h"
 
-#include <core/sim/camera.h>
 #include <core/sim/scene.h>
 #include <core/sim/drone.h>
 #include <core/properties.h>
@@ -27,7 +27,6 @@ using namespace std;
 
 namespace drone_track {
 
-using sim::Camera;
 using sim::Drone;
 
 struct SceneVariables : public core::PropertySet {
@@ -36,58 +35,48 @@ struct SceneVariables : public core::PropertySet {
   PROPERTY(drone_vx, float, 0, "Drone velocity (x component)");
   PROPERTY(drone_vy, float, 0, "Drone velocity (y component)");
   PROPERTY(drone_dir, float, 0, "Heading angle");
-  PROPERTY(target_dist, float, 0, "Distance from target");
+  PROPERTY(distance, int, 0, "Track distance from the start (one lap is 1.0)");
 };
 
 class Scene : public sim::Scene {
-  static constexpr float kWidth = 20;
+  static constexpr float kWidth = 50;
   static constexpr float kHeight = 20;
 
  public:
   using Seed = std::random_device::result_type;
 
  public:
-  explicit Scene(Seed seed, const DroneFollow* domain);
+  explicit Scene(Seed seed, const DroneTrack* domain);
 
   const SceneVariables* variables() const override { return &variables_; }
 
   const Config* config() const override { return &domain_->config(); }
 
   Drone* drone() { return drone_.get(); }
-  Drone* targetDrone() { return target_drone_.get(); }
+  
+  const Track* track() const { return track_.get(); }
 
-  const DroneFollow* domain() const { return domain_; }
+  const DroneTrack* domain() const { return domain_; }
 
   //! returns the current fitness value
-  float fitness() const { return fitness_; }
+  float fitness() const;
 
-  void preStep() override;
   void postStep(float dt) override;
 
  private:
-  unique_ptr<Drone> createTargetDrone();
-  void createLight(b2Body* body, const b2Vec2& pos, const b2Color& color);
-  void createDebris();
-  void createRoundDebris(const b2Vec2& pos, float radius);
-  void createBoxDebris(const b2Vec2& pos, float width, float height);
-  void createColumns();
-  void createColumnFixture(b2Body* body, const b2Vec2& pos, const b2Color& color);
   void updateVariables();
-  float targetDistance() const;
   void updateFitness();
-  void generateTargetPos();
 
  private:
   float fitness_ = 0;
+  int distance_ = 0;
   unique_ptr<Drone> drone_;
+  unique_ptr<Track> track_;
 
   default_random_engine rnd_;
-  unique_ptr<Drone> target_drone_;
-  b2Vec2 start_pos_;
-  b2Vec2 target_pos_;
 
   SceneVariables variables_;
-  const DroneFollow* domain_ = nullptr;
+  const DroneTrack* domain_ = nullptr;
 };
 
 }  // namespace drone_track

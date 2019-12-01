@@ -35,7 +35,7 @@ bool SandboxWindow::setup() {
   CHECK(state() == State::None);
 
   auto snapshot = darwin::evolution()->snapshot();
-  domain_ = dynamic_cast<const drone_track::DroneFollow*>(snapshot.domain);
+  domain_ = dynamic_cast<const drone_track::DroneTrack*>(snapshot.domain);
   CHECK(domain_ != nullptr);
 
   const auto default_generation = snapshot.generation - 1;

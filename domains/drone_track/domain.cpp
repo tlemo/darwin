@@ -26,12 +26,11 @@ using namespace std;
 
 namespace drone_track {
 
-DroneFollow::DroneFollow(const core::PropertySet& config) {
+DroneTrack::DroneTrack(const core::PropertySet& config) {
   config_.copyFrom(config);
   validateConfiguration();
   
   // setup drone configuration
-  drone_config_.position = b2Vec2(0, -config_.target_distance);
   drone_config_.radius = config_.drone_radius;
   drone_config_.camera = true;
   drone_config_.camera_depth = config_.camera_depth;
@@ -43,18 +42,20 @@ DroneFollow::DroneFollow(const core::PropertySet& config) {
   drone_config_.compass = config_.compass;
   drone_config_.max_move_force = config_.max_move_force;
   drone_config_.max_rotate_torque = config_.max_rotate_torque;
-  drone_config_.lights = config_.drone_lights;
+  drone_config_.color = b2Color(0, 0, 1);
+  drone_config_.density = 0.5f;
+  drone_config_.friction = config_.drone_friction;
 }
 
-size_t DroneFollow::inputs() const {
+size_t DroneTrack::inputs() const {
   return sim::DroneController::inputs(drone_config_);
 }
 
-size_t DroneFollow::outputs() const {
+size_t DroneTrack::outputs() const {
   return sim::DroneController::outputs(drone_config_);
 }
 
-bool DroneFollow::evaluatePopulation(darwin::Population* population) const {
+bool DroneTrack::evaluatePopulation(darwin::Population* population) const {
   darwin::StageScope stage("Evaluate population");
 
   const int generation = population->generation();
@@ -85,9 +86,8 @@ bool DroneFollow::evaluatePopulation(darwin::Population* population) const {
         }
       }
 
-      // normalize the fitness to [0, 1], invariant to the number of steps or test worlds
+      // normalize the fitness to [0, 1], invariant to the number of test worlds
       float episode_fitness = scene.fitness();
-      episode_fitness /= config_.max_steps;
       episode_fitness /= config_.test_worlds;
       genotype->fitness += episode_fitness;
 
@@ -102,9 +102,11 @@ bool DroneFollow::evaluatePopulation(darwin::Population* population) const {
 // validate the configuration
 // (just a few obvious sanity checks for values which would completly break the domain,
 // nonsensical configurations are still possible)
-void DroneFollow::validateConfiguration() {
+void DroneTrack::validateConfiguration() {
   if (config_.drone_radius <= 0)
     throw core::Exception("Invalid configuration: drone_radius <= 0");
+  if (config_.drone_friction < 0)
+    throw core::Exception("Invalid configuration: drone_friction < 0");
   if (config_.max_move_force < 0)
     throw core::Exception("Invalid configuration: max_move_force < 0");
   if (config_.max_rotate_torque < 0)
@@ -115,8 +117,12 @@ void DroneFollow::validateConfiguration() {
   if (config_.camera_resolution < 2)
     throw core::Exception("Invalid configuration: camera_resolution");
 
-  if (config_.target_distance < config_.drone_radius * 2)
-    throw core::Exception("Invalid configuration: target_distance too close");
+  if (config_.track_width <= config_.drone_radius)
+    throw core::Exception("Invalid configuration: track_width too small");
+  if (config_.track_complexity < 4)
+    throw core::Exception("Invalid configuration: track_complexity < 4");
+  if (config_.track_resolution < config_.track_complexity * 10)
+    throw core::Exception("Invalid configuration: track_resolution too small");
 
   if (config_.test_worlds < 1)
     throw core::Exception("Invalid configuration: test_worlds < 1");
@@ -125,7 +131,7 @@ void DroneFollow::validateConfiguration() {
 }
 
 unique_ptr<darwin::Domain> Factory::create(const core::PropertySet& config) {
-  return make_unique<DroneFollow>(config);
+  return make_unique<DroneTrack>(config);
 }
 
 unique_ptr<core::PropertySet> Factory::defaultConfig(darwin::ComplexityHint hint) const {
@@ -140,7 +146,7 @@ unique_ptr<core::PropertySet> Factory::defaultConfig(darwin::ComplexityHint hint
       break;
 
     case darwin::ComplexityHint::Extra:
-      config->test_worlds = 10;
+      config->test_worlds = 8;
       config->max_steps = 10000;
       config->compass = true;
       config->touch_sensor = true;

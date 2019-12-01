@@ -64,7 +64,7 @@ class SandboxWindow : public physics_ui::Box2dSandboxWindow {
   Variables variables_;
   unordered_map<string, core_ui::PropertyItem*> scene_variables_map_;
 
-  const drone_track::DroneFollow* domain_ = nullptr;
+  const drone_track::DroneTrack* domain_ = nullptr;
 
   physics_ui::CameraWidget* camera_widget_ = nullptr;
 

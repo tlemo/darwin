@@ -40,37 +40,25 @@ static double dist(const QPointF& a, const QPointF& b) {
 
 SceneUi::SceneUi(drone_track::Scene* scene) : scene_(scene) {
   drone_path_.moveTo(dronePosition(scene_->drone()));
-  target_drone_path_.moveTo(dronePosition(scene_->targetDrone()));
 }
 
-void SceneUi::render(QPainter& painter, const QRectF&) {
-  // draw a line from the drone to the target drone`
-  const auto drone_pos = dronePosition(scene_->drone());
-  const auto target_drone_pos = dronePosition(scene_->targetDrone());
-  painter.setPen(QPen(Qt::lightGray, 0, Qt::DotLine));
-  painter.setBrush(Qt::NoBrush);
-  painter.drawLine(drone_pos, target_drone_pos);
+void SceneUi::render(QPainter& painter, const QRectF& viewport) {
+  painter.setPen(Qt::NoPen);
+  painter.setBrush(Qt::white);
+  painter.drawRect(viewport);
 
-  // render drone paths
-  painter.setBrush(Qt::NoBrush);
-  painter.setPen(QPen(Qt::blue, 0, Qt::DotLine));
-  painter.drawPath(drone_path_);
-  painter.setPen(QPen(Qt::red, 0, Qt::DotLine));
-  painter.drawPath(target_drone_path_);
-
+  renderTrack(painter);
+  renderPath(painter);
+  renderCurrentSegment(painter);
   renderDrone(painter, scene_->drone());
-  renderDrone(painter, scene_->targetDrone());
 }
 
 void SceneUi::step() {
+  // update drone path
   constexpr double kMinDist = 0.1;
   const auto drone_pos = dronePosition(scene_->drone());
   if (dist(drone_pos, drone_path_.currentPosition()) > kMinDist) {
     drone_path_.lineTo(drone_pos);
-  }
-  const auto target_drone_pos = dronePosition(scene_->targetDrone());
-  if (dist(target_drone_pos, target_drone_path_.currentPosition()) > kMinDist) {
-    target_drone_path_.lineTo(target_drone_pos);
   }
 }
 
@@ -109,6 +97,55 @@ void SceneUi::renderDrone(QPainter& painter, const sim::Drone* drone) const {
   const auto& color = drone_config.color;
   painter.setPen(QPen(QColor::fromRgbF(color.r, color.g, color.b), 0, Qt::DotLine));
   painter.drawEllipse(vecToPoint(pos), radius, radius);
+}
+
+void SceneUi::renderPath(QPainter& painter) const {
+  painter.setBrush(Qt::NoBrush);
+  painter.setPen(QPen(Qt::darkGray, 0, Qt::DotLine));
+  painter.drawPath(drone_path_);
+}
+
+void SceneUi::renderTrack(QPainter& painter) const {
+  QPainterPath track_path;
+  const auto& track_nodes = scene_->track()->trackNodes();
+
+  // inner track edge
+  for (size_t i = 0; i < track_nodes.size(); ++i) {
+    const auto& node = track_nodes[i];
+    if (i == 0) {
+      track_path.moveTo(node.pos.x, node.pos.y);
+    } else {
+      track_path.lineTo(node.pos.x, node.pos.y);
+    }
+  }
+
+  // outer track edge
+  for (size_t i = 0; i < track_nodes.size(); ++i) {
+    const auto& node = track_nodes[i];
+    const auto pos = node.offsetPos(scene_->config()->track_width);
+    if (i == 0) {
+      track_path.moveTo(pos.x, pos.y);
+    } else {
+      track_path.lineTo(pos.x, pos.y);
+    }
+  }
+
+  painter.setPen(Qt::NoPen);
+  painter.setBrush(QColor(240, 240, 240));
+  painter.drawPath(track_path);
+}
+
+void SceneUi::renderCurrentSegment(QPainter& painter) const {
+  const auto track = scene_->track();
+  constexpr float kOffset = 0.4f;
+  const auto vars = scene_->variables();
+  const auto index = track->distanceToNode(vars->distance);
+  const auto& node = track->trackNodes()[index];
+  const auto p1 = node.offsetPos(-kOffset);
+  const auto p2 = node.offsetPos(scene_->config()->track_width + kOffset);
+  painter.setBrush(Qt::NoBrush);
+  painter.setPen(QPen(Qt::green, 0));
+  painter.drawLine(QPointF(p1.x, p1.y), QPointF(p2.x, p2.y));
 }
 
 }  // namespace drone_track_ui
