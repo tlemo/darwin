@@ -10,5 +10,6 @@ var searchData=
   ['domainuifactory',['DomainUiFactory',['../classdarwin_1_1_domain_ui_factory.html',1,'darwin']]],
   ['doublecartpole',['DoubleCartPole',['../classdouble__cart__pole_1_1_double_cart_pole.html',1,'double_cart_pole']]],
   ['dronefollow',['DroneFollow',['../classdrone__follow_1_1_drone_follow.html',1,'drone_follow']]],
+  ['dronetrack',['DroneTrack',['../classdrone__track_1_1_drone_track.html',1,'drone_track']]],
   ['dronevision',['DroneVision',['../classdrone__vision_1_1_drone_vision.html',1,'drone_vision']]]
 ];

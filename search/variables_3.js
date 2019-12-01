@@ -12,6 +12,7 @@ var searchData=
   ['domain_5fname',['domain_name',['../structdarwin_1_1_experiment_setup.html#a6c4bf33c671292376febf46778b1b202',1,'darwin::ExperimentSetup']]],
   ['domains',['domains',['../structdarwin_1_1_registry.html#a977c7cb6eb1c65679a6d3bf8bf00e476',1,'darwin::Registry']]],
   ['domains_5fui',['domains_ui',['../structdarwin_1_1_registry.html#a8f87dc1f11012512fde65b639fb46b6f',1,'darwin::Registry']]],
+  ['drone_5ffriction',['drone_friction',['../structdrone__track_1_1_config.html#a02d6bc84081d44d715ca36520017c257',1,'drone_track::Config']]],
   ['drone_5flights',['drone_lights',['../structdrone__follow_1_1_config.html#af91b3ed76bc69c46014fb186af32c1e3',1,'drone_follow::Config']]],
-  ['drone_5fradius',['drone_radius',['../structdrone__follow_1_1_config.html#a86f4b2af1caae3cb1dcd1a18b3de1b63',1,'drone_follow::Config::drone_radius()'],['../structdrone__vision_1_1_config.html#a9803e748665d71e5cc5b4922eb4c750d',1,'drone_vision::Config::drone_radius()']]]
+  ['drone_5fradius',['drone_radius',['../structdrone__follow_1_1_config.html#a86f4b2af1caae3cb1dcd1a18b3de1b63',1,'drone_follow::Config::drone_radius()'],['../structdrone__track_1_1_config.html#ad67efe20772c674b3b41a9e666643f1d',1,'drone_track::Config::drone_radius()'],['../structdrone__vision_1_1_config.html#a9803e748665d71e5cc5b4922eb4c750d',1,'drone_vision::Config::drone_radius()']]]
 ];
