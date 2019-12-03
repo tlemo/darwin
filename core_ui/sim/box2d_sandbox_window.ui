@@ -99,14 +99,14 @@ background-clip: content;
         <widget class="QFrame" name="frame">
          <property name="minimumSize">
           <size>
-           <width>171</width>
-           <height>111</height>
+           <width>170</width>
+           <height>128</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
            <width>16777215</width>
-           <height>111</height>
+           <height>128</height>
           </size>
          </property>
          <property name="frameShape">
@@ -256,6 +256,22 @@ background-clip: content;
           </property>
           <property name="checked">
            <bool>true</bool>
+          </property>
+         </widget>
+         <widget class="QCheckBox" name="render_lights">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>100</y>
+            <width>151</width>
+            <height>17</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Render lights</string>
+          </property>
+          <property name="checked">
+           <bool>false</bool>
           </property>
          </widget>
         </widget>

@@ -54,6 +54,7 @@ class Box2dSandboxWindow : public QFrame {
   void addBottomPane(QWidget* widget);
   
   void setDebugRendering(bool enable);
+  void setRenderLights(bool enable);
 
  protected:
   void focusInEvent(QFocusEvent* event) override;
@@ -100,6 +101,7 @@ class Box2dSandboxWindow : public QFrame {
   void on_restart_clicked();
   void on_simulation_speed_valueChanged(int value);
   void on_debug_rendering_toggled(bool checked);
+  void on_render_lights_toggled(bool checked);
   
  private:
   Ui::Box2dSandboxWindow* ui = nullptr;
