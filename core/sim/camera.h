@@ -44,6 +44,8 @@ class Camera {
   
   void setPosition(const b2Vec2& position) { position_ = position; }
   const b2Vec2& position() const { return position_; }
+  
+  void setFilterId(const void* filter_id) { filter_id_ = filter_id; }
 
   b2Body* body() const { return body_; }
 
@@ -80,6 +82,10 @@ class Camera {
   
   // camera position (relative to the parent body)
   b2Vec2 position_{ 0, 0 };
+  
+  // optionally filter all the fixture with a particular filter ID
+  // (currently stored in fixture's user data - hack alert)
+  const void* filter_id_ = nullptr;
 };
 
 }  // namespace sim
