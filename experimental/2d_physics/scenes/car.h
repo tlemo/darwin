@@ -19,29 +19,29 @@ using namespace std;
 
 namespace car_scene {
 
-using sim::Camera;
-using sim::TouchSensor;
 using sim::Accelerometer;
+using sim::Camera;
 using sim::Compass;
+using sim::TouchSensor;
 
 struct Config : public core::PropertySet {
-  PROPERTY(drone_radius, float, 0.5f, "Drone size");
-  PROPERTY(move_force, float, 5.0f, "The force used to move the drone");
-  PROPERTY(rotate_torque, float, 1.0f, "The torque used to rotate the drone");
+  PROPERTY(car_length, float, 3.0f, "Car length");
+  PROPERTY(move_force, float, 10.0f, "The force used to move the car");
+  PROPERTY(rotate_torque, float, 1.0f, "The torque used to rotate the car");
 };
 
 struct SceneVariables : public core::PropertySet {
-  PROPERTY(drone_x, float, 0, "Drone x coordinate");
-  PROPERTY(drone_y, float, 0, "Drone y coordinate");
-  PROPERTY(drone_vx, float, 0, "Drone velocity (x component)");
-  PROPERTY(drone_vy, float, 0, "Drone velocity (y component)");
-  PROPERTY(drone_dir, float, 0, "Heading angle");
+  PROPERTY(car_x, float, 0, "Drone x coordinate");
+  PROPERTY(car_y, float, 0, "Drone y coordinate");
+  PROPERTY(car_vx, float, 0, "Drone velocity (x component)");
+  PROPERTY(car_vy, float, 0, "Drone velocity (y component)");
+  PROPERTY(car_dir, float, 0, "Heading angle");
 };
 
 class Scene : public sim::Scene {
   static constexpr float kWidth = 40;
   static constexpr float kHeight = 20;
-  
+
  public:
   explicit Scene(const core::PropertySet* config);
 
@@ -56,19 +56,20 @@ class Scene : public sim::Scene {
 
   void postStep(float dt) override;
 
-  void moveDrone(const b2Vec2& force);
+  void accelerate(float force);
   void rotateDrone(float torque);
 
   void addBalloon(float x, float y, float radius);
   void addBox(float x, float y, float sx, float sy);
 
  private:
+  b2Body* createCar(const b2Vec2& pos, float length);
   b2Body* createDrone(const b2Vec2& pos, float radius);
   void createLight(b2Body* body, const b2Vec2& pos, const b2Color& color);
   void updateVariables();
 
  private:
-  b2Body* drone_ = nullptr;
+  b2Body* car_ = nullptr;
   unique_ptr<Camera> camera_;
   unique_ptr<TouchSensor> touch_sensor_;
   unique_ptr<Accelerometer> accelerometer_;
@@ -100,12 +101,10 @@ class SceneUi : public physics_ui::Box2dSceneUi {
 
  private:
   void renderCamera(QPainter& painter, const sim::Camera* camera) const;
-  void renderDrone(QPainter& painter) const;
 
  private:
   Scene* scene_ = nullptr;
   unordered_map<int, bool> key_state_;
-  QPixmap drone_pixmap_{ ":/resources/drone.png" };
 };
 
 class Factory : public SandboxFactory {
