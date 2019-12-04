@@ -161,7 +161,7 @@ Receptor Camera::castRay(const b2Vec2& ray_start,
 vector<Receptor> Camera::render() const {
   vector<Receptor> image(resolution_);
 
-  const b2Vec2 ray_start = body_->GetWorldPoint(b2Vec2(0, 0));
+  const b2Vec2 ray_start = body_->GetWorldPoint(position_);
 
   const float far_near_ratio = far_ / near_;
   const float near_far_ratio = near_ / far_;

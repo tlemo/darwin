@@ -234,7 +234,7 @@ void SceneUi::renderCamera(QPainter& painter, const sim::Camera* camera) const {
   auto body = camera->body();
   const float far = camera->far();
   const float fov = camera->fov();
-  const auto pos = body->GetWorldPoint(b2Vec2(0, 0));
+  const auto pos = body->GetWorldPoint(camera->position());
 
   const QPointF center(pos.x, pos.y);
   const QRectF frustum_rect(center - QPointF(far, far), center + QPointF(far, far));

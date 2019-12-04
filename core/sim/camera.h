@@ -41,6 +41,9 @@ class Camera {
   Camera(b2Body* body, float fov, float near, float far, int resolution);
 
   vector<Receptor> render() const;
+  
+  void setPosition(const b2Vec2& position) { position_ = position; }
+  const b2Vec2& position() const { return position_; }
 
   b2Body* body() const { return body_; }
 
@@ -74,6 +77,9 @@ class Camera {
   // technically this should be a property of the scene (world),
   // but modeled here for convenience and extra flexibility
   b2Color ambient_light_{ 0.2f, 0.2f, 0.2f };
+  
+  // camera position (relative to the parent body)
+  b2Vec2 position_{ 0, 0 };
 };
 
 }  // namespace sim
