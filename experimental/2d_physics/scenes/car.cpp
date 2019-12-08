@@ -155,7 +155,27 @@ void Car::updateSteering() {
   right_wheel_joint_->SetLimits(new_angle, new_angle);
 }
 
-void Car::applyTireLateralImpulse(const b2Vec2& wheel_normal, float axle_offset) {
+void Car::applyBrakeImpulse(float intensity,
+                            const b2Vec2& wheel_normal,
+                            const b2Vec2& wheel_center) {
+  CHECK(intensity >= 0 && intensity <= 1);
+
+  const auto car_velocity = car_body_->GetLinearVelocity();
+  const auto wheel_dir = wheel_normal.Skew();
+  const auto rolling_velocity = b2Dot(wheel_dir, car_velocity) * wheel_dir;
+
+  auto impulse = car_body_->GetMass() * -rolling_velocity;
+  const auto impulse_length = impulse.Length();
+  if (impulse_length > config_.tire_traction) {
+    impulse *= config_.tire_traction / impulse_length;
+  }
+  impulse *= intensity;
+
+  car_body_->ApplyLinearImpulse(impulse, wheel_center, true);
+}
+
+void Car::applyTireLateralImpulse(const b2Vec2& wheel_normal,
+                                  const b2Vec2& wheel_center) {
   const auto car_velocity = car_body_->GetLinearVelocity();
   const auto lateral_velocity = b2Dot(wheel_normal, car_velocity) * wheel_normal;
 
@@ -165,21 +185,25 @@ void Car::applyTireLateralImpulse(const b2Vec2& wheel_normal, float axle_offset)
     impulse *= config_.tire_traction / impulse_length;
   }
 
-  const auto tire_center = car_body_->GetWorldPoint(b2Vec2(0, axle_offset));
-  car_body_->ApplyLinearImpulse(impulse, tire_center, true);
+  car_body_->ApplyLinearImpulse(impulse, wheel_center, true);
 }
 
 void Car::preStep() {
+  const b2Body* left_wheel_body = left_wheel_joint_->GetBodyB();
+  const auto front_wheel_normal = left_wheel_body->GetWorldVector(b2Vec2(1, 0));
+  const auto rear_wheel_normal = car_body_->GetWorldVector(b2Vec2(1, 0));
+  const auto front_wheel_center = car_body_->GetWorldPoint(b2Vec2(0, frontAxleOffset()));
+  const auto rear_wheel_center = car_body_->GetWorldPoint(b2Vec2(0, rearAxleOffset()));
+
+  // apply brakes
+  applyBrakeImpulse(brake_pedal_, rear_wheel_normal, rear_wheel_center);
+  applyBrakeImpulse(brake_pedal_, front_wheel_normal, front_wheel_center);
+
   updateSteering();
 
-  // rear wheel(s) lateral traction
-  auto rear_wheel_normal = car_body_->GetWorldVector(b2Vec2(1, 0));
-  applyTireLateralImpulse(rear_wheel_normal, rearAxleOffset());
-
-  // front tire(s) lateral traction
-  auto left_wheel_body = left_wheel_joint_->GetBodyB();
-  auto front_wheel_normal = left_wheel_body->GetWorldVector(b2Vec2(1, 0));
-  applyTireLateralImpulse(front_wheel_normal, frontAxleOffset());
+  // wheel(s) lateral traction
+  applyTireLateralImpulse(rear_wheel_normal, rear_wheel_center);
+  applyTireLateralImpulse(front_wheel_normal, front_wheel_center);
 }
 
 void Car::postStep(float dt) {
@@ -187,6 +211,9 @@ void Car::postStep(float dt) {
   if (accelerometer_ != nullptr) {
     accelerometer_->update(dt);
   }
+
+  // reset brakes
+  brake_pedal_ = 0;
 }
 
 void Car::accelerate(float force) {
@@ -202,6 +229,11 @@ void Car::accelerate(float force) {
 void Car::steer(float steer_wheel_position) {
   // clamp the target steer to [-1, +1]
   target_steer_ = min(max(steer_wheel_position, -1.0f), 1.0f);
+}
+
+void Car::brake(float intensity) {
+  // clamp the braking intensity to [0, 1]
+  brake_pedal_ = min(max(intensity, 0.0f), 1.0f);
 }
 
 Scene::Scene(const core::PropertySet* config)
@@ -362,6 +394,11 @@ void SceneUi::step() {
     car->steer(1);
   } else {
     car->steer(0);
+  }
+  
+  // braking
+  if (keyPressed(Qt::Key_Space)) {
+    car->brake(1.0f);
   }
 
   // forward/reverse

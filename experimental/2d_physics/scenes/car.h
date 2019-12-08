@@ -57,10 +57,11 @@ class Car : public core::NonCopyable {
   void accelerate(float force);
 
   //! Adjust the steering. `steer_wheeel_position` is the desired
-  //! steering wheel position, -1 == max left turn angle, +1 == max right turn angle.
+  //! steering wheel position, -1 = max left turn angle, +1 = max right turn angle.
   void steer(float steer_wheel_position);
-  
-  // TODO: braking?
+
+  //! Apply brakes with the given intensity (0 = no brakes, 1 = maximum braking)
+  void brake(float intensity);
 
   // sensors
   const Camera* camera() const { return camera_.get(); }
@@ -80,7 +81,10 @@ class Car : public core::NonCopyable {
   b2RevoluteJoint* createTurningWheel(b2World* world, const b2Vec2& pos);
 
   void updateSteering();
-  void applyTireLateralImpulse(const b2Vec2& wheel_normal, float axle_offset);
+  void applyBrakeImpulse(float intensity,
+                         const b2Vec2& wheel_normal,
+                         const b2Vec2& wheel_center);
+  void applyTireLateralImpulse(const b2Vec2& wheel_normal, const b2Vec2& wheel_center);
 
   float width() const { return config_.length * 0.5f; }
   float frontAxleOffset() const { return config_.length * 0.3f; }
@@ -91,6 +95,7 @@ class Car : public core::NonCopyable {
   b2RevoluteJoint* left_wheel_joint_ = nullptr;
   b2RevoluteJoint* right_wheel_joint_ = nullptr;
   float target_steer_ = 0;
+  float brake_pedal_ = 0;
   unique_ptr<Camera> camera_;
   unique_ptr<TouchSensor> touch_sensor_;
   unique_ptr<Accelerometer> accelerometer_;
