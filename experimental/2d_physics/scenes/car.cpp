@@ -98,8 +98,8 @@ void Car::createWheelFixture(b2Body* body, const b2Vec2& pos) {
   fixture_def.density = 0.0001f;
   fixture_def.friction = 0.1f;
   fixture_def.restitution = 0.1f;
-  fixture_def.material.color = b2Color(0, 0, 0);
-  fixture_def.material.shininess = 10;
+  fixture_def.material.color = b2Color(0.2f, 0.2f, 0.2f);
+  fixture_def.material.shininess = 0;
   fixture_def.userData = car_body_;
   body->CreateFixture(&fixture_def);
 }
@@ -289,6 +289,12 @@ Scene::Scene(const core::PropertySet* config)
   car_config.position = b2Vec2(0, 0);
   car_config.color = b2Color(0, 1, 0);
   car_ = make_unique<Car>(&world_, car_config);
+  
+  // dummy car
+  car_config.color = b2Color(0, 1, 1);
+  car_config.position = b2Vec2(5, 5);
+  car_config.angle = float(math::degreesToRadians(-45));
+  dummy_car_ = make_unique<Car>(&world_, car_config);
 
   updateVariables();
 }

@@ -148,6 +148,7 @@ class Scene : public sim::Scene {
 
  private:
   unique_ptr<Car> car_;
+  unique_ptr<Car> dummy_car_;
   SceneVariables variables_;
   Config config_;
 };
