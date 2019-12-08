@@ -66,7 +66,8 @@ void Box2dWidget::setRenderLights(bool enable) {
 
 void Box2dWidget::renderDebugLayer(QPainter& painter) const {
   physics_ui::Box2dRenderer box2d_renderer(&painter);
-  box2d_renderer.SetFlags(b2Draw::e_shapeBit | b2Draw::e_centerOfMassBit);
+  box2d_renderer.SetFlags(b2Draw::e_shapeBit | b2Draw::e_centerOfMassBit |
+                          b2Draw::e_jointBit);
 
   world_->SetDebugDraw(&box2d_renderer);
   world_->DrawDebugData();
