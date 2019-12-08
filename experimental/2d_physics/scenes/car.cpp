@@ -95,7 +95,7 @@ void Car::createWheelFixture(b2Body* body, const b2Vec2& pos) {
 
   b2FixtureDef fixture_def;
   fixture_def.shape = &shape;
-  fixture_def.density = 0.0001f;
+  fixture_def.density = config_.density;
   fixture_def.friction = 0.1f;
   fixture_def.restitution = 0.1f;
   fixture_def.material.color = b2Color(0.2f, 0.2f, 0.2f);
@@ -111,7 +111,7 @@ void Car::createLightFixture(const b2Vec2& pos, const b2Color& color) {
 
   b2FixtureDef fixture_def;
   fixture_def.shape = &shape;
-  fixture_def.density = 0.0001f;
+  fixture_def.density = config_.density;
   fixture_def.friction = 0.5f;
   fixture_def.restitution = 0.1f;
   fixture_def.material.color = color;
