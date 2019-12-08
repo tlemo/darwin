@@ -14,6 +14,196 @@ GLOBAL_INITIALIZER {
   scenesRegistry().add<Factory>("Car");
 }
 
+Car::Car(b2World* world, const CarConfig& config) : config_(config) {
+  CHECK(config_.max_forward_force >= 0);
+  CHECK(config_.max_reverse_force >= 0);
+
+  b2BodyDef body_def;
+  body_def.type = b2_dynamicBody;
+  body_def.position = config_.position;
+  body_def.angle = config_.angle;
+  body_def.linearDamping = 10.0f;
+  body_def.angularDamping = 50.0f;
+  car_body_ = world->CreateBody(&body_def);
+
+  const float dx = width() / 2;
+  const float dy = config_.length / 2;
+
+  // main frame fixture
+  b2PolygonShape shape;
+  shape.SetAsBox(dx, dy);
+
+  b2FixtureDef fixture_def;
+  fixture_def.shape = &shape;
+  fixture_def.density = config_.density;
+  fixture_def.friction = 0.5f;
+  fixture_def.restitution = 0.1f;
+  fixture_def.material.color = config_.color;
+  fixture_def.material.shininess = 25;
+  fixture_def.material.emit_intensity = 0.1f;
+  fixture_def.userData = car_body_;
+  car_body_->CreateFixture(&fixture_def);
+
+  // create fixed wheels
+  const float rear_axle_dy = rearAxleOffset();
+  createWheelFixture(car_body_, b2Vec2(-dx, rear_axle_dy));
+  createWheelFixture(car_body_, b2Vec2(dx, rear_axle_dy));
+
+  // create car lights
+  const float light_dx = dx * 0.7f;
+  const b2Color red(1, 0, 0);
+  const b2Color white(1, 1, 1);
+  createLightFixture(b2Vec2(-light_dx, -dy), red);
+  createLightFixture(b2Vec2(light_dx, -dy), red);
+  createLightFixture(b2Vec2(-light_dx, dy), white);
+  createLightFixture(b2Vec2(light_dx, dy), white);
+
+  // create the front (turning) wheels
+  const float front_axle_dy = frontAxleOffset();
+  left_wheel_joint_ = createTurningWheel(world, b2Vec2(-dx, front_axle_dy));
+  right_wheel_joint_ = createTurningWheel(world, b2Vec2(dx, front_axle_dy));
+
+  createSensors();
+}
+
+void Car::createSensors() {
+  if (config_.camera) {
+    camera_ = make_unique<Camera>(
+        car_body_, config_.camera_fov, 0.1f, 50.0f, config_.camera_resolution);
+    camera_->setPosition(b2Vec2(0, config_.length * 0.2f));
+    camera_->setFilterId(car_body_);
+  }
+
+  if (config_.touch_sensor) {
+    touch_sensor_ = make_unique<TouchSensor>(car_body_, config_.touch_resolution);
+  }
+
+  if (config_.accelerometer) {
+    accelerometer_ = make_unique<Accelerometer>(car_body_);
+  }
+
+  if (config_.compass) {
+    compass_ = make_unique<Compass>(car_body_);
+  }
+}
+
+void Car::createWheelFixture(b2Body* body, const b2Vec2& pos) {
+  const float wheel_size = config_.length * 0.1f;
+
+  b2PolygonShape shape;
+  shape.SetAsBox(wheel_size / 2, wheel_size, pos, 0);
+
+  b2FixtureDef fixture_def;
+  fixture_def.shape = &shape;
+  fixture_def.density = 0.0001f;
+  fixture_def.friction = 0.1f;
+  fixture_def.restitution = 0.1f;
+  fixture_def.material.color = b2Color(0, 0, 0);
+  fixture_def.material.shininess = 10;
+  fixture_def.userData = car_body_;
+  body->CreateFixture(&fixture_def);
+}
+
+void Car::createLightFixture(const b2Vec2& pos, const b2Color& color) {
+  b2CircleShape shape;
+  shape.m_radius = config_.length * 0.04f;
+  shape.m_p = pos;
+
+  b2FixtureDef fixture_def;
+  fixture_def.shape = &shape;
+  fixture_def.density = 0.0001f;
+  fixture_def.friction = 0.5f;
+  fixture_def.restitution = 0.1f;
+  fixture_def.material.color = color;
+  fixture_def.material.shininess = 10;
+  fixture_def.material.emit_intensity = 1.0f;
+  fixture_def.userData = car_body_;
+  car_body_->CreateFixture(&fixture_def);
+}
+
+b2RevoluteJoint* Car::createTurningWheel(b2World* world, const b2Vec2& pos) {
+  b2BodyDef body_def;
+  body_def.type = b2_dynamicBody;
+  body_def.position = car_body_->GetWorldPoint(pos);
+  body_def.angularDamping = 10.0f;
+  auto body = world->CreateBody(&body_def);
+
+  createWheelFixture(body, b2Vec2(0, 0));
+
+  b2RevoluteJointDef hinge_def;
+  hinge_def.bodyA = car_body_;
+  hinge_def.bodyB = body;
+  hinge_def.localAnchorA = pos;
+  hinge_def.localAnchorB.Set(0.0f, 0.0f);
+  hinge_def.enableLimit = true;
+  hinge_def.lowerAngle = 0;
+  hinge_def.upperAngle = 0;
+  return static_cast<b2RevoluteJoint*>(world->CreateJoint(&hinge_def));
+}
+
+void Car::updateSteering() {
+  // get the target steer angle (in radians)
+  const float max_steer_angle = float(math::degreesToRadians(config_.max_steer_angle));
+  const float target_angle = -target_steer_ * max_steer_angle;
+
+  // current steering angle
+  const float current_angle = left_wheel_joint_->GetJointAngle();
+
+  // gradually steer towards the target angle
+  const float new_angle = current_angle + (target_angle - current_angle) * 0.2f;
+  left_wheel_joint_->SetLimits(new_angle, new_angle);
+  right_wheel_joint_->SetLimits(new_angle, new_angle);
+}
+
+void Car::applyTireLateralImpulse(const b2Vec2& wheel_normal, float axle_offset) {
+  const auto car_velocity = car_body_->GetLinearVelocity();
+  const auto lateral_velocity = b2Dot(wheel_normal, car_velocity) * wheel_normal;
+
+  auto impulse = car_body_->GetMass() * -lateral_velocity;
+  const auto impulse_length = impulse.Length();
+  if (impulse_length > config_.tire_traction) {
+    impulse *= config_.tire_traction / impulse_length;
+  }
+
+  const auto tire_center = car_body_->GetWorldPoint(b2Vec2(0, axle_offset));
+  car_body_->ApplyLinearImpulse(impulse, tire_center, true);
+}
+
+void Car::preStep() {
+  updateSteering();
+
+  // rear wheel(s) lateral traction
+  auto rear_wheel_normal = car_body_->GetWorldVector(b2Vec2(1, 0));
+  applyTireLateralImpulse(rear_wheel_normal, rearAxleOffset());
+
+  // front tire(s) lateral traction
+  auto left_wheel_body = left_wheel_joint_->GetBodyB();
+  auto front_wheel_normal = left_wheel_body->GetWorldVector(b2Vec2(1, 0));
+  applyTireLateralImpulse(front_wheel_normal, frontAxleOffset());
+}
+
+void Car::postStep(float dt) {
+  // update accelerometer
+  if (accelerometer_ != nullptr) {
+    accelerometer_->update(dt);
+  }
+}
+
+void Car::accelerate(float force) {
+  if (force > config_.max_forward_force) {
+    force = config_.max_forward_force;
+  }
+  if (force < -config_.max_reverse_force) {
+    force = -config_.max_reverse_force;
+  }
+  car_body_->ApplyForceToCenter(car_body_->GetWorldVector(b2Vec2(0, force)), true);
+}
+
+void Car::steer(float steer_wheel_position) {
+  // clamp the target steer to [-1, +1]
+  target_steer_ = min(max(steer_wheel_position, -1.0f), 1.0f);
+}
+
 Scene::Scene(const core::PropertySet* config)
     : sim::Scene(b2Vec2(0, 0), sim::Rect(-kWidth / 2, -kHeight / 2, kWidth, kHeight)) {
   if (config) {
@@ -46,38 +236,38 @@ Scene::Scene(const core::PropertySet* config)
   wall_shape.Set(top_left, top_right);
   walls->CreateFixture(&wall_fixture_def);
 
-  // car
-  car_ = createCar(b2Vec2(0, 0), config_.car_length);
-
-  // dummy drone
-  createDrone(b2Vec2(0, 5), 0.5f);
-
   // lights
-  createLight(walls, b2Vec2(-9, -9), b2Color(1, 1, 1));
-  createLight(walls, b2Vec2(9, 9), b2Color(1, 1, 1));
+  createLight(walls, b2Vec2(-kWidth * 0.4f, 0), b2Color(1, 1, 1));
+  createLight(walls, b2Vec2(kWidth * 0.4f, 0), b2Color(1, 1, 1));
 
-  // sensors
-  camera_ = make_unique<Camera>(car_, 120, 0.1f, 30.0f, 512);
-  camera_->setPosition(b2Vec2(0, config_.car_length * 0.2f));
-  camera_->setFilterId(car_);
-  touch_sensor_ = make_unique<TouchSensor>(car_, 16);
-  accelerometer_ = make_unique<Accelerometer>(car_);
-  compass_ = make_unique<Compass>(car_);
+  // car
+  CarConfig car_config;
+  car_config.length = config_.car_length;
+  car_config.max_forward_force = config_.max_forward_force;
+  car_config.max_reverse_force = config_.max_reverse_force;
+  car_config.max_steer_angle = config_.max_steer_angle;
+  car_config.tire_traction = config_.tire_traction;
+  car_config.camera = true;
+  car_config.camera_resolution = 512;
+  car_config.camera_fov = 120;
+  car_config.touch_sensor = true;
+  car_config.touch_resolution = 16;
+  car_config.accelerometer = true;
+  car_config.compass = true;
+  car_config.position = b2Vec2(0, 0);
+  car_config.color = b2Color(0, 1, 0);
+  car_ = make_unique<Car>(&world_, car_config);
 
   updateVariables();
+}
+
+void Scene::preStep() {
+  car_->preStep();
 }
 
 void Scene::postStep(float dt) {
-  accelerometer_->update(dt);
+  car_->postStep(dt);
   updateVariables();
-}
-
-void Scene::accelerate(float force) {
-  car_->ApplyForceToCenter(car_->GetWorldVector(b2Vec2(0, force)), true);
-}
-
-void Scene::rotateDrone(float torque) {
-  // drone_->ApplyTorque(torque, true);
 }
 
 void Scene::addBalloon(float x, float y, float radius) {
@@ -124,133 +314,6 @@ void Scene::addBox(float x, float y, float sx, float sy) {
   body->CreateFixture(&fixture_def);
 }
 
-static void createWheel(b2Body* car_body, const b2Vec2& pos, float size) {
-  b2PolygonShape shape;
-  shape.SetAsBox(size / 4, size / 2, pos, 0);
-
-  b2FixtureDef fixture_def;
-  fixture_def.shape = &shape;
-  fixture_def.density = 0.0f;
-  fixture_def.friction = 0.5f;
-  fixture_def.restitution = 0.1f;
-  fixture_def.material.color = b2Color(0, 0, 0);
-  fixture_def.material.shininess = 10;
-  fixture_def.userData = car_body;
-  car_body->CreateFixture(&fixture_def);
-}
-
-static void createCarLight(b2Body* car_body,
-                           const b2Vec2& pos,
-                           float size,
-                           const b2Color& color) {
-  b2CircleShape shape;
-  shape.m_radius = size;
-  shape.m_p = pos;
-
-  b2FixtureDef fixture_def;
-  fixture_def.shape = &shape;
-  fixture_def.density = 0.0f;
-  fixture_def.friction = 0.5f;
-  fixture_def.restitution = 0.1f;
-  fixture_def.material.color = color;
-  fixture_def.material.shininess = 10;
-  fixture_def.material.emit_intensity = 1.0f;
-  fixture_def.userData = car_body;
-  car_body->CreateFixture(&fixture_def);
-}
-
-b2Body* Scene::createCar(const b2Vec2& pos, float length) {
-  b2BodyDef body_def;
-  body_def.type = b2_dynamicBody;
-  body_def.position = pos;
-  body_def.linearDamping = 10.0f;
-  body_def.angularDamping = 10.0f;
-  auto body = world_.CreateBody(&body_def);
-
-  const float width = length / 2;
-  const float dx = width / 2;
-  const float dy = length / 2;
-
-  b2PolygonShape shape;
-  shape.SetAsBox(dx, dy);
-
-  b2FixtureDef fixture_def;
-  fixture_def.shape = &shape;
-  fixture_def.density = 0.01f;
-  fixture_def.friction = 0.5f;
-  fixture_def.restitution = 0.1f;
-  fixture_def.material.color = b2Color(0, 1, 0);
-  fixture_def.material.shininess = 25;
-  fixture_def.material.emit_intensity = 0.1f;
-  fixture_def.userData = body;
-  body->CreateFixture(&fixture_def);
-
-  const float axle_dy = dy * 0.6f;
-  const float wheel_size = length * 0.2f;
-  createWheel(body, b2Vec2(-dx, -axle_dy), wheel_size);
-  createWheel(body, b2Vec2(dx, -axle_dy), wheel_size);
-  createWheel(body, b2Vec2(-dx, axle_dy), wheel_size);
-  createWheel(body, b2Vec2(dx, axle_dy), wheel_size);
-
-  const float light_size = length * 0.04f;
-  const float light_dx = dx * 0.7f;
-  const b2Color red(1, 0, 0);
-  const b2Color white(1, 1, 1);
-  createCarLight(body, b2Vec2(-light_dx, -dy), light_size, red);
-  createCarLight(body, b2Vec2(light_dx, -dy), light_size, red);
-  createCarLight(body, b2Vec2(-light_dx, dy), light_size, white);
-  createCarLight(body, b2Vec2(light_dx, dy), light_size, white);
-
-  return body;
-}
-
-b2Body* Scene::createDrone(const b2Vec2& pos, float radius) {
-  b2BodyDef drone_body_def;
-  drone_body_def.type = b2_dynamicBody;
-  drone_body_def.position = pos;
-  drone_body_def.linearDamping = 10.0f;
-  drone_body_def.angularDamping = 10.0f;
-  auto body = world_.CreateBody(&drone_body_def);
-
-  b2CircleShape drone_shape;
-  drone_shape.m_radius = radius;
-
-  b2FixtureDef drone_fixture_def;
-  drone_fixture_def.shape = &drone_shape;
-  drone_fixture_def.density = 0.1f;
-  drone_fixture_def.friction = 1.0f;
-  drone_fixture_def.restitution = 0.2f;
-  drone_fixture_def.material.color = b2Color(0, 0, 1);
-  drone_fixture_def.material.emit_intensity = 0.5f;
-  body->CreateFixture(&drone_fixture_def);
-
-  // left light
-  b2CircleShape left_light_shape;
-  left_light_shape.m_radius = radius / 4;
-  left_light_shape.m_p = b2Vec2(-radius, 0);
-
-  b2FixtureDef left_light_def;
-  left_light_def.shape = &left_light_shape;
-  left_light_def.material.color = b2Color(1, 0, 0);
-  left_light_def.material.emit_intensity = 1;
-  left_light_def.filter.maskBits = 0;
-  body->CreateFixture(&left_light_def);
-
-  // right light
-  b2CircleShape right_light_shape;
-  right_light_shape.m_radius = radius / 4;
-  right_light_shape.m_p = b2Vec2(radius, 0);
-
-  b2FixtureDef right_light_def;
-  right_light_def.shape = &right_light_shape;
-  right_light_def.material.color = b2Color(0, 1, 0);
-  right_light_def.material.emit_intensity = 1;
-  right_light_def.filter.maskBits = 0;
-  body->CreateFixture(&right_light_def);
-
-  return body;
-}
-
 void Scene::createLight(b2Body* body, const b2Vec2& pos, const b2Color& color) {
   b2LightDef light_def;
   light_def.body = body;
@@ -262,11 +325,11 @@ void Scene::createLight(b2Body* body, const b2Vec2& pos, const b2Color& color) {
 }
 
 void Scene::updateVariables() {
-  variables_.car_x = car_->GetPosition().x;
-  variables_.car_y = car_->GetPosition().y;
-  variables_.car_vx = car_->GetLinearVelocity().x;
-  variables_.car_vy = car_->GetLinearVelocity().y;
-  variables_.car_dir = car_->GetAngle();
+  const b2Body* car_body = car_->body();
+  variables_.car_x = car_body->GetPosition().x;
+  variables_.car_y = car_body->GetPosition().y;
+  variables_.car_velocity = car_body->GetLinearVelocity().Length();
+  variables_.car_dir = car_body->GetAngle();
 }
 
 void SceneUi::renderCamera(QPainter& painter, const sim::Camera* camera) const {
@@ -289,25 +352,23 @@ void SceneUi::render(QPainter& painter, const QRectF&) {
 }
 
 void SceneUi::step() {
-  const float move_force = scene_->config()->move_force;
-  const float rotate_torque = scene_->config()->rotate_torque;
+  const auto config = scene_->config();
+  const auto car = scene_->car();
+
+  // steering
   if (keyPressed(Qt::Key_Left)) {
-    // scene_->accelerate(b2Vec2(-move_force, 0));
+    car->steer(-1);
+  } else if (keyPressed(Qt::Key_Right)) {
+    car->steer(1);
+  } else {
+    car->steer(0);
   }
-  if (keyPressed(Qt::Key_Right)) {
-    // scene_->accelerate(b2Vec2(move_force, 0));
-  }
+
+  // forward/reverse
   if (keyPressed(Qt::Key_Up)) {
-    scene_->accelerate(move_force);
-  }
-  if (keyPressed(Qt::Key_Down)) {
-    scene_->accelerate(-move_force);
-  }
-  if (keyPressed(Qt::Key_Q)) {
-    scene_->rotateDrone(rotate_torque);
-  }
-  if (keyPressed(Qt::Key_W)) {
-    scene_->rotateDrone(-rotate_torque);
+    car->accelerate(config->max_forward_force);
+  } else if (keyPressed(Qt::Key_Down)) {
+    car->accelerate(-config->max_reverse_force);
   }
 }
 
