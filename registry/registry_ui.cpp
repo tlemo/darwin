@@ -25,6 +25,7 @@
 #include <domains/drone_vision_ui/domain_ui.h>
 #include <domains/drone_follow_ui/domain_ui.h>
 #include <domains/drone_track_ui/domain_ui.h>
+#include <domains/car_track_ui/domain_ui.h>
 
 namespace registry_ui {
 
@@ -40,6 +41,7 @@ void init() {
   drone_vision_ui::init();
   drone_follow_ui::init();
   drone_track_ui::init();
+  car_track_ui::init();
 }
 
 }  // namespace registry_ui

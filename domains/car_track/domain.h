@@ -20,9 +20,9 @@
 
 #include <third_party/box2d/box2d.h>
 
-namespace drone_track {
+namespace car_track {
 
-//! Drone Track domain configuration
+//! Car Track domain configuration
 struct Config : public core::PropertySet {
   PROPERTY(drone_radius, float, 0.3f, "Drone size");
   PROPERTY(max_move_force, float, 10.0f, "Maximum force used to move the drone");
@@ -46,11 +46,11 @@ struct Config : public core::PropertySet {
   PROPERTY(max_steps, int, 1000, "Maximum number of steps per episode");
 };
 
-//! Domain: Drone Track
+//! Domain: Car Track
 //!
-//! Race around a procedurally generated track, using the drone sensors (camera, ...)
+//! Race around a procedurally generated track, using the car's sensors (camera, ...)
 //!
-//! ![](images/drone_track_sandbox.png)
+//! ![](images/car_track_sandbox.png)
 //!
 //! ### Inputs
 //!
@@ -66,9 +66,9 @@ struct Config : public core::PropertySet {
 //!    0,1 | force vector (x, y) applied to the drone
 //!      2 | torque applied to turn the drone
 //!
-class DroneTrack : public darwin::Domain {
+class CarTrack : public darwin::Domain {
  public:
-  explicit DroneTrack(const core::PropertySet& config);
+  explicit CarTrack(const core::PropertySet& config);
 
   size_t inputs() const override;
   size_t outputs() const override;
@@ -92,7 +92,7 @@ class Factory : public darwin::DomainFactory {
 };
 
 inline void init() {
-  darwin::registry()->domains.add<Factory>("drone_track");
+  darwin::registry()->domains.add<Factory>("car_track");
 }
 
-}  // namespace drone_track
+}  // namespace car_track

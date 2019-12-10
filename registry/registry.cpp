@@ -32,6 +32,7 @@
 #include <domains/drone_vision/domain.h>
 #include <domains/drone_follow/domain.h>
 #include <domains/drone_track/domain.h>
+#include <domains/car_track/domain.h>
 
 namespace registry {
 
@@ -50,6 +51,7 @@ void init() {
   drone_vision::init();
   drone_follow::init();
   drone_track::init();
+  car_track::init();
 
   // populations
   cgp::init();

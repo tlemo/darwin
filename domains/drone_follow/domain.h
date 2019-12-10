@@ -22,7 +22,7 @@
 
 namespace drone_follow {
 
-//! Drone Vision domain configuration
+//! Drone Follow domain configuration
 struct Config : public core::PropertySet {
   PROPERTY(drone_radius, float, 0.5f, "Drone size");
   PROPERTY(drone_lights, bool, true, "Drone has navigation lights");
