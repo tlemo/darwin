@@ -3,15 +3,13 @@
 
 #include <core/sim/scene.h>
 #include <core/sim/drone.h>
+#include <core/sim/track.h>
 #include <core/properties.h>
 #include <core_ui/sim/box2d_widget.h>
 
 #include <QKeyEvent>
 
 #include <memory>
-#include <random>
-#include <unordered_map>
-#include <vector>
 using namespace std;
 
 namespace drone_race_scene {
@@ -37,21 +35,13 @@ struct SceneVariables : public core::PropertySet {
   PROPERTY(drone_vx, float, 0, "Drone velocity (x component)");
   PROPERTY(drone_vy, float, 0, "Drone velocity (y component)");
   PROPERTY(drone_dir, float, 0, "Heading angle");
-  PROPERTY(current_segment, int, 0, "Current track segment");
+  PROPERTY(track_distance, int, 0, "Current track segment");
 };
 
 class Scene : public sim::Scene {
-  struct TrackNode {
-    b2Vec2 pos;
-    b2Vec2 normal;
-
-    b2Vec2 offsetPos(float offset) const { return pos + normal * offset; }
-  };
-
  public:
   static constexpr float kWidth = 40;
   static constexpr float kHeight = 20;
-  static constexpr float kCurbWidth = 0.1f;
 
  public:
   explicit Scene(const core::PropertySet* config);
@@ -71,23 +61,18 @@ class Scene : public sim::Scene {
   void rotateDrone(float torque);
 
   sim::Drone* drone() { return drone_.get(); }
-  
-  const vector<TrackNode>& trackNodes() const { return track_nodes_; }
-  int nodeIndex(int segment) const;
+
+  const sim::Track* track() const { return track_.get(); }
 
  private:
   unique_ptr<sim::Drone> createDrone();
-  void generateRandomTrack();
-  void createTrackFixtures();
-  void updateTrackSegment();
+  unique_ptr<sim::Track> createTrack();
   void updateVariables();
 
  private:
-  default_random_engine rnd_{ random_device{}() };
-  vector<TrackNode> track_nodes_;
-
   unique_ptr<sim::Drone> drone_;
-  int current_track_segment_ = 0;
+  unique_ptr<sim::Track> track_;
+  int track_distance_ = 0;
 
   SceneVariables variables_;
   Config config_;

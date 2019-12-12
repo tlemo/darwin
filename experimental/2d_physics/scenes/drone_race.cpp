@@ -4,7 +4,6 @@
 
 #include <core/math_2d.h>
 #include <core/global_initializer.h>
-#include <third_party/tinyspline/tinyspline.h>
 
 #include <QPainter>
 #include <QPointF>
@@ -14,6 +13,9 @@
 #include <QPen>
 #include <QColor>
 #include <QPainterPath>
+
+#include <random>
+using namespace std;
 
 namespace drone_race_scene {
 
@@ -38,15 +40,15 @@ Scene::Scene(const core::PropertySet* config)
   if (config) {
     config_.copyFrom(*config);
   }
-  generateRandomTrack();
-  createTrackFixtures();
+  track_ = createTrack();
   drone_ = createDrone();
   updateVariables();
 }
 
 void Scene::postStep(float dt) {
   drone_->postStep(dt);
-  updateTrackSegment();
+  track_distance_ =
+      track_->updateTrackDistance(track_distance_, drone_->body()->GetPosition());
   updateVariables();
 }
 
@@ -59,9 +61,11 @@ void Scene::rotateDrone(float torque) {
 }
 
 unique_ptr<sim::Drone> Scene::createDrone() {
-  CHECK(!track_nodes_.empty());
+  // calculate the start position
+  const auto& track_nodes = track_->trackNodes();
+  CHECK(!track_nodes.empty());
 
-  const auto start_node = track_nodes_[0];
+  const auto start_node = track_nodes[0];
   const auto start_pos = start_node.offsetPos(config_.track_width / 2);
   const auto start_angle = atan2f(start_node.normal.y, start_node.normal.x);
 
@@ -92,133 +96,13 @@ unique_ptr<sim::Drone> Scene::createDrone() {
   return drone;
 }
 
-void Scene::generateRandomTrack() {
-  CHECK(track_nodes_.empty());
-
-  // generate random control points (counter-clockwise, around the center)
-  std::uniform_real_distribution<double> dist(2, 20);
-  const double kLimitX = kWidth / 2 - config_.track_width;
-  const double kLimitY = kHeight / 2 - config_.track_width;
-  vector<math::Vector2d> control_points(config_.track_complexity);
-  for (size_t i = 0; i < control_points.size(); ++i) {
-    const double angle = i * math::kPi * 2 / config_.track_complexity;
-    const double r = dist(rnd_);
-    control_points[i].x = max(min(cos(angle) * r, kLimitX), -kLimitX);
-    control_points[i].y = max(min(sin(angle) * r, kLimitY), -kLimitY);
-  }
-
-  // create the track spline (as a closed curve)
-  const size_t n = control_points.size() + 3;
-  tinyspline::BSpline spline(n, 2, 3, TS_OPENED);
-  auto cp = spline.controlPoints();
-  for (size_t i = 0; i < n; ++i) {
-    cp[i * 2 + 0] = control_points[i % control_points.size()].x;
-    cp[i * 2 + 1] = control_points[i % control_points.size()].y;
-  }
-  spline.setControlPoints(cp);
-
-  // sample evenly spaced points from the spline
-  // (we defined a closed curve - first and last point overlap, so drop the last one)
-  const size_t samples_count = config_.track_resolution;
-  auto samples = spline.sample(samples_count + 1);
-  samples.pop_back();
-
-  // set the track points
-  track_nodes_.resize(samples_count);
-  for (size_t i = 0; i < samples_count; ++i) {
-    track_nodes_[i].pos.x = float(samples[i * 2 + 0]);
-    track_nodes_[i].pos.y = float(samples[i * 2 + 1]);
-  }
-
-  // calculate the normals
-  for (size_t i = 0; i < samples_count; ++i) {
-    const size_t next_i = (i + 1) % samples_count;
-    const auto next_v = track_nodes_[next_i].pos - track_nodes_[i].pos;
-    const auto next_n = b2Vec2(next_v.y, -next_v.x).Normalized();
-
-    const size_t prev_i = (i + samples_count - 1) % samples_count;
-    const auto prev_v = track_nodes_[i].pos - track_nodes_[prev_i].pos;
-    const auto prev_n = b2Vec2(prev_v.y, -prev_v.x).Normalized();
-
-    track_nodes_[i].normal = (prev_n + next_n) * 0.5f;
-  }
-}
-
-void Scene::createTrackFixtures() {
-  CHECK(!track_nodes_.empty());
-
-  b2BodyDef track_body_def;
-  auto track_body = world_.CreateBody(&track_body_def);
-
-  const b2Color red(1, 0, 0);
-  const b2Color white(1, 1, 1);
-  const b2Color blue(0, 0, 1);
-
-  bool primary_color = true;
-  for (size_t i = 0; i < track_nodes_.size(); ++i) {
-    const size_t next_i = (i + 1) % track_nodes_.size();
-
-    // common definitions
-    b2Vec2 points[4];
-    b2PolygonShape shape;
-
-    b2FixtureDef fixture_def;
-    fixture_def.shape = &shape;
-    fixture_def.friction = 0.2f;
-    fixture_def.restitution = 0.5f;
-    fixture_def.material.emit_intensity = 0;
-
-    // left side curb
-    points[0] = track_nodes_[i].pos;
-    points[1] = track_nodes_[next_i].pos;
-    points[2] = track_nodes_[next_i].offsetPos(-kCurbWidth);
-    points[3] = track_nodes_[i].offsetPos(-kCurbWidth);
-    shape.Set(points, 4);
-
-    fixture_def.material.color = primary_color ? red : white;
-    track_body->CreateFixture(&fixture_def);
-
-    // right side curb
-    points[0] = track_nodes_[i].offsetPos(config_.track_width + kCurbWidth);
-    points[1] = track_nodes_[next_i].offsetPos(config_.track_width + kCurbWidth);
-    points[2] = track_nodes_[next_i].offsetPos(config_.track_width);
-    points[3] = track_nodes_[i].offsetPos(config_.track_width);
-    shape.Set(points, 4);
-
-    fixture_def.material.color = primary_color ? blue : white;
-    track_body->CreateFixture(&fixture_def);
-
-    primary_color = !primary_color;
-  }
-}
-
-int Scene::nodeIndex(int segment) const {
-  const int n = int(track_nodes_.size());
-  int index = segment;
-  while (index < 0) {
-    index += n;
-  }
-  return index % n;
-}
-
-void Scene::updateTrackSegment() {
-  const b2Vec2 pos = drone_->body()->GetPosition();
-  bool done = false;
-
-  // advance the segment?
-  auto node = track_nodes_[nodeIndex(current_track_segment_ + 1)];
-  while (b2Cross(node.normal, pos - node.pos) >= 0) {
-    node = track_nodes_[nodeIndex(++current_track_segment_ + 1)];
-    done = true;
-  }
-
-  // move backwards?
-  if (!done) {
-    auto node = track_nodes_[nodeIndex(current_track_segment_)];
-    while (b2Cross(node.normal, pos - node.pos) < 0) {
-      node = track_nodes_[nodeIndex(--current_track_segment_)];
-    }
-  }
+unique_ptr<sim::Track> Scene::createTrack() {
+  sim::TrackConfig track_config;
+  track_config.width = config_.track_width;
+  track_config.complexity = config_.track_complexity;
+  track_config.resolution = config_.track_resolution;
+  const auto random_seed = std::random_device{}();
+  return make_unique<sim::Track>(random_seed, &world_, track_config);
 }
 
 void Scene::updateVariables() {
@@ -227,7 +111,7 @@ void Scene::updateVariables() {
   variables_.drone_vx = drone_->body()->GetLinearVelocity().x;
   variables_.drone_vy = drone_->body()->GetLinearVelocity().y;
   variables_.drone_dir = drone_->body()->GetAngle();
-  variables_.current_segment = current_track_segment_;
+  variables_.track_distance = track_distance_;
 }
 
 void SceneUi::renderCamera(QPainter& painter, const sim::Camera* camera) const {
@@ -275,7 +159,7 @@ void SceneUi::renderPath(QPainter& painter) const {
 
 void SceneUi::renderTrack(QPainter& painter) const {
   QPainterPath track_path;
-  const auto& track_nodes = scene_->trackNodes();
+  const auto& track_nodes = scene_->track()->trackNodes();
 
   // inner track edge
   for (size_t i = 0; i < track_nodes.size(); ++i) {
@@ -304,10 +188,11 @@ void SceneUi::renderTrack(QPainter& painter) const {
 }
 
 void SceneUi::renderCurrentSegment(QPainter& painter) const {
+  const auto track = scene_->track();
   constexpr float kOffset = 0.4f;
   const auto vars = scene_->variables();
-  const auto index = scene_->nodeIndex(vars->current_segment);
-  const auto& node = scene_->trackNodes()[index];
+  const auto index = track->distanceToNode(vars->track_distance);
+  const auto& node = track->trackNodes()[index];
   const auto p1 = node.offsetPos(-kOffset);
   const auto p2 = node.offsetPos(scene_->config()->track_width + kOffset);
   painter.setBrush(Qt::NoBrush);

@@ -27,8 +27,6 @@ using namespace std;
 
 namespace drone_track {
 
-using sim::Drone;
-
 struct SceneVariables : public core::PropertySet {
   PROPERTY(drone_x, float, 0, "Drone x coordinate");
   PROPERTY(drone_y, float, 0, "Drone y coordinate");
@@ -52,7 +50,7 @@ class Scene : public sim::Scene {
 
   const Config* config() const override { return &domain_->config(); }
 
-  Drone* drone() { return drone_.get(); }
+  sim::Drone* drone() { return drone_.get(); }
   
   const sim::Track* track() const { return track_.get(); }
 
@@ -70,7 +68,7 @@ class Scene : public sim::Scene {
  private:
   float fitness_ = 0;
   int distance_ = 0;
-  unique_ptr<Drone> drone_;
+  unique_ptr<sim::Drone> drone_;
   unique_ptr<sim::Track> track_;
 
   default_random_engine rnd_;
