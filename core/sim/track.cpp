@@ -17,11 +17,9 @@
 #include <core/math_2d.h>
 #include <third_party/tinyspline/tinyspline.h>
 
-#include <core/utils.h>
+namespace sim {
 
-namespace drone_track {
-
-Track::Track(Track::Seed seed, b2World* world, const Config& config)
+Track::Track(Track::Seed seed, b2World* world, const TrackConfig& config)
     : rnd_(seed), config_(config) {
   generateTrackPath();
   createFixtures(world);
@@ -64,11 +62,11 @@ void Track::generateTrackPath() {
 
   // generate random control points (counter-clockwise, around the center)
   std::uniform_real_distribution<double> dist(2, 20);
-  const double kLimitX = kWidth / 2 - config_.track_width;
-  const double kLimitY = kHeight / 2 - config_.track_width;
-  vector<math::Vector2d> control_points(config_.track_complexity);
+  const double kLimitX = kWidth / 2 - config_.width;
+  const double kLimitY = kHeight / 2 - config_.width;
+  vector<math::Vector2d> control_points(config_.complexity);
   for (size_t i = 0; i < control_points.size(); ++i) {
-    const double angle = i * math::kPi * 2 / config_.track_complexity;
+    const double angle = i * math::kPi * 2 / config_.complexity;
     const double r = dist(rnd_);
     control_points[i].x = max(min(cos(angle) * r, kLimitX), -kLimitX);
     control_points[i].y = max(min(sin(angle) * r, kLimitY), -kLimitY);
@@ -86,7 +84,7 @@ void Track::generateTrackPath() {
 
   // sample evenly spaced points from the spline
   // (we defined a closed curve - first and last point overlap, so drop the last one)
-  const size_t samples_count = config_.track_resolution;
+  const size_t samples_count = config_.resolution;
   auto samples = spline.sample(samples_count + 1);
   samples.pop_back();
 
@@ -146,10 +144,10 @@ void Track::createFixtures(b2World* world) {
     track_body->CreateFixture(&fixture_def);
 
     // right side curb
-    points[0] = track_nodes_[i].offsetPos(config_.track_width + kCurbWidth);
-    points[1] = track_nodes_[next_i].offsetPos(config_.track_width + kCurbWidth);
-    points[2] = track_nodes_[next_i].offsetPos(config_.track_width);
-    points[3] = track_nodes_[i].offsetPos(config_.track_width);
+    points[0] = track_nodes_[i].offsetPos(config_.width + kCurbWidth);
+    points[1] = track_nodes_[next_i].offsetPos(config_.width + kCurbWidth);
+    points[2] = track_nodes_[next_i].offsetPos(config_.width);
+    points[3] = track_nodes_[i].offsetPos(config_.width);
     shape.Set(points, 4);
 
     fixture_def.material.color = primary_color ? blue : white;
@@ -159,4 +157,4 @@ void Track::createFixtures(b2World* world) {
   }
 }
 
-}  // namespace drone_track
+}  // namespace sim

@@ -31,6 +31,7 @@ SOURCES += \
     sim/compass.cpp \
     sim/scene.cpp \
     sim/misc.cpp \
+    sim/track.cpp \
     sim/touch_sensor.cpp \
     sim/drone.cpp \
     sim/drone_controller.cpp
@@ -73,6 +74,7 @@ HEADERS += \
     sim/compass.h \
     sim/scene.h \
     sim/misc.h \
+    sim/track.h \
     sim/script.h \
     sim/touch_sensor.h \
     sim/drone.h \

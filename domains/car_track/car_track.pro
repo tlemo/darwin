@@ -9,12 +9,10 @@ CONFIG += staticlib
 
 SOURCES += \
     domain.cpp \
-    scene.cpp \
-    track.cpp
+    scene.cpp
 
 HEADERS += \
     domain.h \
-    scene.h \
-    track.h
+    scene.h
 
 addLibrary(../../core)

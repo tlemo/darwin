@@ -14,15 +14,25 @@
 
 #pragma once
 
-#include "domain.h"
-
+#include <core/utils.h>
 #include <third_party/box2d/box2d.h>
 
 #include <vector>
 #include <random>
 using namespace std;
 
-namespace drone_track {
+namespace sim {
+
+struct TrackConfig {
+  //! Track width (curb to curb)
+  float width = 1.8f;
+  
+  //! The approximate number of turns
+  int complexity = 10;
+  
+  //! Number of track segments
+  int resolution = 500;
+};
 
 struct TrackNode {
   b2Vec2 pos;
@@ -40,7 +50,7 @@ class Track : public core::NonCopyable {
   using Seed = std::random_device::result_type;
 
  public:
-  Track(Seed seed, b2World* world, const Config& config);
+  Track(Seed seed, b2World* world, const TrackConfig& config);
 
   const vector<TrackNode>& trackNodes() const { return track_nodes_; }
 
@@ -54,7 +64,7 @@ class Track : public core::NonCopyable {
  private:
   default_random_engine rnd_;
   vector<TrackNode> track_nodes_;
-  const Config& config_;
+  const TrackConfig& config_;
 };
 
-}  // namespace drone_track
+}  // namespace sim

@@ -15,10 +15,10 @@
 #pragma once
 
 #include "domain.h"
-#include "track.h"
 
 #include <core/sim/scene.h>
 #include <core/sim/drone.h>
+#include <core/sim/track.h>
 #include <core/properties.h>
 
 #include <memory>
@@ -54,7 +54,7 @@ class Scene : public sim::Scene {
 
   Drone* drone() { return drone_.get(); }
   
-  const Track* track() const { return track_.get(); }
+  const sim::Track* track() const { return track_.get(); }
 
   const CarTrack* domain() const { return domain_; }
 
@@ -71,7 +71,7 @@ class Scene : public sim::Scene {
   float fitness_ = 0;
   int distance_ = 0;
   unique_ptr<Drone> drone_;
-  unique_ptr<Track> track_;
+  unique_ptr<sim::Track> track_;
 
   default_random_engine rnd_;
 

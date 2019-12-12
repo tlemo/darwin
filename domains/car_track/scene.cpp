@@ -27,7 +27,11 @@ Scene::Scene(Seed seed, const CarTrack* domain)
   const auto& config = domain_->config();
 
   // create track
-  track_ = make_unique<Track>(seed, &world_, config);
+  sim::TrackConfig track_config;
+  track_config.width = config.track_width;
+  track_config.complexity = config.track_complexity;
+  track_config.resolution = config.track_resolution;
+  track_ = make_unique<sim::Track>(seed, &world_, track_config);
 
   // calculate the start position
   const auto& track_nodes = track_->trackNodes();
