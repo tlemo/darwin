@@ -61,7 +61,8 @@ void Track::generateTrackPath() {
   CHECK(track_nodes_.empty());
 
   // generate random control points (counter-clockwise, around the center)
-  std::uniform_real_distribution<double> dist(2, 20);
+  const float radius = (config_.area_width + config_.area_height) / 2.0f;
+  std::uniform_real_distribution<double> dist(radius * 0.1f, radius);
   const double kLimitX = config_.area_width / 2 - config_.width;
   const double kLimitY = config_.area_height / 2 - config_.width;
   vector<math::Vector2d> control_points(config_.complexity);
