@@ -62,8 +62,8 @@ void Track::generateTrackPath() {
 
   // generate random control points (counter-clockwise, around the center)
   std::uniform_real_distribution<double> dist(2, 20);
-  const double kLimitX = kWidth / 2 - config_.width;
-  const double kLimitY = kHeight / 2 - config_.width;
+  const double kLimitX = config_.area_width / 2 - config_.width;
+  const double kLimitY = config_.area_height / 2 - config_.width;
   vector<math::Vector2d> control_points(config_.complexity);
   for (size_t i = 0; i < control_points.size(); ++i) {
     const double angle = i * math::kPi * 2 / config_.complexity;
@@ -136,16 +136,16 @@ void Track::createFixtures(b2World* world) {
     // left side curb
     points[0] = track_nodes_[i].pos;
     points[1] = track_nodes_[next_i].pos;
-    points[2] = track_nodes_[next_i].offsetPos(-kCurbWidth);
-    points[3] = track_nodes_[i].offsetPos(-kCurbWidth);
+    points[2] = track_nodes_[next_i].offsetPos(-config_.curb_width);
+    points[3] = track_nodes_[i].offsetPos(-config_.curb_width);
     shape.Set(points, 4);
 
     fixture_def.material.color = primary_color ? red : white;
     track_body->CreateFixture(&fixture_def);
 
     // right side curb
-    points[0] = track_nodes_[i].offsetPos(config_.width + kCurbWidth);
-    points[1] = track_nodes_[next_i].offsetPos(config_.width + kCurbWidth);
+    points[0] = track_nodes_[i].offsetPos(config_.width + config_.curb_width);
+    points[1] = track_nodes_[next_i].offsetPos(config_.width + config_.curb_width);
     points[2] = track_nodes_[next_i].offsetPos(config_.width);
     points[3] = track_nodes_[i].offsetPos(config_.width);
     shape.Set(points, 4);

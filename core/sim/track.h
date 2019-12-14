@@ -24,14 +24,12 @@ using namespace std;
 namespace sim {
 
 struct TrackConfig {
-  //! Track width (curb to curb)
-  float width = 1.8f;
-  
-  //! The approximate number of turns
-  int complexity = 10;
-  
-  //! Number of track segments
-  int resolution = 500;
+  float width = 1.8f;         //!< Track width (curb to curb)
+  int complexity = 10;        //!< The approximate number of turns
+  int resolution = 500;       //!< Number of track segments
+  float area_width = 40.0f;   //!< The width of the track area
+  float area_height = 20.0f;  //!< The height of the track area
+  float curb_width = 0.1f;    //!< Curb width
 };
 
 struct TrackNode {
@@ -42,10 +40,6 @@ struct TrackNode {
 };
 
 class Track : public core::NonCopyable {
-  static constexpr float kWidth = 40;
-  static constexpr float kHeight = 20;
-  static constexpr float kCurbWidth = 0.1f;
-
  public:
   using Seed = std::random_device::result_type;
 

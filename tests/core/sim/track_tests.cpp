@@ -42,6 +42,9 @@ TEST(TrackTest, HighComplexity) {
   track_config.width = 2.5f;
   track_config.complexity = 25;
   track_config.resolution = 500;
+  track_config.area_width = 30.0f;
+  track_config.area_height = 30.0f;
+  track_config.curb_width = 0.5f;
 
   // test world
   b2World world(b2Vec2(0, 0));
@@ -60,6 +63,30 @@ TEST(TrackTest, HighResolution) {
   track_config.width = 5.0f;
   track_config.complexity = 10;
   track_config.resolution = 1500;
+  track_config.area_width = 20.0f;
+  track_config.area_height = 100.0f;
+  track_config.curb_width = 0.01f;
+
+  // test world
+  b2World world(b2Vec2(0, 0));
+
+  random_device rd;
+  constexpr int kIterations = 100;
+  for (int i = 0; i < kIterations; ++i) {
+    const auto random_seed = rd();
+    sim::Track test_track(random_seed, &world, track_config);
+  }
+}
+
+TEST(TrackTest, LowResolution) {
+  // track configuration
+  sim::TrackConfig track_config;
+  track_config.width = 1.0f;
+  track_config.complexity = 10;
+  track_config.resolution = 8;
+  track_config.area_width = 10.0f;
+  track_config.area_height = 100.0f;
+  track_config.curb_width = 0.3f;
 
   // test world
   b2World world(b2Vec2(0, 0));
