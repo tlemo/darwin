@@ -20,6 +20,7 @@ SOURCES += \
     scenes/hectic_drone.cpp \
     scenes/electric_fence.cpp \
     scenes/particles.cpp \
+    scenes/sandbox.cpp \
     main.cpp \
     main_window.cpp \
     new_sandbox_dialog.cpp \
@@ -41,6 +42,7 @@ HEADERS += \
     scenes/hectic_drone.h \
     scenes/electric_fence.h \
     scenes/particles.h \
+    scenes/sandbox.h \
     main_window.h \
     new_sandbox_dialog.h \
     new_scene_dialog.h \
