@@ -42,8 +42,8 @@ TEST(TrackTest, HighComplexity) {
   track_config.width = 2.5f;
   track_config.complexity = 25;
   track_config.resolution = 500;
-  track_config.area_width = 30.0f;
-  track_config.area_height = 30.0f;
+  track_config.area_width = 20.0f;
+  track_config.area_height = 50.0f;
   track_config.curb_width = 0.5f;
 
   // test world
