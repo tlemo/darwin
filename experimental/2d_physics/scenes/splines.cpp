@@ -209,7 +209,7 @@ void SceneUi::generateRandomTrack() {
   const double x_limit = config->width / 2 - config->track_width;
   const double y_limit = config->height / 2 - config->track_width;
   const double radius = (config->width + config->height) / 2.0;
-  std::uniform_real_distribution<double> dist(radius * 0.0f, radius);
+  std::uniform_real_distribution<double> dist(0.1f, radius);
   std::random_device rd;
   std::default_random_engine rnd(rd());
   control_points_.resize(config->track_complexity);

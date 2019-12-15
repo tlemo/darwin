@@ -61,16 +61,21 @@ void Track::generateTrackPath() {
   CHECK(track_nodes_.empty());
 
   // generate random control points (counter-clockwise, around the center)
+  const double x_limit = config_.area_width / 2 - config_.width;
+  const double y_limit = config_.area_height / 2 - config_.width;
   const float radius = (config_.area_width + config_.area_height) / 2.0f;
-  std::uniform_real_distribution<double> dist(radius * 0.1f, radius);
-  const double kLimitX = config_.area_width / 2 - config_.width;
-  const double kLimitY = config_.area_height / 2 - config_.width;
+  std::uniform_real_distribution<double> dist(0.1f, radius);
   vector<math::Vector2d> control_points(config_.complexity);
   for (size_t i = 0; i < control_points.size(); ++i) {
     const double angle = i * math::kPi * 2 / config_.complexity;
     const double r = dist(rnd_);
-    control_points[i].x = max(min(cos(angle) * r, kLimitX), -kLimitX);
-    control_points[i].y = max(min(sin(angle) * r, kLimitY), -kLimitY);
+    const double x = cos(angle) * r;
+    const double y = sin(angle) * r;
+    const double vt = (y >= 0 ? y_limit : -y_limit) / y;
+    const double ht = (x >= 0 ? x_limit : -x_limit) / x;
+    const double t = min(min(vt, ht), 1.0);
+    control_points[i].x = x * t;
+    control_points[i].y = y * t;
   }
 
   // create the track spline (as a closed curve)
