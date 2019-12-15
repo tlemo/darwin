@@ -101,6 +101,8 @@ unique_ptr<sim::Track> Scene::createTrack() {
   track_config.width = config_.track_width;
   track_config.complexity = config_.track_complexity;
   track_config.resolution = config_.track_resolution;
+  track_config.area_width = kWidth;
+  track_config.area_height = kHeight;
   const auto random_seed = std::random_device{}();
   return make_unique<sim::Track>(random_seed, &world_, track_config);
 }

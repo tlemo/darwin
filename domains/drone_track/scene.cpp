@@ -31,6 +31,8 @@ Scene::Scene(Seed seed, const DroneTrack* domain)
   track_config.width = config.track_width;
   track_config.complexity = config.track_complexity;
   track_config.resolution = config.track_resolution;
+  track_config.area_width = kWidth;
+  track_config.area_height = kHeight;
   track_ = make_unique<sim::Track>(seed, &world_, track_config);
 
   // calculate the start position
