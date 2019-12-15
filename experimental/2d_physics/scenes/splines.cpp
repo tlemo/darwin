@@ -29,38 +29,7 @@ Scene::Scene(const core::PropertySet* config) : sim::Scene(b2Vec2(0, 0), sim::Re
 
   const auto width = config_.width;
   const auto height = config_.height;
-
   setExtents(sim::Rect(-width / 2, -height / 2, width, height));
-
-  // walls
-  b2BodyDef walls_def;
-  auto walls = world_.CreateBody(&walls_def);
-
-  b2EdgeShape wall_shape;
-  b2FixtureDef wall_fixture_def;
-  wall_fixture_def.shape = &wall_shape;
-  wall_fixture_def.friction = 1.0f;
-  wall_fixture_def.restitution = 0.5f;
-  wall_fixture_def.material.color = b2Color(1, 1, 0);
-  wall_fixture_def.material.emit_intensity = 0.1f;
-
-  const b2Vec2 top_left(-width / 2, height / 2);
-  const b2Vec2 top_right(width / 2, height / 2);
-  const b2Vec2 bottom_left(-width / 2, -height / 2);
-  const b2Vec2 bottom_right(width / 2, -height / 2);
-
-  wall_shape.Set(bottom_left, bottom_right);
-  walls->CreateFixture(&wall_fixture_def);
-  wall_shape.Set(bottom_left, top_left);
-  walls->CreateFixture(&wall_fixture_def);
-  wall_shape.Set(bottom_right, top_right);
-  walls->CreateFixture(&wall_fixture_def);
-  wall_shape.Set(top_left, top_right);
-  walls->CreateFixture(&wall_fixture_def);
-
-  // lights
-  createLight(walls, b2Vec2(-width * 0.4f, 0), b2Color(1, 1, 1));
-  createLight(walls, b2Vec2(width * 0.4f, 0), b2Color(1, 1, 1));
 
   updateVariables();
 }
@@ -140,52 +109,69 @@ void Scene::updateVariables() {
   variables_.objects_count = world_.GetBodyCount();
 }
 
-void SceneUi::render(QPainter& painter, const QRectF&) {
+void SceneUi::renderSpline(QPainter& painter,
+                           const vector<math::Vector2d> control_points) const {
   // render control points
   painter.setBrush(Qt::NoBrush);
   QPainterPath cp_path;
-  const auto& last_cp = control_points_.back();
+  const auto& last_cp = control_points.back();
   cp_path.moveTo(last_cp.x, last_cp.y);
-  for (const auto& cp : control_points_) {
+  for (const auto& cp : control_points) {
     painter.setPen(QPen(Qt::green, 0));
     painter.drawEllipse(QPointF(cp.x, cp.y), 0.1, 0.1);
     cp_path.lineTo(cp.x, cp.y);
-    painter.setPen(QPen(Qt::lightGray, 0, Qt::DashLine));
+    painter.setPen(QPen(Qt::lightGray, 0, Qt::DotLine));
     painter.drawLine(QLineF(0, 0, cp.x, cp.y));
   }
   painter.setPen(QPen(Qt::green, 0, Qt::DotLine));
   painter.drawPath(cp_path);
-  
+
   // create the track spline (as a closed curve)
-  const size_t n = control_points_.size() + 3;
+  const size_t n = control_points.size() + 3;
   tinyspline::BSpline spline(n, 2, 3, TS_OPENED);
   auto cp = spline.controlPoints();
   for (size_t i = 0; i < n; ++i) {
-    cp[i * 2 + 0] = control_points_[i % control_points_.size()].x;
-    cp[i * 2 + 1] = control_points_[i % control_points_.size()].y;
+    cp[i * 2 + 0] = control_points[i % control_points.size()].x;
+    cp[i * 2 + 1] = control_points[i % control_points.size()].y;
   }
   spline.setControlPoints(cp);
-  
+
   // sample evenly spaced points from the spline
   // (we defined a closed curve - first and last point overlap, so drop the last one)
   const size_t samples_count = scene_->config()->track_resolution;
   auto samples = spline.sample(samples_count + 1);
   samples.pop_back();
-  
+
   // render the spline
   QPainterPath spline_path;
   for (size_t i = 0; i < samples_count; ++i) {
     const auto x = samples[i * 2 + 0];
     const auto y = samples[i * 2 + 1];
     if (i == 0) {
-      spline_path.moveTo(x, y);
-    } else {
-      spline_path.lineTo(x, y);
+      const size_t last = samples_count - 1;
+      const auto last_x = samples[last * 2 + 0];
+      const auto last_y = samples[last * 2 + 1];
+      spline_path.moveTo(last_x, last_y);
     }
+    spline_path.lineTo(x, y);
   }
-  painter.setPen(QPen(Qt::blue, 0, Qt::DotLine));
+  painter.setPen(QPen(Qt::blue, 0, Qt::DashLine));
   painter.setBrush(Qt::NoBrush);
   painter.drawPath(spline_path);
+}
+
+void SceneUi::render(QPainter& painter, const QRectF&) {
+  // inner spline
+  renderSpline(painter, control_points_);
+
+  // create the outer spline
+  auto tmp_control_points = control_points_;
+  const auto track_width = scene_->config()->track_width;
+  for (auto& cp : tmp_control_points) {
+    const auto len = cp.length();
+    cp = cp * ((len + track_width) / len);
+  }
+  renderSpline(painter, tmp_control_points);
 }
 
 void SceneUi::step() {
@@ -223,7 +209,7 @@ void SceneUi::generateRandomTrack() {
   const double x_limit = config->width / 2 - config->track_width;
   const double y_limit = config->height / 2 - config->track_width;
   const double radius = (config->width + config->height) / 2.0;
-  std::uniform_real_distribution<double> dist(radius * 0.1f, radius);
+  std::uniform_real_distribution<double> dist(radius * 0.05f, radius);
   std::random_device rd;
   std::default_random_engine rnd(rd());
   control_points_.resize(config->track_complexity);
