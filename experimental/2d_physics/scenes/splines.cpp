@@ -63,7 +63,7 @@ SceneUi::SceneUi(Scene* scene) : scene_(scene) {
 
 void SceneUi::renderSpline(QPainter& painter,
                            const QPen& pen,
-                           const vector<SplinePoint>& spline) const {
+                           const Polygon& spline) const {
   QPainterPath spline_path;
   for (size_t i = 0; i < spline.size(); ++i) {
     if (i == 0) {
@@ -95,14 +95,14 @@ void SceneUi::renderControlPoints(QPainter& painter,
   painter.drawPath(cp_path);
 }
 
-static QPointF offsetPoint(const SplinePoint& point, double offset) {
+static QPointF offsetPoint(const PolygonNode& point, double offset) {
   auto offset_p = point.p + point.n * offset;
   return { offset_p.x, offset_p.y };
 }
 
 void SceneUi::renderOutline(QPainter& painter,
                             const QPen& pen,
-                            const vector<SplinePoint>& spline,
+                            const Polygon& spline,
                             double offset) const {
   QPainterPath outline_path;
   for (size_t i = 0; i < spline.size(); ++i) {
@@ -114,6 +114,31 @@ void SceneUi::renderOutline(QPainter& painter,
   painter.setPen(pen);
   painter.setBrush(Qt::NoBrush);
   painter.drawPath(outline_path);
+}
+
+static Polygon createPolygon(const vector<math::Vector2d>& points) {
+  const size_t nodes_count = points.size();
+  Polygon polygon(nodes_count);
+
+  // calculate the segment normals
+  vector<math::Vector2d> sn(nodes_count);
+  for (size_t i = 0; i < nodes_count; ++i) {
+    const auto& start_p = points[i];
+    const auto& end_p = points[(i + 1) % nodes_count];
+    const auto v = end_p - start_p;
+    sn[i] = math::Vector2d(v.y, -v.x).normalized();
+  }
+
+  // set the polygon points and normals
+  // (the normals are sized appropriately for an offset = 1.0, not normal length = 1.0)
+  for (size_t i = 0; i < nodes_count; ++i) {
+    const size_t next_i = (i + 1) % nodes_count;
+    const auto a = (sn[i] + sn[next_i]) * 0.5;
+    polygon[next_i].p = points[next_i];
+    polygon[next_i].n = a / (a * a);
+  }
+
+  return polygon;
 }
 
 static vector<math::Vector2d> createOuterControlPoints(
@@ -195,8 +220,8 @@ void SceneUi::generateRandomTrack() {
   }
 }
 
-static vector<SplinePoint> createSpline(const vector<math::Vector2d> control_points,
-                                        size_t resolution) {
+static Polygon createSpline(const vector<math::Vector2d>& control_points,
+                            size_t resolution) {
   // create the track spline (as a closed curve)
   const size_t n = control_points.size() + 3;
   tinyspline::BSpline spline(n, 2, 3, TS_OPENED);
@@ -213,30 +238,13 @@ static vector<SplinePoint> createSpline(const vector<math::Vector2d> control_poi
   samples.pop_back();
 
   // create the list of points
-  vector<SplinePoint> points(resolution);
+  vector<math::Vector2d> points(resolution);
   for (size_t i = 0; i < resolution; ++i) {
-    points[i].p.x = samples[i * 2 + 0];
-    points[i].p.y = samples[i * 2 + 1];
+    points[i].x = samples[i * 2 + 0];
+    points[i].y = samples[i * 2 + 1];
   }
 
-  // calculate the segment normals
-  vector<math::Vector2d> sn(resolution);
-  for (size_t i = 0; i < resolution; ++i) {
-    const auto& start_p = points[i].p;
-    const auto& end_p = points[(i + 1) % resolution].p;
-    const auto v = end_p - start_p;
-    sn[i] = math::Vector2d(v.y, -v.x).normalized();
-  }
-
-  // calculate the spline point normals
-  // (sized appropriately for an curve offset = 1.0, not normal length = 1.0)
-  for (size_t i = 0; i < resolution; ++i) {
-    const size_t next_i = (i + 1) % resolution;
-    const auto a = (sn[i] + sn[next_i]) * 0.5;
-    points[next_i].n = a / (a * a);
-  }
-
-  return points;
+  return createPolygon(points);
 }
 
 void SceneUi::updateSplines() {

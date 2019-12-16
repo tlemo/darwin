@@ -31,10 +31,12 @@ struct SceneVariables : public core::PropertySet {
   PROPERTY(objects_count, int, 0, "The total number of physics objects (bodies)");
 };
 
-struct SplinePoint {
+struct PolygonNode {
   math::Vector2d p;
   math::Vector2d n;
 };
+
+using Polygon = vector<PolygonNode>;
 
 class Scene : public sim::Scene {
  public:
@@ -80,20 +82,18 @@ class SceneUi : public physics_ui::Box2dSceneUi {
  private:
   void generateRandomTrack();
   void updateSplines();
-  void renderSpline(QPainter& painter,
-                    const QPen& pen,
-                    const vector<SplinePoint>& spline) const;
+  void renderSpline(QPainter& painter, const QPen& pen, const Polygon& spline) const;
   void renderControlPoints(QPainter& painter,
                            const vector<math::Vector2d>& control_points) const;
   void renderOutline(QPainter& painter,
                      const QPen& pen,
-                     const vector<SplinePoint>& spline,
+                     const Polygon& spline,
                      double offset) const;
 
  private:
   vector<math::Vector2d> control_points_;
-  vector<SplinePoint> inner_spline_;
-  vector<SplinePoint> outer_spline_;
+  Polygon inner_spline_;
+  Polygon outer_spline_;
   Scene* scene_ = nullptr;
   unordered_map<int, bool> key_state_;
 };
