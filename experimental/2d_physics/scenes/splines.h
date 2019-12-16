@@ -31,6 +31,11 @@ struct SceneVariables : public core::PropertySet {
   PROPERTY(objects_count, int, 0, "The total number of physics objects (bodies)");
 };
 
+struct SplinePoint {
+  math::Vector2d p;
+  math::Vector2d n;
+};
+
 class Scene : public sim::Scene {
  public:
   explicit Scene(const core::PropertySet* config);
@@ -41,10 +46,6 @@ class Scene : public sim::Scene {
 
   void preStep() override;
   void postStep(float dt) override;
-
-  void addBalloon(float x, float y, float radius);
-  void addBox(float x, float y, float sx, float sy);
-  void clear();
 
  private:
   void createLight(b2Body* body, const b2Vec2& pos, const b2Color& color);
@@ -57,7 +58,7 @@ class Scene : public sim::Scene {
 
 class SceneUi : public physics_ui::Box2dSceneUi {
  public:
-  explicit SceneUi(Scene* scene) : scene_(scene) { generateRandomTrack(); }
+  explicit SceneUi(Scene* scene);
 
   bool keyPressed(int key) const {
     const auto it = key_state_.find(key);
@@ -78,15 +79,21 @@ class SceneUi : public physics_ui::Box2dSceneUi {
 
  private:
   void generateRandomTrack();
+  void updateSplines();
   void renderSpline(QPainter& painter,
                     const QPen& pen,
-                    const vector<math::Vector2d> control_points) const;
+                    const vector<SplinePoint>& spline) const;
+  void renderControlPoints(QPainter& painter,
+                           const vector<math::Vector2d>& control_points) const;
   void renderOutline(QPainter& painter,
                      const QPen& pen,
-                     const vector<math::Vector2d> control_points) const;
+                     const vector<SplinePoint>& spline,
+                     double offset) const;
 
  private:
   vector<math::Vector2d> control_points_;
+  vector<SplinePoint> inner_spline_;
+  vector<SplinePoint> outer_spline_;
   Scene* scene_ = nullptr;
   unordered_map<int, bool> key_state_;
 };

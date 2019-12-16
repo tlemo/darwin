@@ -42,59 +42,6 @@ void Scene::postStep(float /*dt*/) {
   updateVariables();
 }
 
-void Scene::addBalloon(float x, float y, float radius) {
-  b2BodyDef body_def;
-  body_def.type = b2_dynamicBody;
-  body_def.position.Set(x, y);
-  body_def.linearDamping = 1.0f;
-  body_def.angularDamping = 1.0f;
-  auto body = world_.CreateBody(&body_def);
-
-  b2CircleShape shape;
-  shape.m_radius = radius;
-
-  b2FixtureDef fixture_def;
-  fixture_def.shape = &shape;
-  fixture_def.density = 0.02f;
-  fixture_def.friction = 1.0f;
-  fixture_def.restitution = 0.9f;
-  fixture_def.material.color = b2Color(1, 0, 0);
-  fixture_def.material.shininess = 10;
-  fixture_def.material.emit_intensity = 0.1f;
-  body->CreateFixture(&fixture_def);
-}
-
-void Scene::addBox(float x, float y, float sx, float sy) {
-  b2BodyDef body_def;
-  body_def.type = b2_dynamicBody;
-  body_def.position.Set(x, y);
-  body_def.linearDamping = 2.0f;
-  body_def.angularDamping = 2.0f;
-  auto body = world_.CreateBody(&body_def);
-
-  b2PolygonShape shape;
-  shape.SetAsBox(sx, sy);
-
-  b2FixtureDef fixture_def;
-  fixture_def.shape = &shape;
-  fixture_def.density = 0.5f;
-  fixture_def.friction = 1.0f;
-  fixture_def.restitution = 0.5f;
-  fixture_def.material.color = b2Color(0, 1, 0);
-  fixture_def.material.shininess = 25;
-  fixture_def.material.emit_intensity = 0.1f;
-  body->CreateFixture(&fixture_def);
-}
-
-void Scene::clear() {
-  auto body = world_.GetBodyList();
-  while (body != nullptr) {
-    auto next = body->GetNext();
-    world_.DestroyBody(body);
-    body = next;
-  }
-}
-
 void Scene::createLight(b2Body* body, const b2Vec2& pos, const b2Color& color) {
   b2LightDef light_def;
   light_def.body = body;
@@ -109,10 +56,30 @@ void Scene::updateVariables() {
   variables_.objects_count = world_.GetBodyCount();
 }
 
+SceneUi::SceneUi(Scene* scene) : scene_(scene) {
+  generateRandomTrack();
+  updateSplines();
+}
+
 void SceneUi::renderSpline(QPainter& painter,
                            const QPen& pen,
-                           const vector<math::Vector2d> control_points) const {
-  // render control points
+                           const vector<SplinePoint>& spline) const {
+  QPainterPath spline_path;
+  for (size_t i = 0; i < spline.size(); ++i) {
+    if (i == 0) {
+      const auto point = spline.back().p;
+      spline_path.moveTo(point.x, point.y);
+    }
+    const auto point = spline[i].p;
+    spline_path.lineTo(point.x, point.y);
+  }
+  painter.setPen(pen);
+  painter.setBrush(Qt::NoBrush);
+  painter.drawPath(spline_path);
+}
+
+void SceneUi::renderControlPoints(QPainter& painter,
+                                  const vector<math::Vector2d>& control_points) const {
   painter.setBrush(Qt::NoBrush);
   QPainterPath cp_path;
   const auto& last_cp = control_points.back();
@@ -126,120 +93,55 @@ void SceneUi::renderSpline(QPainter& painter,
   }
   painter.setPen(QPen(Qt::green, 0, Qt::DotLine));
   painter.drawPath(cp_path);
+}
 
-  // create the track spline (as a closed curve)
-  const size_t n = control_points.size() + 3;
-  tinyspline::BSpline spline(n, 2, 3, TS_OPENED);
-  auto cp = spline.controlPoints();
-  for (size_t i = 0; i < n; ++i) {
-    cp[i * 2 + 0] = control_points[i % control_points.size()].x;
-    cp[i * 2 + 1] = control_points[i % control_points.size()].y;
-  }
-  spline.setControlPoints(cp);
-
-  // sample evenly spaced points from the spline
-  // (we defined a closed curve - first and last point overlap, so drop the last one)
-  const size_t samples_count = scene_->config()->track_resolution;
-  auto samples = spline.sample(samples_count + 1);
-  samples.pop_back();
-
-  // render the spline
-  QPainterPath spline_path;
-  for (size_t i = 0; i < samples_count; ++i) {
-    const auto x = samples[i * 2 + 0];
-    const auto y = samples[i * 2 + 1];
-    if (i == 0) {
-      const size_t last = samples_count - 1;
-      const auto last_x = samples[last * 2 + 0];
-      const auto last_y = samples[last * 2 + 1];
-      spline_path.moveTo(last_x, last_y);
-    }
-    spline_path.lineTo(x, y);
-  }
-  painter.setPen(pen);
-  painter.setBrush(Qt::NoBrush);
-  painter.drawPath(spline_path);
+static QPointF offsetPoint(const SplinePoint& point, double offset) {
+  auto offset_p = point.p + point.n * offset;
+  return { offset_p.x, offset_p.y };
 }
 
 void SceneUi::renderOutline(QPainter& painter,
                             const QPen& pen,
-                            const vector<math::Vector2d> control_points) const {
-  // create the track spline (as a closed curve)
-  const size_t n = control_points.size() + 3;
-  tinyspline::BSpline spline(n, 2, 3, TS_OPENED);
-  auto cp = spline.controlPoints();
-  for (size_t i = 0; i < n; ++i) {
-    cp[i * 2 + 0] = control_points[i % control_points.size()].x;
-    cp[i * 2 + 1] = control_points[i % control_points.size()].y;
-  }
-  spline.setControlPoints(cp);
-
-  // sample evenly spaced points from the spline
-  // (we defined a closed curve - first and last point overlap, so drop the last one)
-  const size_t samples_count = scene_->config()->track_resolution;
-  auto samples = spline.sample(samples_count + 1);
-  samples.pop_back();
-
-  struct Node {
-    math::Vector2d p;
-    math::Vector2d n;
-    math::Vector2d o;
-  };
-
-  // create the list of points
-  vector<Node> nodes(samples_count);
-  for (size_t i = 0; i < samples_count; ++i) {
-    nodes[i].p.x = samples[i * 2 + 0];
-    nodes[i].p.y = samples[i * 2 + 1];
-  }
-
-  // calculate the normals
-  for (size_t i = 0; i < samples_count; ++i) {
-    const auto& start_p = nodes[i].p;
-    const auto& end_p = nodes[(i + 1) % samples_count].p;
-    const auto v = end_p - start_p;
-    nodes[i].n = math::Vector2d(v.y, -v.x).normalized();
-  }
-
-  // calculate the outline at offset = track_width
-  const auto track_width = scene_->config()->track_width;
-  for (size_t i = 0; i < samples_count; ++i) {
-    const auto& start = nodes[i];
-    auto& end = nodes[(i + 1) % samples_count];
-    const auto a = (start.n + end.n) * 0.5;
-    end.o = end.p + a * (track_width / (a * a));
-  }
-
-  // render the outline
+                            const vector<SplinePoint>& spline,
+                            double offset) const {
   QPainterPath outline_path;
-  for (size_t i = 0; i < samples_count; ++i) {
+  for (size_t i = 0; i < spline.size(); ++i) {
     if (i == 0) {
-      const auto point = nodes.back().o;
-      outline_path.moveTo(point.x, point.y);
+      outline_path.moveTo(offsetPoint(spline.back(), offset));
     }
-    const auto point = nodes[i].o;
-    outline_path.lineTo(point.x, point.y);
+    outline_path.lineTo(offsetPoint(spline[i], offset));
   }
   painter.setPen(pen);
   painter.setBrush(Qt::NoBrush);
   painter.drawPath(outline_path);
 }
 
-void SceneUi::render(QPainter& painter, const QRectF&) {
-  // inner spline
-  renderSpline(painter, QPen(Qt::blue, 0, Qt::DashLine), control_points_);
-
-  // create the outer spline
-  auto tmp_control_points = control_points_;
-  const auto track_width = scene_->config()->track_width;
-  for (auto& cp : tmp_control_points) {
+static vector<math::Vector2d> createOuterControlPoints(
+    const vector<math::Vector2d>& control_points,
+    float track_width) {
+  auto outer_control_points = control_points;
+  for (auto& cp : outer_control_points) {
     const auto len = cp.length();
     cp = cp * ((len + track_width) / len);
   }
-  renderSpline(painter, QPen(Qt::blue, 0, Qt::DotLine), tmp_control_points);
+  return outer_control_points;
+}
 
-  // render the offset contour
-  renderOutline(painter, QPen(Qt::red, 0, Qt::DotLine), control_points_);
+void SceneUi::render(QPainter& painter, const QRectF&) {
+  const auto track_width = scene_->config()->track_width;
+
+  if (!control_points_.empty()) {
+    const auto outer_control_points =
+        createOuterControlPoints(control_points_, track_width);
+    renderControlPoints(painter, control_points_);
+    renderControlPoints(painter, outer_control_points);
+  }
+
+  if (!inner_spline_.empty()) {
+    renderSpline(painter, QPen(Qt::blue, 0, Qt::DashLine), inner_spline_);
+    renderSpline(painter, QPen(Qt::blue, 0, Qt::DotLine), outer_spline_);
+    renderOutline(painter, QPen(Qt::red, 0, Qt::DotLine), inner_spline_, track_width);
+  }
 }
 
 void SceneUi::step() {
@@ -251,11 +153,8 @@ void SceneUi::mousePressEvent(const QPointF& pos, QMouseEvent* event) {
   const auto y = float(pos.y());
 
   if ((event->buttons() & Qt::LeftButton) != 0) {
-    scene_->addBalloon(x, y, 0.8f);
-  }
-
-  if ((event->buttons() & Qt::RightButton) != 0) {
-    scene_->addBox(x, y, 0.5f, 2.0f);
+    control_points_.push_back(math::Vector2d(x, y));
+    updateSplines();
   }
 }
 
@@ -265,9 +164,11 @@ void SceneUi::keyPressEvent(QKeyEvent* event) {
   switch (event->key()) {
     case Qt::Key_N:
       generateRandomTrack();
+      updateSplines();
       break;
     case Qt::Key_D:
-      scene_->clear();
+      control_points_.clear();
+      updateSplines();
       break;
   }
 }
@@ -292,6 +193,68 @@ void SceneUi::generateRandomTrack() {
     control_points_[i].x = x * t;
     control_points_[i].y = y * t;
   }
+}
+
+static vector<SplinePoint> createSpline(const vector<math::Vector2d> control_points,
+                                        size_t resolution) {
+  // create the track spline (as a closed curve)
+  const size_t n = control_points.size() + 3;
+  tinyspline::BSpline spline(n, 2, 3, TS_OPENED);
+  auto cp = spline.controlPoints();
+  for (size_t i = 0; i < n; ++i) {
+    cp[i * 2 + 0] = control_points[i % control_points.size()].x;
+    cp[i * 2 + 1] = control_points[i % control_points.size()].y;
+  }
+  spline.setControlPoints(cp);
+
+  // sample evenly spaced points from the spline
+  // (we defined a closed curve - first and last point overlap, so drop the last one)
+  auto samples = spline.sample(resolution + 1);
+  samples.pop_back();
+
+  // create the list of points
+  vector<SplinePoint> points(resolution);
+  for (size_t i = 0; i < resolution; ++i) {
+    points[i].p.x = samples[i * 2 + 0];
+    points[i].p.y = samples[i * 2 + 1];
+  }
+
+  // calculate the segment normals
+  vector<math::Vector2d> sn(resolution);
+  for (size_t i = 0; i < resolution; ++i) {
+    const auto& start_p = points[i].p;
+    const auto& end_p = points[(i + 1) % resolution].p;
+    const auto v = end_p - start_p;
+    sn[i] = math::Vector2d(v.y, -v.x).normalized();
+  }
+
+  // calculate the spline point normals
+  // (sized appropriately for an curve offset = 1.0, not normal length = 1.0)
+  for (size_t i = 0; i < resolution; ++i) {
+    const size_t next_i = (i + 1) % resolution;
+    const auto a = (sn[i] + sn[next_i]) * 0.5;
+    points[next_i].n = a / (a * a);
+  }
+
+  return points;
+}
+
+void SceneUi::updateSplines() {
+  if (control_points_.size() < 3) {
+    inner_spline_.clear();
+    outer_spline_.clear();
+    return;
+  }
+
+  const size_t resolution = scene_->config()->track_resolution;
+  const float track_width = scene_->config()->track_width;
+
+  // create the inner spline
+  inner_spline_ = createSpline(control_points_, resolution);
+
+  // create the outer spline
+  auto outer_control_points = createOuterControlPoints(control_points_, track_width);
+  outer_spline_ = createSpline(outer_control_points, resolution);
 }
 
 }  // namespace splines_scene
