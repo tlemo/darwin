@@ -78,7 +78,12 @@ class SceneUi : public physics_ui::Box2dSceneUi {
 
  private:
   void generateRandomTrack();
-  void renderSpline(QPainter& painter, const vector<math::Vector2d> control_points) const;
+  void renderSpline(QPainter& painter,
+                    const QPen& pen,
+                    const vector<math::Vector2d> control_points) const;
+  void renderOutline(QPainter& painter,
+                     const QPen& pen,
+                     const vector<math::Vector2d> control_points) const;
 
  private:
   vector<math::Vector2d> control_points_;
