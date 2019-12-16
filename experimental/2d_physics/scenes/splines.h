@@ -84,6 +84,7 @@ class SceneUi : public physics_ui::Box2dSceneUi {
   void updateSplines();
   void renderSpline(QPainter& painter, const QPen& pen, const Polygon& spline) const;
   void renderControlPoints(QPainter& painter,
+                           const QColor& color,
                            const vector<math::Vector2d>& control_points) const;
   void renderOutline(QPainter& painter,
                      const QPen& pen,
