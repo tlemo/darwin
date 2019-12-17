@@ -34,12 +34,12 @@ struct SceneVariables : public core::PropertySet {
   PROPERTY(objects_count, int, 0, "The total number of physics objects (bodies)");
 };
 
-struct PolygonNode {
+struct OutlineNode {
   math::Vector2d p;
   math::Vector2d n;
 };
 
-using Polygon = vector<PolygonNode>;
+using Outline = vector<OutlineNode>;
 
 class Scene : public sim::Scene {
  public:
@@ -52,7 +52,7 @@ class Scene : public sim::Scene {
   void preStep() override;
   void postStep(float dt) override;
 
-  void createCurb(const Polygon& outline, float curb_width, float segment_length);
+  void createCurb(const Outline& outline, float curb_width, float segment_length);
 
  private:
   void createLight(b2Body* body, const b2Vec2& pos, const b2Color& color);
@@ -87,22 +87,22 @@ class SceneUi : public physics_ui::Box2dSceneUi {
  private:
   void generateRandomTrack();
   void updateSplines();
-  void renderSpline(QPainter& painter, const QPen& pen, const Polygon& spline) const;
+  void renderSpline(QPainter& painter, const QPen& pen, const Outline& spline) const;
   void renderSegments(QPainter& painter,
-                      const Polygon& outer_spline,
+                      const Outline& outer_spline,
                       float track_width) const;
   void renderControlPoints(QPainter& painter,
                            const QColor& color,
                            const vector<math::Vector2d>& control_points) const;
   void renderOutline(QPainter& painter,
                      const QPen& pen,
-                     const Polygon& spline,
+                     const Outline& spline,
                      double offset) const;
 
  private:
   vector<math::Vector2d> control_points_;
-  Polygon inner_spline_;
-  Polygon outer_spline_;
+  Outline inner_spline_;
+  Outline outer_spline_;
   Scene* scene_ = nullptr;
   unordered_map<int, bool> key_state_;
 

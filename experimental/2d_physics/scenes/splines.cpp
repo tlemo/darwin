@@ -47,7 +47,7 @@ static b2Vec2 toBox2dVec(const math::Vector2d& v) {
   return b2Vec2(float(v.x), float(v.y));
 }
 
-void Scene::createCurb(const Polygon& outline, float curb_width, float segment_length) {
+void Scene::createCurb(const Outline& outline, float curb_width, float segment_length) {
   CHECK(outline.size() >= 3);
 
   b2BodyDef track_body_def;
@@ -101,7 +101,7 @@ SceneUi::SceneUi(Scene* scene) : scene_(scene) {
 
 void SceneUi::renderSpline(QPainter& painter,
                            const QPen& pen,
-                           const Polygon& spline) const {
+                           const Outline& spline) const {
   QPainterPath spline_path;
   for (size_t i = 0; i < spline.size(); ++i) {
     if (i == 0) {
@@ -116,18 +116,18 @@ void SceneUi::renderSpline(QPainter& painter,
   painter.drawPath(spline_path);
 }
 
-static math::Vector2d offsetPoint(const PolygonNode& point, double offset) {
+static math::Vector2d offsetPoint(const OutlineNode& point, double offset) {
   return point.p + point.n * offset;
 }
 
 void SceneUi::renderSegments(QPainter& painter,
-                             const Polygon& outer_spline,
+                             const Outline& outer_spline,
                              float track_width) const {
   painter.setBrush(Qt::NoBrush);
   painter.setPen(QPen(Qt::gray, 0));
-  for (const auto& pn : outer_spline) {
-    const auto end_point = offsetPoint(pn, -track_width);
-    painter.drawLine(QLineF(pn.p.x, pn.p.y, end_point.x, end_point.y));
+  for (const auto& on : outer_spline) {
+    const auto end_point = offsetPoint(on, -track_width);
+    painter.drawLine(QLineF(on.p.x, on.p.y, end_point.x, end_point.y));
   }
 }
 
@@ -152,7 +152,7 @@ void SceneUi::renderControlPoints(QPainter& painter,
 
 void SceneUi::renderOutline(QPainter& painter,
                             const QPen& pen,
-                            const Polygon& spline,
+                            const Outline& spline,
                             double offset) const {
   QPainterPath outline_path;
   for (size_t i = 0; i < spline.size(); ++i) {
@@ -168,9 +168,9 @@ void SceneUi::renderOutline(QPainter& painter,
   painter.drawPath(outline_path);
 }
 
-static Polygon createPolygon(const vector<math::Vector2d>& points) {
+static Outline createOutline(const vector<math::Vector2d>& points) {
   const size_t nodes_count = points.size();
-  Polygon polygon(nodes_count);
+  Outline outline(nodes_count);
 
   // calculate the segment normals
   vector<math::Vector2d> sn(nodes_count);
@@ -181,19 +181,19 @@ static Polygon createPolygon(const vector<math::Vector2d>& points) {
     sn[i] = math::Vector2d(v.y, -v.x).normalized();
   }
 
-  // set the polygon points and normals
+  // set the outline points and normals
   // (the normals are sized appropriately for an offset = 1.0, not normal length = 1.0)
   for (size_t i = 0; i < nodes_count; ++i) {
     const size_t next_i = (i + 1) % nodes_count;
     const auto a = (sn[i] + sn[next_i]) * 0.5;
-    polygon[next_i].p = points[next_i];
-    polygon[next_i].n = a / (a * a);
+    outline[next_i].p = points[next_i];
+    outline[next_i].n = a / (a * a);
   }
 
-  return polygon;
+  return outline;
 }
 
-static Polygon createSpline(const vector<math::Vector2d>& control_points,
+static Outline createSpline(const vector<math::Vector2d>& control_points,
                             size_t resolution) {
   // create the track spline (as a closed curve)
   const size_t n = control_points.size() + 3;
@@ -217,7 +217,7 @@ static Polygon createSpline(const vector<math::Vector2d>& control_points,
     points[i].y = samples[i * 2 + 1];
   }
 
-  return createPolygon(points);
+  return createOutline(points);
 }
 
 // calculate the intersection between 2 segments
@@ -309,13 +309,13 @@ static vector<math::Vector2d> createOuterControlPoints(
     const vector<math::Vector2d>& control_points,
     float track_width,
     int track_resolution) {
-  const auto polygon = createSpline(control_points, track_resolution);
+  const auto outline = createSpline(control_points, track_resolution);
   vector<math::Vector2d> outer_control_points;
-  for (const auto& pn : polygon) {
-    if (pn.n.length() > 1.5) {
-      outer_control_points.push_back(pn.p + pn.n.normalized() * track_width * 1.5);
+  for (const auto& on : outline) {
+    if (on.n.length() > 1.5) {
+      outer_control_points.push_back(on.p + on.n.normalized() * track_width * 1.5);
     } else {
-      outer_control_points.push_back(offsetPoint(pn, track_width));
+      outer_control_points.push_back(offsetPoint(on, track_width));
     }
   }
   return fixSelfIntersections(outer_control_points);
