@@ -271,8 +271,9 @@ static vector<math::Vector2d> fixSelfIntersections(vector<math::Vector2d> points
 
 static vector<math::Vector2d> createOuterControlPoints(
     const vector<math::Vector2d>& control_points,
-    float track_width) {
-  const auto polygon = createSpline(control_points, 100);
+    float track_width,
+    int track_resolution) {
+  const auto polygon = createSpline(control_points, track_resolution);
   vector<math::Vector2d> outer_control_points;
   for (const auto& pn : polygon) {
     if (pn.n.length() > 1.5) {
@@ -286,10 +287,11 @@ static vector<math::Vector2d> createOuterControlPoints(
 
 void SceneUi::render(QPainter& painter, const QRectF&) {
   const auto track_width = scene_->config()->track_width;
+  const auto track_resolution = scene_->config()->track_resolution;
 
   if (!control_points_.empty()) {
     const auto outer_control_points =
-        createOuterControlPoints(control_points_, track_width);
+        createOuterControlPoints(control_points_, track_width, track_resolution);
     renderControlPoints(painter, Qt::green, control_points_);
     renderControlPoints(painter, Qt::cyan, outer_control_points);
   }
@@ -367,7 +369,8 @@ void SceneUi::updateSplines() {
   inner_spline_ = createSpline(control_points_, resolution);
 
   // create the outer spline
-  auto outer_control_points = createOuterControlPoints(control_points_, track_width);
+  auto outer_control_points =
+      createOuterControlPoints(control_points_, track_width, resolution);
   outer_spline_ = createSpline(outer_control_points, resolution);
 }
 
