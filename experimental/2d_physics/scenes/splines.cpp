@@ -255,54 +255,6 @@ static Outline createSpline(const vector<math::Vector2d>& control_points,
   return createOutline(points);
 }
 
-// calculate the intersection between 2 segments
-//
-// the first segment is A:[a1, a2]
-// the second segment is B:[b1, b2]
-//
-// the first pair value in the return value represents the
-// intersection offset on segment A, the second is on segment B
-//
-// the intersection values are [0..1] - if the intersection is on segment
-// 0 corresponding to the segment begin, 1 to the segment end. values < 0
-// represent intersection before seg begin, >1 after segment end
-//
-// numeric_limits<double>::infinity() is returned if segments are parallel
-//
-// the intersection is the solution to:
-//   x = x' => x0 + dx * a = x0' + dx' * a'
-//   y = y' => y0 + dy * a = y0' + dy' * a'
-//
-static pair<double, double> intersect(const math::Vector2d& a1,
-                                      const math::Vector2d& a2,
-                                      const math::Vector2d& b1,
-                                      const math::Vector2d& b2) {
-  pair<double, double> result;
-
-  const double x = a1.x;
-  const double y = a1.y;
-  const double dx = a2.x - x;
-  const double dy = a2.y - y;
-
-  const double x2 = b1.x;
-  const double y2 = b1.y;
-  const double dx2 = b2.x - x2;
-  const double dy2 = b2.y - y2;
-
-  const double w = dy * dx2 - dx * dy2;
-
-  if (w == 0) {
-    result.first = numeric_limits<double>::infinity();
-    result.second = numeric_limits<double>::infinity();
-  } else {
-    result.first = (dx2 * (y2 - y) - dy2 * (x2 - x)) / w;
-    result.second = (dx2 != 0) ? ((x + result.first * dx) - x2) / dx2
-                               : ((y + result.first * dy) - y2) / dy2;
-  }
-
-  return result;
-}
-
 static vector<math::Vector2d> fixSelfIntersections(vector<math::Vector2d> points) {
   while (points.size() > 3) {
     const size_t count = points.size();
@@ -314,10 +266,10 @@ static vector<math::Vector2d> fixSelfIntersections(vector<math::Vector2d> points
       for (size_t j = 0; j < lookahead; ++j) {
         const auto& b1 = points[(i + 2 + j) % count];
         const auto& b2 = points[(i + 3 + j) % count];
-        const auto r = intersect(a1, a2, b1, b2);
-        if (r.first > 0 && r.first < 1 && r.second > 0 && r.second < 1) {
+        const auto r = math::intersect(a1, a2, b1, b2);
+        if (r.a > 0 && r.a < 1 && r.b > 0 && r.b < 1) {
           // set point[i + 1] to the intersection point
-          points[(i + 1) % count] = a1 + (a2 - a1) * r.first;
+          points[(i + 1) % count] = a1 + (a2 - a1) * r.a;
           // erase all the points [i + 2 .. i + 2 + j]
           const size_t del_first = (i + 2) % count;
           const size_t del_last = (i + 2 + j) % count;

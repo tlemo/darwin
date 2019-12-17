@@ -12,6 +12,7 @@ SOURCES += \
     ann_utils.cpp \
     darwin.cpp \
     logging.cpp \
+    math_2d.cpp \
     platform_abstraction_layer.cpp \
     database.cpp \
     universe.cpp \
