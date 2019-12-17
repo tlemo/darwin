@@ -100,6 +100,10 @@ class SceneUi : public physics_ui::Box2dSceneUi {
   Polygon outer_spline_;
   Scene* scene_ = nullptr;
   unordered_map<int, bool> key_state_;
+  
+  bool render_segments_ = true;
+  bool render_outer_control_points_ = false;
+  bool render_outline_ = false;
 };
 
 class Factory : public SandboxFactory {

@@ -290,17 +290,23 @@ void SceneUi::render(QPainter& painter, const QRectF&) {
   const auto track_resolution = scene_->config()->track_resolution;
 
   if (!control_points_.empty()) {
-    const auto outer_control_points =
-        createOuterControlPoints(control_points_, track_width, track_resolution);
     renderControlPoints(painter, Qt::green, control_points_);
-    renderControlPoints(painter, Qt::cyan, outer_control_points);
+    if (render_outer_control_points_) {
+      const auto outer_control_points =
+          createOuterControlPoints(control_points_, track_width, track_resolution);
+      renderControlPoints(painter, Qt::cyan, outer_control_points);
+    }
   }
 
   if (!inner_spline_.empty()) {
     renderSpline(painter, QPen(Qt::blue, 0, Qt::DashLine), inner_spline_);
     renderSpline(painter, QPen(Qt::blue, 0, Qt::DotLine), outer_spline_);
-    renderSegments(painter, inner_spline_, outer_spline_);
-    renderOutline(painter, QPen(Qt::red, 0, Qt::DotLine), inner_spline_, track_width);
+    if (render_segments_) {
+      renderSegments(painter, inner_spline_, outer_spline_);
+    }
+    if (render_outline_) {
+      renderOutline(painter, QPen(Qt::red, 0, Qt::DotLine), inner_spline_, track_width);
+    }
   }
 }
 
@@ -362,7 +368,7 @@ void SceneUi::updateSplines() {
     return;
   }
 
-  const size_t resolution = scene_->config()->track_resolution;
+  const int resolution = scene_->config()->track_resolution;
   const float track_width = scene_->config()->track_width;
 
   // create the inner spline
