@@ -43,6 +43,43 @@ void Scene::postStep(float /*dt*/) {
   updateVariables();
 }
 
+static b2Vec2 toBox2dVec(const math::Vector2d& v) {
+  return b2Vec2(float(v.x), float(v.y));
+}
+
+void Scene::createCurb(const Polygon& outline, float curb_width, float segment_length) {
+  CHECK(outline.size() >= 3);
+
+  b2BodyDef track_body_def;
+  auto track_body = world_.CreateBody(&track_body_def);
+
+  const b2Color red(1, 0, 0);
+  const b2Color blue(0, 0, 1);
+
+  bool primary_color = true;
+  for (size_t i = 0; i < outline.size(); ++i) {
+    const size_t next_i = (i + 1) % outline.size();
+
+    b2Vec2 points[4];
+    b2PolygonShape shape;
+    points[0] = toBox2dVec(outline[i].p);
+    points[1] = toBox2dVec(outline[next_i].p);
+    points[2] = toBox2dVec(outline[next_i].p + outline[next_i].n * curb_width);
+    points[3] = toBox2dVec(outline[i].p + outline[i].n * curb_width);
+    shape.Set(points, 4);
+
+    b2FixtureDef fixture_def;
+    fixture_def.shape = &shape;
+    fixture_def.friction = 0.2f;
+    fixture_def.restitution = 0.5f;
+    fixture_def.material.emit_intensity = 0;
+    fixture_def.material.color = primary_color ? red : blue;
+    primary_color = !primary_color;
+
+    track_body->CreateFixture(&fixture_def);
+  }
+}
+
 void Scene::createLight(b2Body* body, const b2Vec2& pos, const b2Color& color) {
   b2LightDef light_def;
   light_def.body = body;
@@ -328,6 +365,7 @@ void SceneUi::keyPressEvent(QKeyEvent* event) {
 
   switch (event->key()) {
     case Qt::Key_N:
+      scene_->clear();
       generateRandomTrack();
       updateSplines();
       break;
@@ -368,8 +406,9 @@ void SceneUi::updateSplines() {
     return;
   }
 
-  const int resolution = scene_->config()->track_resolution;
-  const float track_width = scene_->config()->track_width;
+  const auto config = scene_->config();
+  const int resolution = config->track_resolution;
+  const float track_width = config->track_width;
 
   // create the inner spline
   inner_spline_ = createSpline(control_points_, resolution);
@@ -377,7 +416,13 @@ void SceneUi::updateSplines() {
   // create the outer spline
   auto outer_control_points =
       createOuterControlPoints(control_points_, track_width, resolution);
-  outer_spline_ = createSpline(outer_control_points, int(resolution * 1.5));
+  outer_spline_ = createSpline(outer_control_points, resolution);
+
+  // create the fixtures
+  if (create_curbs_) {
+    scene_->createCurb(inner_spline_, config->curb_width, -config->curb_segment_length);
+    scene_->createCurb(outer_spline_, config->curb_width, config->curb_segment_length);
+  }
 }
 
 }  // namespace splines_scene

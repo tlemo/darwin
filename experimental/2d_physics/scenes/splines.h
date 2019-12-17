@@ -22,6 +22,9 @@ struct Config : public core::PropertySet {
   PROPERTY(width, float, 40.0f, "Sandbox area width");
   PROPERTY(height, float, 20.0f, "Sandbox area height");
 
+  PROPERTY(curb_width, float, 0.1f, "The width of the curb");
+  PROPERTY(curb_segment_length, float, 0.5f, "The size of a curb segment");
+
   PROPERTY(track_width, float, 1.8f, "Track width");
   PROPERTY(track_complexity, int, 10, "The approximate number of turns");
   PROPERTY(track_resolution, int, 500, "Number of track segments");
@@ -48,6 +51,8 @@ class Scene : public sim::Scene {
 
   void preStep() override;
   void postStep(float dt) override;
+
+  void createCurb(const Polygon& outline, float curb_width, float segment_length);
 
  private:
   void createLight(b2Body* body, const b2Vec2& pos, const b2Color& color);
@@ -101,7 +106,8 @@ class SceneUi : public physics_ui::Box2dSceneUi {
   Scene* scene_ = nullptr;
   unordered_map<int, bool> key_state_;
 
-  bool render_segments_ = true;
+  bool create_curbs_ = true;
+  bool render_segments_ = false;
   bool render_outer_control_points_ = false;
   bool render_outline_ = false;
 };
