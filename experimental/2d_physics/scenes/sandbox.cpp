@@ -111,15 +111,6 @@ void Scene::addBox(float x, float y, float sx, float sy) {
   body->CreateFixture(&fixture_def);
 }
 
-void Scene::clear() {
-  auto body = world_.GetBodyList();
-  while (body != nullptr) {
-    auto next = body->GetNext();
-    world_.DestroyBody(body);
-    body = next;
-  }
-}
-
 void Scene::createLight(b2Body* body, const b2Vec2& pos, const b2Color& color) {
   b2LightDef light_def;
   light_def.body = body;

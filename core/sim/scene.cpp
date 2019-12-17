@@ -16,6 +16,15 @@
 
 namespace sim {
 
+void Scene::clear() {
+  auto body = world_.GetBodyList();
+  while (body != nullptr) {
+    auto next = body->GetNext();
+    world_.DestroyBody(body);
+    body = next;
+  }
+}
+
 bool Scene::simStep() {
   if (timestamp_ == 0) {
     script_.start();

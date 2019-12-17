@@ -332,6 +332,7 @@ void SceneUi::keyPressEvent(QKeyEvent* event) {
       updateSplines();
       break;
     case Qt::Key_D:
+      scene_->clear();
       control_points_.clear();
       updateSplines();
       break;

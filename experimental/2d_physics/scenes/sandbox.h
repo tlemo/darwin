@@ -38,7 +38,6 @@ class Scene : public sim::Scene {
 
   void addBalloon(float x, float y, float radius);
   void addBox(float x, float y, float sx, float sy);
-  void clear();
 
  private:
   void createLight(b2Body* body, const b2Vec2& pos, const b2Color& color);

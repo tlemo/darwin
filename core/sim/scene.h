@@ -63,6 +63,8 @@ class Scene : public core::NonCopyable {
 
   int objectsCount() const { return world_.GetBodyCount(); }
 
+  void clear();
+
   virtual const core::PropertySet* variables() const { return nullptr; }
   virtual const core::PropertySet* config() const { return nullptr; }
 
