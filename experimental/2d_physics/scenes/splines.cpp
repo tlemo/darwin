@@ -79,6 +79,19 @@ void SceneUi::renderSpline(QPainter& painter,
   painter.drawPath(spline_path);
 }
 
+void SceneUi::renderSegments(QPainter& painter,
+                             const Polygon& inner_spline,
+                             const Polygon& outer_spline) const {
+  CHECK(inner_spline.size() == outer_spline.size());
+  painter.setBrush(Qt::NoBrush);
+  painter.setPen(QPen(Qt::gray, 0));
+  for (size_t i = 0; i < inner_spline.size(); ++i) {
+    const auto& inner_pn = inner_spline[i];
+    const auto& outer_pn = outer_spline[i];
+    painter.drawLine(QLineF(inner_pn.p.x, inner_pn.p.y, outer_pn.p.x, outer_pn.p.y));
+  }
+}
+
 void SceneUi::renderControlPoints(QPainter& painter,
                                   const QColor& color,
                                   const vector<math::Vector2d>& control_points) const {
@@ -284,6 +297,7 @@ void SceneUi::render(QPainter& painter, const QRectF&) {
   if (!inner_spline_.empty()) {
     renderSpline(painter, QPen(Qt::blue, 0, Qt::DashLine), inner_spline_);
     renderSpline(painter, QPen(Qt::blue, 0, Qt::DotLine), outer_spline_);
+    renderSegments(painter, inner_spline_, outer_spline_);
     renderOutline(painter, QPen(Qt::red, 0, Qt::DotLine), inner_spline_, track_width);
   }
 }
