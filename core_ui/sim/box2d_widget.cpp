@@ -49,6 +49,10 @@ void Box2dWidget::setSceneUi(Box2dSceneUi* scene_ui) {
   }
   scene_ui_ = scene_ui;
   if (scene_ui_ != nullptr) {
+    auto help_text = scene_ui_->help();
+    if (!help_text.isEmpty()) {
+      setToolTip(help_text);
+    }
     connect(scene_ui_, &Box2dSceneUi::sigPlayPause, this, &Box2dWidget::sigPlayPause);
   }
   update();

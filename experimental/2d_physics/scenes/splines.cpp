@@ -390,6 +390,7 @@ void SceneUi::mousePressEvent(const QPointF& pos, QMouseEvent* event) {
   const auto y = float(pos.y());
 
   if ((event->buttons() & Qt::LeftButton) != 0) {
+    scene_->clear();
     control_points_.push_back(math::Vector2d(x, y));
     updateSplines();
   }
@@ -423,6 +424,15 @@ void SceneUi::keyPressEvent(QKeyEvent* event) {
       updateSplines();
       break;
   }
+}
+
+QString SceneUi::help() const {
+  return "Left click: insert control point\n"
+         "D: clear scene\n"
+         "N: generate new spline\n"
+         "C: toggle curb objects\n"
+         "S: toggle render segments\n"
+         "E: toggle equidistant outlines";
 }
 
 void SceneUi::generateRandomTrack() {

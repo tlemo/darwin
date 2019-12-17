@@ -48,6 +48,9 @@ class Box2dSceneUi : public QObject {
   // TODO: revisit this
   virtual void step() {}
 
+  // help text
+  virtual QString help() const { return ""; }
+
  signals:
   void sigPlayPause();
 };
@@ -66,7 +69,7 @@ class Box2dWidget : public core_ui::Canvas {
 
   bool debugRender() const { return enable_debug_render_; }
   void setDebugRender(bool enable);
-  
+
   bool renderLights() const { return render_lights_; }
   void setRenderLights(bool enable);
 

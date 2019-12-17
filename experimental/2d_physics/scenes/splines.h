@@ -82,6 +82,8 @@ class SceneUi : public physics_ui::Box2dSceneUi {
   void keyReleaseEvent(QKeyEvent* event) override { key_state_[event->key()] = false; }
 
   void focusOutEvent() override { key_state_.clear(); }
+  
+  QString help() const override;
 
  private:
   void generateRandomTrack();
