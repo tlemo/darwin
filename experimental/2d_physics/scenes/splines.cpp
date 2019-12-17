@@ -79,39 +79,38 @@ void SceneUi::renderSpline(QPainter& painter,
   painter.drawPath(spline_path);
 }
 
+static math::Vector2d offsetPoint(const PolygonNode& point, double offset) {
+  return point.p + point.n * offset;
+}
+
 void SceneUi::renderSegments(QPainter& painter,
-                             const Polygon& inner_spline,
-                             const Polygon& outer_spline) const {
-  CHECK(inner_spline.size() == outer_spline.size());
+                             const Polygon& outer_spline,
+                             float track_width) const {
   painter.setBrush(Qt::NoBrush);
   painter.setPen(QPen(Qt::gray, 0));
-  for (size_t i = 0; i < inner_spline.size(); ++i) {
-    const auto& inner_pn = inner_spline[i];
-    const auto& outer_pn = outer_spline[i];
-    painter.drawLine(QLineF(inner_pn.p.x, inner_pn.p.y, outer_pn.p.x, outer_pn.p.y));
+  for (const auto& pn : outer_spline) {
+    const auto end_point = offsetPoint(pn, -track_width);
+    painter.drawLine(QLineF(pn.p.x, pn.p.y, end_point.x, end_point.y));
   }
 }
 
 void SceneUi::renderControlPoints(QPainter& painter,
                                   const QColor& color,
                                   const vector<math::Vector2d>& control_points) const {
-  painter.setBrush(Qt::NoBrush);
+  painter.setBrush(color);
   QPainterPath cp_path;
   const auto& last_cp = control_points.back();
   cp_path.moveTo(last_cp.x, last_cp.y);
   for (const auto& cp : control_points) {
     painter.setPen(QPen(color, 0));
-    painter.drawEllipse(QPointF(cp.x, cp.y), 0.1, 0.1);
+    painter.drawEllipse(QPointF(cp.x, cp.y), 0.05, 0.05);
     cp_path.lineTo(cp.x, cp.y);
     painter.setPen(QPen(Qt::lightGray, 0, Qt::DotLine));
     painter.drawLine(QLineF(0, 0, cp.x, cp.y));
   }
-  painter.setPen(QPen(color, 0, Qt::DotLine));
+  painter.setBrush(Qt::NoBrush);
+  painter.setPen(QPen(color, 0));
   painter.drawPath(cp_path);
-}
-
-static math::Vector2d offsetPoint(const PolygonNode& point, double offset) {
-  return point.p + point.n * offset;
 }
 
 void SceneUi::renderOutline(QPainter& painter,
@@ -302,7 +301,7 @@ void SceneUi::render(QPainter& painter, const QRectF&) {
     renderSpline(painter, QPen(Qt::blue, 0, Qt::DashLine), inner_spline_);
     renderSpline(painter, QPen(Qt::blue, 0, Qt::DotLine), outer_spline_);
     if (render_segments_) {
-      renderSegments(painter, inner_spline_, outer_spline_);
+      renderSegments(painter, outer_spline_, track_width);
     }
     if (render_outline_) {
       renderOutline(painter, QPen(Qt::red, 0, Qt::DotLine), inner_spline_, track_width);
@@ -377,7 +376,7 @@ void SceneUi::updateSplines() {
   // create the outer spline
   auto outer_control_points =
       createOuterControlPoints(control_points_, track_width, resolution);
-  outer_spline_ = createSpline(outer_control_points, resolution);
+  outer_spline_ = createSpline(outer_control_points, int(resolution * 1.5));
 }
 
 }  // namespace splines_scene

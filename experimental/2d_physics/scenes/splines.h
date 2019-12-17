@@ -84,8 +84,8 @@ class SceneUi : public physics_ui::Box2dSceneUi {
   void updateSplines();
   void renderSpline(QPainter& painter, const QPen& pen, const Polygon& spline) const;
   void renderSegments(QPainter& painter,
-                      const Polygon& inner_spline,
-                      const Polygon& outer_spline) const;
+                      const Polygon& outer_spline,
+                      float track_width) const;
   void renderControlPoints(QPainter& painter,
                            const QColor& color,
                            const vector<math::Vector2d>& control_points) const;
@@ -100,7 +100,7 @@ class SceneUi : public physics_ui::Box2dSceneUi {
   Polygon outer_spline_;
   Scene* scene_ = nullptr;
   unordered_map<int, bool> key_state_;
-  
+
   bool render_segments_ = true;
   bool render_outer_control_points_ = false;
   bool render_outline_ = false;
