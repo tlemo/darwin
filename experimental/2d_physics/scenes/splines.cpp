@@ -47,7 +47,67 @@ static b2Vec2 toBox2dVec(const math::Vector2d& v) {
   return b2Vec2(float(v.x), float(v.y));
 }
 
-void Scene::createCurb(const Outline& outline, float curb_width, float segment_length) {
+static Outline createOutline(const vector<math::Vector2d>& points) {
+  const size_t nodes_count = points.size();
+  Outline outline(nodes_count);
+
+  // calculate the segment normals
+  vector<math::Vector2d> sn(nodes_count);
+  for (size_t i = 0; i < nodes_count; ++i) {
+    const auto& start_p = points[i];
+    const auto& end_p = points[(i + 1) % nodes_count];
+    const auto v = end_p - start_p;
+    sn[i] = math::Vector2d(v.y, -v.x).normalized();
+  }
+
+  // set the outline points and normals
+  // (the normals are sized appropriately for an offset = 1.0, not normal length = 1.0)
+  for (size_t i = 0; i < nodes_count; ++i) {
+    const size_t next_i = (i + 1) % nodes_count;
+    const auto a = (sn[i] + sn[next_i]) * 0.5;
+    outline[next_i].p = points[next_i];
+    outline[next_i].n = a / (a * a);
+  }
+
+  return outline;
+}
+
+// space the nodes at a uniform distance from each other
+static Outline equidistantOutline(const Outline& outline) {
+  CHECK(outline.size() >= 3);
+
+  // calculate the outline length
+  double total_length = 0;
+  for (size_t i = 0; i < outline.size(); ++i) {
+    const size_t next_i = (i + 1) % outline.size();
+    total_length += (outline[next_i].p - outline[i].p).length();
+  }
+
+  const double segment_length = total_length / outline.size();
+
+  vector<math::Vector2d> points;
+  points.push_back(outline[0].p);
+  double reminder = 0;
+  for (size_t i = 0; i < outline.size(); ++i) {
+    const size_t next_i = (i + 1) % outline.size();
+    auto v = outline[next_i].p - outline[i].p;
+    const double length = v.length();
+    v = v / length;
+    CHECK(reminder < segment_length);
+    double offset = segment_length - reminder;
+    reminder += length;
+    while (reminder >= segment_length && points.size() < outline.size()) {
+      points.push_back(outline[i].p + v * offset);
+      offset += segment_length;
+      reminder -= segment_length;
+    }
+  }
+
+  CHECK(points.size() == outline.size());
+  return createOutline(points);
+}
+
+void Scene::createCurb(const Outline& outline, float curb_width) {
   CHECK(outline.size() >= 3);
 
   b2BodyDef track_body_def;
@@ -166,31 +226,6 @@ void SceneUi::renderOutline(QPainter& painter,
   painter.setPen(pen);
   painter.setBrush(Qt::NoBrush);
   painter.drawPath(outline_path);
-}
-
-static Outline createOutline(const vector<math::Vector2d>& points) {
-  const size_t nodes_count = points.size();
-  Outline outline(nodes_count);
-
-  // calculate the segment normals
-  vector<math::Vector2d> sn(nodes_count);
-  for (size_t i = 0; i < nodes_count; ++i) {
-    const auto& start_p = points[i];
-    const auto& end_p = points[(i + 1) % nodes_count];
-    const auto v = end_p - start_p;
-    sn[i] = math::Vector2d(v.y, -v.x).normalized();
-  }
-
-  // set the outline points and normals
-  // (the normals are sized appropriately for an offset = 1.0, not normal length = 1.0)
-  for (size_t i = 0; i < nodes_count; ++i) {
-    const size_t next_i = (i + 1) % nodes_count;
-    const auto a = (sn[i] + sn[next_i]) * 0.5;
-    outline[next_i].p = points[next_i];
-    outline[next_i].n = a / (a * a);
-  }
-
-  return outline;
 }
 
 static Outline createSpline(const vector<math::Vector2d>& control_points,
@@ -374,6 +409,19 @@ void SceneUi::keyPressEvent(QKeyEvent* event) {
       control_points_.clear();
       updateSplines();
       break;
+    case Qt::Key_C:
+      scene_->clear();
+      create_curbs_ = !create_curbs_;
+      updateSplines();
+      break;
+    case Qt::Key_S:
+      render_segments_ = !render_segments_;
+      break;
+    case Qt::Key_E:
+      scene_->clear();
+      use_equidistant_outlines_ = !use_equidistant_outlines_;
+      updateSplines();
+      break;
   }
 }
 
@@ -418,10 +466,15 @@ void SceneUi::updateSplines() {
       createOuterControlPoints(control_points_, track_width, resolution);
   outer_spline_ = createSpline(outer_control_points, resolution);
 
+  if (use_equidistant_outlines_) {
+    inner_spline_ = equidistantOutline(inner_spline_);
+    outer_spline_ = equidistantOutline(outer_spline_);
+  }
+
   // create the fixtures
   if (create_curbs_) {
-    scene_->createCurb(inner_spline_, config->curb_width, -config->curb_segment_length);
-    scene_->createCurb(outer_spline_, config->curb_width, config->curb_segment_length);
+    scene_->createCurb(inner_spline_, -config->curb_width);
+    scene_->createCurb(outer_spline_, config->curb_width);
   }
 }
 
