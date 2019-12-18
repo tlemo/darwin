@@ -1,5 +1,6 @@
 
 SOURCES += \
+    intersection_tests.cpp \
     main.cpp \
     database_tests.cpp \
     exception_tests.cpp \
