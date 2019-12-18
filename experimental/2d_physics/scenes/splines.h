@@ -7,6 +7,7 @@
 #include <core/sim/scene.h>
 #include <core/properties.h>
 #include <core/math_2d.h>
+#include <core/outline_2d.h>
 
 #include <QKeyEvent>
 #include <QPixmap>
@@ -21,24 +22,15 @@ namespace splines_scene {
 struct Config : public core::PropertySet {
   PROPERTY(width, float, 40.0f, "Sandbox area width");
   PROPERTY(height, float, 20.0f, "Sandbox area height");
-
-  PROPERTY(curb_width, float, 0.1f, "The width of the curb");
-
-  PROPERTY(track_width, float, 1.8f, "Track width");
   PROPERTY(track_complexity, int, 10, "The approximate number of turns");
   PROPERTY(track_resolution, int, 500, "Number of track segments");
+  PROPERTY(curb_width, float, 0.1f, "The width of the curb");
+  PROPERTY(track_width, float, 1.8f, "Track width");
 };
 
 struct SceneVariables : public core::PropertySet {
   PROPERTY(objects_count, int, 0, "The total number of physics objects (bodies)");
 };
-
-struct OutlineNode {
-  math::Vector2d p;
-  math::Vector2d n;
-};
-
-using Outline = vector<OutlineNode>;
 
 class Scene : public sim::Scene {
  public:
@@ -51,7 +43,7 @@ class Scene : public sim::Scene {
   void preStep() override;
   void postStep(float dt) override;
 
-  void createCurb(const Outline& outline, float curb_width);
+  void createCurb(const math::Outline& outline, float curb_width);
 
  private:
   void createLight(b2Body* body, const b2Vec2& pos, const b2Color& color);
@@ -66,44 +58,39 @@ class SceneUi : public physics_ui::Box2dSceneUi {
  public:
   explicit SceneUi(Scene* scene);
 
-  bool keyPressed(int key) const {
-    const auto it = key_state_.find(key);
-    return it != key_state_.end() ? it->second : false;
-  }
+  bool keyPressed(int key) const;
 
   void render(QPainter& painter, const QRectF&) override;
 
   void step() override;
 
   void mousePressEvent(const QPointF& pos, QMouseEvent* event) override;
-
   void keyPressEvent(QKeyEvent* event) override;
-
   void keyReleaseEvent(QKeyEvent* event) override { key_state_[event->key()] = false; }
-
   void focusOutEvent() override { key_state_.clear(); }
-  
+
   QString help() const override;
 
  private:
-  void generateRandomTrack();
+  void generateControlPoints();
   void updateSplines();
-  void renderSpline(QPainter& painter, const QPen& pen, const Outline& spline) const;
+
+  void renderOutline(QPainter& painter,
+                     const QPen& pen,
+                     const math::Outline& outline) const;
   void renderSegments(QPainter& painter,
-                      const Outline& outer_spline,
+                      const math::Outline& outline,
                       float track_width) const;
   void renderControlPoints(QPainter& painter,
                            const QColor& color,
-                           const vector<math::Vector2d>& control_points) const;
-  void renderOutline(QPainter& painter,
-                     const QPen& pen,
-                     const Outline& spline,
-                     double offset) const;
+                           const math::Polygon& control_points) const;
 
  private:
-  vector<math::Vector2d> control_points_;
-  Outline inner_spline_;
-  Outline outer_spline_;
+  math::Polygon control_points_;
+  math::Polygon outer_control_points_;
+  math::Outline inner_outline_;
+  math::Outline outer_outline_;
+
   Scene* scene_ = nullptr;
   unordered_map<int, bool> key_state_;
 
@@ -111,7 +98,6 @@ class SceneUi : public physics_ui::Box2dSceneUi {
   bool render_segments_ = false;
   bool use_equidistant_outlines_ = true;
   bool render_outer_control_points_ = false;
-  bool render_outline_ = false;
 };
 
 class Factory : public SandboxFactory {

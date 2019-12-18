@@ -13,6 +13,7 @@ SOURCES += \
     darwin.cpp \
     logging.cpp \
     math_2d.cpp \
+    outline_2d.cpp \
     platform_abstraction_layer.cpp \
     database.cpp \
     universe.cpp \
@@ -42,6 +43,7 @@ HEADERS += \
     darwin.h \
     ann_dynamic.h \
     global_initializer.h \
+    outline_2d.h \
     pubsub.h \
     logging.h \
     scope_guard.h \
