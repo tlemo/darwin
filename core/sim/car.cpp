@@ -42,7 +42,7 @@ Car::Car(b2World* world, const CarConfig& config) : config_(config) {
   b2FixtureDef fixture_def;
   fixture_def.shape = &shape;
   fixture_def.density = config_.density;
-  fixture_def.friction = 0.5f;
+  fixture_def.friction = config_.friction;
   fixture_def.restitution = 0.1f;
   fixture_def.material.color = config_.color;
   fixture_def.material.shininess = 25;
@@ -102,7 +102,7 @@ void Car::createWheelFixture(b2Body* body, const b2Vec2& pos) {
   b2FixtureDef fixture_def;
   fixture_def.shape = &shape;
   fixture_def.density = config_.density;
-  fixture_def.friction = 0.1f;
+  fixture_def.friction = config_.friction;
   fixture_def.restitution = 0.1f;
   fixture_def.material.color = b2Color(0.2f, 0.2f, 0.2f);
   fixture_def.material.shininess = 0;
@@ -118,7 +118,7 @@ void Car::createLightFixture(const b2Vec2& pos, const b2Color& color) {
   b2FixtureDef fixture_def;
   fixture_def.shape = &shape;
   fixture_def.density = config_.density;
-  fixture_def.friction = 0.5f;
+  fixture_def.friction = config_.friction;
   fixture_def.restitution = 0.1f;
   fixture_def.material.color = color;
   fixture_def.material.shininess = 10;

@@ -45,7 +45,7 @@ CarTrack::CarTrack(const core::PropertySet& config) {
   car_config_.touch_resolution = config_.touch_resolution;
   car_config_.accelerometer = config_.accelerometer;
   car_config_.compass = config_.compass;
-  car_config_.color = b2Color(0, 0, 1);
+  car_config_.color = b2Color(0, 1, 0);
 }
 
 size_t CarTrack::inputs() const {

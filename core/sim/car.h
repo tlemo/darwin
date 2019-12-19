@@ -41,6 +41,7 @@ struct CarConfig {
   float max_steer_angle = 40.0f;
   float density = 0.01f;
   float tire_traction = 0.1f;
+  float friction = 1.0f;
   b2Color color;
 };
 
