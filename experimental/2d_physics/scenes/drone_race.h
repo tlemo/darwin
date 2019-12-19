@@ -21,7 +21,8 @@ using sim::TouchSensor;
 
 struct Config : public core::PropertySet {
   PROPERTY(drone_radius, float, 0.3f, "Drone size");
-  PROPERTY(move_force, float, 5.0f, "The force used to move the drone");
+  PROPERTY(move_force, float, 10.0f, "The force used to move the drone");
+  PROPERTY(lateral_force, float, 5.0f, "The lateral force used to move the drone");
   PROPERTY(rotate_torque, float, 0.5f, "The torque used to rotate the drone");
 
   PROPERTY(track_width, float, 2.0f, "Track width");

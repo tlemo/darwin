@@ -81,6 +81,7 @@ unique_ptr<sim::Drone> Scene::createDrone() {
   drone_config.accelerometer = true;
   drone_config.compass = true;
   drone_config.max_move_force = config_.move_force;
+  drone_config.max_lateral_force = config_.lateral_force;
   drone_config.max_rotate_torque = config_.rotate_torque;
   drone_config.color = b2Color(0, 0, 1);
   drone_config.density = 0.5f;
@@ -236,12 +237,13 @@ void SceneUi::step() {
 
   // keyboard inputs
   const float move_force = scene_->config()->move_force;
+  const float lateral_force = scene_->config()->lateral_force;
   const float rotate_torque = scene_->config()->rotate_torque;
   if (keyPressed(Qt::Key_Left)) {
-    scene_->moveDrone(b2Vec2(-move_force, 0));
+    scene_->moveDrone(b2Vec2(-lateral_force, 0));
   }
   if (keyPressed(Qt::Key_Right)) {
-    scene_->moveDrone(b2Vec2(move_force, 0));
+    scene_->moveDrone(b2Vec2(lateral_force, 0));
   }
   if (keyPressed(Qt::Key_Up)) {
     scene_->moveDrone(b2Vec2(0, move_force));

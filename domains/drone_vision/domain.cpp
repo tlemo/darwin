@@ -38,6 +38,7 @@ DroneVision::DroneVision(const core::PropertySet& config) {
   drone_config_.camera_fov = config_.camera_fov;
   drone_config_.camera_resolution = config_.camera_resolution;
   drone_config_.max_move_force = config_.max_move_force;
+  drone_config_.max_lateral_force = config_.max_lateral_force;
   drone_config_.max_rotate_torque = config_.max_rotate_torque;
 }
 
@@ -111,6 +112,8 @@ void DroneVision::validateConfiguration() {
     throw core::Exception("Invalid configuration: drone_radius <= 0");
   if (config_.max_move_force < 0)
     throw core::Exception("Invalid configuration: max_move_force < 0");
+  if (config_.max_lateral_force < 0)
+    throw core::Exception("Invalid configuration: max_lateral_force < 0");
   if (config_.max_rotate_torque < 0)
     throw core::Exception("Invalid configuration: max_rotate_torque < 0");
 

@@ -87,12 +87,14 @@ Drone::Drone(b2World* world, const DroneConfig& config) : config_(config) {
 
 void Drone::move(b2Vec2 force) {
   // limit the magnitude of the force
-  const float max_value = config_.max_move_force;
-  CHECK(max_value >= 0);
-  force.x = fminf(force.x, max_value);
-  force.x = fmaxf(force.x, -max_value);
-  force.y = fminf(force.y, max_value);
-  force.y = fmaxf(force.y, -max_value);
+  const float max_x_force = config_.max_lateral_force;
+  const float max_y_force = config_.max_move_force;
+  CHECK(max_x_force >= 0);
+  CHECK(max_y_force >= 0);
+  force.x = fminf(force.x, max_x_force);
+  force.x = fmaxf(force.x, -max_x_force);
+  force.y = fminf(force.y, max_y_force);
+  force.y = fmaxf(force.y, -max_y_force);
   body_->ApplyForceToCenter(body_->GetWorldVector(force), true);
 }
 

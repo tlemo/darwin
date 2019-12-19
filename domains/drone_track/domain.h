@@ -26,6 +26,7 @@ namespace drone_track {
 struct Config : public core::PropertySet {
   PROPERTY(drone_radius, float, 0.3f, "Drone size");
   PROPERTY(max_move_force, float, 10.0f, "Maximum force used to move the drone");
+  PROPERTY(max_lateral_force, float, 10.0f, "Maximum lateral force");
   PROPERTY(max_rotate_torque, float, 0.5f, "Maximum torque used to rotate the drone");
   PROPERTY(drone_friction, float, 0.1f, "Drone friction");
 

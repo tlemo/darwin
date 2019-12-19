@@ -27,6 +27,7 @@ struct Config : public core::PropertySet {
   PROPERTY(drone_radius, float, 0.5f, "Drone size");
   PROPERTY(drone_lights, bool, true, "Drone has navigation lights");
   PROPERTY(max_move_force, float, 5.0f, "Maximum force used to move the drone");
+  PROPERTY(max_lateral_force, float, 10.0f, "Maximum lateral force");
   PROPERTY(max_rotate_torque, float, 1.0f, "Maximum torque used to rotate the drone");
 
   PROPERTY(camera_fov, float, 60, "Camera field of view (FOV)");

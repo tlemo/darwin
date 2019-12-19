@@ -42,6 +42,7 @@ DroneFollow::DroneFollow(const core::PropertySet& config) {
   drone_config_.accelerometer = config_.accelerometer;
   drone_config_.compass = config_.compass;
   drone_config_.max_move_force = config_.max_move_force;
+  drone_config_.max_lateral_force = config_.max_lateral_force;
   drone_config_.max_rotate_torque = config_.max_rotate_torque;
   drone_config_.lights = config_.drone_lights;
 }
@@ -107,6 +108,8 @@ void DroneFollow::validateConfiguration() {
     throw core::Exception("Invalid configuration: drone_radius <= 0");
   if (config_.max_move_force < 0)
     throw core::Exception("Invalid configuration: max_move_force < 0");
+  if (config_.max_lateral_force < 0)
+    throw core::Exception("Invalid configuration: max_lateral_force < 0");
   if (config_.max_rotate_torque < 0)
     throw core::Exception("Invalid configuration: max_rotate_torque < 0");
 
