@@ -20,6 +20,7 @@
 #include <core/logging.h>
 #include <core/parallel_for_each.h>
 #include <core/sim/drone_controller.h>
+#include <core/sim/track.h>
 
 #include <random>
 using namespace std;
@@ -29,7 +30,7 @@ namespace drone_track {
 DroneTrack::DroneTrack(const core::PropertySet& config) {
   config_.copyFrom(config);
   validateConfiguration();
-  
+
   // setup drone configuration
   drone_config_.radius = config_.drone_radius;
   drone_config_.camera = true;
@@ -72,10 +73,18 @@ bool DroneTrack::evaluatePopulation(darwin::Population* population) const {
         population->size());
     core::log(" ... world %d\n", world_index);
 
+    // create track
+    sim::TrackConfig track_config;
+    track_config.width = config_.track_width;
+    track_config.complexity = config_.track_complexity;
+    track_config.resolution = config_.track_resolution;
+    track_config.area_width = Scene::kWidth;
+    track_config.area_height = Scene::kHeight;
     const auto random_seed = std::random_device{}();
+    const sim::Track track(random_seed, track_config);
 
     pp::for_each(*population, [&](int, darwin::Genotype* genotype) {
-      Scene scene(random_seed, this);
+      Scene scene(&track, this);
       sim::DroneController agent(genotype, scene.drone());
 
       // simulation loop

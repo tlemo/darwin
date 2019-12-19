@@ -41,6 +41,7 @@ Scene::Scene(const core::PropertySet* config)
     config_.copyFrom(*config);
   }
   track_ = createTrack();
+  track_->createFixtures(&world_);
   drone_ = createDrone();
   updateVariables();
 }
@@ -60,18 +61,19 @@ void Scene::rotateDrone(float torque) {
   drone_->rotate(torque);
 }
 
+static b2Vec2 toBox2dVec(const math::Vector2d& v) {
+  return b2Vec2(float(v.x), float(v.y));
+}
+
 unique_ptr<sim::Drone> Scene::createDrone() {
   // calculate the start position
-  const auto& track_nodes = track_->trackNodes();
-  CHECK(!track_nodes.empty());
-
-  const auto start_node = track_nodes[0];
-  const auto start_pos = start_node.offsetPos(config_.track_width / 2);
-  const auto start_angle = atan2f(start_node.normal.y, start_node.normal.x);
+  const auto start_node = track_->distanceToNode(0);
+  const auto start_pos = start_node.offset(-config_.track_width / 2);
+  const auto start_angle = atan2(start_node.n.y, start_node.n.x);
 
   sim::DroneConfig drone_config;
-  drone_config.position = start_pos;
-  drone_config.angle = start_angle;
+  drone_config.position = toBox2dVec(start_pos);
+  drone_config.angle = float(start_angle);
   drone_config.radius = config_.drone_radius;
   drone_config.camera = true;
   drone_config.camera_resolution = 256;
@@ -104,7 +106,7 @@ unique_ptr<sim::Track> Scene::createTrack() {
   track_config.area_width = kWidth;
   track_config.area_height = kHeight;
   const auto random_seed = std::random_device{}();
-  return make_unique<sim::Track>(random_seed, &world_, track_config);
+  return make_unique<sim::Track>(random_seed, track_config);
 }
 
 void Scene::updateVariables() {
@@ -161,26 +163,26 @@ void SceneUi::renderPath(QPainter& painter) const {
 
 void SceneUi::renderTrack(QPainter& painter) const {
   QPainterPath track_path;
-  const auto& track_nodes = scene_->track()->trackNodes();
 
   // inner track edge
-  for (size_t i = 0; i < track_nodes.size(); ++i) {
-    const auto& node = track_nodes[i];
+  const auto& inner_nodes = scene_->track()->innerOutline().nodes();
+  for (size_t i = 0; i < inner_nodes.size(); ++i) {
+    const auto& node = inner_nodes[i];
     if (i == 0) {
-      track_path.moveTo(node.pos.x, node.pos.y);
+      track_path.moveTo(node.p.x, node.p.y);
     } else {
-      track_path.lineTo(node.pos.x, node.pos.y);
+      track_path.lineTo(node.p.x, node.p.y);
     }
   }
 
   // outer track edge
-  for (size_t i = 0; i < track_nodes.size(); ++i) {
-    const auto& node = track_nodes[i];
-    const auto pos = node.offsetPos(scene_->config()->track_width);
+  const auto& outer_nodes = scene_->track()->outerOutline().nodes();
+  for (size_t i = 0; i < outer_nodes.size(); ++i) {
+    const auto& node = outer_nodes[i];
     if (i == 0) {
-      track_path.moveTo(pos.x, pos.y);
+      track_path.moveTo(node.p.x, node.p.y);
     } else {
-      track_path.lineTo(pos.x, pos.y);
+      track_path.lineTo(node.p.x, node.p.y);
     }
   }
 
@@ -193,10 +195,9 @@ void SceneUi::renderCurrentSegment(QPainter& painter) const {
   const auto track = scene_->track();
   constexpr float kOffset = 0.4f;
   const auto vars = scene_->variables();
-  const auto index = track->distanceToNode(vars->track_distance);
-  const auto& node = track->trackNodes()[index];
-  const auto p1 = node.offsetPos(-kOffset);
-  const auto p2 = node.offsetPos(scene_->config()->track_width + kOffset);
+  const auto& node = track->distanceToNode(vars->track_distance);
+  const auto p1 = node.offset(kOffset);
+  const auto p2 = node.offset(-scene_->config()->track_width - kOffset);
   painter.setBrush(Qt::NoBrush);
   painter.setPen(QPen(Qt::green, 0));
   painter.drawLine(QPointF(p1.x, p1.y), QPointF(p2.x, p2.y));

@@ -15,6 +15,8 @@
 #pragma once
 
 #include <core/utils.h>
+#include <core/math_2d.h>
+#include <core/outline_2d.h>
 #include <third_party/box2d/box2d.h>
 
 #include <vector>
@@ -32,33 +34,39 @@ struct TrackConfig {
   float curb_width = 0.1f;    //!< Curb width
 };
 
-struct TrackNode {
-  b2Vec2 pos;
-  b2Vec2 normal;
-
-  b2Vec2 offsetPos(float offset) const { return pos + normal * offset; }
-};
-
 class Track : public core::NonCopyable {
  public:
   using Seed = std::random_device::result_type;
 
  public:
-  Track(Seed seed, b2World* world, const TrackConfig& config);
+  Track(Seed seed, const TrackConfig& config);
 
-  const vector<TrackNode>& trackNodes() const { return track_nodes_; }
-
+  int nodesCount() const { return int(outer_outline_.nodes().size()); }
   int updateTrackDistance(int old_distance, const b2Vec2& pos) const;
-  int distanceToNode(int distance) const;
+  const math::Outline::Node& distanceToNode(int distance) const;
+
+  void createFixtures(b2World* world) const;
+
+  // mostly intended for rendering tracks, everything else
+  // should use the distance methods
+  const math::Outline& innerOutline() const { return inner_outline_; }
+  const math::Outline& outerOutline() const { return outer_outline_; }
 
  private:
+  int distanceToNodeIndex(int distance) const;
   void generateTrackPath();
-  void createFixtures(b2World* world);
+
+  void createCurb(b2World* world,
+                  const b2Color& color,
+                  const math::Outline& outline,
+                  float curb_width) const;
 
  private:
   default_random_engine rnd_;
-  vector<TrackNode> track_nodes_;
   const TrackConfig& config_;
+
+  math::Outline inner_outline_;
+  math::Outline outer_outline_;
 };
 
 }  // namespace sim

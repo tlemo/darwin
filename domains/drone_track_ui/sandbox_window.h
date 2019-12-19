@@ -17,6 +17,7 @@
 #include "scene_ui.h"
 
 #include <core/sim/drone_controller.h>
+#include <core/sim/track.h>
 #include <core_ui/sim/box2d_sandbox_window.h>
 #include <core_ui/sim/camera_widget.h>
 #include <core_ui/sim/compass_widget.h>
@@ -76,6 +77,7 @@ class SandboxWindow : public physics_ui::Box2dSandboxWindow {
   physics_ui::TouchSensorWidget* touch_widget_ = nullptr;
 
   shared_ptr<const darwin::Genotype> genotype_;
+  unique_ptr<sim::Track> track_;
   unique_ptr<drone_track::Scene> scene_;
   unique_ptr<sim::DroneController> agent_;
   unique_ptr<SceneUi> scene_ui_;

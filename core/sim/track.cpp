@@ -14,21 +14,18 @@
 
 #include "track.h"
 
-#include <core/math_2d.h>
-#include <third_party/tinyspline/tinyspline.h>
-
 namespace sim {
 
-Track::Track(Track::Seed seed, b2World* world, const TrackConfig& config)
-    : rnd_(seed), config_(config) {
+Track::Track(Track::Seed seed, const TrackConfig& config) : rnd_(seed), config_(config) {
+  CHECK(config_.complexity >= 3);
   generateTrackPath();
-  createFixtures(world);
 }
 
 int Track::updateTrackDistance(int old_distance, const b2Vec2& pos) const {
   auto side = [&](int distance) {
-    const auto& node = track_nodes_[distanceToNode(distance)];
-    return b2Cross(node.normal, pos - node.pos);
+    const auto& node = distanceToNode(distance);
+    const math::Vector2d p(pos.x, pos.y);
+    return node.n.cross(p - node.p);
   };
 
   int new_distance = old_distance;
@@ -48,8 +45,13 @@ int Track::updateTrackDistance(int old_distance, const b2Vec2& pos) const {
   return new_distance;
 }
 
-int Track::distanceToNode(int distance) const {
-  const int n = int(track_nodes_.size());
+const math::Outline::Node& Track::distanceToNode(int distance) const {
+  const auto& nodes = outer_outline_.nodes();
+  return nodes[distanceToNodeIndex(distance)];
+}
+
+int Track::distanceToNodeIndex(int distance) const {
+  const int n = nodesCount();
   int index = distance;
   while (index < 0) {
     index += n;
@@ -58,19 +60,22 @@ int Track::distanceToNode(int distance) const {
 }
 
 void Track::generateTrackPath() {
-  CHECK(track_nodes_.empty());
+  CHECK(inner_outline_.empty());
+  CHECK(outer_outline_.empty());
 
   // generate random control points (counter-clockwise, around the center)
   const double x_limit = config_.area_width / 2 - config_.width;
   const double y_limit = config_.area_height / 2 - config_.width;
   const float radius = (config_.area_width + config_.area_height) / 2.0f;
   std::uniform_real_distribution<double> dist(0.1f, radius);
-  vector<math::Vector2d> control_points(config_.complexity);
+  math::Polygon control_points(config_.complexity);
   for (size_t i = 0; i < control_points.size(); ++i) {
     const double angle = i * math::kPi * 2 / config_.complexity;
     const double r = dist(rnd_);
     const double x = cos(angle) * r;
     const double y = sin(angle) * r;
+
+    // truncate the point to the track area rectangle
     const double vt = (y >= 0 ? y_limit : -y_limit) / y;
     const double ht = (x >= 0 ? x_limit : -x_limit) / x;
     const double t = min(min(vt, ht), 1.0);
@@ -78,89 +83,59 @@ void Track::generateTrackPath() {
     control_points[i].y = y * t;
   }
 
-  // create the track spline (as a closed curve)
-  const size_t n = control_points.size() + 3;
-  tinyspline::BSpline spline(n, 2, 3, TS_OPENED);
-  auto cp = spline.controlPoints();
-  for (size_t i = 0; i < n; ++i) {
-    cp[i * 2 + 0] = control_points[i % control_points.size()].x;
-    cp[i * 2 + 1] = control_points[i % control_points.size()].y;
-  }
-  spline.setControlPoints(cp);
+  const int resolution = config_.resolution;
 
-  // sample evenly spaced points from the spline
-  // (we defined a closed curve - first and last point overlap, so drop the last one)
-  const size_t samples_count = config_.resolution;
-  auto samples = spline.sample(samples_count + 1);
-  samples.pop_back();
+  // create the inner spline
+  inner_outline_ = math::Outline(control_points, resolution).makeEquidistant();
 
-  // set the track points
-  track_nodes_.resize(samples_count);
-  for (size_t i = 0; i < samples_count; ++i) {
-    track_nodes_[i].pos.x = float(samples[i * 2 + 0]);
-    track_nodes_[i].pos.y = float(samples[i * 2 + 1]);
-  }
-
-  // calculate the normals
-  for (size_t i = 0; i < samples_count; ++i) {
-    const size_t next_i = (i + 1) % samples_count;
-    const auto next_v = track_nodes_[next_i].pos - track_nodes_[i].pos;
-    const auto next_n = b2Vec2(next_v.y, -next_v.x).Normalized();
-
-    const size_t prev_i = (i + samples_count - 1) % samples_count;
-    const auto prev_v = track_nodes_[i].pos - track_nodes_[prev_i].pos;
-    const auto prev_n = b2Vec2(prev_v.y, -prev_v.x).Normalized();
-
-    track_nodes_[i].normal = (prev_n + next_n) * 0.5f;
-  }
+  // create the outer spline
+  auto outer_control_points = inner_outline_.offset(config_.width).toPolygon();
+  outer_outline_ = math::Outline(outer_control_points, resolution).makeEquidistant();
 }
 
-void Track::createFixtures(b2World* world) {
-  CHECK(!track_nodes_.empty());
+static b2Vec2 toBox2dVec(const math::Vector2d& v) {
+  return b2Vec2(float(v.x), float(v.y));
+}
+
+void Track::createCurb(b2World* world,
+                       const b2Color& color,
+                       const math::Outline& outline,
+                       float curb_width) const {
+  auto& nodes = outline.nodes();
+  CHECK(nodes.size() >= 3);
 
   b2BodyDef track_body_def;
   auto track_body = world->CreateBody(&track_body_def);
 
-  const b2Color red(1, 0, 0);
   const b2Color white(1, 1, 1);
-  const b2Color blue(0, 0, 1);
 
   bool primary_color = true;
-  for (size_t i = 0; i < track_nodes_.size(); ++i) {
-    const size_t next_i = (i + 1) % track_nodes_.size();
+  for (size_t i = 0; i < nodes.size(); ++i) {
+    const size_t next_i = (i + 1) % nodes.size();
 
-    // common definitions
     b2Vec2 points[4];
     b2PolygonShape shape;
+    points[0] = toBox2dVec(nodes[i].p);
+    points[1] = toBox2dVec(nodes[next_i].p);
+    points[2] = toBox2dVec(nodes[next_i].offset(curb_width));
+    points[3] = toBox2dVec(nodes[i].offset(curb_width));
+    shape.Set(points, 4);
 
     b2FixtureDef fixture_def;
     fixture_def.shape = &shape;
     fixture_def.friction = 0.2f;
     fixture_def.restitution = 0.5f;
     fixture_def.material.emit_intensity = 0;
-
-    // left side curb
-    points[0] = track_nodes_[i].pos;
-    points[1] = track_nodes_[next_i].pos;
-    points[2] = track_nodes_[next_i].offsetPos(-config_.curb_width);
-    points[3] = track_nodes_[i].offsetPos(-config_.curb_width);
-    shape.Set(points, 4);
-
-    fixture_def.material.color = primary_color ? red : white;
-    track_body->CreateFixture(&fixture_def);
-
-    // right side curb
-    points[0] = track_nodes_[i].offsetPos(config_.width + config_.curb_width);
-    points[1] = track_nodes_[next_i].offsetPos(config_.width + config_.curb_width);
-    points[2] = track_nodes_[next_i].offsetPos(config_.width);
-    points[3] = track_nodes_[i].offsetPos(config_.width);
-    shape.Set(points, 4);
-
-    fixture_def.material.color = primary_color ? blue : white;
-    track_body->CreateFixture(&fixture_def);
-
+    fixture_def.material.color = primary_color ? color : white;
     primary_color = !primary_color;
+
+    track_body->CreateFixture(&fixture_def);
   }
+}
+
+void Track::createFixtures(b2World* world) const {
+  createCurb(world, b2Color(1, 0, 0), inner_outline_, -config_.curb_width);
+  createCurb(world, b2Color(0, 0, 1), outer_outline_, config_.curb_width);
 }
 
 }  // namespace sim

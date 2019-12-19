@@ -76,6 +76,9 @@ struct Vector2d {
 
   //! [Dot product](https://en.wikipedia.org/wiki/Dot_product)
   Scalar operator*(const Vector2d& v) const { return x * v.x + y * v.y; }
+  
+  //! A 2d version of the cross product, returning a scalar
+  Scalar cross(const Vector2d& v) const { return x * v.y - y * v.x; }
 };
 
 //! The intersection of two 2d segments

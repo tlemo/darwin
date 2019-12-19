@@ -24,8 +24,8 @@ struct Config : public core::PropertySet {
   PROPERTY(move_force, float, 5.0f, "The force used to move the drone");
   PROPERTY(rotate_torque, float, 0.5f, "The torque used to rotate the drone");
 
-  PROPERTY(track_width, float, 1.8f, "Track width");
-  PROPERTY(track_complexity, int, 10, "The approximate number of turns");
+  PROPERTY(track_width, float, 2.0f, "Track width");
+  PROPERTY(track_complexity, int, 20, "The approximate number of turns");
   PROPERTY(track_resolution, int, 500, "Number of track segments");
 };
 

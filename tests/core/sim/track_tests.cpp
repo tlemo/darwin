@@ -30,7 +30,8 @@ TEST(TrackTest, DefaultConfig) {
   for (int i = 0; i < kIterations; ++i) {
     b2World world(b2Vec2(0, 0));
     const auto random_seed = rd();
-    sim::Track test_track(random_seed, &world, track_config);
+    sim::Track test_track(random_seed, track_config);
+    test_track.createFixtures(&world);
   }
 }
 
@@ -38,8 +39,8 @@ TEST(TrackTest, HighComplexity) {
   // track configuration
   sim::TrackConfig track_config;
   track_config.width = 2.5f;
-  track_config.complexity = 25;
-  track_config.resolution = 500;
+  track_config.complexity = 35;
+  track_config.resolution = 333;
   track_config.area_width = 20.0f;
   track_config.area_height = 50.0f;
   track_config.curb_width = 0.5f;
@@ -49,7 +50,8 @@ TEST(TrackTest, HighComplexity) {
   for (int i = 0; i < kIterations; ++i) {
     b2World world(b2Vec2(0, 0));
     const auto random_seed = rd();
-    sim::Track test_track(random_seed, &world, track_config);
+    sim::Track test_track(random_seed, track_config);
+    test_track.createFixtures(&world);
   }
 }
 
@@ -57,18 +59,19 @@ TEST(TrackTest, HighResolution) {
   // track configuration
   sim::TrackConfig track_config;
   track_config.width = 5.0f;
-  track_config.complexity = 10;
+  track_config.complexity = 25;
   track_config.resolution = 1500;
   track_config.area_width = 20.0f;
   track_config.area_height = 100.0f;
   track_config.curb_width = 0.01f;
 
   random_device rd;
-  constexpr int kIterations = 100;
+  constexpr int kIterations = 25;
   for (int i = 0; i < kIterations; ++i) {
     b2World world(b2Vec2(0, 0));
     const auto random_seed = rd();
-    sim::Track test_track(random_seed, &world, track_config);
+    sim::Track test_track(random_seed, track_config);
+    test_track.createFixtures(&world);
   }
 }
 
@@ -76,8 +79,8 @@ TEST(TrackTest, LowResolution) {
   // track configuration
   sim::TrackConfig track_config;
   track_config.width = 1.0f;
-  track_config.complexity = 10;
-  track_config.resolution = 8;
+  track_config.complexity = 15;
+  track_config.resolution = 9;
   track_config.area_width = 10.0f;
   track_config.area_height = 100.0f;
   track_config.curb_width = 0.3f;
@@ -87,7 +90,8 @@ TEST(TrackTest, LowResolution) {
   for (int i = 0; i < kIterations; ++i) {
     b2World world(b2Vec2(0, 0));
     const auto random_seed = rd();
-    sim::Track test_track(random_seed, &world, track_config);
+    sim::Track test_track(random_seed, track_config);
+    test_track.createFixtures(&world);
   }
 }
 

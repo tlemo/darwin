@@ -20,33 +20,28 @@
 
 namespace drone_track {
 
-Scene::Scene(Seed seed, const DroneTrack* domain)
+static b2Vec2 toBox2dVec(const math::Vector2d& v) {
+  return b2Vec2(float(v.x), float(v.y));
+}
+
+Scene::Scene(const sim::Track* track, const DroneTrack* domain)
     : sim::Scene(b2Vec2(0, 0), sim::Rect(-kWidth / 2, -kHeight / 2, kWidth, kHeight)),
-      rnd_(seed),
+      track_(track),
       domain_(domain) {
   const auto& config = domain_->config();
-
-  // create track
-  sim::TrackConfig track_config;
-  track_config.width = config.track_width;
-  track_config.complexity = config.track_complexity;
-  track_config.resolution = config.track_resolution;
-  track_config.area_width = kWidth;
-  track_config.area_height = kHeight;
-  track_ = make_unique<sim::Track>(seed, &world_, track_config);
+  
+  // instantiate the track
+  track_->createFixtures(&world_);
 
   // calculate the start position
-  const auto& track_nodes = track_->trackNodes();
-  CHECK(!track_nodes.empty());
-
-  const auto start_node = track_nodes[0];
-  const auto start_pos = start_node.offsetPos(config.track_width / 2);
-  const auto start_angle = atan2f(start_node.normal.y, start_node.normal.x);
+  const auto start_node = track_->distanceToNode(0);
+  const auto start_pos = start_node.offset(-config.track_width / 2);
+  const auto start_angle = atan2(start_node.n.y, start_node.n.x);
 
   // create the drone
   sim::DroneConfig drone_config = domain_->droneConfig();
-  drone_config.position = start_pos;
-  drone_config.angle = start_angle;
+  drone_config.position = toBox2dVec(start_pos);
+  drone_config.angle = float(start_angle);
   drone_ = make_unique<sim::Drone>(&world_, drone_config);
 
   // attach a light to the drone's body
@@ -59,7 +54,7 @@ Scene::Scene(Seed seed, const DroneTrack* domain)
 }
 
 float Scene::fitness() const {
-  return float(distance_) / track_->trackNodes().size();
+  return float(distance_) / track_->nodesCount();
 }
 
 void Scene::postStep(float dt) {

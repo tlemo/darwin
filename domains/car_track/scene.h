@@ -22,7 +22,6 @@
 #include <core/properties.h>
 
 #include <memory>
-#include <random>
 using namespace std;
 
 namespace car_track {
@@ -39,22 +38,20 @@ struct SceneVariables : public core::PropertySet {
 };
 
 class Scene : public sim::Scene {
+ public:
   static constexpr float kWidth = 50;
   static constexpr float kHeight = 20;
 
  public:
-  using Seed = std::random_device::result_type;
-
- public:
-  explicit Scene(Seed seed, const CarTrack* domain);
+  explicit Scene(const sim::Track* track, const CarTrack* domain);
 
   const SceneVariables* variables() const override { return &variables_; }
 
   const Config* config() const override { return &domain_->config(); }
 
   Drone* drone() { return drone_.get(); }
-  
-  const sim::Track* track() const { return track_.get(); }
+
+  const sim::Track* track() const { return track_; }
 
   const CarTrack* domain() const { return domain_; }
 
@@ -71,11 +68,9 @@ class Scene : public sim::Scene {
   float fitness_ = 0;
   int distance_ = 0;
   unique_ptr<Drone> drone_;
-  unique_ptr<sim::Track> track_;
-
-  default_random_engine rnd_;
 
   SceneVariables variables_;
+  const sim::Track* track_ = nullptr;
   const CarTrack* domain_ = nullptr;
 };
 
