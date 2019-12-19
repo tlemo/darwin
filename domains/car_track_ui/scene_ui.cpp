@@ -30,8 +30,8 @@ static QPointF vecToPoint(const b2Vec2& v) {
   return QPointF(v.x, v.y);
 }
 
-static QPointF dronePosition(const sim::Drone* drone) {
-  return vecToPoint(drone->body()->GetPosition());
+static QPointF carPosition(const sim::Car* car) {
+  return vecToPoint(car->body()->GetPosition());
 }
 
 static double dist(const QPointF& a, const QPointF& b) {
@@ -39,7 +39,7 @@ static double dist(const QPointF& a, const QPointF& b) {
 }
 
 SceneUi::SceneUi(car_track::Scene* scene) : scene_(scene) {
-  drone_path_.moveTo(dronePosition(scene_->drone()));
+  car_path_.moveTo(carPosition(scene_->car()));
 }
 
 void SceneUi::render(QPainter& painter, const QRectF& viewport) {
@@ -50,15 +50,14 @@ void SceneUi::render(QPainter& painter, const QRectF& viewport) {
   renderTrack(painter);
   renderPath(painter);
   renderCurrentSegment(painter);
-  renderDrone(painter, scene_->drone());
 }
 
 void SceneUi::step() {
-  // update drone path
+  // update car path
   constexpr double kMinDist = 0.1;
-  const auto drone_pos = dronePosition(scene_->drone());
-  if (dist(drone_pos, drone_path_.currentPosition()) > kMinDist) {
-    drone_path_.lineTo(drone_pos);
+  const auto car_pos = carPosition(scene_->car());
+  if (dist(car_pos, car_path_.currentPosition()) > kMinDist) {
+    car_path_.lineTo(car_pos);
   }
 }
 
@@ -77,32 +76,10 @@ void SceneUi::renderCamera(QPainter& painter, const sim::Camera* camera) const {
   painter.drawPie(frustum_rect, int(-angle * 16), int(fov * 16));
 }
 
-void SceneUi::renderDrone(QPainter& painter, const sim::Drone* drone) const {
-  if (auto camera = drone->camera()) {
-    renderCamera(painter, camera);
-  }
-
-  const auto& drone_config = drone->config();
-  const float radius = drone_config.radius;
-  const auto drone_body = drone->body();
-  const auto pos = drone_body->GetPosition();
-  painter.save();
-  painter.translate(pos.x, pos.y);
-  painter.scale(1, -1);
-  painter.rotate(math::radiansToDegrees(-drone_body->GetAngle()));
-  const QRectF dest_rect(-radius, -radius, radius * 2, radius * 2);
-  painter.drawPixmap(dest_rect, drone_pixmap_, drone_pixmap_.rect());
-  painter.restore();
-
-  const auto& color = drone_config.color;
-  painter.setPen(QPen(QColor::fromRgbF(color.r, color.g, color.b), 0, Qt::DotLine));
-  painter.drawEllipse(vecToPoint(pos), radius, radius);
-}
-
 void SceneUi::renderPath(QPainter& painter) const {
   painter.setBrush(Qt::NoBrush);
   painter.setPen(QPen(Qt::darkGray, 0, Qt::DotLine));
-  painter.drawPath(drone_path_);
+  painter.drawPath(car_path_);
 }
 
 void SceneUi::renderTrack(QPainter& painter) const {

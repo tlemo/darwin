@@ -40,7 +40,7 @@ struct Config : public core::PropertySet {
   PROPERTY(compass, bool, false, "Use the drone's compass");
 
   PROPERTY(track_width, float, 1.8f, "Track width");
-  PROPERTY(track_complexity, int, 10, "The approximate number of turns");
+  PROPERTY(track_complexity, int, 20, "The approximate number of turns");
   PROPERTY(track_resolution, int, 500, "Number of track segments");
 
   PROPERTY(test_worlds, int, 3, "Number of test worlds per generation");

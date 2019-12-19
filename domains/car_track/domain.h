@@ -16,7 +16,7 @@
 
 #include <core/darwin.h>
 #include <core/properties.h>
-#include <core/sim/drone.h>
+#include <core/sim/car.h>
 
 #include <third_party/box2d/box2d.h>
 
@@ -24,22 +24,23 @@ namespace car_track {
 
 //! Car Track domain configuration
 struct Config : public core::PropertySet {
-  PROPERTY(drone_radius, float, 0.3f, "Drone size");
-  PROPERTY(max_move_force, float, 10.0f, "Maximum force used to move the drone");
-  PROPERTY(max_rotate_torque, float, 0.5f, "Maximum torque used to rotate the drone");
-  PROPERTY(drone_friction, float, 0.1f, "Drone friction");
+  PROPERTY(car_length, float, 2.0f, "Car length");
+  PROPERTY(max_forward_force, float, 10.0f, "Max forward move force");
+  PROPERTY(max_reverse_force, float, 3.0f, "Max reverse move force");
+  PROPERTY(max_steer_angle, float, 40.0f, "Max steering angle");
+  PROPERTY(tire_traction, float, 0.1f, "Tire traction (max lateral impulse)");
 
-  PROPERTY(camera_fov, float, 60, "Camera field of view (FOV)");
+  PROPERTY(camera_fov, float, 90, "Camera field of view (FOV)");
   PROPERTY(camera_resolution, int, 64, "Camera resolution");
   PROPERTY(camera_depth, bool, false, "Use camera depth channel");
-  
-  PROPERTY(touch_sensor, bool, false, "Use the drone's touch sensor");
-  PROPERTY(touch_resolution, int, 8, "Touch sensor resolution");
-  PROPERTY(accelerometer, bool, false, "Use the drone's accelerometer");
-  PROPERTY(compass, bool, false, "Use the drone's compass");
 
-  PROPERTY(track_width, float, 1.8f, "Track width");
-  PROPERTY(track_complexity, int, 10, "The approximate number of turns");
+  PROPERTY(touch_sensor, bool, true, "Use the drone's touch sensor");
+  PROPERTY(touch_resolution, int, 8, "Touch sensor resolution");
+  PROPERTY(accelerometer, bool, true, "Use the drone's accelerometer");
+  PROPERTY(compass, bool, true, "Use the drone's compass");
+
+  PROPERTY(track_width, float, 2.4f, "Track width");
+  PROPERTY(track_complexity, int, 20, "The approximate number of turns");
   PROPERTY(track_resolution, int, 500, "Number of track segments");
 
   PROPERTY(test_worlds, int, 3, "Number of test worlds per generation");
@@ -63,8 +64,8 @@ struct Config : public core::PropertySet {
 //!
 //! Output | Value
 //! ------:|------
-//!    0,1 | force vector (x, y) applied to the drone
-//!      2 | torque applied to turn the drone
+//!      0 | acceleration force (negative values result in reverse movement)
+//!      1 | desired steering angle (-1.0 .. +1.0)
 //!
 class CarTrack : public darwin::Domain {
  public:
@@ -74,16 +75,16 @@ class CarTrack : public darwin::Domain {
   size_t outputs() const override;
 
   bool evaluatePopulation(darwin::Population* population) const override;
-  
+
   const Config& config() const { return config_; }
-  const sim::DroneConfig& droneConfig() const { return drone_config_; }
-  
+  const sim::CarConfig& carConfig() const { return car_config_; }
+
  private:
   void validateConfiguration();
 
  private:
   Config config_;
-  sim::DroneConfig drone_config_;
+  sim::CarConfig car_config_;
 };
 
 class Factory : public darwin::DomainFactory {

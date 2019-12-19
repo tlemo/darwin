@@ -96,7 +96,7 @@ void SandboxWindow::newScene() {
   track_ = make_unique<sim::Track>(random_seed, track_config);
 
   scene_ = make_unique<car_track::Scene>(track_.get(), domain_);
-  agent_ = make_unique<sim::DroneController>(genotype_.get(), scene_->drone());
+  agent_ = make_unique<sim::CarController>(genotype_.get(), scene_->car());
   step_ = 0;
 
   const auto extents = scene_->extents();
@@ -108,10 +108,10 @@ void SandboxWindow::newScene() {
   scene_ui_ = make_unique<SceneUi>(scene_.get());
   setSceneUi(scene_ui_.get());
 
-  camera_widget_->setCamera(scene_->drone()->camera());
-  compass_widget_->setSensor(scene_->drone()->compass());
-  accelerometer_widget_->setSensor(scene_->drone()->accelerometer());
-  touch_widget_->setSensor(scene_->drone()->touchSensor());
+  camera_widget_->setCamera(scene_->car()->camera());
+  compass_widget_->setSensor(scene_->car()->compass());
+  accelerometer_widget_->setSensor(scene_->car()->accelerometer());
+  touch_widget_->setSensor(scene_->car()->touchSensor());
 }
 
 void SandboxWindow::singleStep() {

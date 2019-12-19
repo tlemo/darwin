@@ -37,6 +37,7 @@ SOURCES += \
     sim/track.cpp \
     sim/touch_sensor.cpp \
     sim/drone.cpp \
+    sim/car_controller.cpp \
     sim/drone_controller.cpp
 
 HEADERS += \
@@ -83,6 +84,7 @@ HEADERS += \
     sim/script.h \
     sim/touch_sensor.h \
     sim/drone.h \
+    sim/car_controller.h \
     sim/drone_controller.h
     
 addLibrary(../third_party/sqlite)

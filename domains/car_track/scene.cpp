@@ -38,15 +38,15 @@ Scene::Scene(const sim::Track* track, const CarTrack* domain)
   const auto start_pos = start_node.offset(-config.track_width / 2);
   const auto start_angle = atan2(start_node.n.y, start_node.n.x);
 
-  // create the drone
-  sim::DroneConfig drone_config = domain_->droneConfig();
-  drone_config.position = toBox2dVec(start_pos);
-  drone_config.angle = float(start_angle);
-  drone_ = make_unique<sim::Drone>(&world_, drone_config);
+  // create the car
+  sim::CarConfig car_config = domain_->carConfig();
+  car_config.position = toBox2dVec(start_pos);
+  car_config.angle = float(start_angle);
+  car_ = make_unique<sim::Car>(&world_, car_config);
 
-  // attach a light to the drone's body
+  // attach a light to the car's body
   b2LightDef light_def;
-  light_def.body = drone_->body();
+  light_def.body = car_->body();
   light_def.color = b2Color(1, 1, 1);
   light_def.intensity = 2.0f;
   light_def.attenuation_distance = 10.0f;
@@ -57,19 +57,23 @@ float Scene::fitness() const {
   return float(distance_) / track_->nodesCount();
 }
 
+void Scene::preStep() {
+  car_->preStep();
+}
+
 void Scene::postStep(float dt) {
-  drone_->postStep(dt);
-  distance_ = track_->updateTrackDistance(distance_, drone_->body()->GetPosition());
+  car_->postStep(dt);
+  distance_ = track_->updateTrackDistance(distance_, car_->body()->GetPosition());
   updateVariables();
 }
 
 void Scene::updateVariables() {
-  const b2Body* drone_body = drone_->body();
-  variables_.drone_x = drone_body->GetPosition().x;
-  variables_.drone_y = drone_body->GetPosition().y;
-  variables_.drone_vx = drone_body->GetLinearVelocity().x;
-  variables_.drone_vy = drone_body->GetLinearVelocity().y;
-  variables_.drone_dir = drone_body->GetAngle();
+  const b2Body* car_body = car_->body();
+  variables_.car_x = car_body->GetPosition().x;
+  variables_.car_y = car_body->GetPosition().y;
+  variables_.car_vx = car_body->GetLinearVelocity().x;
+  variables_.car_vy = car_body->GetLinearVelocity().y;
+  variables_.car_dir = car_body->GetAngle();
   variables_.distance = distance_;
 }
 

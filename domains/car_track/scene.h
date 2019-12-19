@@ -17,7 +17,7 @@
 #include "domain.h"
 
 #include <core/sim/scene.h>
-#include <core/sim/drone.h>
+#include <core/sim/car.h>
 #include <core/sim/track.h>
 #include <core/properties.h>
 
@@ -26,14 +26,12 @@ using namespace std;
 
 namespace car_track {
 
-using sim::Drone;
-
 struct SceneVariables : public core::PropertySet {
-  PROPERTY(drone_x, float, 0, "Drone x coordinate");
-  PROPERTY(drone_y, float, 0, "Drone y coordinate");
-  PROPERTY(drone_vx, float, 0, "Drone velocity (x component)");
-  PROPERTY(drone_vy, float, 0, "Drone velocity (y component)");
-  PROPERTY(drone_dir, float, 0, "Heading angle");
+  PROPERTY(car_x, float, 0, "Car x coordinate");
+  PROPERTY(car_y, float, 0, "Car y coordinate");
+  PROPERTY(car_vx, float, 0, "Car velocity (x component)");
+  PROPERTY(car_vy, float, 0, "Car velocity (y component)");
+  PROPERTY(car_dir, float, 0, "Heading angle");
   PROPERTY(distance, int, 0, "Track distance from the start (one lap is 1.0)");
 };
 
@@ -49,7 +47,7 @@ class Scene : public sim::Scene {
 
   const Config* config() const override { return &domain_->config(); }
 
-  Drone* drone() { return drone_.get(); }
+  sim::Car* car() { return car_.get(); }
 
   const sim::Track* track() const { return track_; }
 
@@ -58,6 +56,7 @@ class Scene : public sim::Scene {
   //! returns the current fitness value
   float fitness() const;
 
+  void preStep() override;
   void postStep(float dt) override;
 
  private:
@@ -67,7 +66,7 @@ class Scene : public sim::Scene {
  private:
   float fitness_ = 0;
   int distance_ = 0;
-  unique_ptr<Drone> drone_;
+  unique_ptr<sim::Car> car_;
 
   SceneVariables variables_;
   const sim::Track* track_ = nullptr;

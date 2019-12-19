@@ -19,7 +19,7 @@
 #include <core/exception.h>
 #include <core/logging.h>
 #include <core/parallel_for_each.h>
-#include <core/sim/drone_controller.h>
+#include <core/sim/car_controller.h>
 #include <core/sim/track.h>
 
 #include <random>
@@ -31,29 +31,29 @@ CarTrack::CarTrack(const core::PropertySet& config) {
   config_.copyFrom(config);
   validateConfiguration();
 
-  // setup drone configuration
-  drone_config_.radius = config_.drone_radius;
-  drone_config_.camera = true;
-  drone_config_.camera_depth = config_.camera_depth;
-  drone_config_.camera_fov = config_.camera_fov;
-  drone_config_.camera_resolution = config_.camera_resolution;
-  drone_config_.touch_sensor = config_.touch_sensor;
-  drone_config_.touch_resolution = config_.touch_resolution;
-  drone_config_.accelerometer = config_.accelerometer;
-  drone_config_.compass = config_.compass;
-  drone_config_.max_move_force = config_.max_move_force;
-  drone_config_.max_rotate_torque = config_.max_rotate_torque;
-  drone_config_.color = b2Color(0, 0, 1);
-  drone_config_.density = 0.5f;
-  drone_config_.friction = config_.drone_friction;
+  // setup car configuration
+  car_config_.length = config_.car_length;
+  car_config_.max_forward_force = config_.max_forward_force;
+  car_config_.max_reverse_force = config_.max_reverse_force;
+  car_config_.max_steer_angle = config_.max_steer_angle;
+  car_config_.tire_traction = config_.tire_traction;
+  car_config_.camera = true;
+  car_config_.camera_depth = config_.camera_depth;
+  car_config_.camera_fov = config_.camera_fov;
+  car_config_.camera_resolution = config_.camera_resolution;
+  car_config_.touch_sensor = config_.touch_sensor;
+  car_config_.touch_resolution = config_.touch_resolution;
+  car_config_.accelerometer = config_.accelerometer;
+  car_config_.compass = config_.compass;
+  car_config_.color = b2Color(0, 0, 1);
 }
 
 size_t CarTrack::inputs() const {
-  return sim::DroneController::inputs(drone_config_);
+  return sim::CarController::inputs(car_config_);
 }
 
 size_t CarTrack::outputs() const {
-  return sim::DroneController::outputs(drone_config_);
+  return sim::CarController::outputs(car_config_);
 }
 
 bool CarTrack::evaluatePopulation(darwin::Population* population) const {
@@ -85,7 +85,7 @@ bool CarTrack::evaluatePopulation(darwin::Population* population) const {
 
     pp::for_each(*population, [&](int, darwin::Genotype* genotype) {
       Scene scene(&track, this);
-      sim::DroneController agent(genotype, scene.drone());
+      sim::CarController agent(genotype, scene.car());
 
       // simulation loop
       for (int step = 0; step < config_.max_steps; ++step) {
@@ -96,8 +96,7 @@ bool CarTrack::evaluatePopulation(darwin::Population* population) const {
       }
 
       // normalize the fitness to [0, 1], invariant to the number of test worlds
-      float episode_fitness = scene.fitness();
-      episode_fitness /= config_.test_worlds;
+      const float episode_fitness = scene.fitness() / config_.test_worlds;
       genotype->fitness += episode_fitness;
 
       darwin::ProgressManager::reportProgress();
@@ -112,21 +111,21 @@ bool CarTrack::evaluatePopulation(darwin::Population* population) const {
 // (just a few obvious sanity checks for values which would completly break the domain,
 // nonsensical configurations are still possible)
 void CarTrack::validateConfiguration() {
-  if (config_.drone_radius <= 0)
-    throw core::Exception("Invalid configuration: drone_radius <= 0");
-  if (config_.drone_friction < 0)
-    throw core::Exception("Invalid configuration: drone_friction < 0");
-  if (config_.max_move_force < 0)
-    throw core::Exception("Invalid configuration: max_move_force < 0");
-  if (config_.max_rotate_torque < 0)
-    throw core::Exception("Invalid configuration: max_rotate_torque < 0");
+  if (config_.car_length <= 0)
+    throw core::Exception("Invalid configuration: car_length <= 0");
+  if (config_.tire_traction <= 0)
+    throw core::Exception("Invalid configuration: tire_traction <= 0");
+  if (config_.max_forward_force < 0)
+    throw core::Exception("Invalid configuration: max_forward_force < 0");
+  if (config_.max_reverse_force < 0)
+    throw core::Exception("Invalid configuration: max_reverse_force < 0");
 
   if (config_.camera_fov <= 0 || config_.camera_fov > 360)
     throw core::Exception("Invalid configuration: camera_fov");
   if (config_.camera_resolution < 2)
     throw core::Exception("Invalid configuration: camera_resolution");
 
-  if (config_.track_width <= config_.drone_radius)
+  if (config_.track_width <= config_.car_length)
     throw core::Exception("Invalid configuration: track_width too small");
   if (config_.track_complexity < 4)
     throw core::Exception("Invalid configuration: track_complexity < 4");
@@ -158,7 +157,10 @@ unique_ptr<core::PropertySet> Factory::defaultConfig(darwin::ComplexityHint hint
       config->test_worlds = 8;
       config->max_steps = 10000;
       config->compass = true;
+      config->camera_resolution = 256;
+      config->camera_depth = true;
       config->touch_sensor = true;
+      config->touch_resolution = 64;
       config->accelerometer = true;
       config->camera_depth = true;
       break;

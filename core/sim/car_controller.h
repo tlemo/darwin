@@ -14,31 +14,25 @@
 
 #pragma once
 
+#include <core/darwin.h>
 #include <core/sim/car.h>
-#include <core_ui/sim/box2d_widget.h>
-#include <domains/car_track/scene.h>
 
-#include <QPainterPath>
-#include <QPixmap>
+#include <memory>
+using namespace std;
 
-namespace car_track_ui {
+namespace sim {
 
-class SceneUi : public physics_ui::Box2dSceneUi {
+class CarController {
  public:
-  SceneUi(car_track::Scene* scene);
+  CarController(const darwin::Genotype* genotype, Car* car);
+  void simStep();
 
-  void render(QPainter& painter, const QRectF& viewport) override;
-  void step() override;
-
- private:
-  void renderCamera(QPainter& painter, const sim::Camera* camera) const;
-  void renderPath(QPainter& painter) const;
-  void renderTrack(QPainter& painter) const;
-  void renderCurrentSegment(QPainter& painter) const;
+  static int inputs(const CarConfig& config);
+  static int outputs(const CarConfig& config);
 
  private:
-  car_track::Scene* scene_ = nullptr;
-  QPainterPath car_path_;
+  Car* car_ = nullptr;
+  unique_ptr<darwin::Brain> brain_;
 };
 
-}  // namespace car_track_ui
+}  // namespace sim

@@ -97,8 +97,7 @@ bool DroneTrack::evaluatePopulation(darwin::Population* population) const {
       }
 
       // normalize the fitness to [0, 1], invariant to the number of test worlds
-      float episode_fitness = scene.fitness();
-      episode_fitness /= config_.test_worlds;
+      const float episode_fitness = scene.fitness() / config_.test_worlds;
       genotype->fitness += episode_fitness;
 
       darwin::ProgressManager::reportProgress();
@@ -161,7 +160,10 @@ unique_ptr<core::PropertySet> Factory::defaultConfig(darwin::ComplexityHint hint
       config->test_worlds = 8;
       config->max_steps = 10000;
       config->compass = true;
+      config->camera_resolution = 256;
+      config->camera_depth = true;
       config->touch_sensor = true;
+      config->touch_resolution = 64;
       config->accelerometer = true;
       config->camera_depth = true;
       break;

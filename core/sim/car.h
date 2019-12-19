@@ -27,7 +27,7 @@ namespace sim {
 struct CarConfig {
   b2Vec2 position{};
   float angle = 0;
-  float length = 0;
+  float length = 2.0f;
   bool camera = false;
   float camera_fov = 90;
   int camera_resolution = 64;
