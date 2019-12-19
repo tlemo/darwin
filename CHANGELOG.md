@@ -1,4 +1,19 @@
 
+## Dec 18th, 2019
+
+A small detour through the land of splines and generating random race tracks. The new
+implementation is significantly more robust (ex. no more self intersections for complex
+tracks). The spline & outline offset computation is now encapsulated in math::Outline.
+
+Spline sampling before and after implementing equidistant points (before/after):
+
+![](docs/images/splines_corners_before.png) ![](docs/images/splines_corners_after.png)
+
+The new math::Outline based implementation results in much cleaner tracks:
+
+![](docs/images/splines_track.png)
+
+
 ## Nov 30th, 2019
 
 [drone_track][10] is a new domain starring the drone, this time racing around a 
