@@ -16,6 +16,7 @@ SOURCES += \
     outline_2d.cpp \
     platform_abstraction_layer.cpp \
     database.cpp \
+    sim/car.cpp \
     universe.cpp \
     evolution.cpp \
     ann_activation_functions.cpp \
@@ -52,6 +53,7 @@ HEADERS += \
     exception.h \
     properties.h \
     io_utils.h \
+    sim/car.h \
     stringify.h \
     platform_abstraction_layer.h \
     database.h \
