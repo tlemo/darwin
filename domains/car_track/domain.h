@@ -25,8 +25,8 @@ namespace car_track {
 //! Car Track domain configuration
 struct Config : public core::PropertySet {
   PROPERTY(car_length, float, 1.2f, "Car length");
-  PROPERTY(max_forward_force, float, 10.0f, "Max forward move force");
-  PROPERTY(max_reverse_force, float, 3.0f, "Max reverse move force");
+  PROPERTY(max_forward_force, float, 4.0f, "Max forward move force");
+  PROPERTY(max_reverse_force, float, 0.5f, "Max reverse move force");
   PROPERTY(max_steer_angle, float, 40.0f, "Max steering angle");
   PROPERTY(tire_traction, float, 0.1f, "Tire traction (max lateral impulse)");
 

@@ -50,6 +50,10 @@ void SceneUi::render(QPainter& painter, const QRectF& viewport) {
   renderTrack(painter);
   renderPath(painter);
   renderCurrentSegment(painter);
+
+  if (auto camera = scene_->car()->camera()) {
+    renderCamera(painter, camera);
+  }
 }
 
 void SceneUi::step() {
