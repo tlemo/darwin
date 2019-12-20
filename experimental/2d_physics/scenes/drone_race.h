@@ -28,6 +28,10 @@ struct Config : public core::PropertySet {
   PROPERTY(track_width, float, 2.0f, "Track width");
   PROPERTY(track_complexity, int, 20, "The approximate number of turns");
   PROPERTY(track_resolution, int, 500, "Number of track segments");
+  PROPERTY(curb_width, float, 0.1f, "Curb width");
+  PROPERTY(curb_friction, float, 0.5f, "Track's curb friction");
+  PROPERTY(track_gates, bool, true, "Generate track gates");
+  PROPERTY(solid_gate_posts, bool, true, "Solid gate posts");
 };
 
 struct SceneVariables : public core::PropertySet {

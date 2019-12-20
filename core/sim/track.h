@@ -26,14 +26,15 @@ using namespace std;
 namespace sim {
 
 struct TrackConfig {
-  float width = 1.8f;          //!< Track width (curb to curb)
-  int complexity = 10;         //!< The approximate number of turns
-  int resolution = 500;        //!< Number of track segments
-  float area_width = 40.0f;    //!< The width of the track area
-  float area_height = 20.0f;   //!< The height of the track area
-  float curb_width = 0.1f;     //!< Curb width
-  bool gates = true;           //!< Generate gate fixtures
-  float curb_friction = 0.5f;  //!< Curb friction
+  float width = 1.8f;            //!< Track width (curb to curb)
+  int complexity = 10;           //!< The approximate number of turns
+  int resolution = 500;          //!< Number of track segments
+  float area_width = 40.0f;      //!< The width of the track area
+  float area_height = 20.0f;     //!< The height of the track area
+  float curb_width = 0.1f;       //!< Curb width
+  bool gates = true;             //!< Generate gate fixtures
+  bool solid_gate_posts = true;  //!< Can objects collide with the gate posts?
+  float curb_friction = 0.5f;    //!< Curb friction
 };
 
 class Track : public core::NonCopyable {
