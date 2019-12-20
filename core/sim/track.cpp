@@ -104,8 +104,8 @@ void Track::createCurb(b2World* world,
   auto& nodes = outline.nodes();
   CHECK(nodes.size() >= 3);
 
-  b2BodyDef track_body_def;
-  auto track_body = world->CreateBody(&track_body_def);
+  b2BodyDef body_def;
+  auto curb_body = world->CreateBody(&body_def);
 
   const b2Color white(1, 1, 1);
 
@@ -123,19 +123,56 @@ void Track::createCurb(b2World* world,
 
     b2FixtureDef fixture_def;
     fixture_def.shape = &shape;
-    fixture_def.friction = 0.2f;
+    fixture_def.friction = config_.curb_friction;
     fixture_def.restitution = 0.5f;
     fixture_def.material.emit_intensity = 0;
     fixture_def.material.color = primary_color ? color : white;
     primary_color = !primary_color;
 
-    track_body->CreateFixture(&fixture_def);
+    curb_body->CreateFixture(&fixture_def);
+  }
+}
+
+void Track::createGates(b2World* world) const {
+  b2BodyDef body_def;
+  auto gates_body = world->CreateBody(&body_def);
+
+  b2CircleShape shape;
+  shape.m_radius = config_.curb_width * 1.5f;
+
+  b2FixtureDef fixture_def;
+  fixture_def.shape = &shape;
+  fixture_def.friction = config_.curb_friction;
+  fixture_def.restitution = 0.5f;
+  fixture_def.material.emit_intensity = 0.8f;
+  fixture_def.material.color = b2Color(0, 1, 0);
+
+  const auto& nodes = outer_outline_.nodes();
+  const size_t gate_gap = nodes.size() / config_.complexity;
+  const double mid_offset = config_.curb_width / 2;
+  CHECK(gate_gap > 0);
+  for (size_t i = 0; i < nodes.size(); i += gate_gap) {
+    fixture_def.material.color = (i == 0 ? b2Color(0, 1, 0) : b2Color(0.7f, 0.7f, 0));
+
+    // right (outer curb)
+    const auto& outer_node = nodes[i];
+    shape.m_p = toBox2dVec(outer_node.offset(mid_offset));
+    gates_body->CreateFixture(&fixture_def);
+
+    // left (inner curb)
+    const auto& inner_node =
+        inner_outline_.findClosestNode(outer_node.offset(-config_.width));
+    shape.m_p = toBox2dVec(inner_node.offset(-mid_offset));
+    gates_body->CreateFixture(&fixture_def);
   }
 }
 
 void Track::createFixtures(b2World* world) const {
   createCurb(world, b2Color(1, 0, 0), inner_outline_, -config_.curb_width);
   createCurb(world, b2Color(0, 0, 1), outer_outline_, config_.curb_width);
+  if (config_.gates) {
+    createGates(world);
+  }
 }
 
 }  // namespace sim

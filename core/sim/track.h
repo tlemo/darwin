@@ -26,12 +26,14 @@ using namespace std;
 namespace sim {
 
 struct TrackConfig {
-  float width = 1.8f;         //!< Track width (curb to curb)
-  int complexity = 10;        //!< The approximate number of turns
-  int resolution = 500;       //!< Number of track segments
-  float area_width = 40.0f;   //!< The width of the track area
-  float area_height = 20.0f;  //!< The height of the track area
-  float curb_width = 0.1f;    //!< Curb width
+  float width = 1.8f;          //!< Track width (curb to curb)
+  int complexity = 10;         //!< The approximate number of turns
+  int resolution = 500;        //!< Number of track segments
+  float area_width = 40.0f;    //!< The width of the track area
+  float area_height = 20.0f;   //!< The height of the track area
+  float curb_width = 0.1f;     //!< Curb width
+  bool gates = true;           //!< Generate gate fixtures
+  float curb_friction = 0.5f;  //!< Curb friction
 };
 
 class Track : public core::NonCopyable {
@@ -60,6 +62,8 @@ class Track : public core::NonCopyable {
                   const b2Color& color,
                   const math::Outline& outline,
                   float curb_width) const;
+
+  void createGates(b2World* world) const;
 
  private:
   default_random_engine rnd_;
