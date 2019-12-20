@@ -184,11 +184,13 @@ void Car::applyTireLateralImpulse(const b2Vec2& wheel_normal,
                                   const b2Vec2& wheel_center) {
   const auto car_velocity = car_body_->GetLinearVelocity();
   const auto lateral_velocity = b2Dot(wheel_normal, car_velocity) * wheel_normal;
+  const auto mass = car_body_->GetMass();
+  const auto max_impulse = mass * config_.tire_traction;
 
-  auto impulse = car_body_->GetMass() * -lateral_velocity;
+  auto impulse = mass * -lateral_velocity;
   const auto impulse_length = impulse.Length();
-  if (impulse_length > config_.tire_traction) {
-    impulse *= config_.tire_traction / impulse_length;
+  if (impulse_length > max_impulse) {
+    impulse *= max_impulse / impulse_length;
   }
 
   car_body_->ApplyLinearImpulse(impulse, wheel_center, true);

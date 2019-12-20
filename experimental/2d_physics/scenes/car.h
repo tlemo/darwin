@@ -27,11 +27,11 @@ using sim::Compass;
 using sim::TouchSensor;
 
 struct Config : public core::PropertySet {
-  PROPERTY(car_length, float, 3.0f, "Car length");
-  PROPERTY(max_forward_force, float, 15.0f, "Max forward move force");
+  PROPERTY(car_length, float, 2.0f, "Car length");
+  PROPERTY(max_forward_force, float, 8.0f, "Max forward move force");
   PROPERTY(max_reverse_force, float, 4.0f, "Max reverse move force");
   PROPERTY(max_steer_angle, float, 40.0f, "Max steering angle");
-  PROPERTY(tire_traction, float, 0.1f, "Tire traction (max lateral impulse)");
+  PROPERTY(tire_traction, float, 1.5f, "Tire traction (max lateral impulse)");
 };
 
 struct SceneVariables : public core::PropertySet {

@@ -36,11 +36,11 @@ struct CarConfig {
   int touch_resolution = 16;
   bool accelerometer = false;
   bool compass = false;
-  float max_forward_force = 15.0f;
+  float max_forward_force = 10.0f;
   float max_reverse_force = 4.0f;
   float max_steer_angle = 40.0f;
   float density = 0.01f;
-  float tire_traction = 0.1f;
+  float tire_traction = 1.5f;
   float friction = 1.0f;
   b2Color color;
 };
