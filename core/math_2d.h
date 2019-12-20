@@ -59,6 +59,9 @@ struct Vector2d {
   //! The magnitude (length) of the vector
   Scalar length() const { return sqrt(x * x + y * y); }
 
+  //! Returns the length squared
+  Scalar lengthSquared() const { return x * x + y * y; }
+
   //! Returns a normalized (length = 1) version of this vector
   Vector2d normalized() const { return *this / length(); }
 
@@ -76,7 +79,7 @@ struct Vector2d {
 
   //! [Dot product](https://en.wikipedia.org/wiki/Dot_product)
   Scalar operator*(const Vector2d& v) const { return x * v.x + y * v.y; }
-  
+
   //! A 2d version of the cross product, returning a scalar
   Scalar cross(const Vector2d& v) const { return x * v.y - y * v.x; }
 };

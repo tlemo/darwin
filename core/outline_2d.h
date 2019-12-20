@@ -54,6 +54,10 @@ class Outline {
   //! Returns the polygon equivalent
   Polygon toPolygon() const;
 
+  //! Returns the closest node to the specified point
+  //! \note It uses a simple linear search
+  const Node& findClosestNode(const Vector2d& pos) const;
+
   //! Clears the outline
   void clear() { nodes_.clear(); }
 

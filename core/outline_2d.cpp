@@ -143,6 +143,19 @@ Polygon Outline::toPolygon() const {
   return polygon;
 }
 
+const Outline::Node& Outline::findClosestNode(const Vector2d& pos) const {
+  size_t closest_index = size_t(-1);
+  double closest_distance_squared = kInfinity;
+  for (size_t i = 0; i < nodes_.size(); ++i) {
+    const double distance_squared = (nodes_[i].p - pos).lengthSquared();
+    if (distance_squared < closest_distance_squared) {
+      closest_distance_squared = distance_squared;
+      closest_index = i;
+    }
+  }
+  return nodes_[closest_index];
+}
+
 void Outline::createNodes(const Polygon& polygon) {
   const size_t nodes_count = polygon.size();
 
