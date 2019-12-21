@@ -146,7 +146,7 @@ void Scene::updateVariables() {
   const b2Body* car_body = car_->body();
   variables_.car_x = car_body->GetPosition().x;
   variables_.car_y = car_body->GetPosition().y;
-  variables_.car_velocity = car_body->GetLinearVelocity().Length();
+  variables_.car_velocity = car_->actualVelocity().Length();
   variables_.car_dir = car_body->GetAngle();
 }
 

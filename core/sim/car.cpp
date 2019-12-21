@@ -24,6 +24,8 @@ Car::Car(b2World* world, const CarConfig& config) : config_(config) {
   CHECK(config_.max_forward_force >= 0);
   CHECK(config_.max_reverse_force >= 0);
 
+  last_position_ = config_.position;
+
   b2BodyDef body_def;
   body_def.type = b2_dynamicBody;
   body_def.position = config_.position;
@@ -167,9 +169,8 @@ void Car::applyBrakeImpulse(float intensity,
                             const b2Vec2& wheel_center) {
   CHECK(intensity >= 0 && intensity <= 1);
 
-  const auto car_velocity = car_body_->GetLinearVelocity();
   const auto wheel_dir = wheel_normal.Skew();
-  const auto rolling_velocity = b2Dot(wheel_dir, car_velocity) * wheel_dir;
+  const auto rolling_velocity = b2Dot(wheel_dir, actual_velocity_) * wheel_dir;
 
   auto impulse = car_body_->GetMass() * -rolling_velocity;
   const auto impulse_length = impulse.Length();
@@ -183,8 +184,7 @@ void Car::applyBrakeImpulse(float intensity,
 
 void Car::applyTireLateralImpulse(const b2Vec2& wheel_normal,
                                   const b2Vec2& wheel_center) {
-  const auto car_velocity = car_body_->GetLinearVelocity();
-  const auto lateral_velocity = b2Dot(wheel_normal, car_velocity) * wheel_normal;
+  const auto lateral_velocity = b2Dot(wheel_normal, actual_velocity_) * wheel_normal;
   const auto mass = car_body_->GetMass();
   const auto max_impulse = mass * config_.tire_traction;
 
@@ -216,6 +216,11 @@ void Car::preStep() {
 }
 
 void Car::postStep(float dt) {
+  // update position and actual velocity
+  const auto new_position = car_body_->GetPosition();
+  actual_velocity_ = (new_position - last_position_) * (1 / dt);
+  last_position_ = new_position;
+
   // update accelerometer
   if (accelerometer_ != nullptr) {
     accelerometer_->update(dt);

@@ -69,6 +69,8 @@ class Car : public core::NonCopyable {
   const Accelerometer* accelerometer() const { return accelerometer_.get(); }
   const Compass* compass() const { return compass_.get(); }
 
+  const b2Vec2& actualVelocity() const { return actual_velocity_; }
+
   b2Body* body() { return car_body_; }
   const b2Body* body() const { return car_body_; }
 
@@ -94,6 +96,8 @@ class Car : public core::NonCopyable {
   b2Body* car_body_ = nullptr;
   b2RevoluteJoint* left_wheel_joint_ = nullptr;
   b2RevoluteJoint* right_wheel_joint_ = nullptr;
+  b2Vec2 last_position_ = { 0, 0 };
+  b2Vec2 actual_velocity_ = { 0, 0 };
   float target_steer_ = 0;
   float brake_pedal_ = 0;
   unique_ptr<Camera> camera_;
