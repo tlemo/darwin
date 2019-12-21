@@ -152,9 +152,8 @@ void Track::createGates(b2World* world) const {
   }
 
   const auto& nodes = outer_outline_.nodes();
-  const size_t gate_gap = nodes.size() / config_.complexity;
+  const size_t gate_gap = max(nodes.size() / config_.complexity, size_t(1));
   const double mid_offset = config_.curb_width / 2;
-  CHECK(gate_gap > 0);
   for (size_t i = 0; i < nodes.size(); i += gate_gap) {
     fixture_def.material.color = (i == 0 ? b2Color(0, 1, 0) : b2Color(0.7f, 0.7f, 0));
 

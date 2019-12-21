@@ -68,7 +68,7 @@ class Track : public core::NonCopyable {
 
  private:
   default_random_engine rnd_;
-  const TrackConfig& config_;
+  const TrackConfig config_;
 
   math::Outline inner_outline_;
   math::Outline outer_outline_;

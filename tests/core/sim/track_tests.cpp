@@ -44,6 +44,7 @@ TEST(TrackTest, HighComplexity) {
   track_config.area_width = 20.0f;
   track_config.area_height = 50.0f;
   track_config.curb_width = 0.5f;
+  track_config.gates = true;
 
   random_device rd;
   constexpr int kIterations = 100;
@@ -64,6 +65,7 @@ TEST(TrackTest, HighResolution) {
   track_config.area_width = 20.0f;
   track_config.area_height = 100.0f;
   track_config.curb_width = 0.01f;
+  track_config.gates = true;
 
   random_device rd;
   constexpr int kIterations = 25;
@@ -84,6 +86,7 @@ TEST(TrackTest, LowResolution) {
   track_config.area_width = 10.0f;
   track_config.area_height = 100.0f;
   track_config.curb_width = 0.3f;
+  track_config.gates = true;
 
   random_device rd;
   constexpr int kIterations = 100;
