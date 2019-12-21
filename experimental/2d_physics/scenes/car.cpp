@@ -27,7 +27,7 @@ Scene::Scene(const core::PropertySet* config)
   b2EdgeShape wall_shape;
   b2FixtureDef wall_fixture_def;
   wall_fixture_def.shape = &wall_shape;
-  wall_fixture_def.friction = 1.0f;
+  wall_fixture_def.friction = 10.0f;
   wall_fixture_def.restitution = 0.5f;
   wall_fixture_def.material.color = b2Color(1, 1, 0);
   wall_fixture_def.material.emit_intensity = 0.1f;

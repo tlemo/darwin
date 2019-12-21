@@ -106,6 +106,7 @@ void Car::createWheelFixture(b2Body* body, const b2Vec2& pos) {
   fixture_def.restitution = 0.1f;
   fixture_def.material.color = b2Color(0.2f, 0.2f, 0.2f);
   fixture_def.material.shininess = 0;
+  fixture_def.filter.maskBits = 0;
   fixture_def.userData = car_body_;
   body->CreateFixture(&fixture_def);
 }
