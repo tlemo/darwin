@@ -14,6 +14,7 @@ DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000
 SOURCES += \
     scenes/bouncing.cpp \
     scenes/car.cpp \
+    scenes/car_race.cpp \
     scenes/cart_pole.cpp \
     scenes/drone.cpp \
     scenes/drone_race.cpp \
@@ -37,6 +38,7 @@ SOURCES += \
 HEADERS += \
     scenes/bouncing.h \
     scenes/car.h \
+    scenes/car_race.h \
     scenes/cart_pole.h \
     scenes/drone.h \
     scenes/drone_race.h \
