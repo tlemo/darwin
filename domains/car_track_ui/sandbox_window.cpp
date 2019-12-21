@@ -85,13 +85,17 @@ void SandboxWindow::newScene() {
   scene_ui_.reset();
 
   const auto& config = domain_->config();
-  
+
   sim::TrackConfig track_config;
   track_config.width = config.track_width;
   track_config.complexity = config.track_complexity;
   track_config.resolution = config.track_resolution;
   track_config.area_width = car_track::Scene::kWidth;
   track_config.area_height = car_track::Scene::kHeight;
+  track_config.curb_width = config.curb_width;
+  track_config.curb_friction = config.curb_friction;
+  track_config.gates = config.track_gates;
+  track_config.solid_gate_posts = config.solid_gate_posts;
   const auto random_seed = std::random_device{}();
   track_ = make_unique<sim::Track>(random_seed, track_config);
 
