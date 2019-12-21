@@ -81,6 +81,10 @@ bool DroneTrack::evaluatePopulation(darwin::Population* population) const {
     track_config.resolution = config_.track_resolution;
     track_config.area_width = Scene::kWidth;
     track_config.area_height = Scene::kHeight;
+    track_config.curb_width = config_.curb_width;
+    track_config.curb_friction = config_.curb_friction;
+    track_config.gates = config_.track_gates;
+    track_config.solid_gate_posts = config_.solid_gate_posts;
     const auto random_seed = std::random_device{}();
     const sim::Track track(random_seed, track_config);
 
