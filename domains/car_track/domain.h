@@ -44,7 +44,7 @@ struct Config : public core::PropertySet {
   PROPERTY(track_resolution, int, 500, "Number of track segments");
   PROPERTY(curb_width, float, 0.1f, "Curb width");
   PROPERTY(curb_friction, float, 0.5f, "Track's curb friction");
-  PROPERTY(track_gates, bool, true, "Generate track gates");
+  PROPERTY(track_gates, bool, false, "Generate track gates");
   PROPERTY(solid_gate_posts, bool, true, "Solid gate posts");
 
   PROPERTY(test_worlds, int, 3, "Number of test worlds per generation");
