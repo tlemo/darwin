@@ -1,4 +1,13 @@
 
+## Dec 21st, 2019
+
+It took a bit longer than expected, but the car version of the race track domain is
+here. The car controls are more restricted compared to the drone and this variation seems
+quite a bit challanging. Both CGP and NEAT manage to evolve reasonable car controllers
+(the capture below is NEAT after ~350 generations)
+
+![CarTrack demo](docs/images/car_track_demo.gif)
+
 ## Dec 18th, 2019
 
 A small detour through the land of splines and generating random race tracks. The new
@@ -25,7 +34,6 @@ test tracks are procedurally generated, which means that the trained model can't
 proves to be a great answer to overfitting)
 
 ![DroneTrack demo](docs/images/drone_track_demo.gif)
-
 
 ## Nov 13th, 2019
 
