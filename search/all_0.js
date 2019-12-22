@@ -1,6 +1,7 @@
 var searchData=
 [
-  ['accelerometer',['Accelerometer',['../classsim_1_1_accelerometer.html',1,'sim::Accelerometer'],['../structdrone__follow_1_1_config.html#a01bb499c1e5302f2467307299c6301db',1,'drone_follow::Config::accelerometer()'],['../structdrone__track_1_1_config.html#a356546c09089f2851d7b1f8ed5ebb73e',1,'drone_track::Config::accelerometer()']]],
+  ['a',['a',['../structmath_1_1_intersection2d.html#ad5d8060bd130e62f5cf31df58ff100a0',1,'math::Intersection2d']]],
+  ['accelerometer',['Accelerometer',['../classsim_1_1_accelerometer.html',1,'sim::Accelerometer'],['../structcar__track_1_1_config.html#a764e3c55bd758c2c4fa793c16fb1e190',1,'car_track::Config::accelerometer()'],['../structdrone__follow_1_1_config.html#a01bb499c1e5302f2467307299c6301db',1,'drone_follow::Config::accelerometer()'],['../structdrone__track_1_1_config.html#a356546c09089f2851d7b1f8ed5ebb73e',1,'drone_track::Config::accelerometer()']]],
   ['accelerometerwidget',['AccelerometerWidget',['../classphysics__ui_1_1_accelerometer_widget.html',1,'physics_ui']]],
   ['activate',['activate',['../namespaceann.html#a4e7ad9e42893d994156a54a9567e42e4',1,'ann']]],
   ['activategate',['activateGate',['../namespaceann.html#af567369e08e6429b56547ffc31425f86',1,'ann']]],

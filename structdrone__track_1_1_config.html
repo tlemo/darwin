@@ -73,7 +73,7 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
-<p>Drone Vision domain configuration.  
+<p>Drone Track domain configuration.  
  <a href="structdrone__track_1_1_config.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="drone__track_2domain_8h_source.html">domain.h</a>&gt;</code></p>
@@ -98,6 +98,10 @@ float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="str
 float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdrone__track_1_1_config.html#aed83204a061fa4f32ccd1436c8155187">max_move_force</a> = 10.0f</td></tr>
 <tr class="memdesc:aed83204a061fa4f32ccd1436c8155187"><td class="mdescLeft">&#160;</td><td class="mdescRight">"Maximum force used to move the drone" <br /></td></tr>
 <tr class="separator:aed83204a061fa4f32ccd1436c8155187"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a343f8975918e624cf3b1062a9dc8e337"><td class="memItemLeft" align="right" valign="top"><a id="a343f8975918e624cf3b1062a9dc8e337"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdrone__track_1_1_config.html#a343f8975918e624cf3b1062a9dc8e337">max_lateral_force</a> = 10.0f</td></tr>
+<tr class="memdesc:a343f8975918e624cf3b1062a9dc8e337"><td class="mdescLeft">&#160;</td><td class="mdescRight">"Maximum lateral force" <br /></td></tr>
+<tr class="separator:a343f8975918e624cf3b1062a9dc8e337"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abfbbef999133fca052acb45fe9e7acfd"><td class="memItemLeft" align="right" valign="top"><a id="abfbbef999133fca052acb45fe9e7acfd"></a>
 float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdrone__track_1_1_config.html#abfbbef999133fca052acb45fe9e7acfd">max_rotate_torque</a> = 0.5f</td></tr>
 <tr class="memdesc:abfbbef999133fca052acb45fe9e7acfd"><td class="mdescLeft">&#160;</td><td class="mdescRight">"Maximum torque used to rotate the drone" <br /></td></tr>
@@ -139,13 +143,29 @@ float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="str
 <tr class="memdesc:a8f78cea76da4b4b2a7e5f131fb8daa55"><td class="mdescLeft">&#160;</td><td class="mdescRight">"Track width" <br /></td></tr>
 <tr class="separator:a8f78cea76da4b4b2a7e5f131fb8daa55"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2abfa403b2934e2a18c1f458c452dfb7"><td class="memItemLeft" align="right" valign="top"><a id="a2abfa403b2934e2a18c1f458c452dfb7"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdrone__track_1_1_config.html#a2abfa403b2934e2a18c1f458c452dfb7">track_complexity</a> = 10</td></tr>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdrone__track_1_1_config.html#a2abfa403b2934e2a18c1f458c452dfb7">track_complexity</a> = 20</td></tr>
 <tr class="memdesc:a2abfa403b2934e2a18c1f458c452dfb7"><td class="mdescLeft">&#160;</td><td class="mdescRight">"The approximate number of turns" <br /></td></tr>
 <tr class="separator:a2abfa403b2934e2a18c1f458c452dfb7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7630d47685b7bcc86750b48a62caa92f"><td class="memItemLeft" align="right" valign="top"><a id="a7630d47685b7bcc86750b48a62caa92f"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdrone__track_1_1_config.html#a7630d47685b7bcc86750b48a62caa92f">track_resolution</a> = 500</td></tr>
 <tr class="memdesc:a7630d47685b7bcc86750b48a62caa92f"><td class="mdescLeft">&#160;</td><td class="mdescRight">"Number of track segments" <br /></td></tr>
 <tr class="separator:a7630d47685b7bcc86750b48a62caa92f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab8d1e50a67da9cc2be843f06de987679"><td class="memItemLeft" align="right" valign="top"><a id="ab8d1e50a67da9cc2be843f06de987679"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdrone__track_1_1_config.html#ab8d1e50a67da9cc2be843f06de987679">curb_width</a> = 0.1f</td></tr>
+<tr class="memdesc:ab8d1e50a67da9cc2be843f06de987679"><td class="mdescLeft">&#160;</td><td class="mdescRight">"Curb width" <br /></td></tr>
+<tr class="separator:ab8d1e50a67da9cc2be843f06de987679"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a94fb0c54826935a4fd32e26aef0fb04b"><td class="memItemLeft" align="right" valign="top"><a id="a94fb0c54826935a4fd32e26aef0fb04b"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdrone__track_1_1_config.html#a94fb0c54826935a4fd32e26aef0fb04b">curb_friction</a> = 0.5f</td></tr>
+<tr class="memdesc:a94fb0c54826935a4fd32e26aef0fb04b"><td class="mdescLeft">&#160;</td><td class="mdescRight">"Track's curb friction" <br /></td></tr>
+<tr class="separator:a94fb0c54826935a4fd32e26aef0fb04b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa3be865ae2cc2a1941ef94749dd740f0"><td class="memItemLeft" align="right" valign="top"><a id="aa3be865ae2cc2a1941ef94749dd740f0"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdrone__track_1_1_config.html#aa3be865ae2cc2a1941ef94749dd740f0">track_gates</a> = true</td></tr>
+<tr class="memdesc:aa3be865ae2cc2a1941ef94749dd740f0"><td class="mdescLeft">&#160;</td><td class="mdescRight">"Generate track gates" <br /></td></tr>
+<tr class="separator:aa3be865ae2cc2a1941ef94749dd740f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5ef12e6f81b68149b9ed9d7d72c8a57a"><td class="memItemLeft" align="right" valign="top"><a id="a5ef12e6f81b68149b9ed9d7d72c8a57a"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdrone__track_1_1_config.html#a5ef12e6f81b68149b9ed9d7d72c8a57a">solid_gate_posts</a> = true</td></tr>
+<tr class="memdesc:a5ef12e6f81b68149b9ed9d7d72c8a57a"><td class="mdescLeft">&#160;</td><td class="mdescRight">"Solid gate posts" <br /></td></tr>
+<tr class="separator:a5ef12e6f81b68149b9ed9d7d72c8a57a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a80ac306386141c36e3b946c6b818e1ef"><td class="memItemLeft" align="right" valign="top"><a id="a80ac306386141c36e3b946c6b818e1ef"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdrone__track_1_1_config.html#a80ac306386141c36e3b946c6b818e1ef">test_worlds</a> = 3</td></tr>
 <tr class="memdesc:a80ac306386141c36e3b946c6b818e1ef"><td class="mdescLeft">&#160;</td><td class="mdescRight">"Number of test worlds per generation" <br /></td></tr>
@@ -186,7 +206,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="separator:a7efad703bb60c3e420b6a1925b38377c inherit pub_methods_classcore_1_1_property_set"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Drone Vision domain configuration. </p>
+<div class="textblock"><p>Drone Track domain configuration. </p>
 </div><hr/>The documentation for this struct was generated from the following file:<ul>
 <li>C:/Users/lemo/work/darwin/domains/drone_track/<a class="el" href="drone__track_2domain_8h_source.html">domain.h</a></li>
 </ul>

@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['b',['b',['../structmath_1_1_intersection2d.html#a6c0823a05725490f2c37ad38f1e3ec1f',1,'math::Intersection2d']]],
   ['bad_5ffruit_5fhealth',['bad_fruit_health',['../structharvester_1_1_config.html#a6304b7758e3b89ab88c49c20ebfecbbc',1,'harvester::Config']]],
   ['balanced',['Balanced',['../namespacedarwin.html#aa320b4c1abc04889b88f9ec5cbaf73f2ac6589f5236c0c434d0c63dc5f9a856f2',1,'darwin']]],
   ['ball_5fradius',['ball_radius',['../structpong_1_1_config.html#a217cdbe33ff28becb34c8cf6ecfeba7e',1,'pong::Config']]],

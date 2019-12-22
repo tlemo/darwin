@@ -10,6 +10,7 @@ var searchData=
   ['setup',['setup',['../structdarwin_1_1_db_experiment.html#ad199a9347eebcdc7cb3dfdc04781271b',1,'darwin::DbExperiment']]],
   ['simple_5fserve',['simple_serve',['../structpong_1_1_config.html#ae13362bf1880fb1d42e91322faed31c1',1,'pong::Config']]],
   ['simple_5ftournament',['simple_tournament',['../structtournament_1_1_tournament_variant.html#a83c0c76cb53923d46fd1178ed4d52a53',1,'tournament::TournamentVariant']]],
+  ['solid_5fgate_5fposts',['solid_gate_posts',['../structcar__track_1_1_config.html#a9c9358904bb43a976edae43cf355c370',1,'car_track::Config::solid_gate_posts()'],['../structdrone__track_1_1_config.html#a5ef12e6f81b68149b9ed9d7d72c8a57a',1,'drone_track::Config::solid_gate_posts()']]],
   ['sparse_5fweights',['sparse_weights',['../structann_1_1_config.html#a0f5287b072de10d3db7496ded13b42a0',1,'ann::Config']]],
   ['stage',['stage',['../structdarwin_1_1_evolution_1_1_snapshot.html#af8abc674a37f98a63da4976f459bc236',1,'darwin::Evolution::Snapshot']]],
   ['state',['state',['../structdarwin_1_1_evolution_1_1_snapshot.html#a7cc3afa1edd62bb5996ac26226525a06',1,'darwin::Evolution::Snapshot']]],

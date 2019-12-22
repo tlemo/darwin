@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['scalar',['Scalar',['../namespacemath.html#a53570f4e38d0f06659b3e121f4285193',1,'math']]]
+  ['row',['Row',['../classdb_1_1_result_set.html#a011ed7b0d774e173fcf4c0d6d030b95c',1,'db::ResultSet']]],
+  ['rowid',['RowId',['../namespacedb.html#a0845f2bb472b4e673de2d2f977fb1da8',1,'db']]]
 ];

@@ -79,6 +79,12 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmath_1_1_h_matrix2d.html">HMatrix2d</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A 3x3 <a href="https://en.wikipedia.org/wiki/Homogeneous_coordinates">homogeneous</a> transformation matrix.  <a href="structmath_1_1_h_matrix2d.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmath_1_1_intersection2d.html">Intersection2d</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">The intersection of two 2d segments.  <a href="structmath_1_1_intersection2d.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmath_1_1_outline.html">Outline</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A spline aproximation.  <a href="classmath_1_1_outline.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmath_1_1_vector2d.html">Vector2d</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A basic 2D vector.  <a href="structmath_1_1_vector2d.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -89,9 +95,16 @@ Typedefs</h2></td></tr>
 using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacemath.html#a53570f4e38d0f06659b3e121f4285193">Scalar</a> = double</td></tr>
 <tr class="memdesc:a53570f4e38d0f06659b3e121f4285193"><td class="mdescLeft">&#160;</td><td class="mdescRight">The scalar type used with general-purpose math utilities. <br /></td></tr>
 <tr class="separator:a53570f4e38d0f06659b3e121f4285193"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8436d2fda331fe62d94df811ceca0fb8"><td class="memItemLeft" align="right" valign="top"><a id="a8436d2fda331fe62d94df811ceca0fb8"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacemath.html#a8436d2fda331fe62d94df811ceca0fb8">Polygon</a> = vector&lt; <a class="el" href="structmath_1_1_vector2d.html">Vector2d</a> &gt;</td></tr>
+<tr class="memdesc:a8436d2fda331fe62d94df811ceca0fb8"><td class="mdescLeft">&#160;</td><td class="mdescRight">A list of 2d points. <br /></td></tr>
+<tr class="separator:a8436d2fda331fe62d94df811ceca0fb8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:a27c27557962fd7a6a7cc07b7099dae12"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structmath_1_1_intersection2d.html">Intersection2d</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacemath.html#a27c27557962fd7a6a7cc07b7099dae12">intersect</a> (const <a class="el" href="structmath_1_1_vector2d.html">Vector2d</a> &amp;a1, const <a class="el" href="structmath_1_1_vector2d.html">Vector2d</a> &amp;a2, const <a class="el" href="structmath_1_1_vector2d.html">Vector2d</a> &amp;b1, const <a class="el" href="structmath_1_1_vector2d.html">Vector2d</a> &amp;b2)</td></tr>
+<tr class="memdesc:a27c27557962fd7a6a7cc07b7099dae12"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculate the intersection between 2 segments.  <a href="#a27c27557962fd7a6a7cc07b7099dae12">More...</a><br /></td></tr>
+<tr class="separator:a27c27557962fd7a6a7cc07b7099dae12"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1c4edc2296102d638579d6e8a69c4915"><td class="memItemLeft" align="right" valign="top"><a id="a1c4edc2296102d638579d6e8a69c4915"></a>
 constexpr <a class="el" href="namespacemath.html#a53570f4e38d0f06659b3e121f4285193">Scalar</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacemath.html#a1c4edc2296102d638579d6e8a69c4915">radiansToDegrees</a> (<a class="el" href="namespacemath.html#a53570f4e38d0f06659b3e121f4285193">Scalar</a> radians)</td></tr>
 <tr class="memdesc:a1c4edc2296102d638579d6e8a69c4915"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a href="https://en.wikipedia.org/wiki/Radian">Radian</a> to <a href="https://en.wikipedia.org/wiki/Degree_(angle)">Degree</a> conversion <br /></td></tr>
@@ -118,7 +131,52 @@ constexpr <a class="el" href="namespacemath.html#a53570f4e38d0f06659b3e121f42851
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Numerical types and helpers. </p>
-</div></div><!-- contents -->
+</div><h2 class="groupheader">Function Documentation</h2>
+<a id="a27c27557962fd7a6a7cc07b7099dae12"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a27c27557962fd7a6a7cc07b7099dae12">&#9670;&nbsp;</a></span>intersect()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structmath_1_1_intersection2d.html">Intersection2d</a> math::intersect </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structmath_1_1_vector2d.html">Vector2d</a> &amp;&#160;</td>
+          <td class="paramname"><em>a1</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structmath_1_1_vector2d.html">Vector2d</a> &amp;&#160;</td>
+          <td class="paramname"><em>a2</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structmath_1_1_vector2d.html">Vector2d</a> &amp;&#160;</td>
+          <td class="paramname"><em>b1</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structmath_1_1_vector2d.html">Vector2d</a> &amp;&#160;</td>
+          <td class="paramname"><em>b2</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Calculate the intersection between 2 segments. </p>
+<p>The first segment is A:[a1, a2] The second segment is B:[b1, b2]</p>
+<p>If the segments are parallel, kInfinity is returned </p>
+
+</div>
+</div>
+</div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">
