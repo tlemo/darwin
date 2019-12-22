@@ -21,7 +21,10 @@ namespace sim {
 Compass::Compass(b2Body* body) : body_(body) {}
 
 const b2Vec2 Compass::heading() const {
-  return body_->GetLocalVector(b2Vec2(0, 1));
+  const auto v = body_->GetLocalVector(b2Vec2(0, 1));
+  CHECK(!isnan(v.x));
+  CHECK(!isnan(v.y));
+  return v;
 }
 
 }  // namespace sim

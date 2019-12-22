@@ -30,6 +30,9 @@ void Accelerometer::update(float dt) {
 
   const auto linear_velocity = body_->GetLinearVelocity();
   const auto angular_velocity = body_->GetAngularVelocity();
+  CHECK(!isnan(linear_velocity.x));
+  CHECK(!isnan(linear_velocity.y));
+  CHECK(!isnan(angular_velocity));
 
   if (dt == 0) {
     linear_acceleration_.SetZero();

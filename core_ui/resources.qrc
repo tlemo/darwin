@@ -31,5 +31,6 @@
         <file>resources/mc_stop.png</file>
         <file>resources/white_user.png</file>
         <file>resources/drone.png</file>
+        <file>resources/light_bulb.png</file>
     </qresource>
 </RCC>

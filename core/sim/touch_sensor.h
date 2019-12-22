@@ -22,14 +22,14 @@ using namespace std;
 namespace sim {
 
 //! A basic touch sensor attached to a physical body
-//! 
+//!
 //! It maps collisions to sensors spaced evenly in slices around the body's coordinate
 //! origin (sensor 0 starts at the positive y axis, advancing clockwise)
-//! 
+//!
 class TouchSensor {
   static constexpr float kTouchSignal = 1.0f;
   static constexpr double kReceptorBoundaryTolerance = 0.1;
-  
+
  public:
   TouchSensor(b2Body* body, int resolution);
 
@@ -37,7 +37,10 @@ class TouchSensor {
 
   int resolution() const { return resolution_; }
 
-  vector<float> receptors() const;  
+  vector<float> receptors() const;
+
+ private:
+  double pointToSensor(const b2Vec2& point) const;
 
  private:
   b2Body* body_ = nullptr;

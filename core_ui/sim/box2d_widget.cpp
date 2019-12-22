@@ -22,6 +22,7 @@
 #include <QPainter>
 #include <QPen>
 #include <QPointF>
+#include <QRectF>
 #include <QMouseEvent>
 #include <QPolygonF>
 
@@ -48,6 +49,10 @@ void Box2dWidget::setSceneUi(Box2dSceneUi* scene_ui) {
   }
   scene_ui_ = scene_ui;
   if (scene_ui_ != nullptr) {
+    auto help_text = scene_ui_->help();
+    if (!help_text.isEmpty()) {
+      setToolTip(help_text);
+    }
     connect(scene_ui_, &Box2dSceneUi::sigPlayPause, this, &Box2dWidget::sigPlayPause);
   }
   update();
@@ -58,9 +63,15 @@ void Box2dWidget::setDebugRender(bool enable) {
   update();
 }
 
+void Box2dWidget::setRenderLights(bool enable) {
+  render_lights_ = enable;
+  update();
+}
+
 void Box2dWidget::renderDebugLayer(QPainter& painter) const {
   physics_ui::Box2dRenderer box2d_renderer(&painter);
-  box2d_renderer.SetFlags(b2Draw::e_shapeBit | b2Draw::e_centerOfMassBit);
+  box2d_renderer.SetFlags(b2Draw::e_shapeBit | b2Draw::e_centerOfMassBit |
+                          b2Draw::e_jointBit);
 
   world_->SetDebugDraw(&box2d_renderer);
   world_->DrawDebugData();
@@ -110,11 +121,42 @@ static void renderBody(QPainter& painter, const b2Body* body) {
   }
 }
 
+static void renderLight(QPainter& painter, const b2Light* light) {
+  auto light_def = light->GetDef();
+  auto center = vecToPoint(light_def.body->GetWorldPoint(light_def.position));
+
+  double radius = light_def.attenuation_distance;
+  for (int i = 0; i < 5; ++i) {
+    const int alpha = (i + 1) * 50 + 5;
+    painter.setPen(QPen(QColor(160, 160, 0, alpha), 0, Qt::DashLine));
+    painter.setBrush(Qt::NoBrush);
+    painter.drawEllipse(center, radius, radius);
+    radius /= 2;
+  }
+
+  painter.setPen(Qt::NoPen);
+  painter.setBrush(QColor(128, 128, 128, 64));
+  painter.drawEllipse(center, 0.4, 0.4);
+
+  const auto& color = light_def.color;
+  painter.setBrush(QColor::fromRgbF(color.r, color.g, color.b));
+  painter.drawEllipse(center, 0.2, 0.2);
+}
+
 void Box2dWidget::renderGeneric(QPainter& painter) const {
+  // render bodies
   for (const b2Body* body = world_->GetBodyList(); body != nullptr;
        body = body->GetNext()) {
     if (body->UseDefaultRendering()) {
       renderBody(painter, body);
+    }
+  }
+
+  // render lights
+  if (render_lights_) {
+    for (const b2Light* light = world_->GetLightList(); light != nullptr;
+         light = light->GetNext()) {
+      renderLight(painter, light);
     }
   }
 }

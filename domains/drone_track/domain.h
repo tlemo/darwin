@@ -22,10 +22,11 @@
 
 namespace drone_track {
 
-//! Drone Vision domain configuration
+//! Drone Track domain configuration
 struct Config : public core::PropertySet {
   PROPERTY(drone_radius, float, 0.3f, "Drone size");
   PROPERTY(max_move_force, float, 10.0f, "Maximum force used to move the drone");
+  PROPERTY(max_lateral_force, float, 10.0f, "Maximum lateral force");
   PROPERTY(max_rotate_torque, float, 0.5f, "Maximum torque used to rotate the drone");
   PROPERTY(drone_friction, float, 0.1f, "Drone friction");
 
@@ -39,8 +40,12 @@ struct Config : public core::PropertySet {
   PROPERTY(compass, bool, false, "Use the drone's compass");
 
   PROPERTY(track_width, float, 1.8f, "Track width");
-  PROPERTY(track_complexity, int, 10, "The approximate number of turns");
+  PROPERTY(track_complexity, int, 20, "The approximate number of turns");
   PROPERTY(track_resolution, int, 500, "Number of track segments");
+  PROPERTY(curb_width, float, 0.1f, "Curb width");
+  PROPERTY(curb_friction, float, 0.5f, "Track's curb friction");
+  PROPERTY(track_gates, bool, true, "Generate track gates");
+  PROPERTY(solid_gate_posts, bool, true, "Solid gate posts");
 
   PROPERTY(test_worlds, int, 3, "Number of test worlds per generation");
   PROPERTY(max_steps, int, 1000, "Maximum number of steps per episode");

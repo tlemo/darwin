@@ -12,8 +12,11 @@ SOURCES += \
     ann_utils.cpp \
     darwin.cpp \
     logging.cpp \
+    math_2d.cpp \
+    outline_2d.cpp \
     platform_abstraction_layer.cpp \
     database.cpp \
+    sim/car.cpp \
     universe.cpp \
     evolution.cpp \
     ann_activation_functions.cpp \
@@ -31,8 +34,10 @@ SOURCES += \
     sim/compass.cpp \
     sim/scene.cpp \
     sim/misc.cpp \
+    sim/track.cpp \
     sim/touch_sensor.cpp \
     sim/drone.cpp \
+    sim/car_controller.cpp \
     sim/drone_controller.cpp
 
 HEADERS += \
@@ -40,6 +45,7 @@ HEADERS += \
     darwin.h \
     ann_dynamic.h \
     global_initializer.h \
+    outline_2d.h \
     pubsub.h \
     logging.h \
     scope_guard.h \
@@ -48,6 +54,7 @@ HEADERS += \
     exception.h \
     properties.h \
     io_utils.h \
+    sim/car.h \
     stringify.h \
     platform_abstraction_layer.h \
     database.h \
@@ -73,9 +80,11 @@ HEADERS += \
     sim/compass.h \
     sim/scene.h \
     sim/misc.h \
+    sim/track.h \
     sim/script.h \
     sim/touch_sensor.h \
     sim/drone.h \
+    sim/car_controller.h \
     sim/drone_controller.h
     
 addLibrary(../third_party/sqlite)

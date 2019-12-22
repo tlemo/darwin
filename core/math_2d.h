@@ -1,4 +1,4 @@
-// Copyright 2018 The Darwin Neuroevolution Framework Authors.
+// Copyright 2019 The Darwin Neuroevolution Framework Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ constexpr Scalar kEpsilon = numeric_limits<Scalar>::epsilon();
 //! [Pi](https://en.wikipedia.org/wiki/Pi)
 constexpr Scalar kPi = 3.141592653589;
 
-//! [Radian](https://en.wikipedia.org/wiki/Radian) to 
+//! [Radian](https://en.wikipedia.org/wiki/Radian) to
 //! [Degree](https://en.wikipedia.org/wiki/Degree_(angle)) conversion
 constexpr Scalar radiansToDegrees(Scalar radians) {
   return radians / kPi * 180;
@@ -47,36 +47,65 @@ constexpr Scalar degreesToRadians(Scalar degrees) {
 
 //! A basic 2D vector
 struct Vector2d {
-  Scalar x;   //!< x coordinate
-  Scalar y;   //!< y coordinate
+  Scalar x;  //!< x coordinate
+  Scalar y;  //!< y coordinate
 
   //! Constructs a zero-vector
   Vector2d() : x(0), y(0) {}
-  
+
   //! Constructs a vector with the specified components
   Vector2d(Scalar x, Scalar y) : x(x), y(y) {}
 
   //! The magnitude (length) of the vector
   Scalar length() const { return sqrt(x * x + y * y); }
-  
+
+  //! Returns the length squared
+  Scalar lengthSquared() const { return x * x + y * y; }
+
   //! Returns a normalized (length = 1) version of this vector
   Vector2d normalized() const { return *this / length(); }
 
   //! Vector addition
   Vector2d operator+(const Vector2d& v) const { return Vector2d(x + v.x, y + v.y); }
-  
+
   //! Vector subtraction
   Vector2d operator-(const Vector2d& v) const { return Vector2d(x - v.x, y - v.y); }
 
   //! Scalar multiplication
   Vector2d operator*(Scalar s) const { return Vector2d(x * s, y * s); }
-  
+
   //! Scalar division
   Vector2d operator/(Scalar s) const { return Vector2d(x / s, y / s); }
 
   //! [Dot product](https://en.wikipedia.org/wiki/Dot_product)
   Scalar operator*(const Vector2d& v) const { return x * v.x + y * v.y; }
+
+  //! A 2d version of the cross product, returning a scalar
+  Scalar cross(const Vector2d& v) const { return x * v.y - y * v.x; }
 };
+
+//! The intersection of two 2d segments
+//!
+//! The intersection values are offsets relative to the segment:
+//! 0 is the segment start, 1 to the segment end (values less than 0
+//! represent points before the segment start, greater than 1 after the segment end)
+//!
+struct Intersection2d {
+  Scalar a = 0;  //!< The offset relative to the first segment
+  Scalar b = 0;  //!< The offset relative to the second segment
+};
+
+//! Calculate the intersection between 2 segments
+//!
+//! The first segment is A:[a1, a2]
+//! The second segment is B:[b1, b2]
+//!
+//! If the segments are parallel, kInfinity is returned
+//!
+Intersection2d intersect(const Vector2d& a1,
+                         const Vector2d& a2,
+                         const Vector2d& b1,
+                         const Vector2d& b2);
 
 //! A 3x3 [homogeneous](https://en.wikipedia.org/wiki/Homogeneous_coordinates)
 //! transformation matrix
@@ -91,55 +120,22 @@ struct HMatrix2d {
   void setZero() { ::memset(m, 0, sizeof(m)); }
 
   //! Resets the matrix to [identity](https://en.wikipedia.org/wiki/Identity_matrix)
-  void setIdentity() {
-    setZero();
-    m[0][0] = 1;
-    m[1][1] = 1;
-    m[2][2] = 1;
-  }
+  void setIdentity();
 
   //! Resets the matrix to the specified translation transformation
-  void setTranslate(Scalar tx, Scalar ty) {
-    setIdentity();
-    m[0][2] = tx;
-    m[1][2] = ty;
-  }
+  void setTranslate(Scalar tx, Scalar ty);
 
   //! Resets the matrix to the specified scale transformation
-  void setScale(Scalar sx, Scalar sy) {
-    setZero();
-    m[0][0] = sx;
-    m[1][1] = sy;
-    m[2][2] = 1;
-  }
+  void setScale(Scalar sx, Scalar sy);
 
   //! Resets the matrix to the specified rotation transformation
-  void setRotation(Scalar angle) {
-    const Scalar c = cos(angle);
-    const Scalar s = sin(angle);
-    setIdentity();
-    m[0][0] = c;
-    m[0][1] = -s;
-    m[1][0] = s;
-    m[1][1] = c;
-  }
+  void setRotation(Scalar angle);
 
   //! Matrix multiplication
-  HMatrix2d operator*(const HMatrix2d& other) {
-    HMatrix2d result;
-    for (int i = 0; i < 3; ++i)
-      for (int j = 0; j < 3; ++j)
-        for (int k = 0; k < 3; ++k)
-          result.m[i][j] += m[i][k] * other.m[k][j];
-    return result;
-  }
+  HMatrix2d operator*(const HMatrix2d& other);
 
   //! Matrix x Vector multiplication
-  Vector2d operator*(const Vector2d& v) {
-    const Scalar w = m[2][0] * v.x + m[2][1] * v.y + m[2][2];
-    return Vector2d((m[0][0] * v.x + m[0][1] * v.y + m[0][2]) / w,
-                    (m[1][0] * v.x + m[1][1] * v.y + m[1][2]) / w);
-  }
+  Vector2d operator*(const Vector2d& v);
 };
 
 }  // namespace math

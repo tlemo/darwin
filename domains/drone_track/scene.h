@@ -15,19 +15,16 @@
 #pragma once
 
 #include "domain.h"
-#include "track.h"
 
 #include <core/sim/scene.h>
 #include <core/sim/drone.h>
+#include <core/sim/track.h>
 #include <core/properties.h>
 
 #include <memory>
-#include <random>
 using namespace std;
 
 namespace drone_track {
-
-using sim::Drone;
 
 struct SceneVariables : public core::PropertySet {
   PROPERTY(drone_x, float, 0, "Drone x coordinate");
@@ -39,22 +36,20 @@ struct SceneVariables : public core::PropertySet {
 };
 
 class Scene : public sim::Scene {
+ public:
   static constexpr float kWidth = 50;
   static constexpr float kHeight = 20;
 
  public:
-  using Seed = std::random_device::result_type;
-
- public:
-  explicit Scene(Seed seed, const DroneTrack* domain);
+  explicit Scene(const sim::Track* track, const DroneTrack* domain);
 
   const SceneVariables* variables() const override { return &variables_; }
 
   const Config* config() const override { return &domain_->config(); }
 
-  Drone* drone() { return drone_.get(); }
-  
-  const Track* track() const { return track_.get(); }
+  sim::Drone* drone() { return drone_.get(); }
+
+  const sim::Track* track() const { return track_; }
 
   const DroneTrack* domain() const { return domain_; }
 
@@ -70,12 +65,10 @@ class Scene : public sim::Scene {
  private:
   float fitness_ = 0;
   int distance_ = 0;
-  unique_ptr<Drone> drone_;
-  unique_ptr<Track> track_;
-
-  default_random_engine rnd_;
+  unique_ptr<sim::Drone> drone_;
 
   SceneVariables variables_;
+  const sim::Track* track_ = nullptr;
   const DroneTrack* domain_ = nullptr;
 };
 

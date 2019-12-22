@@ -21,6 +21,9 @@
 #include <core_ui/sim/box2d_sandbox_dialog.h>
 
 #include <QString>
+#include <QHBoxLayout>
+#include <QGroupBox>
+#include <QSizePolicy>
 
 #include <random>
 using namespace std;
@@ -66,11 +69,7 @@ bool SandboxWindow::setup() {
   variables_.generation->setValue(generation);
   variables_.max_steps->setValue(max_steps_);
 
-  // add a camera widget
-  camera_widget_ = new physics_ui::CameraWidget(this);
-  camera_widget_->setMinimumSize(64, 64);
-  camera_widget_->setMaximumSize(4096, 64);
-  addBottomPane(camera_widget_);
+  setupUi();
 
   newScene();
   play();
@@ -85,8 +84,22 @@ void SandboxWindow::newScene() {
   setSceneUi(nullptr);
   scene_ui_.reset();
 
+  const auto& config = domain_->config();
+
+  sim::TrackConfig track_config;
+  track_config.width = config.track_width;
+  track_config.complexity = config.track_complexity;
+  track_config.resolution = config.track_resolution;
+  track_config.area_width = drone_track::Scene::kWidth;
+  track_config.area_height = drone_track::Scene::kHeight;
+  track_config.curb_width = config.curb_width;
+  track_config.curb_friction = config.curb_friction;
+  track_config.gates = config.track_gates;
+  track_config.solid_gate_posts = config.solid_gate_posts;
   const auto random_seed = std::random_device{}();
-  scene_ = make_unique<drone_track::Scene>(random_seed, domain_);
+  track_ = make_unique<sim::Track>(random_seed, track_config);
+
+  scene_ = make_unique<drone_track::Scene>(track_.get(), domain_);
   agent_ = make_unique<sim::DroneController>(genotype_.get(), scene_->drone());
   step_ = 0;
 
@@ -100,6 +113,9 @@ void SandboxWindow::newScene() {
   setSceneUi(scene_ui_.get());
 
   camera_widget_->setCamera(scene_->drone()->camera());
+  compass_widget_->setSensor(scene_->drone()->compass());
+  accelerometer_widget_->setSensor(scene_->drone()->accelerometer());
+  touch_widget_->setSensor(scene_->drone()->touchSensor());
 }
 
 void SandboxWindow::singleStep() {
@@ -127,6 +143,43 @@ void SandboxWindow::singleStep() {
 void SandboxWindow::updateUI() {
   updateVariables();
   update();
+}
+
+void SandboxWindow::setupUi() {
+  auto sensors_pane = new QFrame(this);
+  sensors_pane->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
+  sensors_pane->setMinimumSize(256, 82);
+
+  auto layout = new QHBoxLayout(sensors_pane);
+  layout->setContentsMargins(0, 0, 0, 0);
+
+  auto addSensorPane = [&](const char* title, QWidget* widget, int stretch_factor) {
+    auto frame = new QGroupBox(title, sensors_pane);
+    frame->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
+    auto frame_layout = new QHBoxLayout(frame);
+    frame_layout->setContentsMargins(4, 0, 4, 4);
+    frame_layout->addWidget(widget);
+    layout->addWidget(frame);
+    layout->setStretchFactor(frame, stretch_factor);
+  };
+
+  camera_widget_ = new physics_ui::CameraWidget(this);
+  camera_widget_->setMinimumSize(64, 64);
+  addSensorPane("Camera", camera_widget_, 10);
+
+  compass_widget_ = new physics_ui::CompassWidget(this);
+  compass_widget_->setMinimumSize(64, 64);
+  addSensorPane("Compass", compass_widget_, 1);
+
+  touch_widget_ = new physics_ui::TouchSensorWidget(this);
+  touch_widget_->setMinimumSize(64, 64);
+  addSensorPane("Touch", touch_widget_, 1);
+
+  accelerometer_widget_ = new physics_ui::AccelerometerWidget(this);
+  accelerometer_widget_->setMinimumSize(64, 64);
+  addSensorPane("Accelerometer", accelerometer_widget_, 1);
+
+  addBottomPane(sensors_pane);
 }
 
 void SandboxWindow::setupVariables() {

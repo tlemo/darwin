@@ -40,6 +40,8 @@ addLibrary(../domains/drone_follow_ui)
 addLibrary(../domains/drone_follow)
 addLibrary(../domains/drone_track_ui)
 addLibrary(../domains/drone_track)
+addLibrary(../domains/car_track_ui)
+addLibrary(../domains/car_track)
 
 addLibrary(../populations/cgp)
 addLibrary(../populations/cne)

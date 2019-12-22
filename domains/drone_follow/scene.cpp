@@ -108,6 +108,7 @@ unique_ptr<Drone> Scene::createTargetDrone() {
   target_drone_config.position = b2Vec2(0, 0);
   target_drone_config.radius = config.drone_radius;
   target_drone_config.max_move_force = config.max_move_force;
+  target_drone_config.max_lateral_force = config.max_lateral_force;
   target_drone_config.max_rotate_torque = config.max_rotate_torque;
   target_drone_config.color = b2Color(0, 0, 1);
   target_drone_config.friction = 0;

@@ -66,7 +66,7 @@ void SceneUi::renderCamera(QPainter& painter, const sim::Camera* camera) const {
   auto body = camera->body();
   const float far = camera->far();
   const float fov = camera->fov();
-  const auto pos = body->GetWorldPoint(b2Vec2(0, 0));
+  const auto pos = body->GetWorldPoint(camera->position());
 
   const QPointF center(pos.x, pos.y);
   const QRectF frustum_rect(center - QPointF(far, far), center + QPointF(far, far));
@@ -107,26 +107,26 @@ void SceneUi::renderPath(QPainter& painter) const {
 
 void SceneUi::renderTrack(QPainter& painter) const {
   QPainterPath track_path;
-  const auto& track_nodes = scene_->track()->trackNodes();
 
   // inner track edge
-  for (size_t i = 0; i < track_nodes.size(); ++i) {
-    const auto& node = track_nodes[i];
+  const auto& inner_nodes = scene_->track()->innerOutline().nodes();
+  for (size_t i = 0; i < inner_nodes.size(); ++i) {
+    const auto& node = inner_nodes[i];
     if (i == 0) {
-      track_path.moveTo(node.pos.x, node.pos.y);
+      track_path.moveTo(node.p.x, node.p.y);
     } else {
-      track_path.lineTo(node.pos.x, node.pos.y);
+      track_path.lineTo(node.p.x, node.p.y);
     }
   }
 
   // outer track edge
-  for (size_t i = 0; i < track_nodes.size(); ++i) {
-    const auto& node = track_nodes[i];
-    const auto pos = node.offsetPos(scene_->config()->track_width);
+  const auto& outer_nodes = scene_->track()->outerOutline().nodes();
+  for (size_t i = 0; i < outer_nodes.size(); ++i) {
+    const auto& node = outer_nodes[i];
     if (i == 0) {
-      track_path.moveTo(pos.x, pos.y);
+      track_path.moveTo(node.p.x, node.p.y);
     } else {
-      track_path.lineTo(pos.x, pos.y);
+      track_path.lineTo(node.p.x, node.p.y);
     }
   }
 
@@ -139,10 +139,9 @@ void SceneUi::renderCurrentSegment(QPainter& painter) const {
   const auto track = scene_->track();
   constexpr float kOffset = 0.4f;
   const auto vars = scene_->variables();
-  const auto index = track->distanceToNode(vars->distance);
-  const auto& node = track->trackNodes()[index];
-  const auto p1 = node.offsetPos(-kOffset);
-  const auto p2 = node.offsetPos(scene_->config()->track_width + kOffset);
+  const auto& node = track->distanceToNode(vars->distance);
+  const auto p1 = node.offset(kOffset);
+  const auto p2 = node.offset(-scene_->config()->track_width - kOffset);
   painter.setBrush(Qt::NoBrush);
   painter.setPen(QPen(Qt::green, 0));
   painter.drawLine(QPointF(p1.x, p1.y), QPointF(p2.x, p2.y));

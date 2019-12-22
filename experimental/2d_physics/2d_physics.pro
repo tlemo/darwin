@@ -13,12 +13,16 @@ DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000
 
 SOURCES += \
     scenes/bouncing.cpp \
+    scenes/car.cpp \
+    scenes/car_race.cpp \
     scenes/cart_pole.cpp \
     scenes/drone.cpp \
     scenes/drone_race.cpp \
     scenes/hectic_drone.cpp \
     scenes/electric_fence.cpp \
     scenes/particles.cpp \
+    scenes/splines.cpp \
+    scenes/sandbox.cpp \
     main.cpp \
     main_window.cpp \
     new_sandbox_dialog.cpp \
@@ -33,12 +37,16 @@ SOURCES += \
 
 HEADERS += \
     scenes/bouncing.h \
+    scenes/car.h \
+    scenes/car_race.h \
     scenes/cart_pole.h \
     scenes/drone.h \
     scenes/drone_race.h \
     scenes/hectic_drone.h \
     scenes/electric_fence.h \
     scenes/particles.h \
+    scenes/splines.h \
+    scenes/sandbox.h \
     main_window.h \
     new_sandbox_dialog.h \
     new_scene_dialog.h \

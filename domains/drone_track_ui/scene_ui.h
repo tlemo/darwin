@@ -19,6 +19,7 @@
 #include <domains/drone_track/scene.h>
 
 #include <QPainterPath>
+#include <QPixmap>
 
 namespace drone_track_ui {
 

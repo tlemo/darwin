@@ -20,6 +20,7 @@
 #include <core/logging.h>
 #include <core/parallel_for_each.h>
 #include <core/sim/drone_controller.h>
+#include <core/sim/track.h>
 
 #include <random>
 using namespace std;
@@ -29,7 +30,7 @@ namespace drone_track {
 DroneTrack::DroneTrack(const core::PropertySet& config) {
   config_.copyFrom(config);
   validateConfiguration();
-  
+
   // setup drone configuration
   drone_config_.radius = config_.drone_radius;
   drone_config_.camera = true;
@@ -41,6 +42,7 @@ DroneTrack::DroneTrack(const core::PropertySet& config) {
   drone_config_.accelerometer = config_.accelerometer;
   drone_config_.compass = config_.compass;
   drone_config_.max_move_force = config_.max_move_force;
+  drone_config_.max_lateral_force = config_.max_lateral_force;
   drone_config_.max_rotate_torque = config_.max_rotate_torque;
   drone_config_.color = b2Color(0, 0, 1);
   drone_config_.density = 0.5f;
@@ -72,10 +74,22 @@ bool DroneTrack::evaluatePopulation(darwin::Population* population) const {
         population->size());
     core::log(" ... world %d\n", world_index);
 
+    // create track
+    sim::TrackConfig track_config;
+    track_config.width = config_.track_width;
+    track_config.complexity = config_.track_complexity;
+    track_config.resolution = config_.track_resolution;
+    track_config.area_width = Scene::kWidth;
+    track_config.area_height = Scene::kHeight;
+    track_config.curb_width = config_.curb_width;
+    track_config.curb_friction = config_.curb_friction;
+    track_config.gates = config_.track_gates;
+    track_config.solid_gate_posts = config_.solid_gate_posts;
     const auto random_seed = std::random_device{}();
+    const sim::Track track(random_seed, track_config);
 
     pp::for_each(*population, [&](int, darwin::Genotype* genotype) {
-      Scene scene(random_seed, this);
+      Scene scene(&track, this);
       sim::DroneController agent(genotype, scene.drone());
 
       // simulation loop
@@ -87,8 +101,7 @@ bool DroneTrack::evaluatePopulation(darwin::Population* population) const {
       }
 
       // normalize the fitness to [0, 1], invariant to the number of test worlds
-      float episode_fitness = scene.fitness();
-      episode_fitness /= config_.test_worlds;
+      const float episode_fitness = scene.fitness() / config_.test_worlds;
       genotype->fitness += episode_fitness;
 
       darwin::ProgressManager::reportProgress();
@@ -109,6 +122,8 @@ void DroneTrack::validateConfiguration() {
     throw core::Exception("Invalid configuration: drone_friction < 0");
   if (config_.max_move_force < 0)
     throw core::Exception("Invalid configuration: max_move_force < 0");
+  if (config_.max_lateral_force < 0)
+    throw core::Exception("Invalid configuration: max_lateral_force < 0");
   if (config_.max_rotate_torque < 0)
     throw core::Exception("Invalid configuration: max_rotate_torque < 0");
 
@@ -149,7 +164,10 @@ unique_ptr<core::PropertySet> Factory::defaultConfig(darwin::ComplexityHint hint
       config->test_worlds = 8;
       config->max_steps = 10000;
       config->compass = true;
+      config->camera_resolution = 256;
+      config->camera_depth = true;
       config->touch_sensor = true;
+      config->touch_resolution = 64;
       config->accelerometer = true;
       config->camera_depth = true;
       break;

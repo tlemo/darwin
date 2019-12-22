@@ -39,14 +39,17 @@ class Box2dSceneUi : public QObject {
   // keyboard
   virtual void keyPressEvent(QKeyEvent* /*event*/) {}
   virtual void keyReleaseEvent(QKeyEvent* /*event*/) {}
-  
+
   // focus
   virtual void focusInEvent() {}
   virtual void focusOutEvent() {}
-  
+
   // simulation step
   // TODO: revisit this
   virtual void step() {}
+
+  // help text
+  virtual QString help() const { return ""; }
 
  signals:
   void sigPlayPause();
@@ -65,8 +68,10 @@ class Box2dWidget : public core_ui::Canvas {
   void setSceneUi(Box2dSceneUi* scene_ui);
 
   bool debugRender() const { return enable_debug_render_; }
-
   void setDebugRender(bool enable);
+
+  bool renderLights() const { return render_lights_; }
+  void setRenderLights(bool enable);
 
  signals:
   void sigPlayPause();
@@ -77,13 +82,13 @@ class Box2dWidget : public core_ui::Canvas {
   void mousePressEvent(QMouseEvent* event) override;
   void mouseReleaseEvent(QMouseEvent* event) override;
   void mouseMoveEvent(QMouseEvent* event) override;
-  
+
   void keyPressEvent(QKeyEvent* event) override;
   void keyReleaseEvent(QKeyEvent* event) override;
-  
+
   void focusInEvent(QFocusEvent*) override;
   void focusOutEvent(QFocusEvent*) override;
-  
+
   void renderDebugLayer(QPainter& painter) const;
   void renderGeneric(QPainter& painter) const;
 
@@ -91,6 +96,7 @@ class Box2dWidget : public core_ui::Canvas {
   b2World* world_ = nullptr;
   Box2dSceneUi* scene_ui_ = nullptr;
   bool enable_debug_render_ = true;
+  bool render_lights_ = false;
 };
 
 }  // namespace physics_ui

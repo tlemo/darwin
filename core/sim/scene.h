@@ -63,9 +63,11 @@ class Scene : public core::NonCopyable {
 
   int objectsCount() const { return world_.GetBodyCount(); }
 
+  void clear();
+
   virtual const core::PropertySet* variables() const { return nullptr; }
   virtual const core::PropertySet* config() const { return nullptr; }
-  
+
   virtual void preStep() {}
   virtual void postStep(float /*dt*/) {}
   virtual void onContact(b2Contact* /*contact*/) {}
@@ -73,7 +75,7 @@ class Scene : public core::NonCopyable {
   // TODO: temporary workaround, revisit
   // (add support for Scene in Box2dSandboxWindow and Box2dWidget)
   b2World* box2dWorld() { return &world_; }
-  
+
   // sensors
   // TODO: get rid of these methods
   virtual const Camera* camera() const { return nullptr; }
@@ -82,6 +84,11 @@ class Scene : public core::NonCopyable {
   virtual const sim::Compass* compass() const { return nullptr; }
 
   bool simStep();
+
+ protected:
+  // this can only be called during the Scene construction
+  // TODO: support for updating scene extents at any time
+  void setExtents(const Rect& extents) { extents_ = extents; }
 
  protected:
   b2World world_;

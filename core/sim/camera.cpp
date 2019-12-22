@@ -29,8 +29,10 @@ struct RayCastCallback : public b2RayCastCallback {
   float fraction = 0;
   b2Fixture* fixture = nullptr;
   const float min_fraction = 0;
+  const void* const filter_id;
 
-  explicit RayCastCallback(float min_fraction) : min_fraction(min_fraction) {}
+  explicit RayCastCallback(float min_fraction, const void* filter_id)
+      : min_fraction(min_fraction), filter_id(filter_id) {}
 
   float32 ReportFixture(b2Fixture* fixture,
                         const b2Vec2& point,
@@ -38,7 +40,8 @@ struct RayCastCallback : public b2RayCastCallback {
                         float32 fraction) override {
     assert(fraction >= 0);
     assert(fraction <= 1);
-    if (fraction >= min_fraction) {
+    const bool filter_check = filter_id == nullptr || filter_id != fixture->GetUserData();
+    if (filter_check && fraction >= min_fraction) {
       this->point = point;
       this->normal = normal;
       this->fixture = fixture;
@@ -69,7 +72,7 @@ struct ShadowRayCastCallback : public b2RayCastCallback {
   }
 };
 
-} // anonymous namespace
+}  // anonymous namespace
 
 Camera::Camera(b2Body* body, float fov, float near, float far, int resolution)
     : body_(body), fov_(fov), near_(near), far_(far), resolution_(resolution) {
@@ -83,7 +86,7 @@ Receptor Camera::castRay(const b2Vec2& ray_start,
                          const b2Vec2& ray_end,
                          float min_fraction) const {
   const auto world = body_->GetWorld();
-  RayCastCallback raycast(min_fraction);
+  RayCastCallback raycast(min_fraction, filter_id_);
   world->RayCast(&raycast, ray_start, ray_end);
 
   // if no intersection, return the background color
@@ -110,7 +113,7 @@ Receptor Camera::castRay(const b2Vec2& ray_start,
   for (auto light = world->GetLightList(); light != nullptr; light = light->GetNext()) {
     const auto& ldef = light->GetDef();
     assert(ldef.intensity >= 0);
-    
+
     const auto global_light_pos = ldef.body->GetWorldPoint(ldef.position);
     const auto local_light_pos = body->GetLocalPoint(global_light_pos);
 
@@ -161,7 +164,7 @@ Receptor Camera::castRay(const b2Vec2& ray_start,
 vector<Receptor> Camera::render() const {
   vector<Receptor> image(resolution_);
 
-  const b2Vec2 ray_start = body_->GetWorldPoint(b2Vec2(0, 0));
+  const b2Vec2 ray_start = body_->GetWorldPoint(position_);
 
   const float far_near_ratio = far_ / near_;
   const float near_far_ratio = near_ / far_;
