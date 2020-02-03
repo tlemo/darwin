@@ -1,4 +1,10 @@
 
+## Feb 2nd, 2020
+
+Last year I gave a talk about the Darwin Framework at a Seattle area 
+[C++ meetup](https://nwcpp.org/Aug-2019.html). Here is [slide deck][11] I prepared for 
+the talk, in case anyone is curious.
+
 ## Dec 21st, 2019
 
 It took a bit longer than expected, but the car version of the race track domain is
@@ -181,3 +187,4 @@ Initial release
 [8]: https://tlemo.github.io/darwin/classdrone__vision_1_1_drone_vision.html
 [9]: https://tlemo.github.io/darwin/classdrone__follow_1_1_drone_follow.html
 [10]: https://tlemo.github.io/darwin/classdrone__track_1_1_drone_track.html
+[11]: https://docs.google.com/presentation/d/13ppNNKvsLxe4W_CgGO8THQArsma8colxh-cEzRWkUCE/edit?usp=sharing
