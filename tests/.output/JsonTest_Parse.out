@@ -2,4 +2,4 @@
     "happy": true,
     "pi": 3.141
 }
-Exception: [json.exception.parse_error.101] parse error at 18: syntax error - invalid literal; last read: '"happy: true, "p'; expected ':'
+Exception: [json.exception.parse_error.101] parse error at line 1, column 18: syntax error while parsing object separator - invalid literal; last read: '"happy: true, "p'; expected ':'
