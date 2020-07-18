@@ -16,4 +16,4 @@ HEADERS += \
 
 SOURCES += \
     $$files(repo/src/*.c, true) \
-    $$files(repo/src/*.cpp, true)
+    $$files(repo/src/*.cxx, true)
