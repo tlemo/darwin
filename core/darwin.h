@@ -332,7 +332,7 @@ struct ExperimentSetup : public core::PropertySet {
 //! 
 class Experiment : public core::NonCopyable {
  public:
-  //! Creates a new universe
+  //! Creates a new experiment
   //! (potentially forking from an existing experiment)
   Experiment(const optional<string>& name,
              const ExperimentSetup& setup,
