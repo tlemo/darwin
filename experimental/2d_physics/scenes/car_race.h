@@ -8,6 +8,7 @@
 #include <core_ui/sim/box2d_widget.h>
 
 #include <QKeyEvent>
+#include <QPainterPath>
 
 #include <memory>
 using namespace std;

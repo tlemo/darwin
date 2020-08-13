@@ -9,6 +9,8 @@ CONFIG += link_prl
 # disable the 'lib' shared library prefix and version symlinks
 CONFIG += plugin no_plugin_name_prefix
 
+win32: QMAKE_EXTENSION_SHLIB = pyd
+
 SOURCES += \
     python_bindings.cpp
 
@@ -17,6 +19,12 @@ HEADERS += \
 
 # include path for Python headers
 INCLUDEPATH += $$(PYTHON_INCLUDE)
+
+# Python library path (should only be needed on Windows)
+PYTHON_LIBS = $$(PYTHON_LIBS)
+!isEmpty(PYTHON_LIBS) {
+    LIBS += "-L$$PYTHON_LIBS"
+}
 
 addLibrary(../../registry)
 addLibrary(../../core)

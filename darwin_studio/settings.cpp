@@ -24,8 +24,8 @@ using nlohmann::json;
 #include <string>
 using namespace std;
 
-#include <experimental/filesystem>
-namespace fs = std::experimental::filesystem;
+#include <filesystem>
+namespace fs = std::filesystem;
 
 Settings g_settings;
 

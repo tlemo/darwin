@@ -11,6 +11,7 @@
 
 #include <QKeyEvent>
 #include <QPixmap>
+#include <QPainterPath>
 
 #include <memory>
 #include <unordered_map>

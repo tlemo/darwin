@@ -22,8 +22,8 @@
 #include <intrin.h>
 #endif  // DARWIN_COMPILER_MSVC
 
-#include <experimental/filesystem>
-namespace fs = std::experimental::filesystem;
+#include <filesystem>
+namespace fs = std::filesystem;
 
 namespace pal {
 
