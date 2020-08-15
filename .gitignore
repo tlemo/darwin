@@ -2,3 +2,4 @@ build-*
 *.pro.user
 .DS_Store
 .vscode
+.build
