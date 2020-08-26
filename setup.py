@@ -102,4 +102,5 @@ setup(
     license='Apache License 2.0',
     ext_modules=[QmakeExtension(name='darwin')],
     cmdclass=dict(build_ext=QmakeBuild),
+    test_suite="tests.bindings.python",
     zip_safe=False)
