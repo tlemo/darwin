@@ -47,6 +47,20 @@ git submodule update
 
 3. `Build / Run` (default keyboard shortcut is Ctrl+R)
 
+### Building from the Command Line
+
+1. Export `QTDIR` to point to the Qt location
+   (ex. `export QTDIR=/home/tlemo/tools/qt/5.14.2/gcc_64`)
+
+2. Create a build directory and `cd` into it
+   (ex. `mkdir .build_release && cd .build_release`)
+
+3. Invoke Qmake
+   (ex. `$QTDIR/bin/qmake ../darwin.pro CONFIG+=release`)
+
+4. Invoke Make
+    (ex. `make -j8`)
+
 ### Running the Tests
 
 The recommended way to run Darwin tests is from Qt Creator:
