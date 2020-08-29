@@ -4,7 +4,9 @@
 - [General Prerequisites](#general-prerequisites)
 - [Getting the Source Code](#getting-the-source-code)
 - [Building & Running Darwin Studio](#building--running-darwin-studio)
+- [Building from the Command Line](#building-from-the-command-line)
 - [Running the Tests](#running-the-tests)
+- [Python Bindings](#python-bindings)
 - [Qt Creator Tips](#qt-creator-tips)
 - [Windows](#windows)
 - [Linux](#linux)
@@ -67,6 +69,10 @@ The recommended way to run Darwin tests is from Qt Creator:
 `Tools / Tests / Run All Tests` or from the `Test Results` pane.
 
 For more information see the official Qt Creator's [Autotests][7] documentation.
+
+### Python Bindings
+
+See the [dedicated page](python.md).
 
 ### Qt Creator Tips
 
