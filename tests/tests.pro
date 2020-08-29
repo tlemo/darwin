@@ -2,6 +2,7 @@
 TEMPLATE = subdirs
 
 SUBDIRS += \
+    bindings \
     core \
     darwin \
     populations \
