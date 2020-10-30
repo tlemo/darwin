@@ -13,3 +13,47 @@
 // limitations under the License.
 
 #pragma once
+
+#include <core/utils.h>
+#include <core/universe.h>
+
+#include <memory>
+#include <string>
+#include <utility>
+using namespace std;
+
+namespace darwin::python {
+
+class Domain : public core::NonCopyable, public std::enable_shared_from_this<Domain> {
+ public:
+  explicit Domain(const string& name);
+};
+
+class Population : public core::NonCopyable,
+                   public std::enable_shared_from_this<Population> {
+ public:
+  explicit Population(const string& name);
+};
+
+class Experiment : public core::NonCopyable,
+                   public std::enable_shared_from_this<Experiment> {
+ public:
+  explicit Experiment(const string& name);
+};
+
+class Universe : public core::NonCopyable, public std::enable_shared_from_this<Universe> {
+ public:
+  explicit Universe(unique_ptr<darwin::Universe> universe)
+      : universe_(std::move(universe)) {}
+
+  shared_ptr<Experiment> newExperiment();
+
+ private:
+  unique_ptr<darwin::Universe> universe_;
+};
+
+shared_ptr<Universe> createUniverse(const string& path);
+
+shared_ptr<Universe> openUniverse(const string& path);
+
+}  // namespace darwin::python
