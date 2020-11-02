@@ -16,10 +16,12 @@
 #include <core/format.h>
 #include <third_party/gtest/gtest.h>
 
-#include <cstdlib>
+#include <stdlib.h>
 
 namespace python_tests {
 
+// TODO: find a way to avoid mutating the environment
+//
 TEST(PythonBindingsTest, RunPythonTests) {
   // the PYTHON_CMD, if set, must point to the appropriate Python interpreter
   const char* python_cmd = std::getenv("PYTHON_CMD");
@@ -30,11 +32,11 @@ TEST(PythonBindingsTest, RunPythonTests) {
   }
 
   // we need to update PYTHONPATH to point to the darwin extension
-  //
-  // TODO: find a better solution to avoid the side-effect of modifying the
-  //  environment here.
-  //
   CHECK(setenv("PYTHONPATH", "../../bindings/python", true) == 0);
+
+  // force a custom root location
+  // (this will also be used to store test universe files)
+  CHECK(setenv("DARWIN_HOME_PATH", TEST_TEMP_PATH, true) == 0);
 
   // invoke Python unit tests and check the exit code
   int exit_code = std::system(

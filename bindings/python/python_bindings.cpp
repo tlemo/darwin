@@ -14,8 +14,9 @@
 
 #include "python_bindings.h"
 
-#include <third_party/pybind11/pybind11.h>
-namespace py = pybind11;
+#include <core/darwin.h>
+
+#include <stdlib.h>
 
 namespace darwin::python {
 
@@ -30,6 +31,12 @@ shared_ptr<Experiment> Universe::newExperiment() {
   return make_shared<Experiment>("Foo");
 }
 
+void Universe::throwIfClosed() const {
+  if (isClosed()) {
+    throw std::runtime_error("Attempting to use a closed darwin.Universe object");
+  }
+}
+
 shared_ptr<Universe> createUniverse(const string& path) {
   return make_shared<Universe>(darwin::Universe::create(path));
 }
@@ -41,6 +48,9 @@ shared_ptr<Universe> openUniverse(const string& path) {
 PYBIND11_MODULE(darwin, m) {
   m.doc() = "Darwin Neuroevolution Framework";
 
+  // Darwin initialization
+  darwin::init(0, nullptr, getenv("DARWIN_HOME_PATH"));
+
   py::class_<Domain, shared_ptr<Domain>>(m, "Domain").def(py::init<const string&>());
 
   py::class_<Population, shared_ptr<Population>>(m, "Population")
@@ -49,7 +59,12 @@ PYBIND11_MODULE(darwin, m) {
   py::class_<Experiment, shared_ptr<Experiment>>(m, "Experiment");
 
   py::class_<Universe, shared_ptr<Universe>>(m, "Universe")
-      .def("new_experiment", &Universe::newExperiment);
+      .def("new_experiment", &Universe::newExperiment)
+      .def("close", &Universe::close)
+      .def_property_readonly("closed", &Universe::isClosed)
+      .def_property_readonly("path", &Universe::path)
+      .def("__enter__", &Universe::ctxManagerEnter)
+      .def("__exit__", &Universe::ctxManagerExit);
 
   m.def("create_universe", &createUniverse);
   m.def("open_universe", &openUniverse);

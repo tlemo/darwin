@@ -17,6 +17,9 @@
 #include <core/utils.h>
 #include <core/universe.h>
 
+#include <third_party/pybind11/pybind11.h>
+namespace py = pybind11;
+
 #include <memory>
 #include <string>
 #include <utility>
@@ -46,7 +49,36 @@ class Universe : public core::NonCopyable, public std::enable_shared_from_this<U
   explicit Universe(unique_ptr<darwin::Universe> universe)
       : universe_(std::move(universe)) {}
 
+  //! TODO
   shared_ptr<Experiment> newExperiment();
+
+  //! Close the Universe object
+  void close() { universe_.reset(); }
+
+  //! Returns `true` if the universe object is closed
+  bool isClosed() const { return !universe_; }
+
+  //! Returns the universe path name
+  string path() const {
+    throwIfClosed();
+    return universe_->path();
+  }
+
+  //! Python context manager support
+  shared_ptr<Universe> ctxManagerEnter() {
+    throwIfClosed();
+    return shared_from_this();
+  }
+
+  //! Python context manager support
+  void ctxManagerExit(py::object /*exc_type*/,
+                      py::object /*exc_value*/,
+                      py::object /*traceback*/) {
+    close();
+  }
+
+ private:
+  void throwIfClosed() const;
 
  private:
   unique_ptr<darwin::Universe> universe_;
