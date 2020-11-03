@@ -64,6 +64,9 @@ class Universe : public core::NonCopyable, public std::enable_shared_from_this<U
     return universe_->path();
   }
 
+  //! __repr__ implementation
+  string repr() const;
+
   //! Python context manager support
   shared_ptr<Universe> ctxManagerEnter() {
     throwIfClosed();

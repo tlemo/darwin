@@ -36,6 +36,7 @@ class UniverseTestCase(unittest.TestCase):
         with darwin.open_universe(path) as universe:
             self.assertFalse(universe.closed)
             self.assertEqual(universe.path, path)
+            self.assertTrue(str(universe).startswith('<darwin.Universe path='))
 
         self.assertTrue(universe.closed)
 

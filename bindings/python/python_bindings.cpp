@@ -31,6 +31,11 @@ shared_ptr<Experiment> Universe::newExperiment() {
   return make_shared<Experiment>("Foo");
 }
 
+string Universe::repr() const {
+  return isClosed() ? "<darwin.Universe closed>"
+                    : "<darwin.Universe path=" + path() + ">";
+}
+
 void Universe::throwIfClosed() const {
   if (isClosed()) {
     throw std::runtime_error("Attempting to use a closed darwin.Universe object");
@@ -64,7 +69,8 @@ PYBIND11_MODULE(darwin, m) {
       .def_property_readonly("closed", &Universe::isClosed)
       .def_property_readonly("path", &Universe::path)
       .def("__enter__", &Universe::ctxManagerEnter)
-      .def("__exit__", &Universe::ctxManagerExit);
+      .def("__exit__", &Universe::ctxManagerExit)
+      .def("__repr__", &Universe::repr);
 
   m.def("create_universe", &createUniverse);
   m.def("open_universe", &openUniverse);
