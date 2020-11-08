@@ -177,7 +177,7 @@ class TypedProperty : public Property {
 //! ```cpp
 //! struct Properties : public core::PropertySet {
 //!   ...
-//!   VARIANT(, VariantType, VariantTag::Basic, "A variant property");
+//!   VARIANT(name, VariantType, VariantTag::Basic, "A variant property");
 //!   ...
 //! };
 //! ```

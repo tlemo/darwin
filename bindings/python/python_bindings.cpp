@@ -15,6 +15,7 @@
 #include "python_bindings.h"
 
 #include <core/darwin.h>
+#include <registry/registry.h>
 
 #include <stdlib.h>
 
@@ -55,6 +56,7 @@ PYBIND11_MODULE(darwin, m) {
 
   // Darwin initialization
   darwin::init(0, nullptr, getenv("DARWIN_HOME_PATH"));
+  registry::init();
 
   py::class_<Domain, shared_ptr<Domain>>(m, "Domain").def(py::init<const string&>());
 
