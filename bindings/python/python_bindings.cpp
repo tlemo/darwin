@@ -105,6 +105,22 @@ void Universe::throwIfClosed() const {
   }
 }
 
+vector<string> availableDomains() {
+  vector<string> domain_names;
+  for (const auto& [name, factory] : registry()->domains) {
+    domain_names.push_back(name);
+  }
+  return domain_names;
+}
+
+vector<string> availablePopulations() {
+  vector<string> population_names;
+  for (const auto& [name, factory] : registry()->populations) {
+    population_names.push_back(name);
+  }
+  return population_names;
+}
+
 shared_ptr<Universe> createUniverse(const string& path) {
   return make_shared<Universe>(darwin::Universe::create(path));
 }
@@ -147,8 +163,16 @@ PYBIND11_MODULE(darwin, m) {
       .def("__exit__", &Universe::ctxManagerExit)
       .def("__repr__", &Universe::repr);
 
-  m.def("create_universe", &createUniverse);
-  m.def("open_universe", &openUniverse);
+  m.def("available_domains",
+        &availableDomains,
+        "Returns a list of available domain names");
+
+  m.def("available_populations",
+        &availablePopulations,
+        "Returns a list of available population names");
+
+  m.def("create_universe", &createUniverse, "Create a new Darwin universe file");
+  m.def("open_universe", &openUniverse, "Open an existing Darwin universe file");
 }
 
 }  // namespace darwin::python

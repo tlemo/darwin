@@ -127,8 +127,16 @@ class Universe : public core::NonCopyable, public std::enable_shared_from_this<U
   unique_ptr<darwin::Universe> universe_;
 };
 
+//! Returns the list of available domains
+vector<string> availableDomains();
+
+//! Returns the list of available populations
+vector<string> availablePopulations();
+
+//! Creates a new universe file
 shared_ptr<Universe> createUniverse(const string& path);
 
+//! Opens an existing universe file
 shared_ptr<Universe> openUniverse(const string& path);
 
 }  // namespace darwin::python
