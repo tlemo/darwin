@@ -59,6 +59,17 @@ class PropertySet : public core::NonCopyable,
 class Domain : public core::NonCopyable, public std::enable_shared_from_this<Domain> {
  public:
   explicit Domain(const string& name);
+
+  const string& name() const { return name_; }
+
+  shared_ptr<PropertySet> config() const { return config_; }
+
+  //! __repr__ implementation
+  string repr() const;
+
+ private:
+  string name_;
+  shared_ptr<PropertySet> config_;
 };
 
 class Population : public core::NonCopyable,

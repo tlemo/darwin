@@ -16,6 +16,7 @@
 
 #include <core/darwin.h>
 #include <core/properties.h>
+#include <core/format.h>
 #include <registry/registry.h>
 
 #include <stdlib.h>
@@ -67,14 +68,22 @@ string PropertySet::repr() const {
 core::Property* PropertySet::lookupProperty(const string& name) const {
   const auto it = index_.find(name);
   if (it == index_.end()) {
-    stringstream msg;
-    msg << "No property with the name '" << name << "'";
-    throw std::runtime_error(msg.str());
+    throw std::runtime_error(core::format("No property with the name '%s'", name));
   }
   return it->second;
 }
 
-Domain::Domain(const string& name) {}
+Domain::Domain(const string& name) : name_(name) {
+  if (auto factory = registry()->domains.find(name)) {
+    config_ = make_shared<PropertySet>(factory->defaultConfig(ComplexityHint::Balanced));
+  } else {
+    throw std::runtime_error(core::format("No domain named '%s'", name));
+  }
+}
+
+string Domain::repr() const {
+  return core::format("<darwin.Domain name='%s'>", name_);
+}
 
 Population::Population(const string& name) {}
 
@@ -87,7 +96,7 @@ shared_ptr<Experiment> Universe::newExperiment() {
 
 string Universe::repr() const {
   return isClosed() ? "<darwin.Universe closed>"
-                    : "<darwin.Universe path=" + path() + ">";
+                    : core::format("<darwin.Universe path='%s'>", path());
 }
 
 void Universe::throwIfClosed() const {
@@ -118,7 +127,11 @@ PYBIND11_MODULE(darwin, m) {
       .def("__dir__", &PropertySet::dir)
       .def("__repr__", &PropertySet::repr);
 
-  py::class_<Domain, shared_ptr<Domain>>(m, "Domain").def(py::init<const string&>());
+  py::class_<Domain, shared_ptr<Domain>>(m, "Domain")
+      .def(py::init<const string&>())
+      .def_property_readonly("name", &Domain::name)
+      .def_property_readonly("config", &Domain::config)
+      .def("__repr__", &Domain::repr);
 
   py::class_<Population, shared_ptr<Population>>(m, "Population")
       .def(py::init<const string&>());

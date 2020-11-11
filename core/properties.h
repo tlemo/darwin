@@ -408,7 +408,7 @@ class PropertySet : public core::NonCopyable {
 
   //! Transfer values between two property sets
   void copyFrom(const PropertySet& src) {
-    CHECK(typeid(*this) == typeid(src));
+    CHECK(typeid(*this) == typeid(src), "Incompatible property sets");
     CHECK(properties_.size() == src.properties_.size());
     for (size_t i = 0; i < properties_.size(); ++i)
       properties_[i]->copyFrom(*src.properties_[i]);
