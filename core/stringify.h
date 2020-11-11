@@ -73,7 +73,7 @@ class GenericStringify : public Stringify<T> {
       ss >> std::ws;
     }
     if (ss.fail() || !ss.eof())
-      throw Exception("invalid syntax: '%s'", str.c_str());
+      throw Exception("invalid value string: '%s'", str.c_str());
     return value;
   }
 

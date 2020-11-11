@@ -15,11 +15,64 @@
 #include "python_bindings.h"
 
 #include <core/darwin.h>
+#include <core/properties.h>
 #include <registry/registry.h>
 
 #include <stdlib.h>
+#include <sstream>
+#include <stdexcept>
+using namespace std;
 
 namespace darwin::python {
+
+PropertySet::PropertySet(unique_ptr<core::PropertySet> property_set)
+    : property_set_(std::move(property_set)) {
+  // create the name-to-property index
+  for (auto property : property_set_->properties()) {
+    index_[property->name()] = property;
+  }
+}
+
+string PropertySet::getAttr(const string& name) const {
+  return lookupProperty(name)->value();
+}
+
+void PropertySet::setAttrStr(const string& name, const string& value) {
+  lookupProperty(name)->setValue(value);
+}
+
+void PropertySet::setAttrCast(const string& name, py::object value) {
+  setAttrStr(name, py::str(value));
+}
+
+vector<string> PropertySet::dir() const {
+  vector<string> dir;
+  for (auto property : property_set_->properties()) {
+    dir.push_back(property->name());
+  }
+  return dir;
+}
+
+string PropertySet::repr() const {
+  stringstream ss;
+  ss << "{\n";
+  for (auto property : property_set_->properties()) {
+    ss << "  '" << property->name() << "': '" << property->value() << "'  # "
+       << property->description() << "\n";
+  }
+  ss << "}\n";
+  return ss.str();
+}
+
+core::Property* PropertySet::lookupProperty(const string& name) const {
+  const auto it = index_.find(name);
+  if (it == index_.end()) {
+    stringstream msg;
+    msg << "No property with the name '" << name << "'";
+    throw std::runtime_error(msg.str());
+  }
+  return it->second;
+}
 
 Domain::Domain(const string& name) {}
 
@@ -57,6 +110,13 @@ PYBIND11_MODULE(darwin, m) {
   // Darwin initialization
   darwin::init(0, nullptr, getenv("DARWIN_HOME_PATH"));
   registry::init();
+
+  py::class_<PropertySet, shared_ptr<PropertySet>>(m, "PropertySet")
+      .def("__getattr__", &PropertySet::getAttr)
+      .def("__setattr__", &PropertySet::setAttrStr)
+      .def("__setattr__", &PropertySet::setAttrCast)
+      .def("__dir__", &PropertySet::dir)
+      .def("__repr__", &PropertySet::repr);
 
   py::class_<Domain, shared_ptr<Domain>>(m, "Domain").def(py::init<const string&>());
 

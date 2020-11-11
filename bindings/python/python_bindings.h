@@ -18,14 +18,43 @@
 #include <core/universe.h>
 
 #include <third_party/pybind11/pybind11.h>
-namespace py = pybind11;
 
 #include <memory>
 #include <string>
 #include <utility>
+#include <unordered_map>
+#include <vector>
 using namespace std;
 
 namespace darwin::python {
+
+class PropertySet : public core::NonCopyable,
+                    public std::enable_shared_from_this<PropertySet> {
+ public:
+  explicit PropertySet(unique_ptr<core::PropertySet> property_set);
+
+  //! __getattr__ implementation
+  string getAttr(const string& name) const;
+
+  //! __setattr__ with string value
+  void setAttrStr(const string& name, const string& value);
+
+  //! __setattr__ with Python object value
+  void setAttrCast(const string& name, py::object value);
+
+  //! __dir__ implementation
+  vector<string> dir() const;
+
+  //! __repr__ implementation
+  string repr() const;
+
+ private:
+  core::Property* lookupProperty(const string& name) const;
+
+ private:
+  unique_ptr<core::PropertySet> property_set_;
+  unordered_map<string, core::Property*> index_;
+};
 
 class Domain : public core::NonCopyable, public std::enable_shared_from_this<Domain> {
  public:
