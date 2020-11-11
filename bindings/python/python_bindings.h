@@ -76,6 +76,17 @@ class Population : public core::NonCopyable,
                    public std::enable_shared_from_this<Population> {
  public:
   explicit Population(const string& name);
+
+  const string& name() const { return name_; }
+
+  shared_ptr<PropertySet> config() const { return config_; }
+
+  //! __repr__ implementation
+  string repr() const;
+
+ private:
+  string name_;
+  shared_ptr<PropertySet> config_;
 };
 
 class Experiment : public core::NonCopyable,

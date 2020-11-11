@@ -41,5 +41,32 @@ class UniverseTestCase(unittest.TestCase):
         self.assertTrue(universe.closed)
 
 
+class ConfigTestCase(unittest.TestCase):
+    def test_available_domains(self):
+        domains = darwin.available_domains()
+        self.assertTrue(domains)
+        for name in domains:
+            domain = darwin.Domain(name)
+            self.assertEqual(name, domain.name)
+            self.assertIsNotNone(domain.config)
+
+    def test_available_populations(self):
+        populations = darwin.available_populations()
+        self.assertTrue(populations)
+        for name in populations:
+            population = darwin.Population(name)
+            self.assertEqual(name, population.name)
+            self.assertIsNotNone(population.config)
+
+
+class PropertySetTestCase(unittest.TestCase):
+    def test_dir(self):
+        p = darwin.Population('cne.lstm')
+        attr_list = dir(p.config)
+        self.assertTrue(attr_list)
+        self.assertIn('activation_function', attr_list)
+        self.assertIn('normalize_input', attr_list)
+
+
 if __name__ == '__main__':
     unittest.main()

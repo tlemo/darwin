@@ -85,7 +85,17 @@ string Domain::repr() const {
   return core::format("<darwin.Domain name='%s'>", name_);
 }
 
-Population::Population(const string& name) {}
+Population::Population(const string& name) : name_(name) {
+  if (auto factory = registry()->populations.find(name)) {
+    config_ = make_shared<PropertySet>(factory->defaultConfig(ComplexityHint::Balanced));
+  } else {
+    throw std::runtime_error(core::format("No population named '%s'", name));
+  }
+}
+
+string Population::repr() const {
+  return core::format("<darwin.Population name='%s'>", name_);
+}
 
 Experiment::Experiment(const string& name) {}
 
@@ -150,7 +160,10 @@ PYBIND11_MODULE(darwin, m) {
       .def("__repr__", &Domain::repr);
 
   py::class_<Population, shared_ptr<Population>>(m, "Population")
-      .def(py::init<const string&>());
+      .def(py::init<const string&>())
+      .def_property_readonly("name", &Population::name)
+      .def_property_readonly("config", &Population::config)
+      .def("__repr__", &Population::repr);
 
   py::class_<Experiment, shared_ptr<Experiment>>(m, "Experiment");
 
@@ -165,14 +178,14 @@ PYBIND11_MODULE(darwin, m) {
 
   m.def("available_domains",
         &availableDomains,
-        "Returns a list of available domain names");
+        "Returns a list of available domain names.");
 
   m.def("available_populations",
         &availablePopulations,
-        "Returns a list of available population names");
+        "Returns a list of available population names.");
 
-  m.def("create_universe", &createUniverse, "Create a new Darwin universe file");
-  m.def("open_universe", &openUniverse, "Open an existing Darwin universe file");
+  m.def("create_universe", &createUniverse, "Creates a new Darwin universe file");
+  m.def("open_universe", &openUniverse, "Opens an existing Darwin universe file");
 }
 
 }  // namespace darwin::python
