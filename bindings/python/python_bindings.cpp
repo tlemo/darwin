@@ -43,7 +43,21 @@ void PropertySet::setAttrStr(const string& name, const string& value) {
 }
 
 void PropertySet::setAttrCast(const string& name, py::object value) {
-  setAttrStr(name, py::str(value));
+  const string str = py::str(value);
+
+  // automatic conversions from Python sets can result in incorrect results,
+  // since the order of the values in the representation is likely different than
+  // the original literal, ex:
+  //
+  //  str({ 10, 20, 5, 1, 100 }) may be '{ 1, 100, 5, 10, 20 }'
+  //
+  if (!str.empty() && str[0] == '{') {
+    const string type_name = py::str(value.get_type().attr("__name__"));
+    throw std::runtime_error(
+        core::format("Invalid conversion from a '%s' to a property value", type_name));
+  }
+
+  setAttrStr(name, str);
 }
 
 vector<string> PropertySet::dir() const {

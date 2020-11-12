@@ -59,6 +59,50 @@ class ConfigTestCase(unittest.TestCase):
             self.assertIsNotNone(population.config)
 
 
+class PopulationTestCase(unittest.TestCase):
+    def test_config_assignment(self):
+        p1 = darwin.Population('cne.lstm')
+        p2 = darwin.Population('neat')
+
+        # this is ok, we can bind to config instances
+        c = p1.config
+        c = p2.config
+
+        # ... but we can't set the config
+        with self.assertRaises(AttributeError):
+            p1.config = p2.config
+
+        # ... even self assignments
+        with self.assertRaises(AttributeError):
+            p1.config = p1.config
+
+        # ... or setting to None
+        with self.assertRaises(AttributeError):
+            p1.config = None
+
+
+class DomainTestCase(unittest.TestCase):
+    def test_config_assignment(self):
+        d1 = darwin.Domain('pong')
+        d2 = darwin.Domain('tic_tac_toe')
+
+        # this is ok, we can bind to config instances
+        c = d1.config
+        c = d2.config
+
+        # ... but we can't set the config
+        with self.assertRaises(AttributeError):
+            d1.config = d2.config
+
+        # ... even self assignments
+        with self.assertRaises(AttributeError):
+            d1.config = d1.config
+
+        # ... or setting to None
+        with self.assertRaises(AttributeError):
+            d1.config = None
+
+
 class PropertySetTestCase(unittest.TestCase):
     def test_dir(self):
         p = darwin.Population('cne.lstm')
@@ -66,6 +110,42 @@ class PropertySetTestCase(unittest.TestCase):
         self.assertTrue(attr_list)
         self.assertIn('activation_function', attr_list)
         self.assertIn('normalize_input', attr_list)
+
+    def test_get_attributes(self):
+        p = darwin.Population('cne.lstm')
+        self.assertEqual(p.config.activation_function, 'tanh')
+        self.assertEqual(p.config.normalize_input, 'false')
+
+        # trying to get an nonexistent property
+        with self.assertRaises(RuntimeError):
+            value = p.config.nonexistent_property
+
+    def test_set_attributes(self):
+        p = darwin.Population('cne.lstm')
+        p.config.activation_function = 'relu'
+        p.config.hidden_layers = '{ 10, 20, 5, 1, 100 }';
+        self.assertEqual(p.config.activation_function, 'relu')
+        self.assertEqual(p.config.hidden_layers, '{ 10, 20, 5, 1, 100 }')
+
+        # we support simple conversions
+        p.config.mutation_chance = 0.15
+        self.assertEqual(p.config.mutation_chance, '0.15')
+
+        # trying to set an nonexistent property
+        with self.assertRaises(RuntimeError):
+            p.config.mutation_chance_foo = '0.1'
+
+        # invalid value syntax
+        with self.assertRaises(RuntimeError):
+            p.config.mutation_chance = '#0.15'
+
+        # setting to a unkown enum value
+        with self.assertRaises(RuntimeError):
+            p.config.activation_function = 'relu_blah'
+
+        # we have a check to prevent accidental conversions
+        with self.assertRaises(RuntimeError):
+            p.config.hidden_layers = { 10, 20, 5, 1, 100 };
 
 
 if __name__ == '__main__':
