@@ -73,7 +73,21 @@ string PropertySet::repr() const {
   ss << "{\n";
   for (auto property : property_set_->properties()) {
     ss << "  '" << property->name() << "': '" << property->value() << "'  # "
-       << property->description() << "\n";
+       << property->description();
+    const auto known_values = property->knownValues();
+    if (!known_values.empty()) {
+      ss << ". Valid values: [";
+      bool first = true;
+      for (const auto& value : known_values) {
+        if (!first) {
+          ss << ", ";
+        }
+        ss << "'" << value << "'";
+        first = false;
+      }
+      ss << "]";
+    }
+    ss << "\n";
   }
   ss << "}\n";
   return ss.str();

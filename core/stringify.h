@@ -100,8 +100,21 @@ class StringifyKnownValues : public Stringify<T> {
 
   T fromString(const string& str) const override {
     auto it = string_to_value_.find(str);
-    if (it == string_to_value_.end())
-      throw Exception("Unknown value: '%s'", str.c_str());
+    if (it == string_to_value_.end()) {
+      stringstream msg;
+      msg << "Unknown value: '" << str << "'\n"
+          << "    Valid values: [";
+      bool first = true;
+      for (const auto& kv : string_to_value_) {
+        if (!first) {
+          msg << ", ";
+        }
+        msg << "'" << kv.first << "'";
+        first = false;
+      }
+      msg << "]\n";
+      throw Exception(msg.str());
+    }
     return it->second;
   }
 
