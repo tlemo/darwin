@@ -93,6 +93,12 @@ class Property {
     return typed_property->nativeValue();
   }
 
+  //! Returns `true` if the property wraps a `T` value
+  template <class T>
+  bool isA() const {
+    return dynamic_cast<const TypedProperty<T>*>(this) != nullptr;
+  }
+
  private:
   PropertySet* parent_ = nullptr;
   const string name_;

@@ -28,13 +28,41 @@ using namespace std;
 
 namespace darwin::python {
 
+//! Wraps a core::Property value, without owning it
+//!
+//! The wrapped core::Property is a reference to a sub-object part of a
+//! core::PropertySet. The lifetime of this wrapper must be strictly within
+//! the lifetime of the parent core::PropertySet (this can be implemented using
+//! py::return_value_policy::reference_internal or py::keep_alive<>)
+//!
+class Property {
+ public:
+  explicit Property(core::Property* property) : property_(property) {}
+
+  //! __float__ implementation
+  double asFloat() const;
+
+  //! __int__ implementation
+  int asInt() const;
+
+  //! __repr__ implementation
+  string repr() const;
+
+  //! __str__ implementation
+  string str() const;
+
+ private:
+  core::Property* property_ = nullptr;
+};
+
+//! Wraps a top-level core::PropertySet, owned by this wrapper
 class PropertySet : public core::NonCopyable,
                     public std::enable_shared_from_this<PropertySet> {
  public:
   explicit PropertySet(unique_ptr<core::PropertySet> property_set);
 
   //! __getattr__ implementation
-  string getAttr(const string& name) const;
+  Property getAttr(const string& name) const;
 
   //! __setattr__ with string value
   void setAttrStr(const string& name, const string& value);

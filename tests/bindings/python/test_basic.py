@@ -113,23 +113,36 @@ class PropertySetTestCase(unittest.TestCase):
 
     def test_get_attributes(self):
         p = darwin.Population('cne.lstm')
-        self.assertEqual(p.config.activation_function, 'tanh')
-        self.assertEqual(p.config.normalize_input, 'false')
+        self.assertEqual(repr(p.config.activation_function), 'tanh')
+        self.assertEqual(repr(p.config.normalize_input), 'false')
 
         # trying to get an nonexistent property
         with self.assertRaises(RuntimeError):
             value = p.config.nonexistent_property
 
+    def test_cast_attributes(self):
+        d = darwin.Domain('conquest')
+        self.assertEqual(int(d.config.int_unit_scale), 10)
+        self.assertEqual(float(d.config.points_draw), 0.4)
+        self.assertEqual(repr(d.config.board), 'hexagon')
+        self.assertEqual(str(d.config.board), 'hexagon')
+
+    def test_property_lifetime(self):
+        d = darwin.Domain('conquest')
+        property = d.config.board
+        d = None
+        self.assertEqual(str(property), 'hexagon')
+
     def test_set_attributes(self):
         p = darwin.Population('cne.lstm')
         p.config.activation_function = 'relu'
         p.config.hidden_layers = '{ 10, 20, 5, 1, 100 }';
-        self.assertEqual(p.config.activation_function, 'relu')
-        self.assertEqual(p.config.hidden_layers, '{ 10, 20, 5, 1, 100 }')
+        self.assertEqual(repr(p.config.activation_function), 'relu')
+        self.assertEqual(repr(p.config.hidden_layers), '{ 10, 20, 5, 1, 100 }')
 
         # we support simple conversions
         p.config.mutation_chance = 0.15
-        self.assertEqual(p.config.mutation_chance, '0.15')
+        self.assertEqual(float(p.config.mutation_chance), 0.15)
 
         # trying to set an nonexistent property
         with self.assertRaises(RuntimeError):

@@ -17,6 +17,7 @@
 #include <core/darwin.h>
 #include <core/properties.h>
 #include <core/format.h>
+#include <core/stringify.h>
 #include <registry/registry.h>
 
 #include <stdlib.h>
@@ -26,6 +27,22 @@ using namespace std;
 
 namespace darwin::python {
 
+double Property::asFloat() const {
+  return core::fromString<double>(property_->value());
+}
+
+int Property::asInt() const {
+  return core::fromString<int>(property_->value());
+}
+
+string Property::repr() const {
+  return property_->value();
+}
+
+string Property::str() const {
+  return property_->value();
+}
+
 PropertySet::PropertySet(unique_ptr<core::PropertySet> property_set)
     : property_set_(std::move(property_set)) {
   // create the name-to-property index
@@ -34,8 +51,8 @@ PropertySet::PropertySet(unique_ptr<core::PropertySet> property_set)
   }
 }
 
-string PropertySet::getAttr(const string& name) const {
-  return lookupProperty(name)->value();
+Property PropertySet::getAttr(const string& name) const {
+  return Property(lookupProperty(name));
 }
 
 void PropertySet::setAttrStr(const string& name, const string& value) {
@@ -174,8 +191,14 @@ PYBIND11_MODULE(darwin, m) {
   darwin::init(0, nullptr, getenv("DARWIN_HOME_PATH"));
   registry::init();
 
+  py::class_<Property>(m, "Property")
+      .def("__float__", &Property::asFloat)
+      .def("__int__", &Property::asInt)
+      .def("__repr__", &Property::repr)
+      .def("__str__", &Property::str);
+
   py::class_<PropertySet, shared_ptr<PropertySet>>(m, "PropertySet")
-      .def("__getattr__", &PropertySet::getAttr)
+      .def("__getattr__", &PropertySet::getAttr, py::keep_alive<0, 1>())
       .def("__setattr__", &PropertySet::setAttrStr)
       .def("__setattr__", &PropertySet::setAttrCast)
       .def("__dir__", &PropertySet::dir)

@@ -161,8 +161,7 @@ void BoundPropertyItem::updateChildProperties() {
   }
 
   // populate/show the active child property set (if any)
-  auto child_property_set = property_->childPropertySet();
-  if (child_property_set != nullptr) {
+  if (auto child_property_set = property_->childPropertySet()) {
     for (core::Property* property : child_property_set->properties()) {
       auto& child_item = child_properties_[property];
       if (child_item == nullptr) {
