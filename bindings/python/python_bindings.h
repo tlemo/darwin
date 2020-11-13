@@ -67,6 +67,9 @@ class PropertySet : public core::NonCopyable,
   //! __setattr__ with string value
   void setAttrStr(const string& name, const string& value);
 
+  //! __setattr__ with a Property value
+  void setAttrProperty(const string& name, const Property* property);
+
   //! __setattr__ with Python object value
   void setAttrCast(const string& name, py::object value);
 

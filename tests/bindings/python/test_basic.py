@@ -127,6 +127,10 @@ class PropertySetTestCase(unittest.TestCase):
         self.assertEqual(repr(d.config.board), 'hexagon')
         self.assertEqual(str(d.config.board), 'hexagon')
 
+        # invalid cast
+        with self.assertRaises(RuntimeError):
+            value = int(d.config.board)
+
     def test_property_lifetime(self):
         d = darwin.Domain('conquest')
         property = d.config.board
@@ -159,6 +163,11 @@ class PropertySetTestCase(unittest.TestCase):
         # we have a check to prevent accidental conversions
         with self.assertRaises(RuntimeError):
             p.config.hidden_layers = { 10, 20, 5, 1, 100 };
+
+    def test_proprty_assignment(self):
+        p = darwin.Population('cne.lstm')
+        value = p.config.hidden_layers
+        p.config.hidden_layers = value
 
 
 if __name__ == '__main__':

@@ -59,8 +59,13 @@ void PropertySet::setAttrStr(const string& name, const string& value) {
   lookupProperty(name)->setValue(value);
 }
 
+void PropertySet::setAttrProperty(const string& name, const Property* property) {
+  CHECK(property != nullptr);
+  lookupProperty(name)->setValue(property->repr());
+}
+
 void PropertySet::setAttrCast(const string& name, py::object value) {
-  const string str = py::str(value);
+  const string str = py::repr(value);
 
   // automatic conversions from Python sets can result in incorrect results,
   // since the order of the values in the representation is likely different than
@@ -200,6 +205,7 @@ PYBIND11_MODULE(darwin, m) {
   py::class_<PropertySet, shared_ptr<PropertySet>>(m, "PropertySet")
       .def("__getattr__", &PropertySet::getAttr, py::keep_alive<0, 1>())
       .def("__setattr__", &PropertySet::setAttrStr)
+      .def("__setattr__", &PropertySet::setAttrProperty)
       .def("__setattr__", &PropertySet::setAttrCast)
       .def("__dir__", &PropertySet::dir)
       .def("__repr__", &PropertySet::repr);
