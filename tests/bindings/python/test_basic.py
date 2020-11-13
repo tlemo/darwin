@@ -198,6 +198,26 @@ class PropertySetTestCase(unittest.TestCase):
             self.assertTrue(prop.description)
             self.assertTrue(prop.default_value)
 
+    def test_variant_property_sets(self):
+        d = darwin.Domain('tic_tac_toe')
+        config = d.config
+
+        # not all the properties have sub-variants
+        with self.assertRaises(RuntimeError):
+            dummy = config.ann_type.variant
+
+        d = None # stress the ownership/lifetimes management
+        prop = config.tournament_type
+        config.tournament_type = 'swiss'
+        swiss_tournament = prop.variant
+        config.tournament_type = 'simple'
+        simple_tournament = prop.variant
+        prop = None # stress the ownership/lifetimes management
+        config = None # stress the ownership/lifetimes management
+
+        self.assertEqual(int(swiss_tournament.rounds), 20)
+        self.assertEqual(int(simple_tournament.eval_games), 10)
+
 
 if __name__ == '__main__':
     unittest.main()

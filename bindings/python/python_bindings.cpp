@@ -32,8 +32,12 @@ Property::Property(core::Property* property) : property_(property) {
 }
 
 PropertySet Property::variant() const {
-  // TODO$$$
-  return PropertySet(nullptr);
+  if (auto child_property_set = property_->childPropertySet()) {
+    return PropertySet(child_property_set);
+  } else {
+    throw std::runtime_error(core::format(
+        "Property '%s' doesn't have a variant property set", property_->name()));
+  }
 }
 
 double Property::asFloat() const {
@@ -241,6 +245,7 @@ PYBIND11_MODULE(darwin, m) {
       .def_property_readonly("description", &Property::description)
       .def_property_readonly("default_value", &Property::defaultValue)
       .def_property_readonly("valid_values", &Property::knownValues)
+      .def_property_readonly("variant", py::cpp_function(&Property::variant, keep_alive))
       .def("__float__", &Property::asFloat)
       .def("__int__", &Property::asInt)
       .def("__repr__", &Property::repr)
