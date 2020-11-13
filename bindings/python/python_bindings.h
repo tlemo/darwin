@@ -35,9 +35,19 @@ namespace darwin::python {
 //! the lifetime of the parent core::PropertySet (this can be implemented using
 //! py::return_value_policy::reference_internal or py::keep_alive<>)
 //!
+//! \todo consider a shared_ptr<PropertySet> pointing back to the owner
+//!
 class Property {
  public:
   explicit Property(core::Property* property) : property_(property) {}
+
+  string name() const { return property_->name(); }
+
+  string description() const { return property_->description(); }
+
+  string defaultValue() const { return property_->defaultValue(); }
+
+  vector<string> knownValues() const { return property_->knownValues(); }
 
   //! __float__ implementation
   double asFloat() const;

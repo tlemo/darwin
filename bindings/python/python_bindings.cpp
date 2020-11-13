@@ -197,6 +197,10 @@ PYBIND11_MODULE(darwin, m) {
   registry::init();
 
   py::class_<Property>(m, "Property")
+      .def_property_readonly("name", &Property::name)
+      .def_property_readonly("description", &Property::description)
+      .def_property_readonly("default_value", &Property::defaultValue)
+      .def_property_readonly("valid_values", &Property::knownValues)
       .def("__float__", &Property::asFloat)
       .def("__int__", &Property::asInt)
       .def("__repr__", &Property::repr)

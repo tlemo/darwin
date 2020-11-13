@@ -164,10 +164,18 @@ class PropertySetTestCase(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             p.config.hidden_layers = { 10, 20, 5, 1, 100 };
 
-    def test_proprty_assignment(self):
+    def test_property_assignment(self):
         p = darwin.Population('cne.lstm')
         value = p.config.hidden_layers
         p.config.hidden_layers = value
+
+    def test_property_attributes(self):
+        d = darwin.Domain('conquest')
+        for prop_name in dir(d.config):
+            prop = d.config.__getattr__(prop_name)
+            self.assertEqual(prop.name, prop_name)
+            self.assertTrue(prop.description)
+            self.assertTrue(prop.default_value)
 
 
 if __name__ == '__main__':
