@@ -122,12 +122,17 @@ class Population : public core::NonCopyable,
 
   shared_ptr<PropertySet> config() const { return config_; }
 
+  int size() const { return size_; }
+
+  void setSize(int size);
+
   //! __repr__ implementation
   string repr() const;
 
  private:
   string name_;
   shared_ptr<PropertySet> config_;
+  int size_ = 5000;
 };
 
 class Experiment : public core::NonCopyable,

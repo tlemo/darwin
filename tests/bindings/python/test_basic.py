@@ -80,6 +80,15 @@ class PopulationTestCase(unittest.TestCase):
         with self.assertRaises(AttributeError):
             p1.config = None
 
+    def test_size(self):
+        p = darwin.Population('neat')
+        self.assertGreater(p.size, 0);
+        p.size = 1 # smallest valid value
+
+        # invalid size value
+        with self.assertRaises(RuntimeError):
+            p.size = 0
+
 
 class DomainTestCase(unittest.TestCase):
     def test_config_assignment(self):

@@ -163,6 +163,13 @@ Population::Population(const string& name) : name_(name) {
   }
 }
 
+void Population::setSize(int size) {
+  if (size < 1) {
+    throw std::runtime_error("Invalid population size (must be at least 1)");
+  }
+  size_ = size;
+}
+
 string Population::repr() const {
   return core::format("<darwin.Population name='%s'>", name_);
 }
@@ -244,6 +251,7 @@ PYBIND11_MODULE(darwin, m) {
       .def(py::init<const string&>())
       .def_property_readonly("name", &Population::name)
       .def_property_readonly("config", &Population::config)
+      .def_property("size", &Population::size, &Population::setSize)
       .def("__repr__", &Population::repr);
 
   py::class_<Experiment, shared_ptr<Experiment>>(m, "Experiment");
