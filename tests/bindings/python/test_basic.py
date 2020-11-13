@@ -213,10 +213,11 @@ class PropertySetTestCase(unittest.TestCase):
         config.tournament_type = 'simple'
         simple_tournament = prop.variant
         prop = None # stress the ownership/lifetimes management
+        config.tournament_type.variant.eval_games = 123
         config = None # stress the ownership/lifetimes management
 
         self.assertEqual(int(swiss_tournament.rounds), 20)
-        self.assertEqual(int(simple_tournament.eval_games), 10)
+        self.assertEqual(int(simple_tournament.eval_games), 123)
 
 
 if __name__ == '__main__':
