@@ -89,6 +89,12 @@ class PopulationTestCase(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             p.size = 0
 
+    def test_config_lifetime(self):
+        p = darwin.Population('neat')
+        config = p.config
+        p = None
+        self.assertTrue(repr(config))
+
 
 class DomainTestCase(unittest.TestCase):
     def test_config_assignment(self):
@@ -110,6 +116,12 @@ class DomainTestCase(unittest.TestCase):
         # ... or setting to None
         with self.assertRaises(AttributeError):
             d1.config = None
+
+    def test_config_lifetime(self):
+        d = darwin.Domain('conquest')
+        config = d.config
+        d = None
+        self.assertTrue(repr(config))
 
 
 class PropertySetTestCase(unittest.TestCase):

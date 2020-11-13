@@ -27,6 +27,15 @@ using namespace std;
 
 namespace darwin::python {
 
+Property::Property(core::Property* property) : property_(property) {
+  CHECK(property_ != nullptr);
+}
+
+PropertySet Property::variant() const {
+  // TODO$$$
+  return PropertySet(nullptr);
+}
+
 double Property::asFloat() const {
   return core::fromString<double>(property_->value());
 }
@@ -43,8 +52,8 @@ string Property::str() const {
   return property_->value();
 }
 
-PropertySet::PropertySet(unique_ptr<core::PropertySet> property_set)
-    : property_set_(std::move(property_set)) {
+PropertySet::PropertySet(core::PropertySet* property_set) : property_set_(property_set) {
+  CHECK(property_set_ != nullptr);
   // create the name-to-property index
   for (auto property : property_set_->properties()) {
     index_[property->name()] = property;
@@ -132,7 +141,7 @@ static string dumpPropertySet(const core::PropertySet* property_set, int nest_le
 }
 
 string PropertySet::repr() const {
-  return dumpPropertySet(property_set_.get(), 0);
+  return dumpPropertySet(property_set_, 0);
 }
 
 core::Property* PropertySet::lookupProperty(const string& name) const {
@@ -145,7 +154,7 @@ core::Property* PropertySet::lookupProperty(const string& name) const {
 
 Domain::Domain(const string& name) : name_(name) {
   if (auto factory = registry()->domains.find(name)) {
-    config_ = make_shared<PropertySet>(factory->defaultConfig(ComplexityHint::Balanced));
+    config_ = factory->defaultConfig(ComplexityHint::Balanced);
   } else {
     throw std::runtime_error(core::format("No domain named '%s'", name));
   }
@@ -157,7 +166,7 @@ string Domain::repr() const {
 
 Population::Population(const string& name) : name_(name) {
   if (auto factory = registry()->populations.find(name)) {
-    config_ = make_shared<PropertySet>(factory->defaultConfig(ComplexityHint::Balanced));
+    config_ = factory->defaultConfig(ComplexityHint::Balanced);
   } else {
     throw std::runtime_error(core::format("No population named '%s'", name));
   }
@@ -174,7 +183,7 @@ string Population::repr() const {
   return core::format("<darwin.Population name='%s'>", name_);
 }
 
-Experiment::Experiment(const string& name) {}
+Experiment::Experiment(const string&) {}
 
 shared_ptr<Experiment> Universe::newExperiment() {
   // TODO
@@ -223,6 +232,10 @@ PYBIND11_MODULE(darwin, m) {
   darwin::init(0, nullptr, getenv("DARWIN_HOME_PATH"));
   registry::init();
 
+  // pybind11 ownership policy used to keep the parent alive when returning a sub-object
+  // (https://pybind11.readthedocs.io/en/stable/advanced/functions.html#keep-alive)
+  const auto keep_alive = py::keep_alive<0, 1>();
+
   py::class_<Property>(m, "Property")
       .def_property_readonly("name", &Property::name)
       .def_property_readonly("description", &Property::description)
@@ -233,8 +246,8 @@ PYBIND11_MODULE(darwin, m) {
       .def("__repr__", &Property::repr)
       .def("__str__", &Property::str);
 
-  py::class_<PropertySet, shared_ptr<PropertySet>>(m, "PropertySet")
-      .def("__getattr__", &PropertySet::getAttr, py::keep_alive<0, 1>())
+  py::class_<PropertySet>(m, "PropertySet")
+      .def("__getattr__", &PropertySet::getAttr, keep_alive)
       .def("__setattr__", &PropertySet::setAttrStr)
       .def("__setattr__", &PropertySet::setAttrProperty)
       .def("__setattr__", &PropertySet::setAttrCast)
@@ -244,13 +257,13 @@ PYBIND11_MODULE(darwin, m) {
   py::class_<Domain, shared_ptr<Domain>>(m, "Domain")
       .def(py::init<const string&>())
       .def_property_readonly("name", &Domain::name)
-      .def_property_readonly("config", &Domain::config)
+      .def_property_readonly("config", py::cpp_function(&Domain::config, keep_alive))
       .def("__repr__", &Domain::repr);
 
   py::class_<Population, shared_ptr<Population>>(m, "Population")
       .def(py::init<const string&>())
       .def_property_readonly("name", &Population::name)
-      .def_property_readonly("config", &Population::config)
+      .def_property_readonly("config", py::cpp_function(&Population::config, keep_alive))
       .def_property("size", &Population::size, &Population::setSize)
       .def("__repr__", &Population::repr);
 

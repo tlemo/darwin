@@ -28,7 +28,9 @@ using namespace std;
 
 namespace darwin::python {
 
-//! Wraps a core::Property value, without owning it
+class PropertySet;
+
+//! Wraps a core::Property pointer (non-onwning)
 //!
 //! The wrapped core::Property is a reference to a sub-object part of a
 //! core::PropertySet. The lifetime of this wrapper must be strictly within
@@ -39,7 +41,7 @@ namespace darwin::python {
 //!
 class Property {
  public:
-  explicit Property(core::Property* property) : property_(property) {}
+  explicit Property(core::Property* property);
 
   string name() const { return property_->name(); }
 
@@ -48,6 +50,8 @@ class Property {
   string defaultValue() const { return property_->defaultValue(); }
 
   vector<string> knownValues() const { return property_->knownValues(); }
+
+  PropertySet variant() const;
 
   //! __float__ implementation
   double asFloat() const;
@@ -65,11 +69,10 @@ class Property {
   core::Property* property_ = nullptr;
 };
 
-//! Wraps a top-level core::PropertySet, owned by this wrapper
-class PropertySet : public core::NonCopyable,
-                    public std::enable_shared_from_this<PropertySet> {
+//! Wraps a top-level core::PropertySet pointer (non-owning)
+class PropertySet {
  public:
-  explicit PropertySet(unique_ptr<core::PropertySet> property_set);
+  explicit PropertySet(core::PropertySet* property_set);
 
   //! __getattr__ implementation
   Property getAttr(const string& name) const;
@@ -93,7 +96,7 @@ class PropertySet : public core::NonCopyable,
   core::Property* lookupProperty(const string& name) const;
 
  private:
-  unique_ptr<core::PropertySet> property_set_;
+  core::PropertySet* property_set_ = nullptr;
   unordered_map<string, core::Property*> index_;
 };
 
@@ -103,14 +106,14 @@ class Domain : public core::NonCopyable, public std::enable_shared_from_this<Dom
 
   const string& name() const { return name_; }
 
-  shared_ptr<PropertySet> config() const { return config_; }
+  PropertySet config() const { return PropertySet(config_.get()); }
 
   //! __repr__ implementation
   string repr() const;
 
  private:
   string name_;
-  shared_ptr<PropertySet> config_;
+  unique_ptr<core::PropertySet> config_;
 };
 
 class Population : public core::NonCopyable,
@@ -120,7 +123,7 @@ class Population : public core::NonCopyable,
 
   const string& name() const { return name_; }
 
-  shared_ptr<PropertySet> config() const { return config_; }
+  PropertySet config() const { return PropertySet(config_.get()); }
 
   int size() const { return size_; }
 
@@ -131,7 +134,7 @@ class Population : public core::NonCopyable,
 
  private:
   string name_;
-  shared_ptr<PropertySet> config_;
+  unique_ptr<core::PropertySet> config_;
   int size_ = 5000;
 };
 
