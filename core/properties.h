@@ -65,7 +65,7 @@ class Property {
   virtual string defaultValue() const = 0;
   
   //! Return the optional child PropertySet, or `nullptr`
-  virtual PropertySet* childPropertySet() { return nullptr; }
+  virtual PropertySet* childPropertySet() const { return nullptr; }
   
   //! Update the current value from a string representation
   virtual void setValue(const string& str) = 0;
@@ -300,7 +300,7 @@ class VariantProperty : public Property {
 
   string defaultValue() const override { return core::toString(default_case_); }
 
-  PropertySet* childPropertySet() override { return variant_->activeCase(); }
+  PropertySet* childPropertySet() const override { return variant_->activeCase(); }
 
   void setValue(const string& str) override;
 

@@ -90,12 +90,22 @@ vector<string> PropertySet::dir() const {
   return dir;
 }
 
-string PropertySet::repr() const {
+static string dumpPropertySet(const core::PropertySet* property_set, int nest_level) {
   stringstream ss;
-  ss << "{\n";
-  for (auto property : property_set_->properties()) {
-    ss << "  '" << property->name() << "': '" << property->value() << "'  # "
-       << property->description();
+
+  const auto indent = [&]() -> stringstream& {
+    for (int i = 0; i < nest_level; ++i) {
+      ss << "  ";
+    }
+    return ss;
+  };
+
+  indent() << "{\n";
+  for (auto property : property_set->properties()) {
+    indent() << "  '" << property->name() << "': '" << property->value() << "'  # "
+             << property->description();
+
+    // known (valid) values
     const auto known_values = property->knownValues();
     if (!known_values.empty()) {
       ss << ". Valid values: [";
@@ -109,10 +119,20 @@ string PropertySet::repr() const {
       }
       ss << "]";
     }
+
     ss << "\n";
+
+    // child property set (if any)
+    if (const auto child_property_set = property->childPropertySet()) {
+      ss << dumpPropertySet(child_property_set, nest_level + 2);
+    }
   }
-  ss << "}\n";
+  indent() << "}\n";
   return ss.str();
+}
+
+string PropertySet::repr() const {
+  return dumpPropertySet(property_set_.get(), 0);
 }
 
 core::Property* PropertySet::lookupProperty(const string& name) const {
