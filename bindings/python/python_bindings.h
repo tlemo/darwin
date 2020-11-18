@@ -16,6 +16,8 @@
 
 #include <core/utils.h>
 #include <core/universe.h>
+#include <core/ann_utils.h>
+#include <core/evolution.h>
 
 #include <third_party/pybind11/pybind11.h>
 
@@ -29,6 +31,7 @@ using namespace std;
 namespace darwin::python {
 
 class PropertySet;
+class Universe;
 
 //! Wraps a core::Property pointer (non-onwning)
 //!
@@ -141,7 +144,27 @@ class Population : public core::NonCopyable,
 class Experiment : public core::NonCopyable,
                    public std::enable_shared_from_this<Experiment> {
  public:
-  explicit Experiment(const string& name);
+  Experiment(shared_ptr<Domain> domain,
+             shared_ptr<Population> population,
+             shared_ptr<Universe> universe);
+
+  PropertySet config() { return PropertySet(&config_); }
+  PropertySet coreConfig() { return PropertySet(&core_config_); }
+
+  shared_ptr<Domain> domain() const { return domain_; }
+  shared_ptr<Population> population() const { return population_; }
+  shared_ptr<Universe> universe() const { return universe_; }
+
+  //! __repr__ implementation
+  string repr() const;
+
+ private:
+  ann::Config core_config_;
+  darwin::EvolutionConfig config_;
+
+  shared_ptr<Domain> domain_;
+  shared_ptr<Population> population_;
+  shared_ptr<Universe> universe_;
 };
 
 class Universe : public core::NonCopyable, public std::enable_shared_from_this<Universe> {
@@ -149,10 +172,11 @@ class Universe : public core::NonCopyable, public std::enable_shared_from_this<U
   explicit Universe(unique_ptr<darwin::Universe> universe)
       : universe_(std::move(universe)) {}
 
-  //! TODO
-  shared_ptr<Experiment> newExperiment();
+  //! Creates a new Darwin experiment
+  shared_ptr<Experiment> newExperiment(shared_ptr<Domain> domain,
+                                       shared_ptr<Population> population);
 
-  //! Close the Universe object
+  //! Closes the Universe object
   void close() { universe_.reset(); }
 
   //! Returns `true` if the universe object is closed

@@ -187,11 +187,22 @@ string Population::repr() const {
   return core::format("<darwin.Population name='%s'>", name_);
 }
 
-Experiment::Experiment(const string&) {}
+Experiment::Experiment(shared_ptr<Domain> domain,
+                       shared_ptr<Population> population,
+                       shared_ptr<Universe> universe)
+    : domain_(std::move(domain)),
+      population_(std::move(population)),
+      universe_(std::move(universe)) {}
 
-shared_ptr<Experiment> Universe::newExperiment() {
-  // TODO
-  return make_shared<Experiment>("Foo");
+string Experiment::repr() const {
+  return core::format("<darwin.Experiment domain='%s', population='%s'>",
+                      domain_->name(),
+                      population_->name());
+}
+
+shared_ptr<Experiment> Universe::newExperiment(shared_ptr<Domain> domain,
+                                               shared_ptr<Population> population) {
+  return make_shared<Experiment>(domain, population, shared_from_this());
 }
 
 string Universe::repr() const {
@@ -272,10 +283,20 @@ PYBIND11_MODULE(darwin, m) {
       .def_property("size", &Population::size, &Population::setSize)
       .def("__repr__", &Population::repr);
 
-  py::class_<Experiment, shared_ptr<Experiment>>(m, "Experiment");
+  py::class_<Experiment, shared_ptr<Experiment>>(m, "Experiment")
+      .def_property_readonly("config", py::cpp_function(&Experiment::config, keep_alive))
+      .def_property_readonly("core_config",
+                             py::cpp_function(&Experiment::coreConfig, keep_alive))
+      .def_property_readonly("domain", &Experiment::domain)
+      .def_property_readonly("population", &Experiment::population)
+      .def_property_readonly("universe", &Experiment::universe)
+      .def("__repr__", &Experiment::repr);
 
   py::class_<Universe, shared_ptr<Universe>>(m, "Universe")
-      .def("new_experiment", &Universe::newExperiment)
+      .def("new_experiment",
+           &Universe::newExperiment,
+           py::arg("domain"),
+           py::arg("population"))
       .def("close", &Universe::close)
       .def_property_readonly("closed", &Universe::isClosed)
       .def_property_readonly("path", &Universe::path)
@@ -291,8 +312,15 @@ PYBIND11_MODULE(darwin, m) {
         &availablePopulations,
         "Returns a list of available population names.");
 
-  m.def("create_universe", &createUniverse, "Creates a new Darwin universe file");
-  m.def("open_universe", &openUniverse, "Opens an existing Darwin universe file");
+  m.def("create_universe",
+        &createUniverse,
+        py::arg("path"),
+        "Creates a new Darwin universe file");
+
+  m.def("open_universe",
+        &openUniverse,
+        py::arg("path"),
+        "Opens an existing Darwin universe file");
 }
 
 }  // namespace darwin::python
