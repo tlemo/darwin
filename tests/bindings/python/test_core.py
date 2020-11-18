@@ -1,44 +1,6 @@
 
 import unittest
 import darwin
-import os
-
-
-def reserve_universe(filename):
-    """deletes the file if it exists, then returns the full path"""
-    darwin_home_path = os.getenv('DARWIN_HOME_PATH')
-    if darwin_home_path is None:
-        raise RuntimeError('DARWIN_HOME_PATH must be set before running the tests')
-    full_path = os.path.abspath(os.path.join(darwin_home_path, filename))
-    if os.path.exists(full_path):
-        os.remove(full_path)
-    return full_path
-
-
-class UniverseTestCase(unittest.TestCase):
-    def test_create(self):
-        path = reserve_universe('create_universe.darwin')
-        universe = darwin.create_universe(path)
-        self.assertFalse(universe.closed)
-        self.assertEqual(universe.path, path)
-        universe.close()
-        self.assertTrue(universe.closed)
-
-    def test_context_manager(self):
-        path = reserve_universe('ctx_manager.darwin')
-
-        # create the universe
-        with darwin.create_universe(path):
-            # nothing to do, we just created a new universe
-            pass
-
-        # open the universe, using the context manager interface
-        with darwin.open_universe(path) as universe:
-            self.assertFalse(universe.closed)
-            self.assertEqual(universe.path, path)
-            self.assertTrue(str(universe).startswith('<darwin.Universe path='))
-
-        self.assertTrue(universe.closed)
 
 
 class ConfigTestCase(unittest.TestCase):
@@ -57,85 +19,6 @@ class ConfigTestCase(unittest.TestCase):
             population = darwin.Population(name)
             self.assertEqual(name, population.name)
             self.assertIsNotNone(population.config)
-
-
-class PopulationTestCase(unittest.TestCase):
-    def test_config_assignment(self):
-        p1 = darwin.Population('cne.lstm')
-        p2 = darwin.Population('neat')
-
-        # this is ok, we can bind to config instances
-        c = p1.config
-        c = p2.config
-
-        # ... but we can't set the config
-        with self.assertRaises(AttributeError):
-            p1.config = p2.config
-
-        # ... even self assignments
-        with self.assertRaises(AttributeError):
-            p1.config = p1.config
-
-        # ... or setting to None
-        with self.assertRaises(AttributeError):
-            p1.config = None
-
-    def test_size(self):
-        p = darwin.Population('neat')
-        self.assertGreater(p.size, 0);
-        p.size = 1 # smallest valid value
-
-        # invalid size value
-        with self.assertRaises(RuntimeError):
-            p.size = 0
-
-    def test_config_lifetime(self):
-        p = darwin.Population('neat')
-        config = p.config
-        p = None
-        self.assertTrue(repr(config))
-
-
-class DomainTestCase(unittest.TestCase):
-    def test_config_assignment(self):
-        d1 = darwin.Domain('pong')
-        d2 = darwin.Domain('tic_tac_toe')
-
-        # this is ok, we can bind to config instances
-        c = d1.config
-        c = d2.config
-
-        # ... but we can't set the config
-        with self.assertRaises(AttributeError):
-            d1.config = d2.config
-
-        # ... even self assignments
-        with self.assertRaises(AttributeError):
-            d1.config = d1.config
-
-        # ... or setting to None
-        with self.assertRaises(AttributeError):
-            d1.config = None
-
-    def test_config_lifetime(self):
-        d = darwin.Domain('conquest')
-        config = d.config
-        d = None
-        self.assertTrue(repr(config))
-
-
-class ExperimentTestCase(unittest.TestCase):
-    def test_new_experiment(self):
-        path = reserve_universe('new_experiment.darwin')
-        with darwin.create_universe(path) as universe:
-            p = darwin.Population('neat')
-            d = darwin.Domain('unicycle')
-            exp = universe.new_experiment(population=p, domain=d)
-            self.assertRegex(repr(exp), p.name)
-            self.assertRegex(repr(exp), d.name)
-            self.assertIs(exp.population, p)
-            self.assertIs(exp.domain, d)
-            self.assertIs(exp.universe, universe)
 
 
 class PropertySetTestCase(unittest.TestCase):
