@@ -7,7 +7,7 @@ import darwin_test_utils
 
 class UniverseTestCase(unittest.TestCase):
     def test_create(self):
-        path = darwin_test_utils.reserve_universe('create_universe.darwin')
+        path = darwin_test_utils.reserve_universe('python_bindings.darwin')
         universe = darwin.create_universe(path)
         self.assertFalse(universe.closed)
         self.assertEqual(universe.path, path)
@@ -15,7 +15,7 @@ class UniverseTestCase(unittest.TestCase):
         self.assertTrue(universe.closed)
 
     def test_context_manager(self):
-        path = darwin_test_utils.reserve_universe('ctx_manager.darwin')
+        path = darwin_test_utils.reserve_universe('python_bindings.darwin')
 
         # create the universe
         with darwin.create_universe(path):

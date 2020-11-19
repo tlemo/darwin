@@ -89,6 +89,9 @@ class PropertySet {
   //! __setattr__ with Python object value
   void setAttrCast(const string& name, py::object value);
 
+  //! __setattr__ with Python boolean value
+  void setAttrBool(const string& name, py::bool_ value);
+
   //! __dir__ implementation
   vector<string> dir() const;
 
@@ -114,6 +117,8 @@ class Domain : public core::NonCopyable, public std::enable_shared_from_this<Dom
   //! __repr__ implementation
   string repr() const;
 
+  void seal(bool sealed = true) { config_->seal(sealed); }
+
  private:
   string name_;
   unique_ptr<core::PropertySet> config_;
@@ -135,10 +140,13 @@ class Population : public core::NonCopyable,
   //! __repr__ implementation
   string repr() const;
 
+  void seal(bool sealed = true);
+
  private:
   string name_;
   unique_ptr<core::PropertySet> config_;
   int size_ = 5000;
+  bool sealed_ = false;
 };
 
 class Experiment : public core::NonCopyable,
@@ -155,12 +163,30 @@ class Experiment : public core::NonCopyable,
   shared_ptr<Population> population() const { return population_; }
   shared_ptr<Universe> universe() const { return universe_; }
 
+  //! Create the primordial generation and prepare for evolution
+  //!
+  //! \note All the configuration values are "sealed" to prevent changes
+  //!
+  void initializePopulation();
+
+  //! Evaluate current population
+  void evaluatePopulation();
+
+  //! Create the next generation, using the current fitness values
+  //!
+  //! \note evaluatePopulation() must be called first
+  //!
+  void createNextGeneration();
+
+  //! Reset the experiment, "unsealing" config values for editing
+  void reset();
+
   //! __repr__ implementation
   string repr() const;
 
  private:
-  ann::Config core_config_;
   darwin::EvolutionConfig config_;
+  ann::Config core_config_;
 
   shared_ptr<Domain> domain_;
   shared_ptr<Population> population_;

@@ -74,7 +74,7 @@ void PropertySet::setAttrStr(const string& name, const string& value) {
 
 void PropertySet::setAttrProperty(const string& name, const Property* property) {
   CHECK(property != nullptr);
-  lookupProperty(name)->setValue(property->repr());
+  setAttrStr(name, property->repr());
 }
 
 void PropertySet::setAttrCast(const string& name, py::object value) {
@@ -95,6 +95,10 @@ void PropertySet::setAttrCast(const string& name, py::object value) {
   setAttrStr(name, str);
 }
 
+void PropertySet::setAttrBool(const string& name, pybind11::bool_ value) {
+  setAttrStr(name, value ? "true" : "false");
+}
+
 vector<string> PropertySet::dir() const {
   vector<string> dir;
   for (auto property : property_set_->properties()) {
@@ -113,7 +117,7 @@ static string dumpPropertySet(const core::PropertySet* property_set, int nest_le
     return ss;
   };
 
-  indent() << "{\n";
+  indent() << (property_set->sealed() ? "SEALED " : "") << "{\n";
   for (auto property : property_set->properties()) {
     indent() << "  '" << property->name() << "': '" << property->value() << "'  # "
              << property->description();
@@ -177,6 +181,9 @@ Population::Population(const string& name) : name_(name) {
 }
 
 void Population::setSize(int size) {
+  if (sealed_) {
+    throw std::runtime_error("Can't set the size of a sealed population");
+  }
   if (size < 1) {
     throw std::runtime_error("Invalid population size (must be at least 1)");
   }
@@ -187,12 +194,35 @@ string Population::repr() const {
   return core::format("<darwin.Population name='%s'>", name_);
 }
 
+void Population::seal(bool sealed) {
+  sealed_ = sealed;
+  config_->seal(sealed);
+}
+
 Experiment::Experiment(shared_ptr<Domain> domain,
                        shared_ptr<Population> population,
                        shared_ptr<Universe> universe)
     : domain_(std::move(domain)),
       population_(std::move(population)),
       universe_(std::move(universe)) {}
+
+void Experiment::initializePopulation() {
+  config_.seal();
+  core_config_.seal();
+  domain_->seal();
+  population_->seal();
+}
+
+void Experiment::evaluatePopulation() {}
+
+void Experiment::createNextGeneration() {}
+
+void Experiment::reset() {
+  config_.seal(false);
+  core_config_.seal(false);
+  domain_->seal(false);
+  population_->seal(false);
+}
 
 string Experiment::repr() const {
   return core::format("<darwin.Experiment domain='%s', population='%s'>",
@@ -265,6 +295,7 @@ PYBIND11_MODULE(darwin, m) {
   py::class_<PropertySet>(m, "PropertySet")
       .def("__getattr__", &PropertySet::getAttr, keep_alive)
       .def("__setattr__", &PropertySet::setAttrStr)
+      .def("__setattr__", &PropertySet::setAttrBool)
       .def("__setattr__", &PropertySet::setAttrProperty)
       .def("__setattr__", &PropertySet::setAttrCast)
       .def("__dir__", &PropertySet::dir)
@@ -290,6 +321,18 @@ PYBIND11_MODULE(darwin, m) {
       .def_property_readonly("domain", &Experiment::domain)
       .def_property_readonly("population", &Experiment::population)
       .def_property_readonly("universe", &Experiment::universe)
+      .def("initialize_population",
+           &Experiment::initializePopulation,
+           "Creates the primordial generation and prepare for evolution")
+      .def("evaluate_population",
+           &Experiment::evaluatePopulation,
+           "Domain specific evaluation, assigning fitness values")
+      .def("create_next_generation",
+           &Experiment::createNextGeneration,
+           "Creates the next generation, using the current fitness values")
+      .def("reset",
+           &Experiment::reset,
+           "Resets the experiment, allowing config values to be edited")
       .def("__repr__", &Experiment::repr);
 
   py::class_<Universe, shared_ptr<Universe>>(m, "Universe")

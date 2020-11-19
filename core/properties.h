@@ -422,15 +422,19 @@ class PropertySet : public core::NonCopyable {
 
   //! After sealing a PropertySet, all attempts to modify it through
   //! the Property interface will throw an exception (even if setting to the same value)
-  void seal() {
-    CHECK(!sealed_);
-    sealed_ = true;
+  void seal(bool sealed = true) {
+    sealed_ = sealed;
   }
 
-  // CONSIDER: is setting a property to the same value really a modification?
-  void propertyChanged() {
-    if (sealed_)
-      throw core::Exception("Attempting to modify a sealed PropertySet");
+  //! Returns `true` if the property set is sealed
+  bool sealed() const { return sealed_; }
+
+  //! Called before updating a property value
+  void onPropertyChange(const Property* property) {
+    if (sealed_) {
+      throw core::Exception("Attempting to set property '%s' on a sealed property set",
+                            property->name());
+    }
   }
 
   //! Serialize all the properties to a json object
@@ -503,26 +507,26 @@ class PropertySet : public core::NonCopyable {
 
 template <class T>
 void TypedProperty<T>::setValue(const string& str) {
+  parent()->onPropertyChange(this);
   *value_ = core::fromString<T>(str);
-  parent()->propertyChanged();
 }
 
 template <class T>
 void TypedProperty<T>::copyFrom(const Property& src) {
+  parent()->onPropertyChange(this);
   *value_ = *dynamic_cast<const TypedProperty&>(src).value_;
-  parent()->propertyChanged();
 }
 
 template <class T>
 void VariantProperty<T>::setValue(const string& str) {
+  parent()->onPropertyChange(this);
   variant_->selectCase(core::fromString<TagType>(str));
-  parent()->propertyChanged();
 }
 
 template <class T>
 void VariantProperty<T>::copyFrom(const Property& src) {
+  parent()->onPropertyChange(this);
   variant_->copyFrom(*dynamic_cast<const VariantProperty&>(src).variant_);
-  parent()->propertyChanged();
 }
 
 // convenience macro for defining properties

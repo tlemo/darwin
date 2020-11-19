@@ -49,6 +49,13 @@ class PropertySetTestCase(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             value = int(d.config.board)
 
+    def test_bool_attributes(self):
+        p = darwin.Population('neat')
+        p.config.normalize_input = True
+        self.assertEqual(repr(p.config.normalize_input), 'true')
+        p.config.normalize_input = False
+        self.assertEqual(repr(p.config.normalize_input), 'false')
+
     def test_property_lifetime(self):
         d = darwin.Domain('conquest')
         property = d.config.board
