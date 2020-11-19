@@ -40,6 +40,11 @@ class PropertySetTestCase(unittest.TestCase):
 
     def test_cast_attributes(self):
         d = darwin.Domain('conquest')
+
+        d.config.int_unit_scale = 10
+        d.config.points_draw = 0.4
+        d.config.board = 'hexagon'
+
         self.assertEqual(int(d.config.int_unit_scale), 10)
         self.assertEqual(float(d.config.points_draw), 0.4)
         self.assertEqual(repr(d.config.board), 'hexagon')
@@ -61,6 +66,27 @@ class PropertySetTestCase(unittest.TestCase):
         self.assertEqual(repr(p.config.normalize_input), 'true')
         p.config.normalize_input = False
         self.assertEqual(repr(p.config.normalize_input), 'false')
+
+    def test_auto_cast(self):
+        d = darwin.Domain('conquest')
+
+        d.config.max_steps = 100
+        d.config.points_draw = 0.4
+        d.config.board = 'hexagon'
+        d.config.tournament_type = 'swiss'
+        d.config.tournament_type.variant.rematches = False
+
+        self.assertIs(type(d.config.max_steps.auto), int)
+        self.assertIs(type(d.config.points_draw.auto), float)
+        self.assertIs(type(d.config.board.auto), str)
+        self.assertIs(type(d.config.tournament_type.auto), str)
+        self.assertIs(type(d.config.tournament_type.variant.rematches.auto), bool)
+
+        self.assertEqual(d.config.max_steps.auto, 100)
+        self.assertEqual(d.config.points_draw.auto, 0.4)
+        self.assertEqual(d.config.board.auto, 'hexagon')
+        self.assertEqual(d.config.tournament_type.auto, 'swiss')
+        self.assertEqual(d.config.tournament_type.variant.rematches.auto, False)
 
     def test_property_lifetime(self):
         d = darwin.Domain('conquest')

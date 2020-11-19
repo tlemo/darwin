@@ -40,6 +40,34 @@ PropertySet Property::variant() const {
   }
 }
 
+pybind11::object Property::autoCast() const {
+  const auto value_str = property_->value();
+
+  // boolean?
+  try {
+    return py::bool_(core::fromString<bool>(value_str));
+  } catch(...) {
+    // conversion failed, try something else...
+  }
+
+  // integer?
+  try {
+    return py::int_(core::fromString<int>(value_str));
+  } catch (...) {
+    // conversion failed, try something else...
+  }
+
+  // floating point?
+  try {
+    return py::float_(core::fromString<double>(value_str));
+  } catch (...) {
+    // conversion failed, try something else...
+  }
+
+  // if everything else failed, return a Python string value
+  return py::str(value_str);
+}
+
 double Property::asFloat() const {
   return core::fromString<double>(property_->value());
 }
@@ -291,6 +319,7 @@ PYBIND11_MODULE(darwin, m) {
       .def_property_readonly("default_value", &Property::defaultValue)
       .def_property_readonly("valid_values", &Property::knownValues)
       .def_property_readonly("variant", py::cpp_function(&Property::variant, keep_alive))
+      .def_property_readonly("auto", &Property::autoCast)
       .def("__float__", &Property::asFloat)
       .def("__int__", &Property::asInt)
       .def("__bool__", &Property::asBool)

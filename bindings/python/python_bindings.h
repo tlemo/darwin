@@ -56,6 +56,9 @@ class Property {
 
   PropertySet variant() const;
 
+  //! Automatic conversion to the appropriate Python type
+  py::object autoCast() const;
+
   //! __float__ implementation
   double asFloat() const;
 

@@ -53,15 +53,15 @@ class ExperimentTestCase(unittest.TestCase):
             d_config.max_torque = 0
 
         # make sure the values were not changed
-        self.assertEqual(population.size, 10);
-        #self.assertEqual(population.config.normalize_input, False);
-        #self.assertEqual(domain.config.gravity, 10.5);
-        #self.assertEqual(experiment.config.save_genealogy, True);
-        #self.assertEqual(experiment.core_config.mutation_std_dev, 0.5);
-        #self.assertEqual(d_config.max_torque, 100);
+        self.assertEqual(population.size, 10)
+        self.assertEqual(population.config.normalize_input.auto, False)
+        self.assertEqual(domain.config.gravity.auto, 10.5)
+        self.assertEqual(experiment.config.save_genealogy.auto, True)
+        self.assertEqual(experiment.core_config.mutation_std_dev.auto, 0.5)
+        self.assertEqual(d_config.max_torque.auto, 100)
 
         # resetting the experiment allows configuration changes again
-        experiment.reset();
+        experiment.reset()
 
         population.size = 1
         population.config.normalize_input = 'true'
@@ -70,7 +70,7 @@ class ExperimentTestCase(unittest.TestCase):
         experiment.core_config.mutation_std_dev = '0.1'
         d_config.max_torque = 1.5
 
-        universe.close();
+        universe.close()
 
 
 if __name__ == '__main__':
