@@ -45,6 +45,12 @@ class PropertySetTestCase(unittest.TestCase):
         self.assertEqual(repr(d.config.board), 'hexagon')
         self.assertEqual(str(d.config.board), 'hexagon')
 
+        d.config.tournament_type = 'swiss'
+        d.config.tournament_type.variant.rematches = 'true'
+        self.assertEqual(bool(d.config.tournament_type.variant.rematches), True)
+        d.config.tournament_type.variant.rematches = 'false'
+        self.assertEqual(bool(d.config.tournament_type.variant.rematches), False)
+
         # invalid cast
         with self.assertRaises(RuntimeError):
             value = int(d.config.board)

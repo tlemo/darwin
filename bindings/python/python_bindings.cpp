@@ -48,6 +48,10 @@ int Property::asInt() const {
   return core::fromString<int>(property_->value());
 }
 
+bool Property::asBool() const {
+  return core::fromString<bool>(property_->value());
+}
+
 string Property::repr() const {
   return property_->value();
 }
@@ -289,6 +293,7 @@ PYBIND11_MODULE(darwin, m) {
       .def_property_readonly("variant", py::cpp_function(&Property::variant, keep_alive))
       .def("__float__", &Property::asFloat)
       .def("__int__", &Property::asInt)
+      .def("__bool__", &Property::asBool)
       .def("__repr__", &Property::repr)
       .def("__str__", &Property::str);
 

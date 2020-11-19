@@ -62,6 +62,9 @@ class Property {
   //! __int__ implementation
   int asInt() const;
 
+  //! __bool__ implementation
+  bool asBool() const;
+
   //! __repr__ implementation
   string repr() const;
 
