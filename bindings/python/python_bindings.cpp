@@ -195,11 +195,10 @@ core::Property* PropertySet::lookupProperty(const string& name) const {
 
 Domain::Domain(const string& name) : name_(name) {
   factory_ = registry()->domains.find(name);
-  if (factory_ != nullptr) {
-    config_ = factory_->defaultConfig(ComplexityHint::Balanced);
-  } else {
+  if (factory_ == nullptr) {
     throw std::runtime_error(core::format("No domain named '%s'", name));
   }
+  config_ = factory_->defaultConfig(ComplexityHint::Balanced);
 }
 
 string Domain::repr() const {
@@ -218,11 +217,10 @@ void Domain::materialize() {
 
 Population::Population(const string& name) : name_(name) {
   factory_ = registry()->populations.find(name);
-  if (factory_ != nullptr) {
-    config_ = factory_->defaultConfig(ComplexityHint::Balanced);
-  } else {
+  if (factory_ == nullptr) {
     throw std::runtime_error(core::format("No population named '%s'", name));
   }
+  config_ = factory_->defaultConfig(ComplexityHint::Balanced);
 }
 
 void Population::setSize(int size) {
