@@ -18,6 +18,7 @@
 #include <core/properties.h>
 #include <core/format.h>
 #include <core/stringify.h>
+#include <core/logging.h>
 #include <registry/registry.h>
 
 #include <stdlib.h>
@@ -46,7 +47,7 @@ pybind11::object Property::autoCast() const {
   // boolean?
   try {
     return py::bool_(core::fromString<bool>(value_str));
-  } catch(...) {
+  } catch (...) {
     // conversion failed, try something else...
   }
 
@@ -193,8 +194,9 @@ core::Property* PropertySet::lookupProperty(const string& name) const {
 }
 
 Domain::Domain(const string& name) : name_(name) {
-  if (auto factory = registry()->domains.find(name)) {
-    config_ = factory->defaultConfig(ComplexityHint::Balanced);
+  factory_ = registry()->domains.find(name);
+  if (factory_ != nullptr) {
+    config_ = factory_->defaultConfig(ComplexityHint::Balanced);
   } else {
     throw std::runtime_error(core::format("No domain named '%s'", name));
   }
@@ -204,9 +206,20 @@ string Domain::repr() const {
   return core::format("<darwin.Domain name='%s'>", name_);
 }
 
+void Domain::seal(bool sealed) {
+  sealed_ = sealed;
+  config_->seal(sealed);
+}
+
+void Domain::materialize() {
+  CHECK(sealed_);
+  domain_ = factory_->create(*config_);
+}
+
 Population::Population(const string& name) : name_(name) {
-  if (auto factory = registry()->populations.find(name)) {
-    config_ = factory->defaultConfig(ComplexityHint::Balanced);
+  factory_ = registry()->populations.find(name);
+  if (factory_ != nullptr) {
+    config_ = factory_->defaultConfig(ComplexityHint::Balanced);
   } else {
     throw std::runtime_error(core::format("No population named '%s'", name));
   }
@@ -231,6 +244,15 @@ void Population::seal(bool sealed) {
   config_->seal(sealed);
 }
 
+void Population::materialize(const Domain& domain) {
+  CHECK(sealed_);
+
+  const auto real_domain = domain.realDomain();
+  CHECK(real_domain != nullptr);
+
+  population_ = factory_->create(*config_, *real_domain);
+}
+
 Experiment::Experiment(shared_ptr<Domain> domain,
                        shared_ptr<Population> population,
                        shared_ptr<Universe> universe)
@@ -239,21 +261,79 @@ Experiment::Experiment(shared_ptr<Domain> domain,
       universe_(std::move(universe)) {}
 
 void Experiment::initializePopulation() {
+  // prevent further modifications to the experiment setup
   config_.seal();
   core_config_.seal();
   domain_->seal();
   population_->seal();
+
+  if (!experiment_) {
+    darwin::ExperimentSetup setup;
+    setup.population_size = population_->size();
+    setup.population_name = population_->name();
+    setup.domain_name = domain_->name();
+    setup.population_hint = ComplexityHint::Balanced;
+    setup.domain_hint = ComplexityHint::Balanced;
+
+    experiment_ =
+        make_unique<darwin::Experiment>(name_, setup, nullopt, universe_->realUniverse());
+
+    domain_->materialize();
+    population_->materialize(*domain_);
+  }
+
+  experiment_->prepareForEvolution();
+
+  const auto real_population = population_->realPopulation();
+  CHECK(real_population != nullptr);
+
+  real_population->createPrimordialGeneration(population_->size());
 }
 
-void Experiment::evaluatePopulation() {}
+void Experiment::evaluatePopulation() {
+  if (!experiment_) {
+    throw std::runtime_error("population must be initialized first");
+  }
 
-void Experiment::createNextGeneration() {}
+  // setup the shared ANN library
+  ann::g_config.copyFrom(core_config_);
+
+  const auto real_population = population_->realPopulation();
+  CHECK(real_population != nullptr);
+
+  const auto real_domain = domain_->realDomain();
+  CHECK(real_domain != nullptr);
+
+  real_domain->evaluatePopulation(real_population);
+
+  // TODO (see evolutionCycle())
+  // - validate fitness values?
+  // - extra fitness values
+  // - record generation?
+  // - publish generation results?
+}
+
+void Experiment::createNextGeneration() {
+  if (!experiment_) {
+    throw std::runtime_error("population must be initialized first");
+  }
+
+  // setup the shared ANN library
+  ann::g_config.copyFrom(core_config_);
+
+  const auto real_population = population_->realPopulation();
+  CHECK(real_population != nullptr);
+
+  real_population->createNextGeneration();
+}
 
 void Experiment::reset() {
   config_.seal(false);
   core_config_.seal(false);
   domain_->seal(false);
   population_->seal(false);
+
+  // TODO
 }
 
 string Experiment::repr() const {
@@ -308,6 +388,9 @@ PYBIND11_MODULE(darwin, m) {
   // Darwin initialization
   darwin::init(0, nullptr, getenv("DARWIN_HOME_PATH"));
   registry::init();
+
+  // initialize thread pool
+  pp::ParallelForSupport::init(nullptr);
 
   // pybind11 ownership policy used to keep the parent alive when returning a sub-object
   // (https://pybind11.readthedocs.io/en/stable/advanced/functions.html#keep-alive)

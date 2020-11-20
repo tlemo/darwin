@@ -26,6 +26,7 @@
 #include <utility>
 #include <unordered_map>
 #include <vector>
+#include <optional>
 using namespace std;
 
 namespace darwin::python {
@@ -123,11 +124,18 @@ class Domain : public core::NonCopyable, public std::enable_shared_from_this<Dom
   //! __repr__ implementation
   string repr() const;
 
-  void seal(bool sealed = true) { config_->seal(sealed); }
+  void seal(bool sealed = true);
+
+  void materialize();
+
+  darwin::Domain* realDomain() const { return domain_.get(); }
 
  private:
   string name_;
+  darwin::DomainFactory* factory_ = nullptr;
   unique_ptr<core::PropertySet> config_;
+  unique_ptr<darwin::Domain> domain_;
+  bool sealed_ = false;
 };
 
 class Population : public core::NonCopyable,
@@ -148,9 +156,15 @@ class Population : public core::NonCopyable,
 
   void seal(bool sealed = true);
 
+  void materialize(const Domain& domain);
+
+  darwin::Population* realPopulation() const { return population_.get(); }
+
  private:
   string name_;
+  darwin::PopulationFactory* factory_ = nullptr;
   unique_ptr<core::PropertySet> config_;
+  unique_ptr<darwin::Population> population_;
   int size_ = 5000;
   bool sealed_ = false;
 };
@@ -197,6 +211,11 @@ class Experiment : public core::NonCopyable,
   shared_ptr<Domain> domain_;
   shared_ptr<Population> population_;
   shared_ptr<Universe> universe_;
+
+  // TODO: opt name
+  optional<string> name_;
+
+  unique_ptr<darwin::Experiment> experiment_;
 };
 
 class Universe : public core::NonCopyable, public std::enable_shared_from_this<Universe> {
@@ -235,6 +254,8 @@ class Universe : public core::NonCopyable, public std::enable_shared_from_this<U
                       py::object /*traceback*/) {
     close();
   }
+
+  darwin::Universe* realUniverse() const { return universe_.get(); }
 
  private:
   void throwIfClosed() const;
