@@ -16,6 +16,7 @@ SOURCES += \
     outline_2d.cpp \
     platform_abstraction_layer.cpp \
     database.cpp \
+    runtime.cpp \
     sim/car.cpp \
     universe.cpp \
     evolution.cpp \
@@ -48,6 +49,7 @@ HEADERS += \
     outline_2d.h \
     pubsub.h \
     logging.h \
+    runtime.h \
     scope_guard.h \
     matrix.h \
     math_2d.h \

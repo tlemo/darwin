@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// non-portable code
+// portable abstractions for platform specific code
 
 #pragma once
 

@@ -15,6 +15,7 @@
 #include "logging.h"
 #include "utils.h"
 #include "format.h"
+#include "runtime.h"
 
 #include <stdarg.h>
 #include <stdio.h>
@@ -47,7 +48,7 @@ void initLogging() {
   //
   // NOTE: this will need to be revisited:
   //  1. localtime() is likely not thread-safe
-  //  2. using second granularity is not a great way to avoid conflicts
+  //  2. using second granularity is not a reliable way to avoid naming conflicts
   //
   array<char, 128> filename = {};
   time_t timestamp = time(nullptr);
@@ -56,8 +57,10 @@ void initLogging() {
                  "session_%Y%m%d_%H%M%S.log",
                  localtime(&timestamp)) > 0);
 
+  const auto logfile_path = core::Runtime::darwinHomePath() / filename.data();
+
   // open the session log file
-  FILE* logfile = ::fopen(filename.data(), "wt");
+  FILE* logfile = ::fopen(logfile_path.c_str(), "wt");
   CHECK(logfile != nullptr, "Can't create the log file (%s)", filename.data());
   CHECK(g_logfile.exchange(logfile) == nullptr);
 

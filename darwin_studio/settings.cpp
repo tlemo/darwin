@@ -15,6 +15,7 @@
 #include "settings.h"
 
 #include <core/logging.h>
+#include <core/runtime.h>
 
 #include <third_party/json/json.h>
 using nlohmann::json;
@@ -31,8 +32,12 @@ Settings g_settings;
 
 constexpr char kSettingsFile[] = "studio_settings.json";
 
+static string settingsFilePath() {
+  return core::Runtime::darwinHomePath() / kSettingsFile;
+}
+
 void Settings::init() {
-  if (fs::is_regular_file(kSettingsFile)) {
+  if (fs::is_regular_file(settingsFilePath())) {
     load();
   } else {
     core::log("Settings not found, using the defaults.\n");
@@ -41,7 +46,7 @@ void Settings::init() {
 }
 
 void Settings::load() {
-  ifstream settings_file(kSettingsFile);
+  ifstream settings_file(settingsFilePath());
   CHECK(settings_file, "can't open the settings file");
 
   try {
@@ -55,7 +60,7 @@ void Settings::load() {
 }
 
 void Settings::save() {
-  ofstream settings_file(kSettingsFile);
+  ofstream settings_file(settingsFilePath());
   CHECK(settings_file, "can't save the settings file");
 
   settings_file << std::setw(2) << g_settings.toJson();

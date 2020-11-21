@@ -14,6 +14,7 @@
 
 #pragma once
 
+#include <core/darwin.h>
 #include <core/utils.h>
 #include <core/universe.h>
 #include <core/ann_utils.h>

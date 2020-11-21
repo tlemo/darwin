@@ -43,11 +43,6 @@ class QWidget;
 
 namespace darwin {
 
-extern const char* kBuild;
-
-void init(int argc, char* argv[], const char* home_path = nullptr);
-void shutdown();
-
 //! A generic hint for the initial population & domain setup
 enum class ComplexityHint {
   Minimal,   //!< bare minimum, fast but poor results (mostly useful for testing)

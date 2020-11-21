@@ -14,7 +14,7 @@
 
 #include "python_bindings.h"
 
-#include <core/darwin.h>
+#include <core/runtime.h>
 #include <core/properties.h>
 #include <core/format.h>
 #include <core/stringify.h>
@@ -384,7 +384,7 @@ PYBIND11_MODULE(darwin, m) {
   m.doc() = "Darwin Neuroevolution Framework";
 
   // Darwin initialization
-  darwin::init(0, nullptr, getenv("DARWIN_HOME_PATH"));
+  core::Runtime::init(0, nullptr, getenv("DARWIN_HOME_PATH"));
   registry::init();
 
   // initialize thread pool
