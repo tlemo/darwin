@@ -253,10 +253,12 @@ void Population::materialize(const Domain& domain) {
 
 Experiment::Experiment(shared_ptr<Domain> domain,
                        shared_ptr<Population> population,
-                       shared_ptr<Universe> universe)
+                       shared_ptr<Universe> universe,
+                       optional<string> name)
     : domain_(std::move(domain)),
       population_(std::move(population)),
-      universe_(std::move(universe)) {}
+      universe_(std::move(universe)),
+      name_(name) {}
 
 void Experiment::initializePopulation() {
   // prevent further modifications to the experiment setup
@@ -341,8 +343,9 @@ string Experiment::repr() const {
 }
 
 shared_ptr<Experiment> Universe::newExperiment(shared_ptr<Domain> domain,
-                                               shared_ptr<Population> population) {
-  return make_shared<Experiment>(domain, population, shared_from_this());
+                                               shared_ptr<Population> population,
+                                               optional<string> name) {
+  return make_shared<Experiment>(domain, population, shared_from_this(), name);
 }
 
 string Universe::repr() const {
@@ -454,7 +457,8 @@ PYBIND11_MODULE(darwin, m) {
       .def("new_experiment",
            &Universe::newExperiment,
            py::arg("domain"),
-           py::arg("population"))
+           py::arg("population"),
+           py::arg("name") = py::none())
       .def("close", &Universe::close)
       .def_property_readonly("closed", &Universe::isClosed)
       .def_property_readonly("path", &Universe::path)

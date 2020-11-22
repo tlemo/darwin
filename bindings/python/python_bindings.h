@@ -175,7 +175,8 @@ class Experiment : public core::NonCopyable,
  public:
   Experiment(shared_ptr<Domain> domain,
              shared_ptr<Population> population,
-             shared_ptr<Universe> universe);
+             shared_ptr<Universe> universe,
+             optional<string> name);
 
   PropertySet config() { return PropertySet(&config_); }
   PropertySet coreConfig() { return PropertySet(&core_config_); }
@@ -226,7 +227,8 @@ class Universe : public core::NonCopyable, public std::enable_shared_from_this<U
 
   //! Creates a new Darwin experiment
   shared_ptr<Experiment> newExperiment(shared_ptr<Domain> domain,
-                                       shared_ptr<Population> population);
+                                       shared_ptr<Population> population,
+                                       optional<string> name);
 
   //! Closes the Universe object
   void close() { universe_.reset(); }
