@@ -268,6 +268,8 @@ void Experiment::initializePopulation() {
   population_->seal();
 
   if (!experiment_) {
+    CHECK(!trace_);
+
     darwin::ExperimentSetup setup;
     setup.population_size = population_->size();
     setup.population_name = population_->name();
@@ -276,7 +278,7 @@ void Experiment::initializePopulation() {
     setup.domain_hint = ComplexityHint::Balanced;
 
     experiment_ =
-        make_unique<darwin::Experiment>(name_, setup, nullopt, universe_->realUniverse());
+        make_shared<darwin::Experiment>(name_, setup, nullopt, universe_->realUniverse());
 
     domain_->materialize();
     population_->materialize(*domain_);
@@ -288,6 +290,8 @@ void Experiment::initializePopulation() {
   CHECK(real_population != nullptr);
 
   real_population->createPrimordialGeneration(population_->size());
+
+  trace_ = make_shared<darwin::EvolutionTrace>(experiment_, config_);
 }
 
 void Experiment::evaluatePopulation() {
@@ -304,6 +308,9 @@ void Experiment::evaluatePopulation() {
   const auto real_domain = domain_->realDomain();
   CHECK(real_domain != nullptr);
 
+  // TODO: this is just a placeholder for now
+  EvolutionStage evaluate_population_stage;
+
   real_domain->evaluatePopulation(real_population);
 
   // TODO (see evolutionCycle())
@@ -311,6 +318,31 @@ void Experiment::evaluatePopulation() {
   // - extra fitness values
   // - record generation?
   // - publish generation results?
+
+  // validate the fitness values
+  const auto& ranking_index = real_population->rankingIndex();
+  for (size_t i = 0; i < ranking_index.size(); ++i) {
+    const float fitness_value = real_population->genotype(ranking_index[i])->fitness;
+    CHECK(isfinite(fitness_value));
+    if (i > 0) {
+      // values should be ranked in descending fitness order
+      const float prev_value = real_population->genotype(ranking_index[i - 1])->fitness;
+      CHECK(fitness_value <= prev_value);
+    }
+  }
+
+  // extra fitness values (optional)
+  const auto champion_index = ranking_index[0];
+  const Genotype* champion = real_population->genotype(champion_index);
+  shared_ptr<core::PropertySet> calibration_fitness =
+      real_domain->calibrateGenotype(champion);
+
+  // record the generation
+  //
+  // TODO: what are we doing to do with the summary?
+  //
+  const auto summary = trace_->addGeneration(
+      real_population, calibration_fitness, evaluate_population_stage);
 }
 
 void Experiment::createNextGeneration() {

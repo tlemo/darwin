@@ -368,10 +368,10 @@ class Experiment : public core::NonCopyable {
   Universe* universe() const { return universe_; }
 
   //! Universe database Id of the experiment
-  db::RowId dbExperimentId() const { return db_experiment_->id; }
+  db::RowId dbExperimentId() const;
 
   //! Universe database Id of the particular experiment variation
-  db::RowId dbVariationId() const { return db_variation_->id; }
+  db::RowId dbVariationId() const;
 
   //! Update the configuration modification flag
   //! 

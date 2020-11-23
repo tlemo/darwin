@@ -46,11 +46,14 @@ GenerationSummary::GenerationSummary(const Population* population,
   champion = population->genotype(ranking_index[0])->clone();
 }
 
-EvolutionTrace::EvolutionTrace(const Evolution* evolution) : evolution_(evolution) {
-  auto& experiment = evolution_->experiment();
-  auto universe = experiment.universe();
-  auto evolution_config = evolution_->config().toJson().dump(2);
-  db_trace_ = universe->newTrace(experiment.dbVariationId(), evolution_config);
+EvolutionTrace::EvolutionTrace(shared_ptr<const Experiment> experiment,
+                               const EvolutionConfig& config)
+    : experiment_(experiment) {
+  CHECK(experiment_);
+  config_.copyFrom(config);
+  auto universe = experiment_->universe();
+  auto evolution_config = config_.toJson().dump(2);
+  db_trace_ = universe->newTrace(experiment_->dbVariationId(), evolution_config);
 }
 
 int EvolutionTrace::size() const {
@@ -130,8 +133,6 @@ GenerationSummary EvolutionTrace::addGeneration(
     generations_.push_back(summary);
   }
 
-  const EvolutionConfig& config = evolution_->config();
-
   // save the generation results
   DbGeneration db_generation;
   db_generation.trace_id = db_trace_->id;
@@ -152,7 +153,7 @@ GenerationSummary EvolutionTrace::addGeneration(
   }
 
   // detailed fitness information
-  switch (config.fitness_information) {
+  switch (config_.fitness_information) {
     case FitnessInfoKind::SamplesOnly:
       // nothing to do, we always save the samples
       break;
@@ -181,7 +182,7 @@ GenerationSummary EvolutionTrace::addGeneration(
   }
 
   // capture genealogy information
-  if (config.save_genealogy) {
+  if (config_.save_genealogy) {
     json json_full_genealogy;
     for (size_t i = 0; i < population->size(); ++i) {
       const auto& genealogy = population->genotype(i)->genealogy;
@@ -194,7 +195,7 @@ GenerationSummary EvolutionTrace::addGeneration(
   }
 
   // champion genotype
-  if (config.save_champion_genotype) {
+  if (config_.save_champion_genotype) {
     json json_genotypes;
     json_genotypes["champion"] = summary.champion->save();
     db_generation.genotypes = json_genotypes.dump();
@@ -203,7 +204,7 @@ GenerationSummary EvolutionTrace::addGeneration(
   // generation runtime profile
   json json_profile;
   json_profile["elapsed"] = top_stage.elapsed();
-  switch (config.profile_information) {
+  switch (config_.profile_information) {
     case ProfileInfoKind::GenerationOnly:
       break;
 
@@ -226,8 +227,7 @@ GenerationSummary EvolutionTrace::addGeneration(
   }
 
   // save the new generation to the universe database
-  auto universe = evolution_->experiment().universe();
-  universe->newGeneration(db_generation);
+  experiment_->universe()->newGeneration(db_generation);
 
   return summary;
 }
@@ -280,7 +280,7 @@ bool Evolution::newExperiment(shared_ptr<Experiment> experiment,
     experiment_ = experiment;
     experiment_->prepareForEvolution();
 
-    trace_ = make_shared<EvolutionTrace>(this);
+    trace_ = make_shared<EvolutionTrace>(experiment_, config_);
 
     state_ = State::Paused;
     state_cv_.notify_all();

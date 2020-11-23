@@ -214,10 +214,11 @@ class Experiment : public core::NonCopyable,
   shared_ptr<Population> population_;
   shared_ptr<Universe> universe_;
 
-  // TODO: opt name
+  // TODO: opt name (repr, attribute)
   optional<string> name_;
 
-  unique_ptr<darwin::Experiment> experiment_;
+  shared_ptr<darwin::Experiment> experiment_;
+  shared_ptr<darwin::EvolutionTrace> trace_;
 };
 
 class Universe : public core::NonCopyable, public std::enable_shared_from_this<Universe> {
