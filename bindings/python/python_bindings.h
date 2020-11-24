@@ -241,6 +241,8 @@ class Universe : public core::NonCopyable, public std::enable_shared_from_this<U
   explicit Universe(unique_ptr<darwin::Universe> universe)
       : universe_(std::move(universe)) {}
 
+  ~Universe() { close(); }
+
   //! Creates a new Darwin experiment
   shared_ptr<Experiment> newExperiment(shared_ptr<Domain> domain,
                                        shared_ptr<Population> population,
