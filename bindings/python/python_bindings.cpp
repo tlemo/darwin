@@ -272,7 +272,11 @@ Experiment::Experiment(shared_ptr<Domain> domain,
 }
 
 Experiment::~Experiment() {
-  // TODO: reset experiment
+  reset();
+
+  // population and domain can be now used in new experiments
+  domain_->setUsed(false);
+  population_->setUsed(false);
 }
 
 void Experiment::setName(const optional<string>& name) {
@@ -339,7 +343,6 @@ void Experiment::evaluatePopulation() {
   real_domain->evaluatePopulation(real_population);
 
   // TODO (see evolutionCycle())
-  // - validate fitness values?
   // - extra fitness values
   // - record generation?
   // - publish generation results?
@@ -386,12 +389,14 @@ void Experiment::createNextGeneration() {
 }
 
 void Experiment::reset() {
+  trace_.reset();
+  experiment_.reset();
+
+  // unseal configuration value to allow changes
   config_.seal(false);
   core_config_.seal(false);
   domain_->seal(false);
   population_->seal(false);
-
-  // TODO
 }
 
 string Experiment::repr() const {

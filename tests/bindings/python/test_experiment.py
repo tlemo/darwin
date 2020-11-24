@@ -61,6 +61,26 @@ class ExperimentTestCase(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             experiment_c = universe.new_experiment(new_domain, population, name='C')
 
+        # after the experiment is disposed, we can reuse the population and domain
+        experiment_a = None
+        experiment_d = universe.new_experiment(domain, population, name='D')
+
+    def test_experiment_reset(self):
+        path = darwin_test_utils.reserve_universe('python_bindings.darwin')
+        universe = darwin.create_universe(path)
+        population = darwin.Population('neat')
+        domain = darwin.Domain('unicycle')
+
+        population.size = 5
+        experiment_a = universe.new_experiment(domain, population)
+
+        for i in range(3):
+            experiment_a.name = f'A{i}' # name must be unique
+            experiment_a.initialize_population();
+            experiment_a.evaluate_population();
+            experiment_a.create_next_generation();
+            experiment_a.reset()
+
     def test_sealed_state(self):
         path = darwin_test_utils.reserve_universe('python_bindings.darwin')
         universe = darwin.create_universe(path)
