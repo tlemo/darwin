@@ -260,6 +260,16 @@ Experiment::Experiment(shared_ptr<Domain> domain,
       universe_(std::move(universe)),
       name_(name) {}
 
+void Experiment::setName(const optional<string>& name) {
+  if (experiment_) {
+    throw std::runtime_error("Can't change the name of an active experiment");
+  }
+  if (name.has_value() && name->empty()) {
+    throw std::runtime_error("Experiment name can't be an empty string");
+  }
+  name_ = name;
+}
+
 void Experiment::initializePopulation() {
   // prevent further modifications to the experiment setup
   config_.seal();
@@ -318,6 +328,7 @@ void Experiment::evaluatePopulation() {
   // - extra fitness values
   // - record generation?
   // - publish generation results?
+  // - tweak evolution config defaults?
 
   // validate the fitness values
   const auto& ranking_index = real_population->rankingIndex();
@@ -369,7 +380,8 @@ void Experiment::reset() {
 }
 
 string Experiment::repr() const {
-  return core::format("<darwin.Experiment domain='%s', population='%s'>",
+  return core::format("<darwin.Experiment %s domain='%s', population='%s'>",
+                      (name_ ? core::format("name='%s',", *name_) : "Unnamed"),
                       domain_->name(),
                       population_->name());
 }
@@ -471,6 +483,7 @@ PYBIND11_MODULE(darwin, m) {
       .def_property_readonly("domain", &Experiment::domain)
       .def_property_readonly("population", &Experiment::population)
       .def_property_readonly("universe", &Experiment::universe)
+      .def_property("name", &Experiment::name, &Experiment::setName)
       .def("initialize_population",
            &Experiment::initializePopulation,
            "Creates the primordial generation and prepare for evolution")

@@ -185,6 +185,10 @@ class Experiment : public core::NonCopyable,
   shared_ptr<Population> population() const { return population_; }
   shared_ptr<Universe> universe() const { return universe_; }
 
+  optional<string> name() const { return name_; }
+
+  void setName(const optional<string>& name);
+
   //! Create the primordial generation and prepare for evolution
   //!
   //! \note All the configuration values are "sealed" to prevent changes
@@ -214,7 +218,6 @@ class Experiment : public core::NonCopyable,
   shared_ptr<Population> population_;
   shared_ptr<Universe> universe_;
 
-  // TODO: opt name (repr, attribute)
   optional<string> name_;
 
   shared_ptr<darwin::Experiment> experiment_;

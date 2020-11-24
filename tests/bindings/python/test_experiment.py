@@ -18,6 +18,30 @@ class ExperimentTestCase(unittest.TestCase):
             self.assertIs(exp.domain, d)
             self.assertIs(exp.universe, universe)
 
+    def test_experiment_name(self):
+        path = darwin_test_utils.reserve_universe('python_bindings.darwin')
+        universe = darwin.create_universe(path)
+        population = darwin.Population('neat')
+        domain = darwin.Domain('unicycle')
+
+        experiment = universe.new_experiment(domain, population, name='foo')
+        self.assertEqual(experiment.name, 'foo')
+        self.assertRegex(repr(experiment), "'foo'")
+
+        experiment.name = ' a new  name  with  lots of  spaces! '
+        self.assertRegex(repr(experiment), "' a new  name  with  lots of  spaces! '")
+
+        experiment.name = None
+        self.assertRegex(repr(experiment), 'Unnamed')
+
+        with self.assertRaises(RuntimeError):
+            experiment.name = ''
+
+        experiment.initialize_population()
+
+        with self.assertRaises(RuntimeError):
+            experiment.name = 'baz'
+
     def test_sealed_state(self):
         path = darwin_test_utils.reserve_universe('python_bindings.darwin')
         universe = darwin.create_universe(path)
