@@ -131,12 +131,17 @@ class Domain : public core::NonCopyable, public std::enable_shared_from_this<Dom
 
   darwin::Domain* realDomain() const { return domain_.get(); }
 
+  bool isUsed() const { return used_; }
+
+  void setUsed(bool used) { used_ = used; }
+
  private:
   string name_;
   darwin::DomainFactory* factory_ = nullptr;
   unique_ptr<core::PropertySet> config_;
   unique_ptr<darwin::Domain> domain_;
   bool sealed_ = false;
+  bool used_ = false;
 };
 
 class Population : public core::NonCopyable,
@@ -161,6 +166,10 @@ class Population : public core::NonCopyable,
 
   darwin::Population* realPopulation() const { return population_.get(); }
 
+  bool isUsed() const { return used_; }
+
+  void setUsed(bool used) { used_ = used; }
+
  private:
   string name_;
   darwin::PopulationFactory* factory_ = nullptr;
@@ -168,6 +177,7 @@ class Population : public core::NonCopyable,
   unique_ptr<darwin::Population> population_;
   int size_ = 5000;
   bool sealed_ = false;
+  bool used_ = false;
 };
 
 class Experiment : public core::NonCopyable,
@@ -177,6 +187,8 @@ class Experiment : public core::NonCopyable,
              shared_ptr<Population> population,
              shared_ptr<Universe> universe,
              optional<string> name);
+
+  ~Experiment();
 
   PropertySet config() { return PropertySet(&config_); }
   PropertySet coreConfig() { return PropertySet(&core_config_); }

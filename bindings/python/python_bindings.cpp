@@ -258,7 +258,22 @@ Experiment::Experiment(shared_ptr<Domain> domain,
     : domain_(std::move(domain)),
       population_(std::move(population)),
       universe_(std::move(universe)),
-      name_(name) {}
+      name_(name) {
+  if (domain_->isUsed()) {
+    throw std::runtime_error(
+        "Can't reuse a domain instance used by a different experiment");
+  }
+  if (population_->isUsed()) {
+    throw std::runtime_error(
+        "Can't reuse a population instance used by a different experiment");
+  }
+  domain_->setUsed(true);
+  population_->setUsed(true);
+}
+
+Experiment::~Experiment() {
+  // TODO: reset experiment
+}
 
 void Experiment::setName(const optional<string>& name) {
   if (experiment_) {

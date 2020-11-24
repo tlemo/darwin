@@ -42,6 +42,25 @@ class ExperimentTestCase(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             experiment.name = 'baz'
 
+    def test_reuse_checks(self):
+        path = darwin_test_utils.reserve_universe('python_bindings.darwin')
+        universe = darwin.create_universe(path)
+        population = darwin.Population('neat')
+        domain = darwin.Domain('unicycle')
+
+        experiment_a = universe.new_experiment(domain, population, name='A')
+
+        # currently, once a population or a domain _instance_ is used by an experiment,
+        # it cannot be reused in other experiments
+
+        new_population = darwin.Population('neat')
+        with self.assertRaises(RuntimeError):
+            experiment_b = universe.new_experiment(domain, new_population, name='B')
+
+        new_domain = darwin.Domain('unicycle')
+        with self.assertRaises(RuntimeError):
+            experiment_c = universe.new_experiment(new_domain, population, name='C')
+
     def test_sealed_state(self):
         path = darwin_test_utils.reserve_universe('python_bindings.darwin')
         universe = darwin.create_universe(path)
