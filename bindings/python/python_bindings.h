@@ -114,6 +114,7 @@ class PropertySet {
   unordered_map<string, core::Property*> index_;
 };
 
+//! Wrapper for darwin::Domain
 class Domain : public core::NonCopyable, public std::enable_shared_from_this<Domain> {
  public:
   explicit Domain(const string& name);
@@ -144,6 +145,7 @@ class Domain : public core::NonCopyable, public std::enable_shared_from_this<Dom
   bool used_ = false;
 };
 
+//! Wrapper for darwin::Population
 class Population : public core::NonCopyable,
                    public std::enable_shared_from_this<Population> {
  public:
@@ -180,6 +182,7 @@ class Population : public core::NonCopyable,
   bool used_ = false;
 };
 
+//! Wrapper for darwin::GenerationSummary
 class GenerationSummary {
  public:
   explicit GenerationSummary(const darwin::GenerationSummary& summary)
@@ -198,6 +201,7 @@ class GenerationSummary {
   darwin::GenerationSummary summary_;
 };
 
+//! Wrapper for darwin::Experiment plus evolution driving APIs
 class Experiment : public core::NonCopyable,
                    public std::enable_shared_from_this<Experiment> {
  public:
@@ -254,6 +258,7 @@ class Experiment : public core::NonCopyable,
   shared_ptr<darwin::EvolutionTrace> trace_;
 };
 
+//! Wrapper for darwin::Universe
 class Universe : public core::NonCopyable, public std::enable_shared_from_this<Universe> {
  public:
   explicit Universe(unique_ptr<darwin::Universe> universe)
