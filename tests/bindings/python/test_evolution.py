@@ -25,7 +25,7 @@ class EvolutionTestCase(unittest.TestCase):
 
         universe.close()
 
-    def test_generation_summary(self):
+    def test_evaluate_population(self):
         path = darwin_test_utils.reserve_universe('python_bindings.darwin')
         universe = darwin.create_universe(path)
 
@@ -38,8 +38,13 @@ class EvolutionTestCase(unittest.TestCase):
         experiment.initialize_population()
         summary = experiment.evaluate_population()
 
+        # generation summary
         self.assertEqual(summary.generation, 0)
         self.assertEqual(summary.best_fitness, summary.champion.fitness)
+
+        # population fitness values
+        self.assertGreaterEqual(population[0].fitness, population[-1].fitness)
+        self.assertEqual(population[0].fitness, summary.champion.fitness)
 
         universe.close()
 
