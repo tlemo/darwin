@@ -180,6 +180,24 @@ class Population : public core::NonCopyable,
   bool used_ = false;
 };
 
+class GenerationSummary {
+ public:
+  explicit GenerationSummary(const darwin::GenerationSummary& summary)
+      : summary_(summary) {}
+
+  int generation() const { return summary_.generation; }
+  float bestFitness() const { return summary_.best_fitness; }
+  float medianFitness() const { return summary_.median_fitness; }
+  float worstFitness() const { return summary_.worst_fitness; }
+
+  optional<PropertySet> calibrationFitness() const;
+
+  const Genotype* champion() const { return summary_.champion.get(); }
+
+ private:
+  darwin::GenerationSummary summary_;
+};
+
 class Experiment : public core::NonCopyable,
                    public std::enable_shared_from_this<Experiment> {
  public:
@@ -208,7 +226,7 @@ class Experiment : public core::NonCopyable,
   void initializePopulation();
 
   //! Evaluate current population
-  void evaluatePopulation();
+  GenerationSummary evaluatePopulation();
 
   //! Create the next generation, using the current fitness values
   //!

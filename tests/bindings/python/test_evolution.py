@@ -25,6 +25,24 @@ class EvolutionTestCase(unittest.TestCase):
 
         universe.close()
 
+    def test_generation_summary(self):
+        path = darwin_test_utils.reserve_universe('python_bindings.darwin')
+        universe = darwin.create_universe(path)
+
+        population = darwin.Population('neat')
+        domain = darwin.Domain('tic_tac_toe')
+
+        population.size = 10
+        experiment = universe.new_experiment(domain, population)
+
+        experiment.initialize_population()
+        summary = experiment.evaluate_population()
+
+        self.assertEqual(summary.generation, 0)
+        self.assertEqual(summary.best_fitness, summary.champion.fitness)
+
+        universe.close()
+
     def test_reinitialize_population(self):
         path = darwin_test_utils.reserve_universe('python_bindings.darwin')
         universe = darwin.create_universe(path)

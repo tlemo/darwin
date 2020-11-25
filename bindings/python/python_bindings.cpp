@@ -251,6 +251,14 @@ void Population::materialize(const Domain& domain) {
   population_ = factory_->create(*config_, *real_domain);
 }
 
+optional<PropertySet> GenerationSummary::calibrationFitness() const {
+  optional<PropertySet> calibration_fitness;
+  if (summary_.calibration_fitness) {
+    calibration_fitness = PropertySet(summary_.calibration_fitness.get());
+  }
+  return calibration_fitness;
+}
+
 Experiment::Experiment(shared_ptr<Domain> domain,
                        shared_ptr<Population> population,
                        shared_ptr<Universe> universe,
@@ -323,7 +331,7 @@ void Experiment::initializePopulation() {
   trace_ = make_shared<darwin::EvolutionTrace>(experiment_, config_);
 }
 
-void Experiment::evaluatePopulation() {
+GenerationSummary Experiment::evaluatePopulation() {
   if (!experiment_) {
     throw std::runtime_error("population must be initialized first");
   }
@@ -341,12 +349,6 @@ void Experiment::evaluatePopulation() {
   EvolutionStage evaluate_population_stage;
 
   real_domain->evaluatePopulation(real_population);
-
-  // TODO (see evolutionCycle())
-  // - extra fitness values
-  // - record generation?
-  // - publish generation results?
-  // - tweak evolution config defaults?
 
   // validate the fitness values
   const auto& ranking_index = real_population->rankingIndex();
@@ -366,12 +368,9 @@ void Experiment::evaluatePopulation() {
   shared_ptr<core::PropertySet> calibration_fitness =
       real_domain->calibrateGenotype(champion);
 
-  // record the generation
-  //
-  // TODO: what are we doing to do with the summary?
-  //
-  const auto summary = trace_->addGeneration(
-      real_population, calibration_fitness, evaluate_population_stage);
+  // record the generation and return the generation summary
+  return GenerationSummary(trace_->addGeneration(
+      real_population, calibration_fitness, evaluate_population_stage));
 }
 
 void Experiment::createNextGeneration() {
@@ -530,6 +529,30 @@ PYBIND11_MODULE(darwin, m) {
       .def("__enter__", &Universe::ctxManagerEnter)
       .def("__exit__", &Universe::ctxManagerExit)
       .def("__repr__", &Universe::repr);
+
+  py::class_<darwin::Genealogy>(m, "Genealogy")
+      .def_readonly("genetic_operator", &darwin::Genealogy::genetic_operator)
+      .def_readonly("parents", &darwin::Genealogy::parents);
+
+  py::class_<darwin::Genotype>(m, "Genotype")
+      .def_readonly("fitness", &darwin::Genotype::fitness)
+      .def_readonly("genealogy", &darwin::Genotype::genealogy)
+      .def("__repr__",
+           [](const darwin::Genotype& genotype) {
+             return core::format("<darwin.Genotype fitness=%.2f>", genotype.fitness);
+           })
+      .def("to_json",
+           [](const darwin::Genotype& genotype) { return genotype.save().dump(); });
+
+  py::class_<GenerationSummary>(m, "GenerationSummary")
+      .def_property_readonly("generation", &GenerationSummary::generation)
+      .def_property_readonly("best_fitness", &GenerationSummary::bestFitness)
+      .def_property_readonly("median_fitness", &GenerationSummary::medianFitness)
+      .def_property_readonly("worst_fitness", &GenerationSummary::worstFitness)
+      .def_property_readonly("champion", &GenerationSummary::champion)
+      .def_property_readonly(
+          "calibration_fitness",
+          py::cpp_function(&GenerationSummary::calibrationFitness, keep_alive));
 
   m.def("available_domains",
         &availableDomains,
