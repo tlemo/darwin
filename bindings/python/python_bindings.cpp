@@ -241,7 +241,7 @@ string Population::repr() const {
   return core::format("<darwin.Population name='%s'>", name_);
 }
 
-const darwin::Genotype* Population::getItem(int index) const {
+unique_ptr<Genotype> Population::getItem(int index) const {
   if (!population_) {
     throw std::runtime_error("Population is not initialized");
   }
@@ -259,7 +259,7 @@ const darwin::Genotype* Population::getItem(int index) const {
     throw py::index_error();
   }
 
-  return population_->genotype(ranking_index_[index]);
+  return population_->genotype(ranking_index_[index])->clone();
 }
 
 void Population::seal(bool sealed) {
@@ -536,9 +536,7 @@ PYBIND11_MODULE(darwin, m) {
       .def_property_readonly("name", &Population::name)
       .def_property_readonly("config", py::cpp_function(&Population::config, keep_alive))
       .def_property("size", &Population::size, &Population::setSize)
-      .def("__getitem__",
-           &Population::getItem,
-           py::return_value_policy::reference_internal)
+      .def("__getitem__", &Population::getItem)
       .def("__repr__", &Population::repr);
 
   py::class_<Experiment, shared_ptr<Experiment>>(m, "Experiment")
@@ -580,9 +578,17 @@ PYBIND11_MODULE(darwin, m) {
       .def_readonly("genetic_operator", &darwin::Genealogy::genetic_operator)
       .def_readonly("parents", &darwin::Genealogy::parents);
 
+  py::class_<darwin::Brain>(m, "Brain")
+      .def("set_input", &darwin::Brain::setInput, py::arg("index"), py::arg("value"))
+      .def("output", &darwin::Brain::output, py::arg("index"))
+      .def("think", &darwin::Brain::think, "Calculates the output values")
+      .def("reset", &darwin::Brain::resetState, "Resets internal state");
+
   py::class_<darwin::Genotype>(m, "Genotype")
       .def_readonly("fitness", &darwin::Genotype::fitness)
       .def_readonly("genealogy", &darwin::Genotype::genealogy)
+      .def("grow", &darwin::Genotype::grow)
+      .def("clone", &darwin::Genotype::clone)
       .def("__repr__",
            [](const darwin::Genotype& genotype) {
              return core::format("<darwin.Genotype fitness=%.2f>", genotype.fitness);

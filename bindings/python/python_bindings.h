@@ -165,7 +165,7 @@ class Population : public core::NonCopyable,
   string repr() const;
 
   //! __getitem__ implementation
-  const darwin::Genotype* getItem(int index) const;
+  unique_ptr<darwin::Genotype> getItem(int index) const;
 
   void seal(bool sealed = true);
 
@@ -205,7 +205,7 @@ class GenerationSummary {
 
   optional<PropertySet> calibrationFitness() const;
 
-  const darwin::Genotype* champion() const { return summary_.champion.get(); }
+  unique_ptr<darwin::Genotype> champion() const { return summary_.champion->clone(); }
 
  private:
   darwin::GenerationSummary summary_;
