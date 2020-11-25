@@ -26,6 +26,7 @@ class EvolutionTestCase(unittest.TestCase):
         # evolution trace
         trace = experiment.trace
         self.assertEqual(trace.size, 5)
+        self.assertEqual(trace.size, len(trace))
         self.assertEqual(trace[4].champion.fitness, summary.champion.fitness)
         self.assertEqual(trace[4].champion.fitness, trace[-1].champion.fitness)
         self.assertEqual(trace[0].champion.fitness, trace[-5].champion.fitness)
@@ -50,6 +51,9 @@ class EvolutionTestCase(unittest.TestCase):
         experiment.initialize_population()
         summary = experiment.evaluate_population()
 
+        self.assertEqual(population.size, 10)
+        self.assertEqual(population.size, len(population))
+
         # generation summary
         self.assertEqual(summary.generation, 0)
         self.assertEqual(summary.best_fitness, summary.champion.fitness)
@@ -57,6 +61,11 @@ class EvolutionTestCase(unittest.TestCase):
         # population fitness values
         self.assertGreaterEqual(population[0].fitness, population[-1].fitness)
         self.assertEqual(population[0].fitness, summary.champion.fitness)
+
+        prev_fitness = summary.champion.fitness
+        for genotype in population:
+            self.assertLessEqual(genotype.fitness, prev_fitness)
+            prev_fitness = genotype.fitness
 
         universe.close()
 

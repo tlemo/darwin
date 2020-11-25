@@ -552,19 +552,22 @@ PYBIND11_MODULE(darwin, m) {
       .def_property_readonly("config", py::cpp_function(&Population::config, keep_alive))
       .def_property("size", &Population::size, &Population::setSize)
       .def("__getitem__", &Population::getItem)
+      .def("__len__", &Population::size)
       .def("__repr__", &Population::repr);
 
   py::class_<darwin::EvolutionTrace, shared_ptr<darwin::EvolutionTrace>>(m, "Trace")
       .def_property_readonly("size", &darwin::EvolutionTrace::size)
-      .def("__getitem__", [](const darwin::EvolutionTrace& trace, int generation) {
-        if (generation < 0) {
-          generation += trace.size();
-        }
-        if (generation < 0 || generation >= trace.size()) {
-          throw py::index_error();
-        }
-        return GenerationSummary(trace.generationSummary(generation));
-      });
+      .def("__getitem__",
+           [](const darwin::EvolutionTrace& trace, int generation) {
+             if (generation < 0) {
+               generation += trace.size();
+             }
+             if (generation < 0 || generation >= trace.size()) {
+               throw py::index_error();
+             }
+             return GenerationSummary(trace.generationSummary(generation));
+           })
+      .def("__len__", &darwin::EvolutionTrace::size);
 
   py::class_<Experiment, shared_ptr<Experiment>>(m, "Experiment")
       .def_property_readonly("config", py::cpp_function(&Experiment::config, keep_alive))
