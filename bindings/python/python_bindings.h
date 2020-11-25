@@ -228,6 +228,7 @@ class Experiment : public core::NonCopyable,
   shared_ptr<Domain> domain() const { return domain_; }
   shared_ptr<Population> population() const { return population_; }
   shared_ptr<Universe> universe() const { return universe_; }
+  shared_ptr<darwin::EvolutionTrace> trace() const { return trace_; }
 
   optional<string> name() const { return name_; }
 

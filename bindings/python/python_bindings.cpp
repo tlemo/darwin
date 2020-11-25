@@ -539,6 +539,18 @@ PYBIND11_MODULE(darwin, m) {
       .def("__getitem__", &Population::getItem)
       .def("__repr__", &Population::repr);
 
+  py::class_<darwin::EvolutionTrace, shared_ptr<darwin::EvolutionTrace>>(m, "Trace")
+      .def_property_readonly("size", &darwin::EvolutionTrace::size)
+      .def("__getitem__", [](const darwin::EvolutionTrace& trace, int generation) {
+        if (generation < 0) {
+          generation += trace.size();
+        }
+        if (generation < 0 || generation >= trace.size()) {
+          throw py::index_error();
+        }
+        return GenerationSummary(trace.generationSummary(generation));
+      });
+
   py::class_<Experiment, shared_ptr<Experiment>>(m, "Experiment")
       .def_property_readonly("config", py::cpp_function(&Experiment::config, keep_alive))
       .def_property_readonly("core_config",
@@ -547,6 +559,7 @@ PYBIND11_MODULE(darwin, m) {
       .def_property_readonly("population", &Experiment::population)
       .def_property_readonly("universe", &Experiment::universe)
       .def_property("name", &Experiment::name, &Experiment::setName)
+      .def_property_readonly("trace", &Experiment::trace)
       .def("initialize_population",
            &Experiment::initializePopulation,
            "Creates the primordial generation and prepare for evolution")

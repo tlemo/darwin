@@ -20,8 +20,20 @@ class EvolutionTestCase(unittest.TestCase):
         # basic evolution cycle
         experiment.initialize_population()
         for generation in range(5):
-          experiment.evaluate_population()
+          summary = experiment.evaluate_population()
           experiment.create_next_generation()
+
+        # evolution trace
+        trace = experiment.trace
+        self.assertEqual(trace.size, 5)
+        self.assertEqual(trace[4].champion.fitness, summary.champion.fitness)
+        self.assertEqual(trace[4].champion.fitness, trace[-1].champion.fitness)
+        self.assertEqual(trace[0].champion.fitness, trace[-5].champion.fitness)
+
+        with self.assertRaises(IndexError):
+            tmp = trace[5]
+        with self.assertRaises(IndexError):
+            tmp = trace[-6]
 
         universe.close()
 
