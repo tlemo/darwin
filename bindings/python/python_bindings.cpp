@@ -174,7 +174,7 @@ static string dumpPropertySet(const core::PropertySet* property_set, int nest_le
 
     // child property set (if any)
     if (const auto child_property_set = property->childPropertySet()) {
-      ss << dumpPropertySet(child_property_set, nest_level + 2);
+      ss << dumpPropertySet(child_property_set, nest_level + 1);
     }
   }
   indent() << "}\n";
@@ -294,6 +294,21 @@ optional<PropertySet> GenerationSummary::calibrationFitness() const {
     calibration_fitness = PropertySet(summary_.calibration_fitness.get());
   }
   return calibration_fitness;
+}
+
+string GenerationSummary::repr() const {
+  stringstream ss;
+  ss << "{\n";
+  ss << "  generation: " << generation() << "\n";
+  ss << "  best_fitness: " << core::format("%.2f\n", bestFitness());
+  ss << "  median_fitness: " << core::format("%.2f\n", medianFitness());
+  ss << "  worst_fitness: " << core::format("%.2f\n", worstFitness());
+  if (summary_.calibration_fitness) {
+    ss << "  calibration_fitness:\n";
+    ss << dumpPropertySet(summary_.calibration_fitness.get(), 1);
+  }
+  ss << "}\n";
+  return ss.str();
 }
 
 Experiment::Experiment(shared_ptr<Domain> domain,
@@ -617,7 +632,8 @@ PYBIND11_MODULE(darwin, m) {
       .def_property_readonly("champion", &GenerationSummary::champion)
       .def_property_readonly(
           "calibration_fitness",
-          py::cpp_function(&GenerationSummary::calibrationFitness, keep_alive));
+          py::cpp_function(&GenerationSummary::calibrationFitness, keep_alive))
+      .def("__repr__", &GenerationSummary::repr);
 
   m.def("available_domains",
         &availableDomains,

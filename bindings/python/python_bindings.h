@@ -207,6 +207,8 @@ class GenerationSummary {
 
   unique_ptr<darwin::Genotype> champion() const { return summary_.champion->clone(); }
 
+  string repr() const;
+
  private:
   darwin::GenerationSummary summary_;
 };
