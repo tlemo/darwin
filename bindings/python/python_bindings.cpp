@@ -215,6 +215,10 @@ void Domain::materialize() {
   domain_ = factory_->create(*config_);
 }
 
+void Domain::free() {
+  domain_.reset();
+}
+
 Population::Population(const string& name) : name_(name) {
   factory_ = registry()->populations.find(name);
   if (factory_ == nullptr) {
@@ -237,6 +241,27 @@ string Population::repr() const {
   return core::format("<darwin.Population name='%s'>", name_);
 }
 
+const darwin::Genotype* Population::getItem(int index) const {
+  if (!population_) {
+    throw std::runtime_error("Population is not initialized");
+  }
+
+  CHECK(sealed_);
+  CHECK(size_t(size_) == population_->size());
+  CHECK(ranking_index_.size() == population_->size());
+
+  // allow negative indexing
+  if (index < 0) {
+    index += size_;
+  }
+
+  if (index < 0 || index >= size_) {
+    throw py::index_error();
+  }
+
+  return population_->genotype(ranking_index_[index]);
+}
+
 void Population::seal(bool sealed) {
   sealed_ = sealed;
   config_->seal(sealed);
@@ -249,6 +274,18 @@ void Population::materialize(const Domain& domain) {
   CHECK(real_domain != nullptr);
 
   population_ = factory_->create(*config_, *real_domain);
+}
+
+void Population::free() {
+  population_.reset();
+  ranking_index_.clear();
+}
+
+void Population::updateIndex() {
+  CHECK(population_);
+  CHECK(used_);
+  CHECK(sealed_);
+  ranking_index_ = population_->rankingIndex();
 }
 
 optional<PropertySet> GenerationSummary::calibrationFitness() const {
@@ -327,6 +364,7 @@ void Experiment::initializePopulation() {
   CHECK(real_population != nullptr);
 
   real_population->createPrimordialGeneration(population_->size());
+  population_->updateIndex();
 
   trace_ = make_shared<darwin::EvolutionTrace>(experiment_, config_);
 }
@@ -349,6 +387,7 @@ GenerationSummary Experiment::evaluatePopulation() {
   EvolutionStage evaluate_population_stage;
 
   real_domain->evaluatePopulation(real_population);
+  population_->updateIndex();
 
   // validate the fitness values
   const auto& ranking_index = real_population->rankingIndex();
@@ -390,6 +429,10 @@ void Experiment::createNextGeneration() {
 void Experiment::reset() {
   trace_.reset();
   experiment_.reset();
+
+  // "unmaterialize" population & domain
+  population_->free();
+  domain_->free();
 
   // unseal configuration value to allow changes
   config_.seal(false);
@@ -493,6 +536,9 @@ PYBIND11_MODULE(darwin, m) {
       .def_property_readonly("name", &Population::name)
       .def_property_readonly("config", py::cpp_function(&Population::config, keep_alive))
       .def_property("size", &Population::size, &Population::setSize)
+      .def("__getitem__",
+           &Population::getItem,
+           py::return_value_policy::reference_internal)
       .def("__repr__", &Population::repr);
 
   py::class_<Experiment, shared_ptr<Experiment>>(m, "Experiment")

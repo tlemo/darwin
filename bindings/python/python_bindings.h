@@ -130,6 +130,8 @@ class Domain : public core::NonCopyable, public std::enable_shared_from_this<Dom
 
   void materialize();
 
+  void free();
+
   darwin::Domain* realDomain() const { return domain_.get(); }
 
   bool isUsed() const { return used_; }
@@ -162,9 +164,14 @@ class Population : public core::NonCopyable,
   //! __repr__ implementation
   string repr() const;
 
+  //! __getitem__ implementation
+  const darwin::Genotype* getItem(int index) const;
+
   void seal(bool sealed = true);
 
   void materialize(const Domain& domain);
+
+  void free();
 
   darwin::Population* realPopulation() const { return population_.get(); }
 
@@ -172,11 +179,14 @@ class Population : public core::NonCopyable,
 
   void setUsed(bool used) { used_ = used; }
 
+  void updateIndex();
+
  private:
   string name_;
   darwin::PopulationFactory* factory_ = nullptr;
   unique_ptr<core::PropertySet> config_;
   unique_ptr<darwin::Population> population_;
+  vector<size_t> ranking_index_;
   int size_ = 5000;
   bool sealed_ = false;
   bool used_ = false;
@@ -195,7 +205,7 @@ class GenerationSummary {
 
   optional<PropertySet> calibrationFitness() const;
 
-  const Genotype* champion() const { return summary_.champion.get(); }
+  const darwin::Genotype* champion() const { return summary_.champion.get(); }
 
  private:
   darwin::GenerationSummary summary_;
