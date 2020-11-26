@@ -479,12 +479,18 @@ string Experiment::repr() const {
 shared_ptr<Experiment> Universe::newExperiment(shared_ptr<Domain> domain,
                                                shared_ptr<Population> population,
                                                optional<string> name) {
+  throwIfClosed();
   return make_shared<Experiment>(domain, population, shared_from_this(), name);
 }
 
 string Universe::repr() const {
   return isClosed() ? "<darwin.Universe closed>"
                     : core::format("<darwin.Universe path='%s'>", path());
+}
+
+darwin::Universe* Universe::realUniverse() const {
+  throwIfClosed();
+  return universe_.get();
 }
 
 void Universe::throwIfClosed() const {

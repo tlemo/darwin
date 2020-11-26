@@ -319,7 +319,7 @@ class Universe : public core::NonCopyable, public std::enable_shared_from_this<U
     close();
   }
 
-  darwin::Universe* realUniverse() const { return universe_.get(); }
+  darwin::Universe* realUniverse() const;
 
  private:
   void throwIfClosed() const;
