@@ -409,8 +409,8 @@ GenerationSummary Experiment::evaluatePopulation() {
   const auto real_domain = domain_->realDomain();
   CHECK(real_domain != nullptr);
 
-  // TODO: this is just a placeholder for now
-  EvolutionStage evaluate_population_stage;
+  EvolutionStage evaluate_population_stage("Evaluate population", 0, 0);
+  evaluate_population_stage.start();
 
   real_domain->evaluatePopulation(real_population);
   population_->updateIndex();
@@ -432,6 +432,8 @@ GenerationSummary Experiment::evaluatePopulation() {
   const Genotype* champion = real_population->genotype(champion_index);
   shared_ptr<core::PropertySet> calibration_fitness =
       real_domain->calibrateGenotype(champion);
+
+  evaluate_population_stage.finish();
 
   // record the generation and return the generation summary
   return GenerationSummary(trace_->addGeneration(
