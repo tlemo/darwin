@@ -85,6 +85,12 @@ class PropertySet {
  public:
   explicit PropertySet(core::PropertySet* property_set);
 
+  //! to_json()
+  string toJson() const;
+
+  //! from_json()
+  void fromJson(const string& json_str);
+
   //! __getattr__ implementation
   Property getAttr(const string& name) const;
 

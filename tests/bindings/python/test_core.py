@@ -134,6 +134,25 @@ class PropertySetTestCase(unittest.TestCase):
             self.assertTrue(prop.description)
             self.assertTrue(prop.default_value)
 
+    def test_json_support(self):
+        d = darwin.Domain('conquest')
+        d.config.max_steps = 100
+        d.config.points_draw = 0.4
+        d.config.board = 'hexagon'
+        d.config.tournament_type = 'swiss'
+        d.config.tournament_type.variant.rematches = False
+
+        json_str = d.config.to_json()
+
+        # roundtrip
+        d = darwin.Domain('conquest')
+        d.config.from_json(json_str)
+        self.assertEqual(d.config.max_steps.auto, 100)
+        self.assertEqual(d.config.points_draw.auto, 0.4)
+        self.assertEqual(d.config.board.auto, 'hexagon')
+        self.assertEqual(d.config.tournament_type.auto, 'swiss')
+        self.assertEqual(d.config.tournament_type.variant.rematches.auto, False)
+
     def test_variant_property_sets(self):
         d = darwin.Domain('tic_tac_toe')
         config = d.config

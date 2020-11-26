@@ -21,6 +21,9 @@
 #include <core/logging.h>
 #include <registry/registry.h>
 
+#include <third_party/json/json.h>
+using nlohmann::json;
+
 #include <stdlib.h>
 #include <sstream>
 #include <stdexcept>
@@ -95,6 +98,14 @@ PropertySet::PropertySet(core::PropertySet* property_set) : property_set_(proper
   for (auto property : property_set_->properties()) {
     index_[property->name()] = property;
   }
+}
+
+string PropertySet::toJson() const {
+  return property_set_->toJson().dump();
+}
+
+void PropertySet::fromJson(const string& json_str) {
+  property_set_->fromJson(json::parse(json_str));
 }
 
 Property PropertySet::getAttr(const string& name) const {
@@ -532,6 +543,8 @@ PYBIND11_MODULE(darwin, m) {
       .def("__str__", &Property::str);
 
   py::class_<PropertySet>(m, "PropertySet")
+      .def("to_json", &PropertySet::toJson)
+      .def("from_json", &PropertySet::fromJson)
       .def("__getattr__", &PropertySet::getAttr, keep_alive)
       .def("__setattr__", &PropertySet::setAttrStr)
       .def("__setattr__", &PropertySet::setAttrBool)

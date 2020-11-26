@@ -416,6 +416,11 @@ class PropertySet : public core::NonCopyable {
   void copyFrom(const PropertySet& src) {
     CHECK(typeid(*this) == typeid(src), "Incompatible property sets");
     CHECK(properties_.size() == src.properties_.size());
+
+    if (sealed_) {
+      throw core::Exception("Attempting to use 'copyFrom' on a sealed property set");
+    }
+
     for (size_t i = 0; i < properties_.size(); ++i)
       properties_[i]->copyFrom(*src.properties_[i]);
   }
@@ -458,6 +463,10 @@ class PropertySet : public core::NonCopyable {
   //!
   void fromJson(const json& json_obj) {
     CHECK(json_obj.is_object());
+
+    if (sealed_) {
+      throw core::Exception("Attempting to use 'fromJson' on a sealed property set");
+    }
 
     bool at_least_one_value = false;
     for (const auto& property : properties_) {
