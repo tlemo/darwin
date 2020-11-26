@@ -515,6 +515,11 @@ shared_ptr<Universe> openUniverse(const string& path) {
   return make_shared<Universe>(darwin::Universe::open(path));
 }
 
+void addLogger(const function<void(const string&)>& logger) {
+  logger("Adding a new logger...\n");
+  core::consoleOutput()->subscribe(logger);
+}
+
 PYBIND11_MODULE(darwin, m) {
   m.doc() = "Darwin Neuroevolution Framework";
 
@@ -668,6 +673,11 @@ PYBIND11_MODULE(darwin, m) {
         &openUniverse,
         py::arg("path"),
         "Opens an existing Darwin universe file");
+
+  m.def("add_logger",
+        &addLogger,
+        py::arg("logger"),
+        "Subscribes a new callback receiving console log output");
 }
 
 }  // namespace darwin::python

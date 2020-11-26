@@ -26,6 +26,7 @@
 #include <string>
 #include <utility>
 #include <unordered_map>
+#include <functional>
 #include <vector>
 #include <optional>
 using namespace std;
@@ -338,5 +339,8 @@ shared_ptr<Universe> createUniverse(const string& path);
 
 //! Opens an existing universe file
 shared_ptr<Universe> openUniverse(const string& path);
+
+//! Subscribes a new callback receiving console log output
+void addLogger(const function<void(const string&)>& logger);
 
 }  // namespace darwin::python
