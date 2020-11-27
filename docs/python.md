@@ -7,8 +7,12 @@
 
 ### Building
 
+First, make sure all the [prerequisites](setup.md#general-prerequisites)
+are available. Even though the Python bindings don't link against Qt, it
+is still required for the build system (qmake).
+
 1. Export `QTDIR` to point to the Qt location
-   (ex. `export QTDIR=/home/tlemo/tools/qt/5.14.2/gcc_64`)
+   (ex. `export QTDIR=/home/user/tools/qt/5.14.2/gcc_64`)
 
 2. `python setup.py install`
 
@@ -18,12 +22,17 @@ First, change the directory to the project root location
 (containing the `setup.py` and `darwin.pro` files) and build the
 Python bindings.
 
+Running the tests also require a temporary location for storing test files. 
+The `DARWIN_HOME_PATH` must be set to point to this location, for example:
+`export DARWIN_HOME_PATH=tests/.temp` (`setup.py` will automatically do this
+if `DARWIN_HOME_PATH` is not already set)
+
 Option 1: `python -m unittest discover tests/bindings/python`
 
 Option 2: `python setup.py test`
 
 Option 3: Run individual test files directly
-  (ex. `python tests/bindings/python/test_basic.py`)
+  (ex. `python tests/bindings/python/test_core.py`)
 
 Option 4: Use your favorite Python test runner
   (Python tests are under `tests/bindings/python`)

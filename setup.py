@@ -91,6 +91,10 @@ if os.path.abspath(os.getcwd()) == darwin_root:
 else:
     build_root = os.getcwd()
 
+# configure the location for temporary test files
+# (unless explicitly set already)
+if 'DARWIN_HOME_PATH' not in os.environ:
+    os.environ['DARWIN_HOME_PATH'] = os.path.join(darwin_root, 'tests/.temp')
 
 setup(
     name="darwin",
