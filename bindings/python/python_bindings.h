@@ -265,6 +265,9 @@ class Experiment : public core::NonCopyable,
   string repr() const;
 
  private:
+  void throwIfDuplicateName(const optional<string>& name) const;
+
+ private:
   darwin::EvolutionConfig config_;
   ann::Config core_config_;
 
@@ -337,7 +340,7 @@ vector<string> availablePopulations();
 //! Creates a new universe file
 shared_ptr<Universe> createUniverse(const string& path);
 
-//! Opens an existing universe file
+//! Opens an existing universe file, or creates a new one if it doesn't exist
 shared_ptr<Universe> openUniverse(const string& path);
 
 //! Subscribes a new callback receiving console log output

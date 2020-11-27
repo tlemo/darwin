@@ -1,5 +1,5 @@
 
-# Python Bindings for Darwin
+# Python Bindings for Darwin: Setup
 
 > Only Python 3 is supported (3.6+ recommended). Anywhere `python` is
 > referenced in these instructions, it refers to the python 3 interpreter,
@@ -25,7 +25,8 @@ Python bindings.
 Running the tests also require a temporary location for storing test files. 
 The `DARWIN_HOME_PATH` must be set to point to this location, for example:
 `export DARWIN_HOME_PATH=tests/.temp` (`setup.py` will automatically do this
-if `DARWIN_HOME_PATH` is not already set)
+if `DARWIN_HOME_PATH` is not already set, so this is not neccesary for
+option 2)
 
 Option 1: `python -m unittest discover tests/bindings/python`
 

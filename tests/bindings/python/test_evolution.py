@@ -20,8 +20,8 @@ class EvolutionTestCase(unittest.TestCase):
         # basic evolution cycle
         experiment.initialize_population()
         for generation in range(5):
-          summary = experiment.evaluate_population()
-          experiment.create_next_generation()
+            summary = experiment.evaluate_population()
+            experiment.create_next_generation()
 
         # evolution trace
         trace = experiment.trace
@@ -85,8 +85,8 @@ class EvolutionTestCase(unittest.TestCase):
             # reinitialize the population (which would result in a new evolution trace)
             experiment.initialize_population()
             for generation in range(2):
-              experiment.evaluate_population()
-              experiment.create_next_generation()
+                experiment.evaluate_population()
+                experiment.create_next_generation()
 
         universe.close()
 

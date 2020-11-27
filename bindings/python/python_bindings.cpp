@@ -338,6 +338,7 @@ Experiment::Experiment(shared_ptr<Domain> domain,
     throw std::runtime_error(
         "Can't reuse a population instance used by a different experiment");
   }
+  throwIfDuplicateName(name_);
   domain_->setUsed(true);
   population_->setUsed(true);
 }
@@ -357,6 +358,7 @@ void Experiment::setName(const optional<string>& name) {
   if (name.has_value() && name->empty()) {
     throw std::runtime_error("Experiment name can't be an empty string");
   }
+  throwIfDuplicateName(name);
   name_ = name;
 }
 
@@ -377,8 +379,8 @@ void Experiment::initializePopulation() {
     setup.population_hint = ComplexityHint::Balanced;
     setup.domain_hint = ComplexityHint::Balanced;
 
-    experiment_ =
-        make_shared<darwin::Experiment>(name_, setup, nullopt, universe_->realUniverse());
+    const auto real_universe = universe_->realUniverse();
+    experiment_ = make_shared<darwin::Experiment>(name_, setup, nullopt, real_universe);
 
     domain_->materialize();
     population_->materialize(*domain_);
@@ -476,6 +478,14 @@ string Experiment::repr() const {
                       population_->name());
 }
 
+void Experiment::throwIfDuplicateName(const optional<string>& name) const {
+  const auto real_universe = universe_->realUniverse();
+  if (name.has_value() && real_universe->findExperiment(*name)) {
+    throw std::runtime_error(
+        core::format("Experiment name is already used: '%s'", *name));
+  }
+}
+
 shared_ptr<Experiment> Universe::newExperiment(shared_ptr<Domain> domain,
                                                shared_ptr<Population> population,
                                                optional<string> name) {
@@ -520,7 +530,12 @@ shared_ptr<Universe> createUniverse(const string& path) {
 }
 
 shared_ptr<Universe> openUniverse(const string& path) {
-  return make_shared<Universe>(darwin::Universe::open(path));
+  // TODO: this is a simple, but fragile hack - implement a better solution
+  try {
+    return make_shared<Universe>(darwin::Universe::open(path));
+  } catch (const core::Exception&) {
+    return make_shared<Universe>(darwin::Universe::create(path));
+  }
 }
 
 void addLogger(const function<void(const string&)>& logger) {
@@ -680,7 +695,7 @@ PYBIND11_MODULE(darwin, m) {
   m.def("open_universe",
         &openUniverse,
         py::arg("path"),
-        "Opens an existing Darwin universe file");
+        "Opens an existing Darwin universe, or creates a new one if it doesn't exist");
 
   m.def("add_logger",
         &addLogger,

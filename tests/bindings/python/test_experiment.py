@@ -34,13 +34,35 @@ class ExperimentTestCase(unittest.TestCase):
         experiment.name = None
         self.assertRegex(repr(experiment), 'Unnamed')
 
+        # invalid name (empty)
         with self.assertRaises(RuntimeError):
             experiment.name = ''
 
+        experiment.name = 'final'
+
         experiment.initialize_population()
 
+        # can't set the name after the experiment is initialized
         with self.assertRaises(RuntimeError):
             experiment.name = 'baz'
+
+        second_population = darwin.Population('cne.lstm')
+        second_domain = darwin.Domain('tic_tac_toe')
+
+        # duplicate name
+        with self.assertRaises(RuntimeError):
+            second_experiment = universe.new_experiment(
+                domain=second_domain, population=second_population, name='final')
+
+        second_experiment = universe.new_experiment(
+            domain=second_domain, population=second_population, name='baz')
+
+        # ok...
+        second_experiment.name = 'new name'
+
+        # duplicate name
+        with self.assertRaises(RuntimeError):
+            second_experiment.name = 'final'
 
     def test_reuse_checks(self):
         path = darwin_test_utils.reserve_universe('python_bindings.darwin')

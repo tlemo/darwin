@@ -199,7 +199,7 @@ Connection::Connection(const string& filename, OpenMode open_mode, int busy_wait
             db_, "PRAGMA schema_version", &schemaVersionCheck, nullptr, nullptr) !=
         SQLITE_OK) {
       CHECK(sqlite3_close(db_) == SQLITE_OK);
-      throw core::Exception("Not a brand new database: '%s'", filename.c_str());
+      throw core::Exception("Database already exists: '%s'", filename.c_str());
     }
   }
 }

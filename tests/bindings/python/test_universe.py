@@ -14,6 +14,14 @@ class UniverseTestCase(unittest.TestCase):
         universe.close()
         self.assertTrue(universe.closed)
 
+    def test_opern_or_create(self):
+        path = darwin_test_utils.reserve_universe('python_bindings.darwin')
+        universe = darwin.open_universe(path)
+        self.assertFalse(universe.closed)
+        self.assertEqual(universe.path, path)
+        universe.close()
+        self.assertTrue(universe.closed)
+
     def test_context_manager(self):
         path = darwin_test_utils.reserve_universe('python_bindings.darwin')
 
