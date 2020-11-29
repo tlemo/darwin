@@ -14,6 +14,8 @@
 
 #include <core/utils.h>
 #include <core/format.h>
+#include <core/platform_abstraction_layer.h>
+
 #include <third_party/gtest/gtest.h>
 
 #include <stdlib.h>
@@ -32,11 +34,11 @@ TEST(PythonBindingsTest, RunPythonTests) {
   }
 
   // we need to update PYTHONPATH to point to the darwin extension
-  CHECK(setenv("PYTHONPATH", "../../bindings/python", true) == 0);
+  pal::setenv("PYTHONPATH", "../../bindings/python");
 
   // force a custom root location
   // (this will also be used to store test universe files)
-  CHECK(setenv("DARWIN_HOME_PATH", TEST_TEMP_PATH, true) == 0);
+  pal::setenv("DARWIN_HOME_PATH", TEST_TEMP_PATH);
 
   // invoke Python unit tests and check the exit code
   int exit_code = std::system(

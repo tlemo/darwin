@@ -27,4 +27,7 @@ string userHomePath();
 //! Returns true if AVX2 is detected
 bool detectAvx2();
 
+//! Sets an enviroment variable
+void setenv(const char* name, const char* value);
+
 }  // namespace pal

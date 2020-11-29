@@ -33,7 +33,7 @@ Settings g_settings;
 constexpr char kSettingsFile[] = "studio_settings.json";
 
 static string settingsFilePath() {
-  return core::Runtime::darwinHomePath() / kSettingsFile;
+  return (core::Runtime::darwinHomePath() / kSettingsFile).string();
 }
 
 void Settings::init() {

@@ -60,7 +60,7 @@ void initLogging() {
   const auto logfile_path = core::Runtime::darwinHomePath() / filename.data();
 
   // open the session log file
-  FILE* logfile = ::fopen(logfile_path.c_str(), "wt");
+  FILE* logfile = ::fopen(logfile_path.string().c_str(), "wt");
   CHECK(logfile != nullptr, "Can't create the log file (%s)", filename.data());
   CHECK(g_logfile.exchange(logfile) == nullptr);
 

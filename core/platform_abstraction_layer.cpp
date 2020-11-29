@@ -73,4 +73,12 @@ bool detectAvx2() {
 #endif  // DARWIN_COMPILER_MSVC
 }
 
+void setenv(const char* name, const char* value) {
+#ifdef DARWIN_OS_WINDOWS
+  CHECK(::_putenv_s(name, value) == 0);
+#else
+  CHECK(::setenv(name, value, true) == 0);
+#endif  // DARWIN_OS_WINDOWS
+}
+
 }  // namespace pal

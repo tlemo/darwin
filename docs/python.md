@@ -43,10 +43,11 @@ Option 4: Use your favorite Python test runner
 Building the Python extension requires a few environment variables to be
 set:
 
-| Env variable      | Value                                 |
-|-------------------|---------------------------------------|
-| `PYTHON_INCLUDE`  | `Python.h` location                   |
-| `PYTHON_CMD`      | Python interpreter (ex. `python3`)    |
+| Env variable                    | Value                                 |
+|---------------------------------|---------------------------------------|
+| `PYTHON_INCLUDE`                | `Python.h` location                   |
+| `PYTHON_CMD`                    | Python interpreter (ex. `python3`)    |
+| `PYTHON_LIBS` (Windows Only)    | `python*.lib` location                |
 
 The recommended way to set these environment variables is from 
 `Projects` / `Environment` settings page in Qt Creator:
