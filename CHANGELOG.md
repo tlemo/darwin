@@ -1,4 +1,11 @@
 
+## Nov 29th, 2020
+
+Experimental Python bindings!
+
+Currently available only on Linux, check out the [setup instructions][12]
+and a basic [intro / tutorial][13].
+
 ## Feb 2nd, 2020
 
 Last year I gave a talk about the Darwin Framework at a Seattle area 
@@ -188,3 +195,5 @@ Initial release
 [9]: https://tlemo.github.io/darwin/classdrone__follow_1_1_drone_follow.html
 [10]: https://tlemo.github.io/darwin/classdrone__track_1_1_drone_track.html
 [11]: https://docs.google.com/presentation/d/13ppNNKvsLxe4W_CgGO8THQArsma8colxh-cEzRWkUCE/edit?usp=sharing
+[12]: docs/python.md
+[13]: bindings/python/docs/tutorial.md

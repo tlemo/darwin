@@ -11,6 +11,8 @@ The current implementation is a combination of portable C++ (running on Linux,
 Windows and macOS), augmented by a collection of Python [scripts](scripts/docs/scripts.md)
 for post-processing recorded evolution traces.
 
+Experimental [Python bindings][4] are underway.
+
 ## What's New
 
 Please see the [changelog](CHANGELOG.md) for the latest updates.
@@ -22,6 +24,7 @@ Please see the [changelog](CHANGELOG.md) for the latest updates.
 - [Setup Instructions](docs/setup.md)
 - [Documentation][1]
 - [Scripts](scripts/docs/scripts.md)
+- [Python Bindings][4]
 - [Contributing](CONTRIBUTING.md)
 
 ## Evolutionary Algorithms and Neuroevolution
@@ -194,6 +197,7 @@ This is not an officially supported Google product.
 [1]: https://tlemo.github.io/darwin
 [2]: https://en.wikipedia.org/wiki/Neuroevolution
 [3]: https://en.wikipedia.org/wiki/Evolutionary_algorithm
+[4]: bindings/python/docs/tutorial.md
 
 [Genotype]: https://tlemo.github.io/darwin/classdarwin_1_1_genotype.html
 [Brain]: https://tlemo.github.io/darwin/classdarwin_1_1_brain.html
