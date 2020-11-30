@@ -7,4 +7,5 @@ SUBDIRS += \
     json \
     sqlite \
     box2d \
-    tinyspline
+    tinyspline \
+    pybind11

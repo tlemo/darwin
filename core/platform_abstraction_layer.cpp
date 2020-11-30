@@ -22,8 +22,8 @@
 #include <intrin.h>
 #endif  // DARWIN_COMPILER_MSVC
 
-#include <experimental/filesystem>
-namespace fs = std::experimental::filesystem;
+#include <filesystem>
+namespace fs = std::filesystem;
 
 namespace pal {
 
@@ -71,6 +71,14 @@ bool detectAvx2() {
 #else
   return __builtin_cpu_supports("avx2");
 #endif  // DARWIN_COMPILER_MSVC
+}
+
+void setenv(const char* name, const char* value) {
+#ifdef DARWIN_OS_WINDOWS
+  CHECK(::_putenv_s(name, value) == 0);
+#else
+  CHECK(::setenv(name, value, true) == 0);
+#endif  // DARWIN_OS_WINDOWS
 }
 
 }  // namespace pal

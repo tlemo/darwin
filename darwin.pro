@@ -2,6 +2,7 @@
 TEMPLATE = subdirs
 
 SUBDIRS += \
+    bindings \
     core \
     core_ui \
     populations \
@@ -20,3 +21,4 @@ registry.depends = core populations domains
 darwin_studio.depends = core core_ui registry
 tests.depends = core registry third_party
 experimental.depends = core registry third_party
+bindings.depends = core registry

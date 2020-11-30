@@ -65,7 +65,7 @@ class Property {
   virtual string defaultValue() const = 0;
   
   //! Return the optional child PropertySet, or `nullptr`
-  virtual PropertySet* childPropertySet() { return nullptr; }
+  virtual PropertySet* childPropertySet() const { return nullptr; }
   
   //! Update the current value from a string representation
   virtual void setValue(const string& str) = 0;
@@ -91,6 +91,12 @@ class Property {
     if (typed_property == nullptr)
       throw core::Exception("Invalid property type");
     return typed_property->nativeValue();
+  }
+
+  //! Returns `true` if the property wraps a `T` value
+  template <class T>
+  bool isA() const {
+    return dynamic_cast<const TypedProperty<T>*>(this) != nullptr;
   }
 
  private:
@@ -177,7 +183,7 @@ class TypedProperty : public Property {
 //! ```cpp
 //! struct Properties : public core::PropertySet {
 //!   ...
-//!   VARIANT(, VariantType, VariantTag::Basic, "A variant property");
+//!   VARIANT(name, VariantType, VariantTag::Basic, "A variant property");
 //!   ...
 //! };
 //! ```
@@ -294,7 +300,7 @@ class VariantProperty : public Property {
 
   string defaultValue() const override { return core::toString(default_case_); }
 
-  PropertySet* childPropertySet() override { return variant_->activeCase(); }
+  PropertySet* childPropertySet() const override { return variant_->activeCase(); }
 
   void setValue(const string& str) override;
 
@@ -408,23 +414,32 @@ class PropertySet : public core::NonCopyable {
 
   //! Transfer values between two property sets
   void copyFrom(const PropertySet& src) {
-    CHECK(typeid(*this) == typeid(src));
+    CHECK(typeid(*this) == typeid(src), "Incompatible property sets");
     CHECK(properties_.size() == src.properties_.size());
+
+    if (sealed_) {
+      throw core::Exception("Attempting to use 'copyFrom' on a sealed property set");
+    }
+
     for (size_t i = 0; i < properties_.size(); ++i)
       properties_[i]->copyFrom(*src.properties_[i]);
   }
 
   //! After sealing a PropertySet, all attempts to modify it through
   //! the Property interface will throw an exception (even if setting to the same value)
-  void seal() {
-    CHECK(!sealed_);
-    sealed_ = true;
+  void seal(bool sealed = true) {
+    sealed_ = sealed;
   }
 
-  // CONSIDER: is setting a property to the same value really a modification?
-  void propertyChanged() {
-    if (sealed_)
-      throw core::Exception("Attempting to modify a sealed PropertySet");
+  //! Returns `true` if the property set is sealed
+  bool sealed() const { return sealed_; }
+
+  //! Called before updating a property value
+  void onPropertyChange(const Property* property) {
+    if (sealed_) {
+      throw core::Exception("Attempting to set property '%s' on a sealed property set",
+                            property->name());
+    }
   }
 
   //! Serialize all the properties to a json object
@@ -448,6 +463,10 @@ class PropertySet : public core::NonCopyable {
   //!
   void fromJson(const json& json_obj) {
     CHECK(json_obj.is_object());
+
+    if (sealed_) {
+      throw core::Exception("Attempting to use 'fromJson' on a sealed property set");
+    }
 
     bool at_least_one_value = false;
     for (const auto& property : properties_) {
@@ -497,26 +516,26 @@ class PropertySet : public core::NonCopyable {
 
 template <class T>
 void TypedProperty<T>::setValue(const string& str) {
+  parent()->onPropertyChange(this);
   *value_ = core::fromString<T>(str);
-  parent()->propertyChanged();
 }
 
 template <class T>
 void TypedProperty<T>::copyFrom(const Property& src) {
+  parent()->onPropertyChange(this);
   *value_ = *dynamic_cast<const TypedProperty&>(src).value_;
-  parent()->propertyChanged();
 }
 
 template <class T>
 void VariantProperty<T>::setValue(const string& str) {
+  parent()->onPropertyChange(this);
   variant_->selectCase(core::fromString<TagType>(str));
-  parent()->propertyChanged();
 }
 
 template <class T>
 void VariantProperty<T>::copyFrom(const Property& src) {
+  parent()->onPropertyChange(this);
   variant_->copyFrom(*dynamic_cast<const VariantProperty&>(src).variant_);
-  parent()->propertyChanged();
 }
 
 // convenience macro for defining properties

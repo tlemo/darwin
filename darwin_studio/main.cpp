@@ -19,6 +19,7 @@
 #include <core/utils.h>
 #include <core/darwin.h>
 #include <core/evolution.h>
+#include <core/runtime.h>
 #include <core/logging.h>
 #include <registry/registry.h>
 #include <registry/registry_ui.h>
@@ -34,7 +35,7 @@ int main(int argc, char* argv[]) {
   core::consoleOutput()->subscribe(
       [](const string& message) { ConsoleBuffer::instance()->addMessage(message); });
 
-  darwin::init(argc, argv);
+  core::Runtime::init(argc, argv);
 
   g_settings.init();
 

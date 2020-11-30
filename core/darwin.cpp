@@ -14,35 +14,8 @@
 
 #include "darwin.h"
 #include "logging.h"
-#include "platform_abstraction_layer.h"
-#include "ann_dynamic.h"
-
-#include <experimental/filesystem>
-namespace fs = std::experimental::filesystem;
 
 namespace darwin {
-
-constexpr char kDarwinHome[] = ".darwin";
-
-#ifdef NDEBUG
-const char* kBuild = ("RELEASE_BUILD " __DATE__ ", " __TIME__);
-#else
-const char* kBuild = ("DEBUG_BUILD " __DATE__ ", " __TIME__);
-#endif  // NDEBUG
-
-void init(int, char*[], const char* home_path) {
-  // make sure Darwin home directory exists and set current directory to it
-  // (the explicit home_path is used for setting up the testing environment)
-  auto home = (home_path == nullptr) ? pal::userHomePath() : string(home_path);
-  const auto darwin_home_path = fs::path(home) / kDarwinHome;
-  fs::create_directories(darwin_home_path);
-  fs::current_path(darwin_home_path);
-
-  core::initLogging();
-  ann::initAnnLibrary();
-}
-
-void shutdown() {}
 
 Experiment::Experiment(const optional<string>& name,
                        const ExperimentSetup& setup,
@@ -74,6 +47,16 @@ Experiment::Experiment(const DbExperiment* db_experiment, Universe* universe)
   // load the most recent experiment variation, if any
   if (db_experiment_->last_variation_id.has_value())
     loadLatestVariation();
+}
+
+db::RowId Experiment::dbExperimentId() const {
+  CHECK(db_experiment_);
+  return db_experiment_->id;
+}
+
+db::RowId Experiment::dbVariationId() const {
+  CHECK(db_variation_, "Experiment must be saved first");
+  return db_variation_->id;
 }
 
 void Experiment::basicSetup(const optional<string>& name, const ExperimentSetup& setup) {

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <core/darwin.h>
+#include <core/runtime.h>
 #include <core/evolution.h>
 #include <core/thread_pool.h>
 #include <registry/registry.h>
@@ -34,7 +34,7 @@ int main(int argc, char* argv[]) {
   // NOTE: this must be done before InitGoogleTest() in order
   //  to allow parameterized tests query the environment
   //
-  darwin::init(0, nullptr, TEST_TEMP_PATH);
+  core::Runtime::init(0, nullptr, TEST_TEMP_PATH);
   registry::init();
 
   auto monitor = make_unique<DummyProgressMonitor>();

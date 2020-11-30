@@ -37,8 +37,8 @@
 #include <optional>
 using namespace std;
 
-#include <experimental/filesystem>
-namespace fs = std::experimental::filesystem;
+#include <filesystem>
+namespace fs = std::filesystem;
 
 MainWindow::MainWindow() : QMainWindow(nullptr), ui(new Ui::MainWindow) {
   ui->setupUi(this);

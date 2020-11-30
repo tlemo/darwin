@@ -35,6 +35,9 @@ class Exception : public std::exception {
   explicit Exception(const char* message, ARGS&&... args)
       : message_(core::format(message, std::forward<ARGS>(args)...)) {}
 
+  //! Constructs an exception object with the specified message
+  explicit Exception(string message) : message_(std::move(message)) {}
+
   // move only
   Exception(Exception&&) noexcept = default;
   Exception& operator=(Exception&&) noexcept = default;

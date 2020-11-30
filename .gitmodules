@@ -10,3 +10,6 @@
 [submodule "tinyspline"]
 	path = third_party/tinyspline/repo
 	url = https://github.com/tlemo/tinyspline.git
+[submodule "pybind11"]
+	path = third_party/pybind11/repo
+	url = https://github.com/tlemo/pybind11.git

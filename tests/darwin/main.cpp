@@ -17,6 +17,7 @@
 #include <core/utils.h>
 #include <core/darwin.h>
 #include <core/evolution.h>
+#include <core/runtime.h>
 #include <registry/registry.h>
 
 #include <third_party/gtest/gtest.h>
@@ -27,7 +28,7 @@ int main(int argc, char* argv[]) {
   // NOTE: this must be done before InitGoogleTest() in order
   //  to allow parameterized tests query the environment
   //
-  darwin::init(0, nullptr, TEST_TEMP_PATH);
+  core::Runtime::init(0, nullptr, TEST_TEMP_PATH);
   darwin::Evolution::init();
   registry::init();
 

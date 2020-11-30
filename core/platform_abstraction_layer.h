@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// non-portable code
+// portable abstractions for platform specific code
 
 #pragma once
 
@@ -26,5 +26,8 @@ string userHomePath();
 
 //! Returns true if AVX2 is detected
 bool detectAvx2();
+
+//! Sets an enviroment variable
+void setenv(const char* name, const char* value);
 
 }  // namespace pal

@@ -4,7 +4,9 @@
 - [General Prerequisites](#general-prerequisites)
 - [Getting the Source Code](#getting-the-source-code)
 - [Building & Running Darwin Studio](#building--running-darwin-studio)
+- [Building from the Command Line](#building-from-the-command-line)
 - [Running the Tests](#running-the-tests)
+- [Python Bindings](#python-bindings)
 - [Qt Creator Tips](#qt-creator-tips)
 - [Windows](#windows)
 - [Linux](#linux)
@@ -47,12 +49,30 @@ git submodule update
 
 3. `Build / Run` (default keyboard shortcut is Ctrl+R)
 
+### Building from the Command Line
+
+1. Export `QTDIR` to point to the Qt location
+   (ex. `export QTDIR=/home/tlemo/tools/qt/5.14.2/gcc_64`)
+
+2. Create a build directory and `cd` into it
+   (ex. `mkdir .build_release && cd .build_release`)
+
+3. Invoke Qmake
+   (ex. `$QTDIR/bin/qmake ../darwin.pro CONFIG+=release`)
+
+4. Invoke Make
+    (ex. `make -j8`)
+
 ### Running the Tests
 
 The recommended way to run Darwin tests is from Qt Creator:
 `Tools / Tests / Run All Tests` or from the `Test Results` pane.
 
 For more information see the official Qt Creator's [Autotests][7] documentation.
+
+### Python Bindings
+
+See the [dedicated page](python.md).
 
 ### Qt Creator Tips
 

@@ -63,7 +63,7 @@ struct GenerationSummary {
 struct CompressedFitnessValue {
   //! Genotype index
   int index = -1;
-  
+
   //! Fitness value
   float value = 0;
 
@@ -72,9 +72,9 @@ struct CompressedFitnessValue {
 
 //! The kind of captured fitness data
 enum class FitnessInfoKind {
-  SamplesOnly,      //!< Just the best/median/worst/calibration fitness values
-  FullCompressed,   //!< All the fitness values, compressed
-  FullRaw,          //!< All the fitness values, raw
+  SamplesOnly,     //!< Just the best/median/worst/calibration fitness values
+  FullCompressed,  //!< All the fitness values, compressed
+  FullRaw,         //!< All the fitness values, raw
 };
 
 inline auto customStringify(core::TypeTag<FitnessInfoKind>) {
@@ -88,8 +88,8 @@ inline auto customStringify(core::TypeTag<FitnessInfoKind>) {
 
 //! The kind of captured profile data
 enum class ProfileInfoKind {
-  GenerationOnly,   //!< Just the per-generation elapsed timings
-  AllStages,        //!< Timings for the full stages tree for a generation
+  GenerationOnly,  //!< Just the per-generation elapsed timings
+  AllStages,       //!< Timings for the full stages tree for a generation
 };
 
 inline auto customStringify(core::TypeTag<ProfileInfoKind>) {
@@ -150,19 +150,19 @@ class EvolutionStage {
 
   //! Marks the start of the stage
   void start() { start_timestamp_ = Clock::now(); }
-  
+
   //! Marks the finish of the stage
   void finish() { finish_timestamp_ = Clock::now(); }
 
   //! Stage name
   const string& name() const { return name_; }
-  
+
   //! Stage elapsed time in seconds
   double elapsed() const;
-  
+
   //! Progress percent [0..100]
   int progressPercent() const;
-  
+
   //! List of sub-stages, if any
   const vector<EvolutionStage>& subStages() const { return sub_stages_; }
 
@@ -186,11 +186,11 @@ class EvolutionStage {
 //! Recording of a evolution experiment run
 class EvolutionTrace : public core::NonCopyable {
  public:
-  EvolutionTrace(const Evolution* evolution);
+  EvolutionTrace(shared_ptr<const Experiment> experiment, const EvolutionConfig& config);
 
   //! Number of recorded generations
   int size() const;
-  
+
   //! Indexed access to a recorded generation summary
   GenerationSummary generationSummary(int generation) const;
 
@@ -204,7 +204,9 @@ class EvolutionTrace : public core::NonCopyable {
   // a brief history of the generations
   vector<GenerationSummary> generations_;
 
-  const Evolution* evolution_ = nullptr;
+  shared_ptr<const Experiment> experiment_;
+  EvolutionConfig config_;
+
   unique_ptr<DbEvolutionTrace> db_trace_;
 };
 
@@ -213,27 +215,27 @@ class EvolutionTrace : public core::NonCopyable {
 //! \sa ProgressManager
 //! \sa Evolution
 //! \sa EvolutionStage
-//! 
+//!
 class ProgressMonitor {
  public:
   virtual ~ProgressMonitor() = default;
 
-  //! Stage start notification 
-  //! 
+  //! Stage start notification
+  //!
   //! \param name - stage name
   //! \param size - the actual size of the stage if known in advance
   //!      (in whaterver units/increments are appropriate)
   //! \param annotations - EvolutionStage::Annotation bit flags
-  //! 
+  //!
   virtual void beginStage(const string& name, size_t size, uint32_t annotations) = 0;
-  
+
   //! Stage finish notification
   virtual void finishStage(const string& name) = 0;
 
   //! Stage progress notification
-  //! 
+  //!
   //! \param increment - number of units processed, relative to stage size
-  //! 
+  //!
   virtual void reportProgress(size_t increment) = 0;
 };
 
@@ -287,13 +289,13 @@ class Evolution : public core::NonCopyable,
  public:
   //! Evolution state
   enum class State {
-    Invalid,        //!< Invalid state tag
-    Initializing,   //!< Initializing evolution
-    Running,        //!< Evolution experiment is running
-    Pausing,        //!< Evolution pause requested
-    Paused,         //!< Evolution experiment is paused
-    Canceling,      //!< Evolution cancel/stop requested
-    Stopped         //!< Evolution experiment was canceled/stopped
+    Invalid,       //!< Invalid state tag
+    Initializing,  //!< Initializing evolution
+    Running,       //!< Evolution experiment is running
+    Pausing,       //!< Evolution pause requested
+    Paused,        //!< Evolution experiment is paused
+    Canceling,     //!< Evolution cancel/stop requested
+    Stopped        //!< Evolution experiment was canceled/stopped
   };
 
   //! Event hints (as bit flags)
@@ -309,10 +311,10 @@ class Evolution : public core::NonCopyable,
 
   //! Evolution events notifications
   core::PubSub<uint32_t> events;
-  
+
   //! Channel for publishing generation summaries
   core::PubSub<GenerationSummary> generation_summary;
-  
+
   //! Channel for publishing the completition of a generation's top stage
   core::PubSub<EvolutionStage> top_stages;
 
@@ -321,22 +323,22 @@ class Evolution : public core::NonCopyable,
   struct Snapshot {
     //! Evolution state
     State state = State::Invalid;
-    
+
     //! Generation nubmer
     int generation = 0;
-    
+
     //! Currently running stage
     //! (most inner stage if there are nested stages)
     EvolutionStage stage;
-    
+
     //! The associated Experiment instance
     //! \warning This is a shallow copy
     shared_ptr<const Experiment> experiment;
-    
+
     //! The associated EvolutionTrace instance
     //! \warning This is a shallow copy
     shared_ptr<const EvolutionTrace> trace;
-    
+
     //! The associated darwin::Population instance
     //! \warning This is a non-owning pointer and will be invalidated if the
     //!   Snapshot instance outlives the Population instance
@@ -356,12 +358,12 @@ class Evolution : public core::NonCopyable,
   static void init();
 
   //! Sets up a new evolution experiment
-  //! 
+  //!
   //! \param experiment - the Experiment model/state
   //! \param config - evolution runtime settings
-  //! 
+  //!
   //! \todo Copy the experiment instead of shared_ptr?
-  //! 
+  //!
   bool newExperiment(shared_ptr<Experiment> experiment, const EvolutionConfig& config);
 
   //! Captures a Snapshot of the current evolution state
@@ -369,20 +371,20 @@ class Evolution : public core::NonCopyable,
 
   //! Accessor to the associted Experiment instance
   const Experiment& experiment() const { return *experiment_; }
-  
+
   //! Accessor to the associated EvolutionConfig instance
   const EvolutionConfig& config() const { return config_; }
 
   //! Start/Resume the evolution
   //! \sa State
   void run();
-  
+
   //! Pause the evolution
   //! \note It just creates a pause request, the actual transition to State::Paused
   //!   happens asynchroniously (normally when the evolution workers reach a checkpoint)
   //! \sa State
   void pause();
-  
+
   //! Resets the evolution (stops execution and resets the state)
   //! \note It just creates a cancelation request, the actual reset
   //!   happens asynchroniously (normally when the evolution workers reach a checkpoint)

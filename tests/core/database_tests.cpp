@@ -25,8 +25,8 @@
 #include <tuple>
 using namespace std;
 
-#include <experimental/filesystem>
-namespace fs = std::experimental::filesystem;
+#include <filesystem>
+namespace fs = std::filesystem;
 
 namespace database_tests {
 
