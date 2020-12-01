@@ -16,7 +16,7 @@
 
 #include "format.h"
 
-#include <exception>
+#include <stdexcept>
 #include <string>
 #include <utility>
 using namespace std;
@@ -24,29 +24,16 @@ using namespace std;
 namespace core {
 
 //! The base for exception types in the Darwin framework
-//! 
-//! \note This type is move-only
-//!
-class Exception : public std::exception {
+class Exception : public std::runtime_error {
  public:
   //! Constructs an exception object, optionally formatting the message
   //! \sa core::format()
   template <class... ARGS>
   explicit Exception(const char* message, ARGS&&... args)
-      : message_(core::format(message, std::forward<ARGS>(args)...)) {}
+      : std::runtime_error(core::format(message, std::forward<ARGS>(args)...)) {}
 
   //! Constructs an exception object with the specified message
-  explicit Exception(string message) : message_(std::move(message)) {}
-
-  // move only
-  Exception(Exception&&) noexcept = default;
-  Exception& operator=(Exception&&) noexcept = default;
-
-  //! Returns the exception message
-  const char* what() const noexcept override { return message_.c_str(); }
-
- private:
-  string message_;
+  explicit Exception(string message) : std::runtime_error(std::move(message)) {}
 };
 
 }  // namespace core
