@@ -125,7 +125,7 @@ class ExperimentTestCase(unittest.TestCase):
 
         # shouldn't be able to change sealed state
         with self.assertRaises(RuntimeError):
-            population.size = 0
+            population.size = 10
         with self.assertRaises(RuntimeError):
             population.config.normalize_input = True
         with self.assertRaises(RuntimeError):

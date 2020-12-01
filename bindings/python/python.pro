@@ -9,6 +9,9 @@ CONFIG += link_prl
 # disable the 'lib' shared library prefix and version symlinks
 CONFIG += plugin no_plugin_name_prefix
 
+# avoid the MSVC-style extra debug/release subdirectories in Windows builds
+CONFIG -= debug_and_release
+
 win32: QMAKE_EXTENSION_SHLIB = pyd
 
 SOURCES += \

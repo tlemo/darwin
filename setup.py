@@ -3,9 +3,14 @@ import os
 import subprocess
 import sysconfig
 import shutil
+import sys
 
 from setuptools import setup, Extension
 from setuptools.command.build_ext import build_ext
+
+
+def on_windows():
+    return sys.platform.startswith('win32')
 
 
 class QmakeExtension(Extension):
@@ -41,6 +46,12 @@ class QmakeBuild(build_ext):
         build_env = os.environ.copy()
         build_env['PYTHON_INCLUDE'] = sysconfig.get_path('include')
 
+        # on Windows we also need to set PYTHON_LIBS
+        if on_windows():
+            # TODO: find a better solution
+            base_dir = os.path.dirname(sysconfig.get_path('include'))
+            build_env['PYTHON_LIBS'] = os.path.join(base_dir, 'libs')
+
         build_log = open('build.log', 'w')
 
         # make sure the build temp directory is created
@@ -56,15 +67,24 @@ class QmakeBuild(build_ext):
             stdout=build_log)
 
         # invoke make (this will likely take a while)
+        use_jom = os.getenv('USE_JOM')
+        if use_jom:
+            make_cmd = [use_jom, f'-j{os.cpu_count()}']
+        elif on_windows():
+            make_cmd = ['nmake', '/nologo']
+        else:
+            make_cmd = ['make', f'-j{os.cpu_count()}']
+
         subprocess.check_call(
-            ['make', f'-j{os.cpu_count()}'],
+            make_cmd,
             cwd=self.build_temp,
             env=build_env,
             stdout=build_log)
 
         # make sure we built the extension binary
+        ext_lib_name = 'darwin.pyd' if on_windows() else 'darwin.so'
         ext_binary = os.path.join(
-            self.build_temp, 'bindings', 'python', 'darwin.so')
+            self.build_temp, 'bindings', 'python', ext_lib_name)
         if not os.path.isfile(ext_binary):
             raise RuntimeError(f"'{ext_binary}' is missing, aborting.")
 
