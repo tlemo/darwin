@@ -30,5 +30,6 @@ var searchData=
   ['row',['Row',['../classdb_1_1_result_set.html#a011ed7b0d774e173fcf4c0d6d030b95c',1,'db::ResultSet']]],
   ['rowid',['RowId',['../namespacedb.html#a0845f2bb472b4e673de2d2f977fb1da8',1,'db']]],
   ['run',['run',['../classdarwin_1_1_evolution.html#adf26c34b1ec11fa92c8472f8578f461c',1,'darwin::Evolution']]],
-  ['running',['Running',['../classdarwin_1_1_evolution.html#aecca7c341a0fff28b85ad9d13d380ad9a5bda814c4aedb126839228f1a3d92f09',1,'darwin::Evolution']]]
+  ['running',['Running',['../classdarwin_1_1_evolution.html#aecca7c341a0fff28b85ad9d13d380ad9a5bda814c4aedb126839228f1a3d92f09',1,'darwin::Evolution']]],
+  ['runtime',['Runtime',['../classcore_1_1_runtime.html',1,'core']]]
 ];

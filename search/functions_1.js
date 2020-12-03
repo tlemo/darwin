@@ -6,5 +6,6 @@ var searchData=
   ['begintransaction',['beginTransaction',['../classdb_1_1_connection.html#a9235ca35427cd388533f5a89f18ee01c',1,'db::Connection']]],
   ['bordersize',['borderSize',['../classcore__ui_1_1_canvas.html#a6658c07638368a94b8d1f34b9b0ed463',1,'core_ui::Canvas']]],
   ['box2dsandboxwindow',['Box2dSandboxWindow',['../classphysics__ui_1_1_box2d_sandbox_window.html#a4307b6d5fc7a0a1a76ae947428050144',1,'physics_ui::Box2dSandboxWindow']]],
-  ['box2dwidget',['box2dWidget',['../classphysics__ui_1_1_box2d_sandbox_window.html#a8e85a133e0589a4e25cfc4e0e24c438b',1,'physics_ui::Box2dSandboxWindow']]]
+  ['box2dwidget',['box2dWidget',['../classphysics__ui_1_1_box2d_sandbox_window.html#a8e85a133e0589a4e25cfc4e0e24c438b',1,'physics_ui::Box2dSandboxWindow']]],
+  ['buildstring',['buildString',['../classcore_1_1_runtime.html#a5c191cdb8eafe3fa874573bb29450881',1,'core::Runtime']]]
 ];

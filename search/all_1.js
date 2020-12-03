@@ -18,5 +18,6 @@ var searchData=
   ['box2dsandboxwindow',['Box2dSandboxWindow',['../classphysics__ui_1_1_box2d_sandbox_window.html',1,'physics_ui::Box2dSandboxWindow'],['../classphysics__ui_1_1_box2d_sandbox_window.html#a4307b6d5fc7a0a1a76ae947428050144',1,'physics_ui::Box2dSandboxWindow::Box2dSandboxWindow()']]],
   ['box2dsceneui',['Box2dSceneUi',['../classphysics__ui_1_1_box2d_scene_ui.html',1,'physics_ui']]],
   ['box2dwidget',['box2dWidget',['../classphysics__ui_1_1_box2d_sandbox_window.html#a8e85a133e0589a4e25cfc4e0e24c438b',1,'physics_ui::Box2dSandboxWindow']]],
-  ['brain',['Brain',['../classdarwin_1_1_brain.html',1,'darwin']]]
+  ['brain',['Brain',['../classdarwin_1_1_brain.html',1,'darwin']]],
+  ['buildstring',['buildString',['../classcore_1_1_runtime.html#a5c191cdb8eafe3fa874573bb29450881',1,'core::Runtime']]]
 ];

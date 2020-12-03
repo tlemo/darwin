@@ -1,6 +1,7 @@
 var searchData=
 [
   ['darwin',['darwin',['../namespacedarwin.html',1,'']]],
+  ['darwinhomepath',['darwinHomePath',['../classcore_1_1_runtime.html#a2e176f32e5ab9cc79a9f210684f3b0e4',1,'core::Runtime']]],
   ['db',['db',['../namespacedb.html',1,'']]],
   ['dbevolutiontrace',['DbEvolutionTrace',['../structdarwin_1_1_db_evolution_trace.html',1,'darwin']]],
   ['dbexperiment',['DbExperiment',['../structdarwin_1_1_db_experiment.html',1,'darwin']]],

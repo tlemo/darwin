@@ -19,7 +19,7 @@ var searchData=
   ['evolutionconfig',['EvolutionConfig',['../structdarwin_1_1_evolution_config.html',1,'darwin']]],
   ['evolutionstage',['EvolutionStage',['../classdarwin_1_1_evolution_stage.html',1,'darwin::EvolutionStage'],['../classdarwin_1_1_evolution_stage.html#a54e246b5ffe333d54f124d0d886f712a',1,'darwin::EvolutionStage::EvolutionStage()']]],
   ['evolutiontrace',['EvolutionTrace',['../classdarwin_1_1_evolution_trace.html',1,'darwin']]],
-  ['exception',['Exception',['../classcore_1_1_exception.html',1,'core::Exception'],['../classcore_1_1_exception.html#a1e04238298f2b84ad131a3342e09ef29',1,'core::Exception::Exception()']]],
+  ['exception',['Exception',['../classcore_1_1_exception.html',1,'core::Exception'],['../classcore_1_1_exception.html#a1e04238298f2b84ad131a3342e09ef29',1,'core::Exception::Exception(const char *message, ARGS &amp;&amp;... args)'],['../classcore_1_1_exception.html#a1dd2ed47bc1cec5bbd29216998c9174d',1,'core::Exception::Exception(string message)']]],
   ['exclusive',['Exclusive',['../namespacedb.html#a24b52b53160e032c8bfc78bc6a0d365aa2ef50b4c466304dc6ac77bac8a779971',1,'db']]],
   ['exclusive_5factuators',['exclusive_actuators',['../structharvester_1_1_config.html#a5d7db81fd8dafa29263430b1f95410d7',1,'harvester::Config']]],
   ['exec',['exec',['../classdb_1_1_connection.html#a5faf15f1c77738f2b98e45b2a0aeecd2',1,'db::Connection']]],

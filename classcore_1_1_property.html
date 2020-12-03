@@ -102,10 +102,10 @@ virtual string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" 
 virtual string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcore_1_1_property.html#a55de1bbde375c89d4da5a7904b4a8960">defaultValue</a> () const =0</td></tr>
 <tr class="memdesc:a55de1bbde375c89d4da5a7904b4a8960"><td class="mdescLeft">&#160;</td><td class="mdescRight">The default property value, formatted as a string. <br /></td></tr>
 <tr class="separator:a55de1bbde375c89d4da5a7904b4a8960"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a372b528ae1591f39be1208d6ef4a0499"><td class="memItemLeft" align="right" valign="top"><a id="a372b528ae1591f39be1208d6ef4a0499"></a>
-virtual <a class="el" href="classcore_1_1_property_set.html">PropertySet</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcore_1_1_property.html#a372b528ae1591f39be1208d6ef4a0499">childPropertySet</a> ()</td></tr>
-<tr class="memdesc:a372b528ae1591f39be1208d6ef4a0499"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the optional child <a class="el" href="classcore_1_1_property_set.html" title="The foundation for data structures supporting runtime reflection. ">PropertySet</a>, or <code>nullptr</code> <br /></td></tr>
-<tr class="separator:a372b528ae1591f39be1208d6ef4a0499"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a40723a8392057d913bb1af9eb056f246"><td class="memItemLeft" align="right" valign="top"><a id="a40723a8392057d913bb1af9eb056f246"></a>
+virtual <a class="el" href="classcore_1_1_property_set.html">PropertySet</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcore_1_1_property.html#a40723a8392057d913bb1af9eb056f246">childPropertySet</a> () const</td></tr>
+<tr class="memdesc:a40723a8392057d913bb1af9eb056f246"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the optional child <a class="el" href="classcore_1_1_property_set.html" title="The foundation for data structures supporting runtime reflection. ">PropertySet</a>, or <code>nullptr</code> <br /></td></tr>
+<tr class="separator:a40723a8392057d913bb1af9eb056f246"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad3d2da7211eacf8efbfe99ec44462099"><td class="memItemLeft" align="right" valign="top"><a id="ad3d2da7211eacf8efbfe99ec44462099"></a>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcore_1_1_property.html#ad3d2da7211eacf8efbfe99ec44462099">setValue</a> (const string &amp;str)=0</td></tr>
 <tr class="memdesc:ad3d2da7211eacf8efbfe99ec44462099"><td class="mdescLeft">&#160;</td><td class="mdescRight">Update the current value from a string representation. <br /></td></tr>
@@ -129,6 +129,11 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <tr class="memitem:a8fc5d01f78ed60a16aa2d9effcdd82cc"><td class="memTemplItemLeft" align="right" valign="top">const T &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcore_1_1_property.html#a8fc5d01f78ed60a16aa2d9effcdd82cc">nativeValue</a> () const</td></tr>
 <tr class="memdesc:a8fc5d01f78ed60a16aa2d9effcdd82cc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type-safe accessor to the native property value.  <a href="#a8fc5d01f78ed60a16aa2d9effcdd82cc">More...</a><br /></td></tr>
 <tr class="separator:a8fc5d01f78ed60a16aa2d9effcdd82cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aed40b487942b6514d6c37613b85debc0"><td class="memTemplParams" colspan="2"><a id="aed40b487942b6514d6c37613b85debc0"></a>
+template&lt;class T &gt; </td></tr>
+<tr class="memitem:aed40b487942b6514d6c37613b85debc0"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcore_1_1_property.html#aed40b487942b6514d6c37613b85debc0">isA</a> () const</td></tr>
+<tr class="memdesc:aed40b487942b6514d6c37613b85debc0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns <code>true</code> if the property wraps a <code>T</code> value. <br /></td></tr>
+<tr class="separator:aed40b487942b6514d6c37613b85debc0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Reflection interface to a property in a <a class="el" href="classcore_1_1_property_set.html" title="The foundation for data structures supporting runtime reflection. ">PropertySet</a>. </p>

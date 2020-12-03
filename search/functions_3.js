@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['darwinhomepath',['darwinHomePath',['../classcore_1_1_runtime.html#a2e176f32e5ab9cc79a9f210684f3b0e4',1,'core::Runtime']]],
   ['dbexperimentid',['dbExperimentId',['../classdarwin_1_1_experiment.html#aa9dc39bbd35cd19072ab28d0cb575571',1,'darwin::Experiment']]],
   ['dbvariationid',['dbVariationId',['../classdarwin_1_1_experiment.html#afb135bb2f961521f7fc53ac817d2d4ae',1,'darwin::Experiment']]],
   ['defaultconfig',['defaultConfig',['../classdarwin_1_1_population_factory.html#a838a495c7164d6c678c2ea88d7350d19',1,'darwin::PopulationFactory::defaultConfig()'],['../classdarwin_1_1_domain_factory.html#a00ad35fdd79e8a29173c3be879c9c4a0',1,'darwin::DomainFactory::defaultConfig()']]],
