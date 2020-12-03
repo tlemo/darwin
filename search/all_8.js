@@ -11,6 +11,7 @@ var searchData=
   ['init',['init',['../classcore_1_1_runtime.html#ac4a4d9692248c0128329f5789236e6f0',1,'core::Runtime']]],
   ['initial_5fhealth',['initial_health',['../structharvester_1_1_config.html#a3693ade259b563d67a3b0eddb2985cfc',1,'harvester::Config']]],
   ['initial_5funits',['initial_units',['../structconquest_1_1_config.html#afe88552abdbb6fc40391f9a3af512de3',1,'conquest::Config']]],
+  ['initializepopulation',['initializePopulation',['../classdarwin_1_1python_1_1_experiment.html#a223fba0e10df6c0ca50846c46167ac56',1,'darwin::python::Experiment']]],
   ['initializing',['Initializing',['../classdarwin_1_1_evolution.html#aecca7c341a0fff28b85ad9d13d380ad9a32b169f72b293ef80d35435e9894f8e2',1,'darwin::Evolution']]],
   ['input_5fangular_5fvelocity',['input_angular_velocity',['../structcart__pole_1_1_config.html#a34a054ebcf4373872e46e086bfb31273',1,'cart_pole::Config::input_angular_velocity()'],['../structdouble__cart__pole_1_1_config.html#adf452a7d6ef319d694bed1a88486c1b0',1,'double_cart_pole::Config::input_angular_velocity()'],['../structunicycle_1_1_config.html#a70e95bd356a646eefca16533433fc879',1,'unicycle::Config::input_angular_velocity()']]],
   ['input_5fcart_5fdistance',['input_cart_distance',['../structcart__pole_1_1_config.html#af4183a9bf2e86fd7192c55ef63e8edbe',1,'cart_pole::Config::input_cart_distance()'],['../structdouble__cart__pole_1_1_config.html#a70aa834a8d597452b459126246895db5',1,'double_cart_pole::Config::input_cart_distance()']]],
@@ -26,6 +27,7 @@ var searchData=
   ['intersection2d',['Intersection2d',['../structmath_1_1_intersection2d.html',1,'math']]],
   ['invalid',['Invalid',['../classdarwin_1_1_evolution.html#aecca7c341a0fff28b85ad9d13d380ad9a4bbb8f967da6d1a610596d7257179c2b',1,'darwin::Evolution']]],
   ['isa',['isA',['../classcore_1_1_property.html#aed40b487942b6514d6c37613b85debc0',1,'core::Property']]],
+  ['isclosed',['isClosed',['../classdarwin_1_1python_1_1_universe.html#ad4c17cb6e022ed6bb48c0e2e68a94e4a',1,'darwin::python::Universe']]],
   ['island_5fsize',['island_size',['../structselection_1_1_cgp_islands_selection_config.html#a76cba737cae8a34bfadf2364271fd2fe',1,'selection::CgpIslandsSelectionConfig']]],
   ['ismodified',['isModified',['../classcore__ui_1_1_property_item_base.html#a51b6a50b2f96ec98fb8e5fa6a90d9a58',1,'core_ui::PropertyItemBase::isModified()'],['../classcore__ui_1_1_bound_property_item.html#a22b9bdd8cac4c53c4fa0447dc4fd77d7',1,'core_ui::BoundPropertyItem::isModified()'],['../classcore__ui_1_1_properties_widget.html#ad5a06278234c6bc85e3f1b1ec7054762',1,'core_ui::PropertiesWidget::isModified()']]]
 ];

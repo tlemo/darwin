@@ -2,7 +2,7 @@ var searchData=
 [
   ['parent',['parent',['../classcore_1_1_property.html#acf0c5738db94b0ccfe3d4b5f0da20102',1,'core::Property::parent()'],['../classcore__ui_1_1_property_item_base.html#aca7fcdafca59f3c27efb17324236a0d4',1,'core_ui::PropertyItemBase::parent()']]],
   ['parentwidget',['parentWidget',['../classcore__ui_1_1_property_item_base.html#a60c9164d39774bee326fb7efd1b59a75',1,'core_ui::PropertyItemBase']]],
-  ['path',['path',['../classdarwin_1_1_universe.html#adac872d3e062d38343b4fe52a2626eaa',1,'darwin::Universe']]],
+  ['path',['path',['../classdarwin_1_1python_1_1_universe.html#ad5fbda65bd889bc7d8c685c0a2df0832',1,'darwin::python::Universe::path()'],['../classdarwin_1_1_universe.html#adac872d3e062d38343b4fe52a2626eaa',1,'darwin::Universe::path()']]],
   ['pause',['pause',['../classdarwin_1_1_evolution.html#af465ae74bae4ea45e5ad4a6b943a9f20',1,'darwin::Evolution::pause()'],['../classphysics__ui_1_1_box2d_sandbox_window.html#aea4ce3927df95e5be5fe1afebcf60eaa',1,'physics_ui::Box2dSandboxWindow::pause()']]],
   ['play',['play',['../classtournament_1_1_game_rules.html#a8576c2801cd9e38908c5d2d2022894bc',1,'tournament::GameRules::play()'],['../classphysics__ui_1_1_box2d_sandbox_window.html#af444d5044427376be78150cc4a49df4b',1,'physics_ui::Box2dSandboxWindow::play()']]],
   ['populationconfig',['populationConfig',['../classdarwin_1_1_experiment.html#adc20141a51be56a6e8e2ad1a013aa7e2',1,'darwin::Experiment']]],

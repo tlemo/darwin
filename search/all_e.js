@@ -4,6 +4,7 @@ var searchData=
   ['onpropertychange',['onPropertyChange',['../classcore_1_1_property_set.html#af5e2a9b09f61ecd6a4ea8fb3d844cc5f',1,'core::PropertySet']]],
   ['open',['open',['../classdarwin_1_1_universe.html#a77fc963aaa0d614e7450694b2c52bfbb',1,'darwin::Universe']]],
   ['openmode',['OpenMode',['../namespacedb.html#a28b71085755f495ec7c3492d729bef81',1,'db']]],
+  ['openuniverse',['openUniverse',['../namespacedarwin_1_1python.html#a53050fdc8e609796286198c385e444fb',1,'darwin::python']]],
   ['operator_2a',['operator*',['../structmath_1_1_vector2d.html#a4ede557fa2d76eead070397b59771bb6',1,'math::Vector2d::operator*(Scalar s) const'],['../structmath_1_1_vector2d.html#a15c113e8a7e6b757caa941713332a798',1,'math::Vector2d::operator*(const Vector2d &amp;v) const'],['../structmath_1_1_h_matrix2d.html#a12540a0da88769b9082fbd67a9fe71ad',1,'math::HMatrix2d::operator*(const HMatrix2d &amp;other)'],['../structmath_1_1_h_matrix2d.html#a4a5034c0e74e05f1e8e790eb54cb9a52',1,'math::HMatrix2d::operator*(const Vector2d &amp;v)']]],
   ['operator_2b',['operator+',['../structmath_1_1_vector2d.html#a3952f72b25f8a331345ca7def7fb1a6c',1,'math::Vector2d']]],
   ['operator_2d',['operator-',['../structmath_1_1_vector2d.html#a6f04a171d5f0ead6598f7e9294901fae',1,'math::Vector2d']]],

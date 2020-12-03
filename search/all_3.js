@@ -20,10 +20,11 @@ var searchData=
   ['description',['description',['../classcore_1_1_property.html#a64dc8f283bd8cb506cb1fa6024f1eb05',1,'core::Property']]],
   ['details',['details',['../structdarwin_1_1_db_generation.html#acdd4fffe381c4623009c87af1b208174',1,'darwin::DbGeneration']]],
   ['detectavx2',['detectAvx2',['../namespacepal.html#a4776d611f7d0ffa59a2f38067f49b7df',1,'pal']]],
+  ['dir',['dir',['../classdarwin_1_1python_1_1_property_set.html#ae6c54af154a165cd901a27d6abc6140d',1,'darwin::python::PropertySet']]],
   ['discrete_5fcontrols',['discrete_controls',['../structcart__pole_1_1_config.html#a2d03dab28a7ae5e1de5cd1a624d24652',1,'cart_pole::Config::discrete_controls()'],['../structdouble__cart__pole_1_1_config.html#ab547f7352f1a7e86d747a318179f8ff7',1,'double_cart_pole::Config::discrete_controls()'],['../structunicycle_1_1_config.html#addc0b4267fd4a6f4d56ed946443db2cd',1,'unicycle::Config::discrete_controls()']]],
   ['discrete_5fforce_5fmagnitude',['discrete_force_magnitude',['../structcart__pole_1_1_config.html#ae0484a18590d2e2f1f9c0bf6fe032baa',1,'cart_pole::Config::discrete_force_magnitude()'],['../structdouble__cart__pole_1_1_config.html#a16a6f2f642cd9a6355d7147c8017979e',1,'double_cart_pole::Config::discrete_force_magnitude()']]],
   ['discrete_5ftorque_5fmagnitude',['discrete_torque_magnitude',['../structunicycle_1_1_config.html#aae4875e97946d2d6af5ae257171becff',1,'unicycle::Config']]],
-  ['domain',['Domain',['../classdarwin_1_1_domain.html',1,'darwin::Domain'],['../structdarwin_1_1_evolution_1_1_snapshot.html#acd3cea67c20b93203b479e9ffebdd71f',1,'darwin::Evolution::Snapshot::domain()']]],
+  ['domain',['Domain',['../classdarwin_1_1_domain.html',1,'darwin::Domain'],['../classdarwin_1_1python_1_1_domain.html',1,'darwin::python::Domain'],['../structdarwin_1_1_evolution_1_1_snapshot.html#acd3cea67c20b93203b479e9ffebdd71f',1,'darwin::Evolution::Snapshot::domain()']]],
   ['domain_5fhint',['domain_hint',['../structdarwin_1_1_experiment_setup.html#a141e9135c435b9d37b1ad39361ca4db9',1,'darwin::ExperimentSetup']]],
   ['domain_5fname',['domain_name',['../structdarwin_1_1_experiment_setup.html#a6c4bf33c671292376febf46778b1b202',1,'darwin::ExperimentSetup']]],
   ['domainconfig',['domainConfig',['../classdarwin_1_1_experiment.html#a1eb7e7f87ae42b13a1ad7f798a2808b2',1,'darwin::Experiment']]],
@@ -38,5 +39,6 @@ var searchData=
   ['drone_5fradius',['drone_radius',['../structdrone__follow_1_1_config.html#a86f4b2af1caae3cb1dcd1a18b3de1b63',1,'drone_follow::Config::drone_radius()'],['../structdrone__track_1_1_config.html#ad67efe20772c674b3b41a9e666643f1d',1,'drone_track::Config::drone_radius()'],['../structdrone__vision_1_1_config.html#a9803e748665d71e5cc5b4922eb4c750d',1,'drone_vision::Config::drone_radius()']]],
   ['dronefollow',['DroneFollow',['../classdrone__follow_1_1_drone_follow.html',1,'drone_follow']]],
   ['dronetrack',['DroneTrack',['../classdrone__track_1_1_drone_track.html',1,'drone_track']]],
-  ['dronevision',['DroneVision',['../classdrone__vision_1_1_drone_vision.html',1,'drone_vision']]]
+  ['dronevision',['DroneVision',['../classdrone__vision_1_1_drone_vision.html',1,'drone_vision']]],
+  ['python',['python',['../namespacedarwin_1_1python.html',1,'darwin']]]
 ];

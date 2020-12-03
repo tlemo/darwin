@@ -9,6 +9,7 @@ var searchData=
   ['activationfunction',['ActivationFunction',['../namespaceann.html#a1075b962a0c710dcafad8d7b7e9a1da3',1,'ann']]],
   ['activecase',['activeCase',['../classcore_1_1_property_set_variant.html#ac9d907085b755d895b96162a116b490a',1,'core::PropertySetVariant::activeCase() const'],['../classcore_1_1_property_set_variant.html#af8b5efa932aca64a8d6c34f64bcd3d7b',1,'core::PropertySetVariant::activeCase()']]],
   ['add',['add',['../classcore_1_1_type_factory.html#a8cc5c74cf68fdc4bb370cc4d4b66cb4a',1,'core::TypeFactory::add()'],['../classcore_1_1_implementations_set.html#ab773234071a8f80ae2499d1c315297be',1,'core::ImplementationsSet::add()']]],
+  ['addlogger',['addLogger',['../namespacedarwin_1_1python.html#af0cad3aa36e2ab8692c89d107cd61ea9',1,'darwin::python']]],
   ['addpropertiessection',['addPropertiesSection',['../classcore__ui_1_1_properties_widget.html#ae0d3a910aa4fd275e626c08d311faecb',1,'core_ui::PropertiesWidget']]],
   ['addproperty',['addProperty',['../classcore__ui_1_1_properties_section_item.html#a832468f98e3ed315f2e3ed03e2c534d9',1,'core_ui::PropertiesSectionItem::addProperty(const string &amp;name)'],['../classcore__ui_1_1_properties_section_item.html#af739706d26cb0db4ee7a920c57db5c99',1,'core_ui::PropertiesSectionItem::addProperty(core::Property *property)']]],
   ['addsection',['addSection',['../classcore__ui_1_1_properties_widget.html#af9e37fbf70597452d049cf3606e9b1e0',1,'core_ui::PropertiesWidget']]],
@@ -25,5 +26,11 @@ var searchData=
   ['ann_5ftype',['ann_type',['../structtic__tac__toe_1_1_config.html#a2247d37d3fd500c50660120f33abc128',1,'tic_tac_toe::Config']]],
   ['annotation',['Annotation',['../classdarwin_1_1_evolution_stage.html#ad280e02ae43e9e24cd6368cda53a277f',1,'darwin::EvolutionStage']]],
   ['arrayview',['ArrayView',['../classcore_1_1_array_view.html',1,'core::ArrayView&lt; T &gt;'],['../classcore_1_1_array_view.html#a45cec051094d2cf6bf15b3745d06824c',1,'core::ArrayView::ArrayView()']]],
-  ['autosizecolumns',['autoSizeColumns',['../classcore__ui_1_1_properties_widget.html#a93eb96a9dc7d25e20f4395ca71a508c5',1,'core_ui::PropertiesWidget']]]
+  ['asbool',['asBool',['../classdarwin_1_1python_1_1_property.html#a6cdcd5c36f3a332ae853001ceb590dbf',1,'darwin::python::Property']]],
+  ['asfloat',['asFloat',['../classdarwin_1_1python_1_1_property.html#a187aec1054c35ceaafe7d0340b233047',1,'darwin::python::Property']]],
+  ['asint',['asInt',['../classdarwin_1_1python_1_1_property.html#abc356b6967bc80c8793ed8e920d9beb6',1,'darwin::python::Property']]],
+  ['autocast',['autoCast',['../classdarwin_1_1python_1_1_property.html#aa5953444e584bd5578067bf0f24bb0ba',1,'darwin::python::Property']]],
+  ['autosizecolumns',['autoSizeColumns',['../classcore__ui_1_1_properties_widget.html#a93eb96a9dc7d25e20f4395ca71a508c5',1,'core_ui::PropertiesWidget']]],
+  ['availabledomains',['availableDomains',['../namespacedarwin_1_1python.html#af40a254aeca41adc282f9ecce5abc51f',1,'darwin::python']]],
+  ['availablepopulations',['availablePopulations',['../namespacedarwin_1_1python.html#a68d25a222b31235c84ee612c7a4d38d5',1,'darwin::python']]]
 ];

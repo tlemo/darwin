@@ -7,6 +7,10 @@ var searchData=
   ['sealed',['sealed',['../classcore_1_1_property_set.html#ac45fdf4fdd5679e1ebf1d95645341db9',1,'core::PropertySet']]],
   ['selectcase',['selectCase',['../classcore_1_1_property_set_variant.html#afb03276d84f14bec4280983c45b0bb39',1,'core::PropertySetVariant']]],
   ['setactivationfunction',['setActivationFunction',['../namespaceann.html#abaea07e8f3251b1f14c6675d2498de4e',1,'ann']]],
+  ['setattrbool',['setAttrBool',['../classdarwin_1_1python_1_1_property_set.html#ada42fd73664cd08623b6b2abb67d664a',1,'darwin::python::PropertySet']]],
+  ['setattrcast',['setAttrCast',['../classdarwin_1_1python_1_1_property_set.html#a2cd741865746f825ee04f1ccbb2e5919',1,'darwin::python::PropertySet']]],
+  ['setattrproperty',['setAttrProperty',['../classdarwin_1_1python_1_1_property_set.html#aa4e31a328ddfa946f7a97b6cb04cc22d',1,'darwin::python::PropertySet']]],
+  ['setattrstr',['setAttrStr',['../classdarwin_1_1python_1_1_property_set.html#a2318e0d8365915e4ec63695f26dd1682',1,'darwin::python::PropertySet']]],
   ['setbordersize',['setBorderSize',['../classcore__ui_1_1_canvas.html#aa0a09f962a4169fb782ee446e3051d76',1,'core_ui::Canvas']]],
   ['setenv',['setenv',['../namespacepal.html#abe8ec72406a7c84b44eb998c1d46665e',1,'pal']]],
   ['setgateactivationfunction',['setGateActivationFunction',['../namespaceann.html#a108775be4eb41201f34132723ff65a33',1,'ann']]],
@@ -31,6 +35,7 @@ var searchData=
   ['state',['state',['../classphysics__ui_1_1_box2d_sandbox_window.html#afdd34d0978d59935a6c719c775f37b22',1,'physics_ui::Box2dSandboxWindow']]],
   ['statedescription',['stateDescription',['../classphysics__ui_1_1_box2d_sandbox_window.html#acabc3d33fd672b9ba4d67c61c82ea542',1,'physics_ui::Box2dSandboxWindow']]],
   ['stop',['stop',['../classphysics__ui_1_1_box2d_sandbox_window.html#adab636a7cc948c6c07d94ad8eecd7bd4',1,'physics_ui::Box2dSandboxWindow']]],
+  ['str',['str',['../classdarwin_1_1python_1_1_property.html#aef48e976ffc6f519e5a2a576383ec752',1,'darwin::python::Property']]],
   ['stringify',['stringify',['../namespacecore.html#aee2d56a2f15b3970243ec2ec4cdd459c',1,'core']]],
   ['subscribe',['subscribe',['../classcore_1_1_pub_sub.html#a66649f72a97686a99e7e85f04c02c5d7',1,'core::PubSub']]],
   ['substages',['subStages',['../classdarwin_1_1_evolution_stage.html#aa14f6ceaa78999b59babdc9035299012',1,'darwin::EvolutionStage']]]
