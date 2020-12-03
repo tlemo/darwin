@@ -61,7 +61,7 @@ git submodule update
    (ex. `$QTDIR/bin/qmake ../darwin.pro CONFIG+=release`)
 
 4. Invoke Make
-    (ex. `make -j8`)
+    (ex. `make -j8` or `nmake` on Windows)
 
 ### Running the Tests
 

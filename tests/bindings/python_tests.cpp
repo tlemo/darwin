@@ -34,6 +34,10 @@ TEST(PythonBindingsTest, RunPythonTests) {
   }
 
   // we need to update PYTHONPATH to point to the darwin extension
+  //
+  // TODO: find a better way to point to the extension library
+  //  (the relative location is fragile and hard to maintain)
+  //
   pal::setenv("PYTHONPATH", "../../bindings/python");
 
   // force a custom root location
@@ -41,8 +45,9 @@ TEST(PythonBindingsTest, RunPythonTests) {
   pal::setenv("DARWIN_HOME_PATH", TEST_TEMP_PATH);
 
   // invoke Python unit tests and check the exit code
-  int exit_code = std::system(
-      core::format("%s -m unittest discover %s", python_cmd, TEST_PYTHON_SUITE).c_str());
+  const auto cmd =
+      core::format("%s -m unittest discover %s -v", python_cmd, TEST_PYTHON_SUITE);
+  int exit_code = std::system(cmd.c_str());
   EXPECT_EQ(exit_code, 0);
 }
 

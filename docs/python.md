@@ -16,6 +16,9 @@ is still required for the build system (qmake).
 
 2. `python setup.py install`
 
+> When using Microsoft Visual C++, you need to run `setup.py` from a "MSVC++
+command prompt" (ex. by running MSVC++'s `vcvarsall.bat` first)
+
 ### Running the Python Unit Tests
 
 First, change the directory to the project root location
