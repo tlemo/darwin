@@ -1,4 +1,8 @@
 
+## Dec 2nd, 2020
+
+Python bindings are now supported on Windows (MSVC++) too.
+
 ## Nov 29th, 2020
 
 Experimental Python bindings!
