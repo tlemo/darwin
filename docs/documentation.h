@@ -17,6 +17,9 @@
 //! \namespace darwin
 //! \brief Key Darwin Neuroevolution Framework interfaces
 
+//! \namespace darwin::python
+//! \brief Python bindings
+
 //! \namespace ann
 //! \brief Artificial Neural Networks (ANN) building blocks
 
