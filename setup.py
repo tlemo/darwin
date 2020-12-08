@@ -117,14 +117,25 @@ if 'DARWIN_HOME_PATH' not in os.environ:
     os.environ['DARWIN_HOME_PATH'] = os.path.join(darwin_root, 'tests/.temp')
 
 setup(
-    name="darwin",
+    name="darwin-framework",
     version="1.0",
     author='Leonard Mosescu',
+    author_email='lemo1234@gmail.com',
     description='Darwin Framework',
-    long_description='A framework for Evolutionary Algorithms',
+    long_description='A framework for Neuroevolution & Evolutionary Algorithms',
     url='https://github.com/tlemo/darwin',
     license='Apache License 2.0',
     ext_modules=[QmakeExtension(name='darwin')],
     cmdclass=dict(build_ext=QmakeBuild),
     test_suite="tests.bindings.python",
+    classifiers=[
+        'Programming Language :: Python',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: C++',
+        'License :: OSI Approved :: Apache Software License',
+        'Operating System :: Microsoft :: Windows',
+        'Operating System :: POSIX :: Linux',
+        'Topic :: Scientific/Engineering :: Artificial Intelligence'
+    ],
+    python_requires='>=3.6',    
     zip_safe=False)
