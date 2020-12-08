@@ -121,7 +121,7 @@ setup(
     version="1.0",
     author='Leonard Mosescu',
     author_email='lemo1234@gmail.com',
-    description='Darwin Framework',
+    description='Darwin Neuroevolution Framework',
     long_description='A framework for Neuroevolution & Evolutionary Algorithms',
     url='https://github.com/tlemo/darwin',
     license='Apache License 2.0',
@@ -137,5 +137,5 @@ setup(
         'Operating System :: POSIX :: Linux',
         'Topic :: Scientific/Engineering :: Artificial Intelligence'
     ],
-    python_requires='>=3.6',    
+    python_requires='3.6.*, 3.7.*, 3.8.*',
     zip_safe=False)
