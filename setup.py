@@ -137,5 +137,5 @@ setup(
         'Operating System :: POSIX :: Linux',
         'Topic :: Scientific/Engineering :: Artificial Intelligence'
     ],
-    python_requires='3.6.*, 3.7.*, 3.8.*',
+    python_requires='>=3.6',
     zip_safe=False)
