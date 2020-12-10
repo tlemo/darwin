@@ -1,4 +1,13 @@
 
+## Dec 9th, 2020
+
+Darwin is now on PyPI: https://pypi.org/project/darwin-framework !
+
+This means that if you're on Linux or Windows (sorry, no macOS packages yet),
+getting it is as simple as:
+
+`pip install darwin-framework`
+
 ## Dec 2nd, 2020
 
 Python bindings are now supported on Windows (MSVC++) too.
