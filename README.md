@@ -13,7 +13,7 @@ for post-processing recorded evolution traces.
 
 Experimental [Python bindings][4] are underway.
 
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/tlemo/darwin/experimental?urlpath=lab/tree/notebooks)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/tlemo/darwin/master?urlpath=lab/tree/notebooks)
 
 ## What's New
 

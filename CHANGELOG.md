@@ -5,7 +5,7 @@ The new `notebooks` subdirectory contains a few examples of using Darwin's
 Python API as Jupyter notebooks. Thanks to [Binder](https://mybinder.org),
 interactive version of these notebooks are one click away.
 
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/tlemo/darwin/experimental?urlpath=lab/tree/notebooks)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/tlemo/darwin/master?urlpath=lab/tree/notebooks)
 
 ## Dec 9th, 2020
 
