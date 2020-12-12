@@ -1,4 +1,12 @@
 
+## Dec 11th, 2020
+
+The new `notebooks` subdirectory contains a few examples of using Darwin's 
+Python API as Jupyter notebooks. Thanks to [Binder](https://mybinder.org),
+an interactive copy of these notebooks is one click away.
+
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/tlemo/darwin/experimental?urlpath=lab/tree/notebooks)
+
 ## Dec 9th, 2020
 
 Darwin is now on PyPI: https://pypi.org/project/darwin-framework !
