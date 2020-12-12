@@ -1,0 +1,4 @@
+jupyterlab>=1.2.4
+darwin-framework
+matplotlib
+jupyterplot
