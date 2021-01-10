@@ -8,6 +8,8 @@ namespace Ui {
 class MainWindow;
 }
 
+namespace experimental::replicators {
+
 class MainWindow : public QMainWindow {
   Q_OBJECT
 
@@ -19,3 +21,5 @@ class MainWindow : public QMainWindow {
   Ui::MainWindow* ui = nullptr;
   QGridLayout* layout_ = nullptr;
 };
+
+}  // namespace experimental::replicators

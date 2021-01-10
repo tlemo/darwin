@@ -56,6 +56,10 @@ class Box2dSceneUi : public QObject {
 };
 
 //! Visualization for a b2World, with an optional Box2dSceneUi plugin
+//!
+//! \warning Box2dWidget does't own either b2World or Box2dSceneUi instances
+//!   (these instances must outlive their use in Box2dWidget)
+//!
 class Box2dWidget : public core_ui::Canvas {
   Q_OBJECT
 

@@ -13,10 +13,12 @@ DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000
 
 SOURCES += \
     main.cpp \
-    main_window.cpp
+    main_window.cpp \
+    phenotype_widget.cpp
 
 HEADERS += \
-    main_window.h
+    main_window.h \
+    phenotype_widget.h
     
 FORMS += \
     main_window.ui
