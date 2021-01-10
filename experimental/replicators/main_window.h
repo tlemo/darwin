@@ -2,6 +2,7 @@
 #pragma once
 
 #include <QMainWindow>
+#include <QGridLayout>
 
 namespace Ui {
 class MainWindow;
@@ -16,4 +17,5 @@ class MainWindow : public QMainWindow {
 
  private:
   Ui::MainWindow* ui = nullptr;
+  QGridLayout* layout_ = nullptr;
 };
