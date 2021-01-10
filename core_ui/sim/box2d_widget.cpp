@@ -25,13 +25,17 @@
 #include <QRectF>
 #include <QMouseEvent>
 #include <QPolygonF>
+#include <QPalette>
 
 #include <math.h>
 
 namespace physics_ui {
 
 Box2dWidget::Box2dWidget(QWidget* parent) : core_ui::Canvas(parent) {
-  setAutoFillBackground(false);
+  QPalette background_palette;
+  background_palette.setColor(QPalette::Window, kBackgroundColor);
+  setPalette(background_palette);
+  setAutoFillBackground(true);
   setFocusPolicy(Qt::StrongFocus);
   setBorderSize(15);
 }
@@ -161,17 +165,15 @@ void Box2dWidget::renderGeneric(QPainter& painter) const {
   }
 }
 
-void Box2dWidget::paintEvent(QPaintEvent*) {
+void Box2dWidget::paintEvent(QPaintEvent* event) {
+  // chain call the base implementation
+  // (this will render the background and an optional frame)
+  Canvas::paintEvent(event);
+
   QPainter painter(this);
 
   painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing |
-                         QPainter::SmoothPixmapTransform |
-                         QPainter::HighQualityAntialiasing);
-
-  // background (whole widget)
-  painter.setPen(Qt::NoPen);
-  painter.setBrush(kBackgroundColor);
-  painter.drawRect(rect());
+                         QPainter::SmoothPixmapTransform);
 
   painter.setTransform(transformFromViewport());
 

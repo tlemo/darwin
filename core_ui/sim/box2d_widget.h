@@ -55,6 +55,7 @@ class Box2dSceneUi : public QObject {
   void sigPlayPause();
 };
 
+//! Visualization for a b2World, with an optional Box2dSceneUi plugin
 class Box2dWidget : public core_ui::Canvas {
   Q_OBJECT
 
