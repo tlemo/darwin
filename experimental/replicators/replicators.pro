@@ -12,6 +12,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000
 
 SOURCES += \
+    experiment_window.cpp \
     main.cpp \
     main_window.cpp \
     new_experiment_dialog.cpp \
@@ -20,6 +21,7 @@ SOURCES += \
     species/segment_tree.cpp
 
 HEADERS += \
+    experiment_window.h \
     main_window.h \
     new_experiment_dialog.h \
     phenotype_widget.h \
@@ -27,6 +29,7 @@ HEADERS += \
     species/segment_tree.h
     
 FORMS += \
+    experiment_window.ui \
     main_window.ui \
     new_experiment_dialog.ui
 

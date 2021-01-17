@@ -2,7 +2,6 @@
 #pragma once
 
 #include <QMainWindow>
-#include <QGridLayout>
 
 namespace Ui {
 class MainWindow;
@@ -19,10 +18,11 @@ class MainWindow : public QMainWindow {
 
  private slots:
   void on_action_new_experiment_triggered();
+  void on_action_new_sample_set_triggered();
+  void on_tabs_tabCloseRequested(int index);
 
  private:
   Ui::MainWindow* ui = nullptr;
-  QGridLayout* layout_ = nullptr;
 };
 
 }  // namespace experimental::replicators

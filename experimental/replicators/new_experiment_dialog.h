@@ -7,11 +7,13 @@ namespace Ui {
 class NewExperimentDialog;
 }
 
+namespace experimental::replicators {
+
 class NewExperimentDialog : public QDialog {
   Q_OBJECT
 
  public:
-  explicit NewExperimentDialog(QWidget* parent);
+  explicit NewExperimentDialog(QWidget* parent, const char* title);
   ~NewExperimentDialog();
 
   QString speciesName() const;
@@ -19,3 +21,5 @@ class NewExperimentDialog : public QDialog {
  private:
   Ui::NewExperimentDialog* ui = nullptr;
 };
+
+}  // namespace experimental::replicators

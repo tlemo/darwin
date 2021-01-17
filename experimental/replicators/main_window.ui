@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1050</width>
-    <height>1100</height>
+    <width>1040</width>
+    <height>917</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -19,13 +19,29 @@
   <property name="windowTitle">
    <string>Replicators</string>
   </property>
-  <widget class="QWidget" name="central_widget"/>
+  <widget class="QWidget" name="central_widget">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QTabWidget" name="tabs">
+      <property name="usesScrollButtons">
+       <bool>false</bool>
+      </property>
+      <property name="tabsClosable">
+       <bool>true</bool>
+      </property>
+      <property name="movable">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
   <widget class="QMenuBar" name="menu_bar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1050</width>
+     <width>1040</width>
      <height>20</height>
     </rect>
    </property>
@@ -34,12 +50,24 @@
      <string>&amp;File</string>
     </property>
     <addaction name="action_new_experiment"/>
+    <addaction name="action_new_sample_set"/>
     <addaction name="separator"/>
     <addaction name="action_exit"/>
    </widget>
    <addaction name="menu_file"/>
   </widget>
   <widget class="QStatusBar" name="status_bar"/>
+  <widget class="QToolBar" name="tool_bar">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+  </widget>
   <action name="action_exit">
    <property name="text">
     <string>E&amp;xit</string>
@@ -51,6 +79,11 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+N</string>
+   </property>
+  </action>
+  <action name="action_new_sample_set">
+   <property name="text">
+    <string>New &amp;sample set</string>
    </property>
   </action>
  </widget>

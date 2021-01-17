@@ -1,25 +1,14 @@
 
 #include "main_window.h"
 #include "ui_main_window.h"
-#include "phenotype_widget.h"
 #include "new_experiment_dialog.h"
+#include "experiment_window.h"
+#include "replicators.h"
 
 namespace experimental::replicators {
 
 MainWindow::MainWindow() : QMainWindow(nullptr), ui(new Ui::MainWindow) {
   ui->setupUi(this);
-
-  layout_ = new QGridLayout(ui->central_widget);
-
-  // testing...
-  for (int row = 0; row < 2; ++row) {
-    for (int col = 0; col < 2; ++col) {
-      auto content = new PhenotypeWidget(ui->central_widget);
-      content->setBorderSize(4);
-      content->setFrameStyle(QFrame::StyledPanel | QFrame::Plain);
-      layout_->addWidget(content, row, col);
-    }
-  }
 }
 
 MainWindow::~MainWindow() {
@@ -27,10 +16,26 @@ MainWindow::~MainWindow() {
 }
 
 void MainWindow::on_action_new_experiment_triggered() {
-  NewExperimentDialog dlg(this);
+  NewExperimentDialog dlg(this, "New experiment");
+  if (dlg.exec() == QDialog::Accepted) {
+    const auto& scene_name = dlg.speciesName();
+    const auto factory = registry()->find(scene_name.toStdString());
+    CHECK(factory != nullptr);
+    auto experiment_window = make_unique<ExperimentWindow>(this, factory);
+    auto new_tab_index = ui->tabs->addTab(experiment_window.release(), scene_name);
+    ui->tabs->setCurrentIndex(new_tab_index);
+  }
+}
+
+void MainWindow::on_action_new_sample_set_triggered() {
+  NewExperimentDialog dlg(this, "New sample set");
   if (dlg.exec() == QDialog::Accepted) {
     // TODO
   }
+}
+
+void MainWindow::on_tabs_tabCloseRequested(int index) {
+  delete ui->tabs->widget(index);
 }
 
 }  // namespace experimental::replicators
