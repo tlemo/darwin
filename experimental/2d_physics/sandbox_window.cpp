@@ -66,6 +66,7 @@ void SandboxWindow::updateUI() {
     }
   }
 
+  box2dWidget()->update();
   update();
   main_window_->updateToolWindows();
 }

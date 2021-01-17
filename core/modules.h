@@ -39,7 +39,7 @@ class TypeFactory : public core::NonCopyable {
   }
 
   //! Creates an instance of a previously registered type
-  INTERFACE* create(const string& name) const {
+  unique_ptr<INTERFACE> create(const string& name) const {
     auto it = implementations_.find(name);
     return it != implementations_.end() ? it->second() : nullptr;
   }
