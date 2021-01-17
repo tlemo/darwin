@@ -2,6 +2,7 @@
 #include "main_window.h"
 #include "ui_main_window.h"
 #include "phenotype_widget.h"
+#include "new_experiment_dialog.h"
 
 namespace experimental::replicators {
 
@@ -26,7 +27,10 @@ MainWindow::~MainWindow() {
 }
 
 void MainWindow::on_action_new_experiment_triggered() {
-  // TODO
+  NewExperimentDialog dlg(this);
+  if (dlg.exec() == QDialog::Accepted) {
+    // TODO
+  }
 }
 
 }  // namespace experimental::replicators

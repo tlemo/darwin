@@ -49,6 +49,9 @@
    <property name="text">
     <string>&amp;New experiment</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+N</string>
+   </property>
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
