@@ -15,9 +15,11 @@
 #pragma once
 
 #include <core/utils.h>
+#include <core/modules.h>
 #include <third_party/box2d/box2d.h>
 
 #include <memory>
+#include <vector>
 using namespace std;
 
 namespace experimental::replicators {
@@ -38,6 +40,21 @@ class Genotype : public core::NonCopyable {
   virtual ~Genotype() = default;
 
   virtual unique_ptr<Phenotype> grow() const = 0;
+  virtual unique_ptr<Genotype> mutate() const = 0;
 };
+
+class SpeciesFactory : public core::ModuleFactory {
+ public:
+  virtual unique_ptr<Genotype> primordialGenotype() = 0;
+
+  //! Returns a list of illustrative sample genotypes
+  //! (this allows for basic 'guru-checks-output' type of testing)
+  virtual vector<unique_ptr<Genotype>> samples() = 0;
+};
+
+inline auto registry() {
+  static core::ImplementationsSet<SpeciesFactory> instance;
+  return &instance;
+}
 
 }  // namespace experimental::replicators

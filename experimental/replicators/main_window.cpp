@@ -25,4 +25,8 @@ MainWindow::~MainWindow() {
   delete ui;
 }
 
+void MainWindow::on_action_new_experiment_triggered() {
+  // TODO
+}
+
 }  // namespace experimental::replicators

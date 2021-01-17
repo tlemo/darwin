@@ -15,12 +15,14 @@ SOURCES += \
     main.cpp \
     main_window.cpp \
     phenotype_widget.cpp \
-    replicators.cpp
+    replicators.cpp \
+    species/segment_tree.cpp
 
 HEADERS += \
     main_window.h \
     phenotype_widget.h \
-    replicators.h
+    replicators.h \
+    species/segment_tree.h
     
 FORMS += \
     main_window.ui

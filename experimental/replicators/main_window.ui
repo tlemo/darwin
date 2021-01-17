@@ -33,6 +33,8 @@
     <property name="title">
      <string>&amp;File</string>
     </property>
+    <addaction name="action_new_experiment"/>
+    <addaction name="separator"/>
     <addaction name="action_exit"/>
    </widget>
    <addaction name="menu_file"/>
@@ -41,6 +43,11 @@
   <action name="action_exit">
    <property name="text">
     <string>E&amp;xit</string>
+   </property>
+  </action>
+  <action name="action_new_experiment">
+   <property name="text">
+    <string>&amp;New experiment</string>
    </property>
   </action>
  </widget>
