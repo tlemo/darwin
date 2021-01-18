@@ -22,6 +22,9 @@ class MainWindow : public QMainWindow {
   void on_tabs_tabCloseRequested(int index);
 
  private:
+  void newExperimentWindow(bool sample_set);
+
+ private:
   Ui::MainWindow* ui = nullptr;
 };
 
