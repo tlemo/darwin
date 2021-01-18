@@ -48,7 +48,7 @@ void ExperimentWindow::resetPopulation() {
   for (size_t i = 0; i < population_.size(); ++i) {
     const auto col = i % kColumns;
     const auto row = i / kColumns;
-    const auto widget = new PhenotypeWidget(this);
+    const auto widget = new PhenotypeWidget(this, population_[i]->grow());
     layout_->addWidget(widget, row, col);
   }
 }

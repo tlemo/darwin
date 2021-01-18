@@ -40,10 +40,9 @@ Box2dWidget::Box2dWidget(QWidget* parent) : core_ui::Canvas(parent) {
   setBorderSize(15);
 }
 
-void Box2dWidget::setWorld(b2World* world, const QRectF& viewport) {
+void Box2dWidget::setWorld(b2World* world) {
   CHECK(world != nullptr);
   world_ = world;
-  setViewport(viewport);
   update();
 }
 

@@ -16,9 +16,11 @@
 
 namespace experimental::replicators {
 
-PhenotypeWidget::PhenotypeWidget(QWidget* parent) : physics_ui::Box2dWidget(parent) {
+PhenotypeWidget::PhenotypeWidget(QWidget* parent, unique_ptr<Phenotype> phenotype)
+    : physics_ui::Box2dWidget(parent), phenotype_(std::move(phenotype)) {
   setBorderSize(4);
   setFrameStyle(QFrame::StyledPanel | QFrame::Plain);
+  setWorld(phenotype_->specimen());
 }
 
 }  // namespace experimental::replicators

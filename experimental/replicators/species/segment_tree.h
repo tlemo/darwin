@@ -18,20 +18,17 @@
 
 namespace experimental::replicators::seg_tree {
 
-class Phenotype : public experimental::replicators::Phenotype {
- public:
-  Phenotype();
-
-  b2World* specimen() const override;
-  void animate() override;
-};
-
 class Genotype : public experimental::replicators::Genotype {
  public:
   Genotype();
 
   unique_ptr<experimental::replicators::Phenotype> grow() const override;
   unique_ptr<experimental::replicators::Genotype> mutate() const override;
+};
+
+class Phenotype : public experimental::replicators::Phenotype {
+ public:
+  explicit Phenotype(const Genotype* genotype);
 };
 
 }  // namespace experimental::replicators::seg_tree

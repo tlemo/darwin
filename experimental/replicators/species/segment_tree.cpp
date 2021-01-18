@@ -33,16 +33,7 @@ GLOBAL_INITIALIZER {
   registry()->add<Factory>("Segment Tree");
 }
 
-Phenotype::Phenotype() {
-  // TODO
-}
-
-b2World* Phenotype::specimen() const {
-  // TODO
-  return nullptr;
-}
-
-void Phenotype::animate() {
+Phenotype::Phenotype(const Genotype* genotype) {
   // TODO
 }
 
@@ -51,13 +42,12 @@ Genotype::Genotype() {
 }
 
 unique_ptr<experimental::replicators::Phenotype> Genotype::grow() const {
-  // TODO
-  return nullptr;
+  return make_unique<Phenotype>(this);
 }
 
 unique_ptr<experimental::replicators::Genotype> Genotype::mutate() const {
   // TODO
-  return nullptr;
+  return make_unique<Genotype>();
 }
 
 }  // namespace experimental::replicators::seg_tree

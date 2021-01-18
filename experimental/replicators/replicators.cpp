@@ -16,4 +16,6 @@
 
 namespace experimental::replicators {
 
+Phenotype::Phenotype() : world_(b2Vec2(0, 0)) {}
+
 }  // namespace experimental::replicators

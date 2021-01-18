@@ -26,13 +26,17 @@ namespace experimental::replicators {
 
 class Phenotype : public core::NonCopyable {
  public:
+  Phenotype();
   virtual ~Phenotype() = default;
 
   //! The returned b2World is owned by the Phenotype instance
-  virtual b2World* specimen() const = 0;
+  virtual b2World* specimen() { return &world_; }
 
   //! Animate the phenotype (a single step)
-  virtual void animate() = 0;
+  virtual void animate() {}
+
+ private:
+  b2World world_;
 };
 
 class Genotype : public core::NonCopyable {

@@ -69,7 +69,7 @@ class Box2dWidget : public core_ui::Canvas {
  public:
   explicit Box2dWidget(QWidget* parent);
 
-  void setWorld(b2World* world, const QRectF& viewport);
+  void setWorld(b2World* world);
   void setSceneUi(Box2dSceneUi* scene_ui);
 
   bool debugRender() const { return enable_debug_render_; }

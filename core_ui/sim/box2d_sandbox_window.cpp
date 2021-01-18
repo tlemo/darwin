@@ -99,7 +99,8 @@ void Box2dSandboxWindow::setWorld(b2World* world, const QRectF& viewport) {
   ui->play_pause->setIcon(kPlayIcon);
   ui->play_pause->setDisabled(false);
   ui->single_step->setDisabled(false);
-  ui->world_widget->setWorld(world, viewport);
+  ui->world_widget->setWorld(world);
+  ui->world_widget->setViewport(viewport);
   ui->world_widget->setFocus();
   state_ = State::Paused;
 }

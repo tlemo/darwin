@@ -14,7 +14,12 @@
 
 #pragma once
 
+#include "replicators.h"
+
 #include <core_ui/sim/box2d_widget.h>
+
+#include <memory>
+using namespace std;
 
 namespace experimental::replicators {
 
@@ -22,7 +27,10 @@ class PhenotypeWidget : public physics_ui::Box2dWidget {
   Q_OBJECT
 
  public:
-  explicit PhenotypeWidget(QWidget* parent);
+  PhenotypeWidget(QWidget* parent, unique_ptr<Phenotype> phenotype);
+
+ private:
+  unique_ptr<Phenotype> phenotype_;
 };
 
 }  // namespace experimental::replicators
