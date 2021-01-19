@@ -28,6 +28,7 @@
 #include <QPalette>
 
 #include <math.h>
+#include <limits>
 
 namespace physics_ui {
 
@@ -58,6 +59,11 @@ void Box2dWidget::setSceneUi(Box2dSceneUi* scene_ui) {
     }
     connect(scene_ui_, &Box2dSceneUi::sigPlayPause, this, &Box2dWidget::sigPlayPause);
   }
+  update();
+}
+
+void Box2dWidget::setViewportPolicy(Box2dWidget::ViewportPolicy policy) {
+  viewport_policy_ = policy;
   update();
 }
 
@@ -164,7 +170,103 @@ void Box2dWidget::renderGeneric(QPainter& painter) const {
   }
 }
 
+void Box2dWidget::applyViewportPolicy() {
+  // we're using Box2d's debug draw interface to compute the world extents
+  struct Box2dWorldExtents : public b2Draw {
+    float min_x = std::numeric_limits<float>::infinity();
+    float max_x = -std::numeric_limits<float>::infinity();
+    float min_y = std::numeric_limits<float>::infinity();
+    float max_y = -std::numeric_limits<float>::infinity();
+    bool valid = false;
+
+    void DrawPolygon(const b2Vec2* vertices, int32 vertexCount, const b2Color&) override {
+      for (int i = 0; i < vertexCount; ++i) {
+        const auto x = vertices[i].x;
+        const auto y = vertices[i].y;
+
+        if (x < min_x) {
+          min_x = x;
+        } else if (x > max_x) {
+          max_x = x;
+        }
+
+        if (y < min_y) {
+          min_y = y;
+        } else if (y > max_y) {
+          max_y = y;
+        }
+      }
+      valid = true;
+    }
+
+    void DrawSolidPolygon(const b2Vec2*, int32, const b2Color&) override {
+      FATAL("Unexpected");
+    }
+
+    void DrawCircle(const b2Vec2&, float32, const b2Color&) override {
+      FATAL("Unexpected");
+    }
+
+    void DrawSolidCircle(const b2Vec2&, float32, const b2Vec2&, const b2Color&) override {
+      FATAL("Unexpected");
+    }
+
+    void DrawSegment(const b2Vec2&, const b2Vec2&, const b2Color&) override {
+      FATAL("Unexpected");
+    }
+
+    void DrawTransform(const b2Transform&) override { FATAL("Unexpected"); }
+
+    void DrawPoint(const b2Vec2&, float32, const b2Color&) override {
+      FATAL("Unexpected");
+    }
+  };
+
+  Box2dWorldExtents extents_tracker;
+  extents_tracker.SetFlags(b2Draw::e_aabbBit);
+
+  switch (viewport_policy_) {
+    case ViewportPolicy::UserDefined:
+      // nothing to do here
+      return;
+
+    case ViewportPolicy::AutoExpanding:
+      // initialize Box2dWorldExtents to the current viewport
+      extents_tracker.min_x = viewport().left();
+      extents_tracker.max_x = viewport().right();
+      extents_tracker.min_y = viewport().bottom();
+      extents_tracker.min_x = viewport().top();
+      break;
+
+    case ViewportPolicy::AutoFit:
+      // default Box2dWorldExtents is what we need
+      break;
+
+    default:
+      FATAL("Unexpected viewport policy");
+  }
+
+  world_->SetDebugDraw(&extents_tracker);
+  world_->DrawDebugData();
+  world_->SetDebugDraw(nullptr);
+
+  if (extents_tracker.valid) {
+    const auto left = extents_tracker.min_x;
+    const auto top = extents_tracker.max_y;
+    const auto width = extents_tracker.max_x - extents_tracker.min_x;
+    const auto height = extents_tracker.min_y - extents_tracker.max_y;
+
+    const QRectF new_viewport(left, top, width, height);
+
+    if (new_viewport != viewport()) {
+      setViewport(new_viewport, false);
+    }
+  }
+}
+
 void Box2dWidget::paintEvent(QPaintEvent* event) {
+  applyViewportPolicy();
+
   // chain call the base implementation
   // (this will render the background and an optional frame)
   Canvas::paintEvent(event);

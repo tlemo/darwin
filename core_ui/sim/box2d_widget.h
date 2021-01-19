@@ -67,10 +67,21 @@ class Box2dWidget : public core_ui::Canvas {
   const QColor kViewportColor{ 240, 240, 255 };
 
  public:
+  //! The viewpoint extents rules
+  enum class ViewportPolicy {
+    UserDefined,    //!< Use the setViewport() to set the extents (default)
+    AutoExpanding,  //!< Automatically expand to fit all objects
+    AutoFit         //!< Expand or shrink as needed to fit current objects
+  };
+
+ public:
   explicit Box2dWidget(QWidget* parent);
 
   void setWorld(b2World* world);
   void setSceneUi(Box2dSceneUi* scene_ui);
+
+  ViewportPolicy viewportPolicy() const { return viewport_policy_; }
+  void setViewportPolicy(ViewportPolicy policy);
 
   bool debugRender() const { return enable_debug_render_; }
   void setDebugRender(bool enable);
@@ -97,9 +108,12 @@ class Box2dWidget : public core_ui::Canvas {
   void renderDebugLayer(QPainter& painter) const;
   void renderGeneric(QPainter& painter) const;
 
+  void applyViewportPolicy();
+
  private:
   b2World* world_ = nullptr;
   Box2dSceneUi* scene_ui_ = nullptr;
+  ViewportPolicy viewport_policy_ = ViewportPolicy::UserDefined;
   bool enable_debug_render_ = true;
   bool render_lights_ = false;
 };
