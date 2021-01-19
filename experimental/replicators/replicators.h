@@ -35,7 +35,7 @@ class Phenotype : public core::NonCopyable {
   //! Animate the phenotype (a single step)
   virtual void animate() {}
 
- private:
+ protected:
   b2World world_;
 };
 

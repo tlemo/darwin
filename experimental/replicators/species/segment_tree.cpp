@@ -35,6 +35,17 @@ GLOBAL_INITIALIZER {
 
 Phenotype::Phenotype(const Genotype* genotype) {
   // TODO
+  b2PolygonShape shape;
+  shape.SetAsBox(2, 8);
+
+  b2BodyDef body_def;
+  body_def.type = b2_dynamicBody;
+  b2Body* body = world_.CreateBody(&body_def);
+
+  b2FixtureDef fixture_def;
+  fixture_def.shape = &shape;
+  fixture_def.density = 1.0f;
+  body->CreateFixture(&fixture_def);
 }
 
 Genotype::Genotype() {
