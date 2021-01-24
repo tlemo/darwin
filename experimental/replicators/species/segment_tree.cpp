@@ -24,11 +24,11 @@ using namespace std;
 namespace experimental::replicators::seg_tree {
 
 template <class T>
-static auto& randomElem(T& container) {
+static auto randomElem(T& container) {
   random_device rd;
   default_random_engine rnd(rd());
   uniform_int_distribution<size_t> dist(0, container.size() - 1);
-  return container[dist(rnd)];
+  return container.begin() + dist(rnd);
 }
 
 static double mutateValue(double value, double std_dev) {
@@ -78,7 +78,7 @@ unique_ptr<experimental::replicators::Phenotype> Genotype::grow() const {
 
 void Genotype::mutate() {
   // pick a random segment
-  auto& segment = randomElem(segments_);
+  auto& segment = *randomElem(segments_);
 
   struct SegmentMutation {
     double probability = 0;
@@ -99,8 +99,51 @@ void Genotype::mutate() {
   };
 }
 
+Segment* Genotype::deepCopy(const Segment* segment) {
+  if (segment == nullptr) {
+    return nullptr;
+  }
+
+  unordered_map<const Segment*, Segment*> orig_to_clone;
+
+  // do a DFS and a shallow copy of all reachable segments
+  vector<const Segment*> stack = { segment };
+  while (!stack.empty()) {
+    const auto s = stack.back();
+    stack.pop_back();
+    if (orig_to_clone.find(s) == orig_to_clone.end()) {
+      orig_to_clone.insert({ s, newSegment(*s) });
+
+      if (s->side_appendage != nullptr) {
+        stack.push_back(s->side_appendage);
+      }
+
+      for (const auto& slice : s->slices) {
+        if (slice.appendage != nullptr) {
+          stack.push_back(s->side_appendage);
+        }
+      }
+    }
+  }
+
+  // fixup references
+  for (auto kv : orig_to_clone) {
+    const auto clone = kv.second;
+    if (clone->side_appendage != nullptr) {
+      clone->side_appendage = orig_to_clone.at(clone->side_appendage);
+    }
+    for (auto& slice : clone->slices) {
+      if (slice.appendage != nullptr) {
+        slice.appendage = orig_to_clone.at(slice.appendage);
+      }
+    }
+  }
+
+  return orig_to_clone.at(segment);
+}
+
 void Genotype::growAppendage(Segment* segment) {
-  auto& slice = randomElem(segment->slices);
+  auto& slice = *randomElem(segment->slices);
   slice.appendage = newSegment(slice.appendage);
 }
 
@@ -108,18 +151,31 @@ void Genotype::growSideAppendage(Segment* segment) {
   segment->side_appendage = newSegment(segment->side_appendage);
 }
 
+// pick a random slice and split it
 void Genotype::lateralSplit(Segment* segment, double fraction) {
-  // TODO
+  CHECK(fraction > 0 && fraction < 1);
+
+  const auto slice_it = randomElem(segment->slices);
+  const auto original_width = slice_it->relative_width;
+
+  slice_it->relative_width = original_width * (1 - fraction);
+
+  Slice new_slice;
+  new_slice.relative_width = original_width * fraction;
+  new_slice.appendage = deepCopy(slice_it->appendage);
+
+  segment->slices.insert(slice_it, new_slice);
 }
 
 // split the segment into two segments, chained together
 void Genotype::axialSplit(Segment* segment, double fraction) {
   CHECK(fraction > 0 && fraction < 1);
-  segment->length *= fraction;
+  const auto original_length = segment->length;
   for (auto& slice : segment->slices) {
     slice.appendage = newSegment(slice.appendage);
-    slice.appendage->length = segment->length * (1 - fraction);
+    slice.appendage->length = original_length * (1 - fraction);
   }
+  segment->length = original_length * fraction;
 }
 
 void Genotype::mutateLength(Segment* segment, double std_dev) {
@@ -131,7 +187,7 @@ void Genotype::mutateWidth(Segment* segment, double std_dev) {
 }
 
 void Genotype::mutateSliceWidth(Segment* segment, double std_dev) {
-  auto& slice = randomElem(segment->slices);
+  auto& slice = *randomElem(segment->slices);
   slice.relative_width = mutateValue(slice.relative_width, std_dev);
 }
 
