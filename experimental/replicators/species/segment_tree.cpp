@@ -193,31 +193,8 @@ void Genotype::mutateSliceWidth(Segment* segment, double std_dev) {
 
 unique_ptr<experimental::replicators::Genotype> Genotype::clone() const {
   auto clone = make_unique<Genotype>();
-
-  unordered_map<Segment*, Segment*> orig_to_clone;
-
-  // copy all segments
-  for (const auto& segment : segments_) {
-    auto segment_clone = make_unique<Segment>(*segment);
-    CHECK(orig_to_clone.insert({ segment.get(), segment_clone.get() }).second);
-    clone->segments_.push_back(std::move(segment_clone));
-  }
-
-  // fixup segment pointers
-  for (auto& segment : clone->segments_) {
-    if (segment->side_appendage) {
-      segment->side_appendage = orig_to_clone.at(segment->side_appendage);
-    }
-    for (auto& slice : segment->slices) {
-      if (slice.appendage != nullptr) {
-        slice.appendage = orig_to_clone.at(slice.appendage);
-      }
-    }
-  }
-
-  // finally, set the expression root
-  clone->root_ = orig_to_clone.at(root_);
-
+  clone->root_ = clone->deepCopy(root_);
+  CHECK(clone->segments_.size() == segments_.size());
   return clone;
 }
 
