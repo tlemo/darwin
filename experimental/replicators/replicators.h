@@ -44,7 +44,8 @@ class Genotype : public core::NonCopyable {
   virtual ~Genotype() = default;
 
   virtual unique_ptr<Phenotype> grow() const = 0;
-  virtual unique_ptr<Genotype> mutate() const = 0;
+  virtual unique_ptr<Genotype> clone() const = 0;
+  virtual void mutate() = 0;
 };
 
 class SpeciesFactory : public core::ModuleFactory {

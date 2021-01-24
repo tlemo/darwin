@@ -16,6 +16,9 @@
 
 #include <core/global_initializer.h>
 
+#include <unordered_map>
+using namespace std;
+
 namespace experimental::replicators::seg_tree {
 
 class Factory : public SpeciesFactory {
@@ -49,16 +52,45 @@ Phenotype::Phenotype(const Genotype* genotype) {
 }
 
 Genotype::Genotype() {
-  // TODO
+  root_ = newSegment();
 }
 
 unique_ptr<experimental::replicators::Phenotype> Genotype::grow() const {
   return make_unique<Phenotype>(this);
 }
 
-unique_ptr<experimental::replicators::Genotype> Genotype::mutate() const {
+unique_ptr<experimental::replicators::Genotype> Genotype::clone() const {
+  auto clone = make_unique<Genotype>();
+
+  unordered_map<Segment*, Segment*> orig_to_clone;
+
+  // copy all segments
+  for (const auto& segment : segments_) {
+    auto segment_clone = make_unique<Segment>(*segment);
+    CHECK(orig_to_clone.insert({ segment.get(), segment_clone.get() }).second);
+    clone->segments_.push_back(std::move(segment_clone));
+  }
+
+  // fixup segment pointers
+  for (auto& segment : clone->segments_) {
+    if (segment->side_appendage) {
+      segment->side_appendage = orig_to_clone.at(segment->side_appendage);
+    }
+    for (auto& slice : segment->slices) {
+      if (slice.appendage != nullptr) {
+        slice.appendage = orig_to_clone.at(slice.appendage);
+      }
+    }
+  }
+
+  // finally, set the expression root
+  clone->root_ = orig_to_clone.at(root_);
+
+  return clone;
+}
+
+void Genotype::mutate() {
   // TODO
-  return make_unique<Genotype>();
 }
 
 }  // namespace experimental::replicators::seg_tree

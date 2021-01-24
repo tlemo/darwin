@@ -16,14 +16,52 @@
 
 #include "replicators.h"
 
+#include <vector>
+#include <utility>
+#include <memory>
+using namespace std;
+
 namespace experimental::replicators::seg_tree {
+
+struct Segment;
+
+struct Slice {
+  // width relative to the sibling slices
+  double relative_width = 1.0;
+
+  // optional appendage attached to the slice's end
+  Segment* appendage = nullptr;
+};
+
+struct Segment {
+  double length = 1.0;
+  double width = 1.0;
+  bool suppressed = false;
+  Segment* side_appendage = nullptr;
+  vector<Slice> slices = { Slice() };
+};
 
 class Genotype : public experimental::replicators::Genotype {
  public:
   Genotype();
 
   unique_ptr<experimental::replicators::Phenotype> grow() const override;
-  unique_ptr<experimental::replicators::Genotype> mutate() const override;
+  unique_ptr<experimental::replicators::Genotype> clone() const override;
+  void mutate() override;
+
+ private:
+  template <class... Args>
+  Segment* newSegment(Args&&... args) {
+    const auto segment = new Segment(std::forward<Args>(args)...);
+    segments_.emplace_back(segment);
+    return segment;
+  }
+
+ private:
+  // the Genotype owns all the Segment instances
+  vector<unique_ptr<Segment>> segments_;
+
+  Segment* root_ = nullptr;
 };
 
 class Phenotype : public experimental::replicators::Phenotype {

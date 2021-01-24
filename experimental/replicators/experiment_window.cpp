@@ -35,7 +35,9 @@ void ExperimentWindow::resetPopulation() {
     parent_ = factory_->primordialGenotype();
     population_.clear();
     for (int i = 0; i < kDefaultPopulationSize; ++i) {
-      population_.push_back(parent_->mutate());
+      auto clone = parent_->clone();
+      clone->mutate();
+      population_.push_back(std::move(clone));
     }
   }
 
