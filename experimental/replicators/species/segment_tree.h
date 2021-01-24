@@ -1,4 +1,4 @@
-// Copyright The Darwin Neuroevolution Framework Authors.
+﻿// Copyright The Darwin Neuroevolution Framework Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -39,6 +39,10 @@ struct Segment {
   bool suppressed = false;
   Segment* side_appendage = nullptr;
   vector<Slice> slices = { Slice() };
+
+  Segment() = default;
+
+  explicit Segment(Segment* appendage) : slices({ { 1.0, appendage } }) {}
 };
 
 class Genotype : public experimental::replicators::Genotype {
@@ -56,6 +60,15 @@ class Genotype : public experimental::replicators::Genotype {
     segments_.emplace_back(segment);
     return segment;
   }
+
+  // mutations
+  void growAppendage(Segment* segment);
+  void growSideAppendage(Segment* segment);
+  void lateralSplit(Segment* segment, double fraction);
+  void axialSplit(Segment* segment, double fraction);
+  void mutateLength(Segment* segment, double std_dev);
+  void mutateWidth(Segment* segment, double std_dev);
+  void mutateSliceWidth(Segment* segment, double std_dev);
 
  private:
   // the Genotype owns all the Segment instances

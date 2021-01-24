@@ -17,9 +17,26 @@
 #include <core/global_initializer.h>
 
 #include <unordered_map>
+#include <random>
+#include <functional>
 using namespace std;
 
 namespace experimental::replicators::seg_tree {
+
+template <class T>
+static auto& randomElem(T& container) {
+  random_device rd;
+  default_random_engine rnd(rd());
+  uniform_int_distribution<size_t> dist(0, container.size() - 1);
+  return container[dist(rnd)];
+}
+
+static double mutateValue(double value, double std_dev) {
+  random_device rd;
+  default_random_engine rnd(rd());
+  normal_distribution<double> dist(value, std_dev);
+  return dist(rnd);
+}
 
 class Factory : public SpeciesFactory {
  public:
@@ -59,6 +76,65 @@ unique_ptr<experimental::replicators::Phenotype> Genotype::grow() const {
   return make_unique<Phenotype>(this);
 }
 
+void Genotype::mutate() {
+  // pick a random segment
+  auto& segment = randomElem(segments_);
+
+  struct SegmentMutation {
+    double probability = 0;
+    function<void(Segment*)> mutation;
+  };
+
+  vector<SegmentMutation> mutagen = {
+    { 10, [&](Segment* segment) { axialSplit(segment, 0.5); } },
+    { 20, [&](Segment* segment) { axialSplit(segment, 1.0); } },
+    { 50, [&](Segment* segment) { lateralSplit(segment, 0.5); } },
+    { 50, [&](Segment* segment) { lateralSplit(segment, 1.0); } },
+    { 5, [&](Segment* segment) { segment->suppressed = !segment->suppressed; } },
+    { 50, [&](Segment* segment) { growAppendage(segment); } },
+    { 25, [&](Segment* segment) { growSideAppendage(segment); } },
+    { 100, [&](Segment* segment) { mutateLength(segment, 0.5); } },
+    { 100, [&](Segment* segment) { mutateWidth(segment, 0.5); } },
+    { 50, [&](Segment* segment) { mutateSliceWidth(segment, 0.5); } },
+  };
+}
+
+void Genotype::growAppendage(Segment* segment) {
+  auto& slice = randomElem(segment->slices);
+  slice.appendage = newSegment(slice.appendage);
+}
+
+void Genotype::growSideAppendage(Segment* segment) {
+  segment->side_appendage = newSegment(segment->side_appendage);
+}
+
+void Genotype::lateralSplit(Segment* segment, double fraction) {
+  // TODO
+}
+
+// split the segment into two segments, chained together
+void Genotype::axialSplit(Segment* segment, double fraction) {
+  CHECK(fraction > 0 && fraction < 1);
+  segment->length *= fraction;
+  for (auto& slice : segment->slices) {
+    slice.appendage = newSegment(slice.appendage);
+    slice.appendage->length = segment->length * (1 - fraction);
+  }
+}
+
+void Genotype::mutateLength(Segment* segment, double std_dev) {
+  segment->length = mutateValue(segment->length, std_dev);
+}
+
+void Genotype::mutateWidth(Segment* segment, double std_dev) {
+  segment->width = mutateValue(segment->width, std_dev);
+}
+
+void Genotype::mutateSliceWidth(Segment* segment, double std_dev) {
+  auto& slice = randomElem(segment->slices);
+  slice.relative_width = mutateValue(slice.relative_width, std_dev);
+}
+
 unique_ptr<experimental::replicators::Genotype> Genotype::clone() const {
   auto clone = make_unique<Genotype>();
 
@@ -87,10 +163,6 @@ unique_ptr<experimental::replicators::Genotype> Genotype::clone() const {
   clone->root_ = orig_to_clone.at(root_);
 
   return clone;
-}
-
-void Genotype::mutate() {
-  // TODO
 }
 
 }  // namespace experimental::replicators::seg_tree
