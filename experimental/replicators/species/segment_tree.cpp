@@ -72,6 +72,17 @@ Genotype::Genotype() {
   root_ = newSegment();
 }
 
+Genotype::Genotype(const Genotype& other) {
+  root_ = deepCopy(other.root_);
+  CHECK(segments_.size() == other.segments_.size());
+}
+
+Genotype& Genotype::operator=(const Genotype& other) {
+  Genotype copy(other);
+  std::swap(*this, copy);
+  return *this;
+}
+
 unique_ptr<experimental::replicators::Phenotype> Genotype::grow() const {
   return make_unique<Phenotype>(this);
 }
@@ -176,15 +187,15 @@ void Genotype::growSideAppendage(Segment* segment) {
 
 // pick a random slice and split it
 void Genotype::lateralSplit(Segment* segment, double fraction) {
-  CHECK(fraction > 0 && fraction < 1);
+  CHECK(fraction > 0);
 
   const auto slice_it = randomElem(segment->slices);
-  const auto original_width = slice_it->relative_width;
+  const auto new_width = slice_it->relative_width * fraction;
 
-  slice_it->relative_width = original_width * (1 - fraction);
+  slice_it->relative_width = new_width;
 
   Slice new_slice;
-  new_slice.relative_width = original_width * fraction;
+  new_slice.relative_width = new_width;
   new_slice.appendage = deepCopy(slice_it->appendage);
 
   segment->slices.insert(slice_it, new_slice);
@@ -192,13 +203,13 @@ void Genotype::lateralSplit(Segment* segment, double fraction) {
 
 // split the segment into two segments, chained together
 void Genotype::axialSplit(Segment* segment, double fraction) {
-  CHECK(fraction > 0 && fraction < 1);
-  const auto original_length = segment->length;
+  CHECK(fraction > 0);
+  const auto new_length = segment->length * fraction;
   for (auto& slice : segment->slices) {
     slice.appendage = newSegment(slice.appendage);
-    slice.appendage->length = original_length * (1 - fraction);
+    slice.appendage->length = new_length;
   }
-  segment->length = original_length * fraction;
+  segment->length = new_length;
 }
 
 void Genotype::mutateLength(Segment* segment, double std_dev) {
@@ -215,10 +226,7 @@ void Genotype::mutateSliceWidth(Segment* segment, double std_dev) {
 }
 
 unique_ptr<experimental::replicators::Genotype> Genotype::clone() const {
-  auto clone = make_unique<Genotype>();
-  clone->root_ = clone->deepCopy(root_);
-  CHECK(clone->segments_.size() == segments_.size());
-  return clone;
+  return make_unique<Genotype>(*this);
 }
 
 }  // namespace experimental::replicators::seg_tree

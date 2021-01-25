@@ -51,6 +51,9 @@ class Genotype : public experimental::replicators::Genotype {
  public:
   Genotype();
 
+  Genotype(const Genotype& other);
+  Genotype& operator=(const Genotype& other);
+
   unique_ptr<experimental::replicators::Phenotype> grow() const override;
   unique_ptr<experimental::replicators::Genotype> clone() const override;
   void mutate() override;
