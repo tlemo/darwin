@@ -78,25 +78,48 @@ unique_ptr<experimental::replicators::Phenotype> Genotype::grow() const {
 
 void Genotype::mutate() {
   // pick a random segment
-  auto& segment = *randomElem(segments_);
+  const auto segment = randomElem(segments_)->get();
 
-  struct SegmentMutation {
+  struct MutationType {
     double probability = 0;
-    function<void(Segment*)> mutation;
+    function<void()> mutate;
   };
 
-  vector<SegmentMutation> mutagen = {
-    { 10, [&](Segment* segment) { axialSplit(segment, 0.5); } },
-    { 20, [&](Segment* segment) { axialSplit(segment, 1.0); } },
-    { 50, [&](Segment* segment) { lateralSplit(segment, 0.5); } },
-    { 50, [&](Segment* segment) { lateralSplit(segment, 1.0); } },
-    { 5, [&](Segment* segment) { segment->suppressed = !segment->suppressed; } },
-    { 50, [&](Segment* segment) { growAppendage(segment); } },
-    { 25, [&](Segment* segment) { growSideAppendage(segment); } },
-    { 100, [&](Segment* segment) { mutateLength(segment, 0.5); } },
-    { 100, [&](Segment* segment) { mutateWidth(segment, 0.5); } },
-    { 50, [&](Segment* segment) { mutateSliceWidth(segment, 0.5); } },
+  vector<MutationType> mutagen = {
+    { 10, [&] { axialSplit(segment, 0.5); } },
+    { 20, [&] { axialSplit(segment, 1.0); } },
+    { 50, [&] { lateralSplit(segment, 0.5); } },
+    { 50, [&] { lateralSplit(segment, 1.0); } },
+    { 5, [&] { segment->suppressed = !segment->suppressed; } },
+    { 50, [&] { growAppendage(segment); } },
+    { 25, [&] { growSideAppendage(segment); } },
+    { 100, [&] { mutateLength(segment, 0.5); } },
+    { 100, [&] { mutateWidth(segment, 0.5); } },
+    { 50, [&] { mutateSliceWidth(segment, 0.5); } },
   };
+
+  double total = 0;
+  for (const auto& mutation_type : mutagen) {
+    CHECK(mutation_type.probability >= 0);
+    total += mutation_type.probability;
+  }
+  CHECK(total > 0);
+
+  random_device rd;
+  default_random_engine rnd(rd());
+  uniform_real_distribution<double> dist(0, total);
+
+  for (int i = 0; i < kMutationCount; ++i) {
+    const double sample = dist(rnd);
+    double prefix_sum = 0;
+    for (const auto& mutation_type : mutagen) {
+      prefix_sum += mutation_type.probability;
+      if (sample < prefix_sum) {
+        mutation_type.mutate();
+        break;
+      }
+    }
+  }
 }
 
 Segment* Genotype::deepCopy(const Segment* segment) {
