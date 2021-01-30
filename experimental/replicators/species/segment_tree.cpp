@@ -59,17 +59,22 @@ Phenotype::Phenotype(const Genotype* genotype) {
 }
 
 void Phenotype::createSegment(const Segment* segment,
-                              b2BodyDef* parent_body,
+                              b2Body* parent_body,
                               const b2Vec2& base_left,
                               const b2Vec2& base_right) {
+  CHECK(segment != nullptr);
   CHECK(!segment->slices.empty());
+
+  const auto d = base_right - base_left;
 
   // body
   b2BodyDef body_def;
   body_def.type = b2_dynamicBody;
+  body_def.position = (base_left + base_right) * 0.5f;
+  body_def.angle = parent_body ? atan2f(d.y, d.x) : 0;
   b2Body* body = world_.CreateBody(&body_def);
 
-  const float base_width = (base_right - base_left).Length();
+  const float base_width = d.Length();
 
   float total_rel_width = 0;
   for (const auto& slice : segment->slices) {
@@ -116,7 +121,25 @@ void Phenotype::createSegment(const Segment* segment,
     body->CreateFixture(&fixture_def);
   }
 
-  // TODO: set body position + angle
+  // create appendages
+  for (size_t i = 0; i < segment->slices.size(); ++i) {
+    const auto& slice = segment->slices[i];
+    if (slice.appendage) {
+      createSegment(slice.appendage, body, extremity_points[i], extremity_points[i + 1]);
+    }
+  }
+
+  // side appendage, if any
+  if (segment->side_appendage) {
+    // left
+    createSegment(
+        segment->side_appendage, body, base_points.front(), extremity_points.front());
+
+    // right (mirror)
+    createSegment(
+        segment->side_appendage, body, extremity_points.back(), base_points.front());
+  }
+
   // TODO: set joints
 }
 
