@@ -58,6 +58,8 @@ class Genotype : public experimental::replicators::Genotype {
   unique_ptr<experimental::replicators::Genotype> clone() const override;
   void mutate() override;
 
+  Segment* root() const { return root_; }
+
  private:
   template <class... Args>
   Segment* newSegment(Args&&... args) {
@@ -89,6 +91,12 @@ class Genotype : public experimental::replicators::Genotype {
 class Phenotype : public experimental::replicators::Phenotype {
  public:
   explicit Phenotype(const Genotype* genotype);
+
+ private:
+  void createSegment(const Segment* segment,
+                     b2BodyDef* parent_body,
+                     const b2Vec2& base_left,
+                     const b2Vec2& base_right);
 };
 
 }  // namespace experimental::replicators::seg_tree

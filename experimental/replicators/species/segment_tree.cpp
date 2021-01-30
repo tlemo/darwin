@@ -19,6 +19,7 @@
 #include <unordered_map>
 #include <random>
 #include <functional>
+#include <array>
 using namespace std;
 
 namespace experimental::replicators::seg_tree {
@@ -31,11 +32,11 @@ static auto randomElem(T& container) {
   return container.begin() + dist(rnd);
 }
 
-static double mutateValue(double value, double std_dev) {
+static double mutateValue(double value, double std_dev, double min_value = 0.01) {
   random_device rd;
   default_random_engine rnd(rd());
   normal_distribution<double> dist(value, std_dev);
-  return dist(rnd);
+  return max(dist(rnd), min_value);
 }
 
 class Factory : public SpeciesFactory {
@@ -54,18 +55,69 @@ GLOBAL_INITIALIZER {
 }
 
 Phenotype::Phenotype(const Genotype* genotype) {
-  // TODO
-  b2PolygonShape shape;
-  shape.SetAsBox(2, 8);
+  createSegment(genotype->root(), nullptr, b2Vec2(), b2Vec2());
+}
 
+void Phenotype::createSegment(const Segment* segment,
+                              b2BodyDef* parent_body,
+                              const b2Vec2& base_left,
+                              const b2Vec2& base_right) {
+  CHECK(!segment->slices.empty());
+
+  // body
   b2BodyDef body_def;
   body_def.type = b2_dynamicBody;
   b2Body* body = world_.CreateBody(&body_def);
 
-  b2FixtureDef fixture_def;
-  fixture_def.shape = &shape;
-  fixture_def.density = 1.0f;
-  body->CreateFixture(&fixture_def);
+  const float base_width = (base_right - base_left).Length();
+
+  float total_rel_width = 0;
+  for (const auto& slice : segment->slices) {
+    total_rel_width += slice.relative_width;
+  }
+  CHECK(total_rel_width > 0);
+
+  // calculate base/extremity points
+  float base_x = -(base_width / 2);
+  float extremity_x = -(segment->width / 2);
+  vector<b2Vec2> base_points = { b2Vec2(base_x, 0) };
+  vector<b2Vec2> extremity_points = { b2Vec2(extremity_x, segment->length) };
+  for (const auto& slice : segment->slices) {
+    const auto fraction = slice.relative_width / total_rel_width;
+    base_x += fraction * base_width;
+    extremity_x += fraction * segment->width;
+    base_points.emplace_back(base_x, 0);
+    extremity_points.emplace_back(extremity_x, segment->length);
+  }
+
+  // adjust extremity points (fixed length from the base counterpart)
+  for (size_t i = 0; i < extremity_points.size(); ++i) {
+    const auto& bp = base_points[i];
+    auto& ep = extremity_points[i];
+    ep = (ep - bp).Normalized() * segment->length + bp;
+  }
+
+  // create fixtures for each of the slices
+  CHECK(segment->slices.size() + 1 == base_points.size());
+  CHECK(segment->slices.size() + 1 == extremity_points.size());
+  for (size_t i = 0; i < segment->slices.size(); ++i) {
+    array<b2Vec2, 4> points;
+    points[0] = base_points[i];
+    points[1] = extremity_points[i];
+    points[2] = extremity_points[i + 1];
+    points[3] = base_points[i + 1];
+
+    b2PolygonShape shape;
+    shape.Set(points.data(), points.size());
+
+    b2FixtureDef fixture_def;
+    fixture_def.shape = &shape;
+    fixture_def.density = 1.0f;
+    body->CreateFixture(&fixture_def);
+  }
+
+  // TODO: set body position + angle
+  // TODO: set joints
 }
 
 Genotype::Genotype() {
