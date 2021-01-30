@@ -60,7 +60,6 @@ class Genotype : public experimental::replicators::Genotype {
 
   Segment* root() const { return root_; }
 
- private:
   template <class... Args>
   Segment* newSegment(Args&&... args) {
     const auto segment = new Segment(std::forward<Args>(args)...);
