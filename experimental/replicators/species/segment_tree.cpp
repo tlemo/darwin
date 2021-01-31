@@ -84,8 +84,60 @@ class Factory : public SpeciesFactory {
 
   unique_ptr<experimental::replicators::Genotype> mirrorSideAppendage() {
     auto genotype = make_unique<Genotype>();
-    auto appendage = genotype->newSegment();
-    genotype->root()->side_appendage = appendage;
+
+    auto level4 = genotype->newSegment();
+    level4->length = 2.0;
+    level4->width = 1.0;
+
+    auto sss = genotype->newSegment();
+    sss->slices.push_back({ 3.0, nullptr });
+    sss->length = 3.0;
+    sss->width = 0.5;
+
+    auto ss_level2 = genotype->newSegment();
+    ss_level2->length = 1.0;
+    ss_level2->width = 0.5;
+    ss_level2->side_appendage = sss;
+
+    auto ss = genotype->newSegment();
+    ss->slices.push_back({ 3.0, ss_level2 });
+    ss->length = 3.0;
+    ss->width = 0.5;
+
+    auto side_level3 = genotype->newSegment();
+    side_level3->length = 1.0;
+    side_level3->width = 0.2;
+    side_level3->side_appendage = ss;
+
+    auto side_level2 = genotype->newSegment();
+    side_level2->slices.push_back({ 3.0, side_level3 });
+    side_level2->length = 2.0;
+    side_level2->width = 2.0;
+    side_level2->side_appendage = ss;
+
+    auto side_level1 = genotype->newSegment();
+    side_level1->slices.push_back({ 3.0, side_level2 });
+    side_level1->length = 2.0;
+    side_level1->width = 0.5;
+
+    auto level3 = genotype->newSegment();
+    level3->slices.push_back({ 3.0, level4 });
+    level3->length = 0.5;
+    level3->width = 0.5;
+    level3->side_appendage = side_level1;
+
+    auto level2 = genotype->newSegment();
+    level2->slices.push_back({ 3.0, level3 });
+    level2->length = 1.0;
+    level2->width = 1.0;
+
+    auto level1 = genotype->newSegment();
+    level1->slices.push_back({ 3.0, level2 });
+    level1->length = 0.2;
+    level1->width = 1.0;
+
+    genotype->root()->side_appendage = level1;
+
     return genotype;
   }
 };
@@ -95,13 +147,14 @@ GLOBAL_INITIALIZER {
 }
 
 Phenotype::Phenotype(const Genotype* genotype) {
-  createSegment(genotype->root(), nullptr, b2Vec2(), b2Vec2());
+  createSegment(genotype->root(), nullptr, b2Vec2(), b2Vec2(), false);
 }
 
 void Phenotype::createSegment(const Segment* segment,
                               b2Body* parent_body,
                               const b2Vec2& base_left,
-                              const b2Vec2& base_right) {
+                              const b2Vec2& base_right,
+                              bool mirror) {
   CHECK(segment != nullptr);
   CHECK(!segment->slices.empty());
 
@@ -145,6 +198,16 @@ void Phenotype::createSegment(const Segment* segment,
     ep = (ep - bp).Normalized() * length + bp;
   }
 
+  // mirroring x coordinates?
+  if (mirror) {
+    for (auto& point : base_points) {
+      point.x = -point.x;
+    }
+    for (auto& point : extremity_points) {
+      point.x = -point.x;
+    }
+  }
+
   // create fixtures for each of the slices
   CHECK(segment->slices.size() + 1 == base_points.size());
   CHECK(segment->slices.size() + 1 == extremity_points.size());
@@ -168,23 +231,32 @@ void Phenotype::createSegment(const Segment* segment,
   for (size_t i = 0; i < segment->slices.size(); ++i) {
     const auto& slice = segment->slices[i];
     if (slice.appendage) {
-      const auto left = body->GetWorldPoint(extremity_points[i]);
-      const auto right = body->GetWorldPoint(extremity_points[i + 1]);
-      createSegment(slice.appendage, body, left, right);
+      auto left = body->GetWorldPoint(extremity_points[i]);
+      auto right = body->GetWorldPoint(extremity_points[i + 1]);
+      if (mirror) {
+        swap(left, right);
+      }
+      createSegment(slice.appendage, body, left, right, mirror);
     }
   }
 
   // side appendage, if any
   if (segment->side_appendage) {
     // left appendage
-    const auto la_left = body->GetWorldPoint(base_points.front());
-    const auto la_right = body->GetWorldPoint(extremity_points.front());
-    createSegment(segment->side_appendage, body, la_left, la_right);
+    auto la_left = body->GetWorldPoint(base_points.front());
+    auto la_right = body->GetWorldPoint(extremity_points.front());
+    if (mirror) {
+      swap(la_left, la_right);
+    }
+    createSegment(segment->side_appendage, body, la_left, la_right, mirror);
 
     // right appendage (mirror)
-    const auto ra_left = body->GetWorldPoint(extremity_points.back());
-    const auto ra_right = body->GetWorldPoint(base_points.back());
-    createSegment(segment->side_appendage, body, ra_left, ra_right);
+    auto ra_left = body->GetWorldPoint(extremity_points.back());
+    auto ra_right = body->GetWorldPoint(base_points.back());
+    if (mirror) {
+      swap(ra_left, ra_right);
+    }
+    createSegment(segment->side_appendage, body, ra_left, ra_right, !mirror);
   }
 
   // TODO: set joints

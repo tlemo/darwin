@@ -95,7 +95,8 @@ class Phenotype : public experimental::replicators::Phenotype {
   void createSegment(const Segment* segment,
                      b2Body* parent_body,
                      const b2Vec2& base_left,
-                     const b2Vec2& base_right);
+                     const b2Vec2& base_right,
+                     bool mirror);
 };
 
 }  // namespace experimental::replicators::seg_tree
