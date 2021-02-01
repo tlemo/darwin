@@ -18,6 +18,9 @@
 #include <core/modules.h>
 #include <third_party/box2d/box2d.h>
 
+#include <third_party/json/json.h>
+using nlohmann::json;
+
 #include <memory>
 #include <vector>
 using namespace std;
@@ -46,6 +49,9 @@ class Genotype : public core::NonCopyable {
   virtual unique_ptr<Phenotype> grow() const = 0;
   virtual unique_ptr<Genotype> clone() const = 0;
   virtual void mutate() = 0;
+
+  virtual json save() const = 0;
+  virtual void load(const json& json_obj) = 0;
 };
 
 class SpeciesFactory : public core::ModuleFactory {

@@ -327,6 +327,15 @@ void Genotype::mutate() {
   }
 }
 
+json Genotype::save() const {
+  // TODO
+  return {};
+}
+
+void Genotype::load(const json& json_obj) {
+  // TODO
+}
+
 Segment* Genotype::deepCopy(const Segment* segment) {
   if (segment == nullptr) {
     return nullptr;

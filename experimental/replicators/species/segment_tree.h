@@ -58,6 +58,9 @@ class Genotype : public experimental::replicators::Genotype {
   unique_ptr<experimental::replicators::Genotype> clone() const override;
   void mutate() override;
 
+  json save() const override;
+  void load(const json& json_obj) override;
+
   Segment* root() const { return root_; }
 
   template <class... Args>
