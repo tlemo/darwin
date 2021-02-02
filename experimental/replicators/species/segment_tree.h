@@ -70,10 +70,6 @@ class Genotype : public experimental::replicators::Genotype {
     return segment;
   }
 
-  // deep copy a DAG of segments
-  // source segment may be from a different Genotype instance
-  Segment* deepCopy(const Segment* segment);
-
   // mutations
   void growAppendage(Segment* segment);
   void growSideAppendage(Segment* segment);
@@ -82,6 +78,11 @@ class Genotype : public experimental::replicators::Genotype {
   void mutateLength(Segment* segment, double std_dev);
   void mutateWidth(Segment* segment, double std_dev);
   void mutateSliceWidth(Segment* segment, double std_dev);
+
+ private:
+  // deep copy a DAG of segments
+  // source segment may be from a different Genotype instance
+  Segment* deepCopy(const Segment* segment);
 
  private:
   // the Genotype owns all the Segment instances

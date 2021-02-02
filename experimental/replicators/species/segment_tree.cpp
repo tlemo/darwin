@@ -328,12 +328,66 @@ void Genotype::mutate() {
 }
 
 json Genotype::save() const {
-  // TODO
-  return {};
+  CHECK(root_ != nullptr);
+  CHECK(!segments_.empty());
+
+  // count each segment use count
+  // (no need to check for nullptr, just let it have an entry in ref_count)
+  unordered_map<const Segment*, int> use_count;
+  for (const auto& segment : segments_) {
+    ++use_count[segment->side_appendage];
+    for (const auto& slice : segment->slices) {
+      ++use_count[slice.appendage];
+    }
+  }
+
+  // every segment with a use count != 1 is saved as a top level subtree root
+  unordered_map<const Segment*, int> subtree_id;
+  int next_id = 1;
+  for (const auto& segment : segments_) {
+    if (use_count[segment.get()] != 1) {
+      subtree_id[segment.get()] = next_id++;
+    }
+  }
+
+  // serialize to JSON
+  json json_obj;
+
+  function<json(const Segment*)> saveSubtree = [&](const Segment* segment) {
+    const auto it = subtree_id.find(segment);
+    if (it != subtree_id.end()) {
+      return json(it->second);
+    } else if (segment) {
+      json seg_json;
+      CHECK(!segment->slices.empty());
+      seg_json["length"] = segment->length;
+      seg_json["width"] = segment->width;
+      seg_json["suppressed"] = segment->suppressed;
+      seg_json["side_appendage"] = saveSubtree(segment->side_appendage);
+      seg_json["slices"] = json::array();
+      for (const auto& slice : segment->slices) {
+        seg_json["slices"].push_back({
+            { "relative_width", slice.relative_width },
+            { "appendage", saveSubtree(slice.appendage) },
+        });
+      }
+      return seg_json;
+    } else {
+      return json(nullptr);
+    }
+  };
+
+  json_obj["root"] = subtree_id.at(root_);
+  for (const auto& [segment, id] : subtree_id) {
+    json_obj["segments"].push_back(saveSubtree(segment));
+  }
+  return json_obj;
 }
 
 void Genotype::load(const json& json_obj) {
+  Genotype tmp;
   // TODO
+  std::swap(*this, tmp);
 }
 
 Segment* Genotype::deepCopy(const Segment* segment) {
