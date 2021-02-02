@@ -104,6 +104,10 @@ TEST(JsonTest, Values) {
   json num = value;
   ss << value << " = " << num << endl;
 
+  json int_value = 123;
+  EXPECT_ANY_THROW(int_value.get<string>());
+  EXPECT_EQ(int_value.get<int>(), 123);
+
   constexpr int kRows = 10;
   constexpr int kCols = 16;
   core::Matrix<float> m(kRows, kCols);
