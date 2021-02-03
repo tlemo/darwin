@@ -54,6 +54,8 @@ class Genotype : public experimental::replicators::Genotype {
   Genotype(const Genotype& other);
   Genotype& operator=(const Genotype& other);
 
+  friend void swap(Genotype& a, Genotype& b) noexcept;
+
   unique_ptr<experimental::replicators::Phenotype> grow() const override;
   unique_ptr<experimental::replicators::Genotype> clone() const override;
   void mutate() override;

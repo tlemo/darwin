@@ -15,11 +15,13 @@
 #include "segment_tree.h"
 
 #include <core/global_initializer.h>
+#include <core/exception.h>
 
 #include <unordered_map>
 #include <random>
 #include <functional>
 #include <array>
+#include <string>
 using namespace std;
 
 namespace experimental::replicators::seg_tree {
@@ -273,8 +275,14 @@ Genotype::Genotype(const Genotype& other) {
 
 Genotype& Genotype::operator=(const Genotype& other) {
   Genotype copy(other);
-  std::swap(*this, copy);
+  swap(*this, copy);
   return *this;
+}
+
+void swap(Genotype& a, Genotype& b) noexcept {
+  using std::swap;
+  swap(a.segments_, b.segments_);
+  swap(a.root_, b.root_);
 }
 
 unique_ptr<experimental::replicators::Phenotype> Genotype::grow() const {
@@ -353,41 +361,137 @@ json Genotype::save() const {
   // serialize to JSON
   json json_obj;
 
-  function<json(const Segment*)> saveSubtree = [&](const Segment* segment) {
+  function<json(const Segment*, bool)> saveSubtree = [&](const Segment* segment,
+                                                         bool top_level) {
     const auto it = subtree_id.find(segment);
-    if (it != subtree_id.end()) {
+    if (!top_level && it != subtree_id.end()) {
       return json(it->second);
     } else if (segment) {
       json seg_json;
       CHECK(!segment->slices.empty());
+      if (top_level) {
+        CHECK(it != subtree_id.end());
+        seg_json["id"] = it->second;
+      }
       seg_json["length"] = segment->length;
       seg_json["width"] = segment->width;
       seg_json["suppressed"] = segment->suppressed;
-      seg_json["side_appendage"] = saveSubtree(segment->side_appendage);
+      seg_json["side_appendage"] = saveSubtree(segment->side_appendage, false);
       seg_json["slices"] = json::array();
       for (const auto& slice : segment->slices) {
         seg_json["slices"].push_back({
             { "relative_width", slice.relative_width },
-            { "appendage", saveSubtree(slice.appendage) },
+            { "appendage", saveSubtree(slice.appendage, false) },
         });
       }
       return seg_json;
     } else {
+      CHECK(!top_level);
       return json(nullptr);
     }
   };
 
   json_obj["root"] = subtree_id.at(root_);
   for (const auto& [segment, id] : subtree_id) {
-    json_obj["segments"].push_back(saveSubtree(segment));
+    json_obj["segments"].push_back(saveSubtree(segment, true));
   }
   return json_obj;
 }
 
 void Genotype::load(const json& json_obj) {
   Genotype tmp;
-  // TODO
-  std::swap(*this, tmp);
+
+  // reset genotype
+  tmp.root_ = nullptr;
+  tmp.segments_.clear();
+
+  unordered_map<string, Segment*> id_to_segment;
+
+  // when loading, we treat segment IDs uniformly as strings
+  // (in order to allow friendly IDs for hand-crafted Json definitions)
+  auto getId = [](const json& value) {
+    if (value.is_number_integer()) {
+      return to_string(value.get<int>());
+    } else if (value.is_string()) {
+      return value.get<string>();
+    } else {
+      throw core::Exception("Invalid segment ID value");
+    }
+  };
+
+  function<Segment*(const json&)> loadSegment = [&](const json& seg_json) -> Segment* {
+    if (seg_json.is_null()) {
+      return nullptr;
+    } else if (seg_json.is_object()) {
+      Segment* segment = nullptr;
+
+      if (seg_json.contains("id")) {
+        const auto segment_id = getId(seg_json.at("id"));
+        const auto it = id_to_segment.find(segment_id);
+        if (it != id_to_segment.end()) {
+          segment = it->second;
+          if (!segment->slices.empty()) {
+            throw core::Exception("Duplicate segment definition");
+          }
+        } else {
+          segment = tmp.newSegment();
+          segment->slices.clear();
+          id_to_segment.insert({ segment_id, segment });
+        }
+      } else {
+        segment = tmp.newSegment();
+        segment->slices.clear();
+      }
+
+      CHECK(segment != nullptr);
+      CHECK(segment->slices.empty());
+
+      segment->length = seg_json.at("length");
+      segment->width = seg_json.at("width");
+      segment->suppressed = seg_json.at("suppressed");
+      segment->side_appendage = loadSegment(seg_json.at("side_appendage"));
+      for (const auto& slice_json : seg_json.at("slices")) {
+        Slice slice;
+        slice.relative_width = slice_json.at("relative_width");
+        slice.appendage = loadSegment(slice_json.at("appendage"));
+        segment->slices.push_back(slice);
+      }
+      if (segment->slices.empty()) {
+        throw core::Exception("Empty segment slices list");
+      }
+
+      return segment;
+    } else {
+      const auto segment_id = getId(seg_json);
+      const auto it = id_to_segment.find(segment_id);
+      if (it != id_to_segment.end()) {
+        return it->second;
+      } else {
+        // allocate a placeholder segment
+        // (placeholder segments have an empty slices array)
+        const auto placeholder = tmp.newSegment();
+        placeholder->slices.clear();
+        id_to_segment.insert({ segment_id, placeholder });
+        return placeholder;
+      }
+    }
+  };
+
+  for (const auto& seg_json : json_obj.at("segments")) {
+    if (!seg_json.is_object() || !seg_json.contains("id")) {
+      throw core::Exception("Invalid top level segment");
+    }
+    loadSegment(seg_json);
+  }
+
+  // check that there are no unresolved ids
+  for (const auto& segment : tmp.segments_) {
+    CHECK(!segment->slices.empty());
+  }
+
+  tmp.root_ = id_to_segment.at(getId(json_obj.at("root")));
+
+  swap(*this, tmp);
 }
 
 Segment* Genotype::deepCopy(const Segment* segment) {
@@ -411,7 +515,7 @@ Segment* Genotype::deepCopy(const Segment* segment) {
 
       for (const auto& slice : s->slices) {
         if (slice.appendage != nullptr) {
-          stack.push_back(s->side_appendage);
+          stack.push_back(slice.appendage);
         }
       }
     }
