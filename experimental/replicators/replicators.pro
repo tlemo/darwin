@@ -18,7 +18,8 @@ SOURCES += \
     new_experiment_dialog.cpp \
     phenotype_widget.cpp \
     replicators.cpp \
-    species/segment_tree.cpp
+    species/segment_tree.cpp \
+    tests.cpp
 
 HEADERS += \
     experiment_window.h \
@@ -26,7 +27,8 @@ HEADERS += \
     new_experiment_dialog.h \
     phenotype_widget.h \
     replicators.h \
-    species/segment_tree.h
+    species/segment_tree.h \
+    tests.h
     
 FORMS += \
     experiment_window.ui \

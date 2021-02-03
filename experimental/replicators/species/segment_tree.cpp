@@ -16,6 +16,7 @@
 
 #include <core/global_initializer.h>
 #include <core/exception.h>
+#include <core/utils.h>
 
 #include <unordered_map>
 #include <random>
@@ -55,6 +56,36 @@ class Factory : public SpeciesFactory {
     samples.push_back(sideAppendage());
     samples.push_back(mirrorSideAppendage());
     return samples;
+  }
+
+  void runTests() override {
+    // serialization roundtrip
+    for (const auto& sample : samples()) {
+      Genotype clone;
+      clone.load(sample->save());
+      CHECK(clone == dynamic_cast<Genotype&>(*sample));
+    }
+
+    // cloning & deep copy
+    for (const auto& sample : samples()) {
+      auto clone = sample->clone();
+      const auto clone_a = clone->clone();
+      const auto clone_b = sample->clone();
+      clone.reset();
+      CHECK(dynamic_cast<Genotype&>(*clone_a) == dynamic_cast<Genotype&>(*clone_b));
+    }
+
+    // mutations
+    for (const auto& sample : samples()) {
+      auto& genotype = dynamic_cast<Genotype&>(*sample);
+      genotype.growAppendage(genotype.root());
+      genotype.growSideAppendage(genotype.root());
+      genotype.lateralSplit(genotype.root(), 0.2);
+      genotype.axialSplit(genotype.root(), 0.8);
+      genotype.mutateLength(genotype.root(), 1.0);
+      genotype.mutateWidth(genotype.root(), 1.0);
+      genotype.mutateSliceWidth(genotype.root(), 1.0);
+    }
   }
 
  private:
@@ -584,6 +615,74 @@ void Genotype::mutateWidth(Segment* segment, double std_dev) {
 void Genotype::mutateSliceWidth(Segment* segment, double std_dev) {
   auto& slice = *randomElem(segment->slices);
   slice.relative_width = mutateValue(slice.relative_width, std_dev);
+}
+
+bool Genotype::operator==(const Genotype& other) const {
+  unordered_map<const Segment*, int> this_ids;
+  unordered_map<const Segment*, int> other_ids;
+  int this_next_id = 1;
+  int other_next_id = 1;
+
+  CHECK(root_ != nullptr);
+  CHECK(other.root_ != nullptr);
+
+  function<bool(const Segment*, const Segment*)> compareSegments =
+      [&](const Segment* this_seg, const Segment* other_seg) {
+        if ((this_seg == nullptr) != (other_seg == nullptr)) {
+          return false;
+        } else if (this_seg == nullptr) {
+          return true;
+        }
+
+        CHECK(!this_seg->slices.empty());
+        CHECK(!other_seg->slices.empty());
+
+        const auto this_it = this_ids.find(this_seg);
+        const auto other_it = other_ids.find(other_seg);
+        if (this_it == this_ids.end()) {
+          if (other_it != other_ids.end()) {
+            return false;
+          }
+          this_ids[this_seg] = this_next_id++;
+          other_ids[other_seg] = other_next_id++;
+        } else {
+          if (other_it == other_ids.end() || other_it->second != this_it->second) {
+            return false;
+          }
+        }
+
+        if (this_seg->slices.size() != other_seg->slices.size()) {
+          return false;
+        }
+
+        for (size_t i = 0; i < this_seg->slices.size(); ++i) {
+          const auto& this_slice = this_seg->slices[i];
+          const auto& other_slice = other_seg->slices[i];
+          if (this_slice.relative_width != other_slice.relative_width) {
+            return false;
+          }
+          if (!compareSegments(this_slice.appendage, other_slice.appendage)) {
+            return false;
+          }
+        }
+
+        if (this_seg->length != other_seg->length) {
+          return false;
+        }
+        if (this_seg->width != other_seg->width) {
+          return false;
+        }
+        if (this_seg->suppressed != other_seg->suppressed) {
+          return false;
+        }
+        if (!compareSegments(this_seg->side_appendage, other_seg->side_appendage)) {
+          return false;
+        }
+
+        return true;
+      };
+
+  return compareSegments(root_, other.root_);
 }
 
 unique_ptr<experimental::replicators::Genotype> Genotype::clone() const {

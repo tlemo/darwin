@@ -61,6 +61,8 @@ class SpeciesFactory : public core::ModuleFactory {
   //! Returns a list of illustrative sample genotypes
   //! (this allows for basic 'guru-checks-output' type of testing)
   virtual vector<unique_ptr<Genotype>> samples() = 0;
+
+  virtual void runTests() = 0;
 };
 
 inline auto registry() {

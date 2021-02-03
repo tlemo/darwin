@@ -81,6 +81,9 @@ class Genotype : public experimental::replicators::Genotype {
   void mutateWidth(Segment* segment, double std_dev);
   void mutateSliceWidth(Segment* segment, double std_dev);
 
+  // for testing purposes
+  bool operator==(const Genotype& other) const;
+
  private:
   // deep copy a DAG of segments
   // source segment may be from a different Genotype instance
