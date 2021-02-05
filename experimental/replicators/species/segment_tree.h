@@ -42,7 +42,8 @@ struct Segment {
 
   Segment() = default;
 
-  explicit Segment(Segment* appendage) : slices({ { 1.0, appendage } }) {}
+  Segment(double length, double width, Segment* appendage = nullptr)
+      : length(length), width(width), slices({ { 1.0, appendage } }) {}
 };
 
 class Genotype : public experimental::replicators::Genotype {

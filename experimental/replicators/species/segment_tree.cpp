@@ -57,6 +57,7 @@ class Factory : public SpeciesFactory {
     samples.push_back(sideAppendage());
     samples.push_back(mirrorSideAppendage());
     samples.push_back(jsonDefinition());
+    samples.push_back(fingers());
     return samples;
   }
 
@@ -115,11 +116,8 @@ class Factory : public SpeciesFactory {
 
   unique_ptr<experimental::replicators::Genotype> appendages() {
     auto genotype = make_unique<Genotype>();
-    auto appendage = genotype->newSegment();
-    appendage->length = 2.0;
-    appendage->width = 0.1;
-    auto appendage2 = genotype->newSegment(appendage);
-    appendage2->width = 0.8;
+    auto appendage = genotype->newSegment(2.0, 0.1);
+    auto appendage2 = genotype->newSegment(1.0, 0.8, appendage);
     genotype->root()->slices.front().appendage = appendage2;
     genotype->root()->slices.push_back({ 2.0, appendage });
     genotype->root()->slices.push_back({ 1.0, appendage2 });
@@ -136,18 +134,12 @@ class Factory : public SpeciesFactory {
   unique_ptr<experimental::replicators::Genotype> mirrorSideAppendage() {
     auto genotype = make_unique<Genotype>();
 
-    auto level4 = genotype->newSegment();
-    level4->length = 2.0;
-    level4->width = 1.0;
+    auto level4 = genotype->newSegment(2.0, 1.0);
 
-    auto sss = genotype->newSegment();
+    auto sss = genotype->newSegment(3.0, 0.5);
     sss->slices.push_back({ 3.0, nullptr });
-    sss->length = 3.0;
-    sss->width = 0.5;
 
-    auto ss_level2 = genotype->newSegment();
-    ss_level2->length = 1.0;
-    ss_level2->width = 0.5;
+    auto ss_level2 = genotype->newSegment(1.0, 0.5);
     ss_level2->side_appendage = sss;
 
     auto ss = genotype->newSegment();
@@ -228,6 +220,19 @@ class Factory : public SpeciesFactory {
       })"_json);
     return genotype;
   }
+
+  unique_ptr<experimental::replicators::Genotype> fingers() {
+    auto genotype = make_unique<Genotype>();
+    auto nail = genotype->newSegment(3.0, 0.01);
+    auto foot = genotype->newSegment(2.0, 5.0);
+    foot->slices = { { 1.0, nail },
+                     { 1.0, nail },
+                     { 1.0, nail },
+                     { 2.0, genotype->newSegment(1.0, 0.01) } };
+    auto leg = genotype->newSegment(0.5, 0.5, genotype->newSegment(4.0, 0.5, foot));
+    genotype->root()->side_appendage = leg;
+    return genotype;
+  }
 };
 
 GLOBAL_INITIALIZER {
@@ -246,7 +251,7 @@ void Phenotype::createSegment(const Segment* segment,
   CHECK(segment != nullptr);
   CHECK(!segment->slices.empty());
 
-  if(segment->suppressed) {
+  if (segment->suppressed) {
     return;
   }
 
@@ -632,11 +637,11 @@ Segment* Genotype::deepCopy(const Segment* segment) {
 
 void Genotype::growAppendage(Segment* segment) {
   auto& slice = *randomElem(segment->slices);
-  slice.appendage = newSegment(slice.appendage);
+  slice.appendage = newSegment(1.0, 1.0, slice.appendage);
 }
 
 void Genotype::growSideAppendage(Segment* segment) {
-  segment->side_appendage = newSegment(segment->side_appendage);
+  segment->side_appendage = newSegment(1.0, 1.0, segment->side_appendage);
 }
 
 // pick a random slice and split it
@@ -660,7 +665,7 @@ void Genotype::axialSplit(Segment* segment, double fraction) {
   CHECK(fraction > 0);
   const auto new_length = segment->length * fraction;
   for (auto& slice : segment->slices) {
-    slice.appendage = newSegment(slice.appendage);
+    slice.appendage = newSegment(1.0, 1.0, slice.appendage);
     slice.appendage->length = new_length;
   }
   segment->length = new_length;
