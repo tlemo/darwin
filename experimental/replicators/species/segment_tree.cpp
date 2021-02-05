@@ -202,7 +202,14 @@ class Factory : public SpeciesFactory {
             "length": 1.0,
             "width": 1.0,
             "suppressed": false,
-            "side_appendage": null,
+            "side_appendage":
+              {
+                "length": 4.0,
+                "width": 0.1,
+                "suppressed": false,
+                "side_appendage": null,
+                "slices": [ { "relative_width": 1.0, "appendage": null } ]
+              },
             "slices": [
               {
                 "relative_width": 1.0,
