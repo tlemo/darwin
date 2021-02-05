@@ -276,11 +276,14 @@ void Phenotype::createSegment(const Segment* segment,
     extremity_points.emplace_back(extremity_x, length);
   }
 
-  // adjust extremity points (fixed length from the base counterpart)
+  // adjust extremity points:
+  // 1. fixed length from the base counterpart
+  // 2. y-coordinate mirroring
   for (size_t i = 0; i < extremity_points.size(); ++i) {
     const auto& bp = base_points[i];
     auto& ep = extremity_points[i];
     ep = (ep - bp).Normalized() * length + bp;
+    ep.y = -ep.y;
   }
 
   // mirroring x coordinates?
