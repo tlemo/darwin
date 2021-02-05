@@ -52,9 +52,11 @@ class Factory : public SpeciesFactory {
     vector<unique_ptr<experimental::replicators::Genotype>> samples;
     samples.push_back(primordialGenotype());
     samples.push_back(slices());
+    samples.push_back(suppressed());
     samples.push_back(appendages());
     samples.push_back(sideAppendage());
     samples.push_back(mirrorSideAppendage());
+    samples.push_back(jsonDefinition());
     return samples;
   }
 
@@ -92,8 +94,22 @@ class Factory : public SpeciesFactory {
   unique_ptr<experimental::replicators::Genotype> slices() {
     auto genotype = make_unique<Genotype>();
     genotype->root()->slices.push_back({ 2.0 });
-    genotype->root()->slices.push_back({ 3.0 });
-    genotype->root()->slices.push_back({ 0.5 });
+    genotype->root()->slices.push_back({ 4.0 });
+    genotype->root()->slices.push_back({ 8.0 });
+    return genotype;
+  }
+
+  unique_ptr<experimental::replicators::Genotype> suppressed() {
+    auto genotype = make_unique<Genotype>();
+
+    auto seg2 = genotype->newSegment();
+    seg2->slices[0].appendage = genotype->newSegment();
+    seg2->suppressed = true;
+
+    auto seg1 = genotype->newSegment();
+    seg1->slices[0].appendage = seg2;
+
+    genotype->root()->slices[0].appendage = seg1;
     return genotype;
   }
 
@@ -101,8 +117,10 @@ class Factory : public SpeciesFactory {
     auto genotype = make_unique<Genotype>();
     auto appendage = genotype->newSegment();
     appendage->length = 2.0;
+    appendage->width = 0.1;
     auto appendage2 = genotype->newSegment(appendage);
-    appendage2->width = 0.5;
+    appendage2->width = 0.8;
+    genotype->root()->slices.front().appendage = appendage2;
     genotype->root()->slices.push_back({ 2.0, appendage });
     genotype->root()->slices.push_back({ 1.0, appendage2 });
     return genotype;
@@ -173,6 +191,36 @@ class Factory : public SpeciesFactory {
 
     return genotype;
   }
+
+  unique_ptr<experimental::replicators::Genotype> jsonDefinition() {
+    auto genotype = make_unique<Genotype>();
+    genotype->load(R"({
+        "root": "root",
+        "segments": [
+          {
+            "id": "root",
+            "length": 1.0,
+            "width": 1.0,
+            "suppressed": false,
+            "side_appendage": null,
+            "slices": [
+              {
+                "relative_width": 1.0,
+                "appendage":
+                  {
+                    "length": 2.0,
+                    "width": 0.5,
+                    "suppressed": false,
+                    "side_appendage": null,
+                    "slices": [ { "relative_width": 1.0, "appendage": null } ]
+                  }
+              }
+            ]
+          }
+        ]
+      })"_json);
+    return genotype;
+  }
 };
 
 GLOBAL_INITIALIZER {
@@ -190,6 +238,10 @@ void Phenotype::createSegment(const Segment* segment,
                               bool mirror) {
   CHECK(segment != nullptr);
   CHECK(!segment->slices.empty());
+
+  if(segment->suppressed) {
+    return;
+  }
 
   const auto d = base_right - base_left;
 

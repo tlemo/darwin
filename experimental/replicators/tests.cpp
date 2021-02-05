@@ -15,11 +15,27 @@
 #include "tests.h"
 #include "replicators.h"
 
+#include <core/utils.h>
+
+#include <QMessageBox>
+
+#include <exception>
+
 namespace experimental::replicators::tests {
 
 void runTests() {
-  for (const auto& [name, factory] : *registry()) {
-    factory->runTests();
+  // the following try/catch will not handle other types of failure
+  // (ex. segfault or abort)
+  try {
+    for (const auto& [name, factory] : *registry()) {
+      factory->runTests();
+    }
+  } catch (std::exception& e) {
+    QMessageBox::warning(nullptr, "Test failure", e.what());
+    FATAL("Test case failure");
+  } catch (...) {
+    QMessageBox::warning(nullptr, "Test failure", "Unknown exception");
+    FATAL("Test case failure");
   }
 }
 
