@@ -58,6 +58,8 @@ class Factory : public SpeciesFactory {
     samples.push_back(mirrorSideAppendage());
     samples.push_back(jsonDefinition());
     samples.push_back(fingers());
+    samples.push_back(multipleBodySegments());
+    samples.push_back(axialSplit());
     return samples;
   }
 
@@ -217,6 +219,37 @@ class Factory : public SpeciesFactory {
                      { 2.0, genotype->newSegment(1.0, 0.01) } };
     auto leg = genotype->newSegment(0.5, 0.5, genotype->newSegment(4.0, 0.5, foot));
     genotype->root()->side_appendage = leg;
+    return genotype;
+  }
+
+  unique_ptr<experimental::replicators::Genotype> multipleBodySegments() {
+    auto genotype = make_unique<Genotype>();
+    auto nail = genotype->newSegment(3.0, 0.01);
+    auto foot = genotype->newSegment(2.0, 3.0);
+    foot->slices = { { 1.0, nail }, { 1.0, nail }, { 1.0, nail } };
+    auto leg = genotype->newSegment(0.5, 0.1, genotype->newSegment(6.0, 0.5, foot));
+
+    Segment* next_seg = nullptr;
+    for (int i = 0; i < 5; ++i) {
+      auto body_seg = genotype->newSegment(1.0, 1.1);
+      body_seg->slices = { { 1.0, next_seg } };
+      body_seg->side_appendage = leg;
+      next_seg = body_seg;
+    }
+
+    genotype->root()->slices = { { 1.0, next_seg } };
+    return genotype;
+  }
+
+  unique_ptr<experimental::replicators::Genotype> axialSplit() {
+    auto genotype = make_unique<Genotype>();
+    auto mid_seg = genotype->newSegment(2.0, 1.5, genotype->newSegment(1.0, 1.0));
+    mid_seg->side_appendage =
+        genotype->newSegment(2.0, 0.5, genotype->newSegment(4.0, 1.5));
+    genotype->root()->slices = { { 1.0, mid_seg } };
+    for (int i = 0; i < 3; ++i) {
+      genotype->axialSplit(mid_seg, 0.5);
+    }
     return genotype;
   }
 };
@@ -651,8 +684,7 @@ void Genotype::axialSplit(Segment* segment, double fraction) {
   CHECK(fraction > 0);
   const auto new_length = segment->length * fraction;
   for (auto& slice : segment->slices) {
-    slice.appendage = newSegment(1.0, 1.0, slice.appendage);
-    slice.appendage->length = new_length;
+    slice.appendage = newSegment(new_length, segment->width, slice.appendage);
   }
   segment->length = new_length;
 }
