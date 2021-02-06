@@ -243,12 +243,12 @@ class Factory : public SpeciesFactory {
 
   unique_ptr<experimental::replicators::Genotype> axialSplit() {
     auto genotype = make_unique<Genotype>();
-    auto mid_seg = genotype->newSegment(2.0, 1.5, genotype->newSegment(1.0, 1.0));
+    auto mid_seg = genotype->newSegment(2.0, 1.5, genotype->newSegment(0.5, 0.001));
     mid_seg->side_appendage =
-        genotype->newSegment(2.0, 0.5, genotype->newSegment(4.0, 1.5));
+        genotype->newSegment(0.2, 0.4, genotype->newSegment(2.0, 0.1));
     genotype->root()->slices = { { 1.0, mid_seg } };
     for (int i = 0; i < 3; ++i) {
-      genotype->axialSplit(mid_seg, 0.5);
+      genotype->axialSplit(mid_seg, 0.6);
     }
     return genotype;
   }
@@ -259,7 +259,21 @@ GLOBAL_INITIALIZER {
 }
 
 Phenotype::Phenotype(const Genotype* genotype) {
-  createSegment(genotype->root(), nullptr, b2Vec2(), b2Vec2(), false);
+  try {
+    createSegment(genotype->root(), nullptr, b2Vec2(), b2Vec2(), false);
+  } catch (const std::exception& e) {
+    // Failed to generate Phenotype (genotype is not viable)
+    // (create a dummy placeholder)
+    b2BodyDef body_def;
+    b2Body* body = world_.CreateBody(&body_def);
+
+    b2CircleShape shape;
+    shape.m_radius = 1.0;
+
+    b2FixtureDef fixture_def;
+    fixture_def.shape = &shape;
+    body->CreateFixture(&fixture_def);
+  }
 }
 
 void Phenotype::createSegment(const Segment* segment,
@@ -664,6 +678,7 @@ void Genotype::growSideAppendage(Segment* segment) {
 }
 
 // pick a random slice and split it
+// (replacing it with two slices with width = old_width * fraction)
 void Genotype::lateralSplit(Segment* segment, double fraction) {
   CHECK(fraction > 0);
 
@@ -685,6 +700,9 @@ void Genotype::axialSplit(Segment* segment, double fraction) {
   const auto new_length = segment->length * fraction;
   for (auto& slice : segment->slices) {
     slice.appendage = newSegment(new_length, segment->width, slice.appendage);
+  }
+  if (segment->slices.size() == 1) {
+    segment->slices.front().appendage->side_appendage = deepCopy(segment->side_appendage);
   }
   segment->length = new_length;
 }
