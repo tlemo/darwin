@@ -142,42 +142,28 @@ class Factory : public SpeciesFactory {
     auto ss_level2 = genotype->newSegment(1.0, 0.5);
     ss_level2->side_appendage = sss;
 
-    auto ss = genotype->newSegment();
+    auto ss = genotype->newSegment(3.0, 0.5);
     ss->slices.push_back({ 3.0, ss_level2 });
-    ss->length = 3.0;
-    ss->width = 0.5;
 
-    auto side_level3 = genotype->newSegment();
-    side_level3->length = 1.0;
-    side_level3->width = 0.2;
+    auto side_level3 = genotype->newSegment(1.0, 0.2);
     side_level3->side_appendage = ss;
 
-    auto side_level2 = genotype->newSegment();
+    auto side_level2 = genotype->newSegment(2.0, 2.0);
     side_level2->slices.push_back({ 3.0, side_level3 });
-    side_level2->length = 2.0;
-    side_level2->width = 2.0;
     side_level2->side_appendage = ss;
 
-    auto side_level1 = genotype->newSegment();
+    auto side_level1 = genotype->newSegment(2.0, 0.5);
     side_level1->slices.push_back({ 3.0, side_level2 });
-    side_level1->length = 2.0;
-    side_level1->width = 0.5;
 
-    auto level3 = genotype->newSegment();
+    auto level3 = genotype->newSegment(0.5, 0.5);
     level3->slices.push_back({ 3.0, level4 });
-    level3->length = 0.5;
-    level3->width = 0.5;
     level3->side_appendage = side_level1;
 
-    auto level2 = genotype->newSegment();
+    auto level2 = genotype->newSegment(1.0, 1.0);
     level2->slices.push_back({ 3.0, level3 });
-    level2->length = 1.0;
-    level2->width = 1.0;
 
-    auto level1 = genotype->newSegment();
+    auto level1 = genotype->newSegment(0.2, 1.0);
     level1->slices.push_back({ 3.0, level2 });
-    level1->length = 0.2;
-    level1->width = 1.0;
 
     genotype->root()->side_appendage = level1;
 
