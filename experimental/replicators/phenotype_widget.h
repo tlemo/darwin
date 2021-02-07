@@ -26,8 +26,23 @@ namespace experimental::replicators {
 class PhenotypeWidget : public physics_ui::Box2dWidget {
   Q_OBJECT
 
+  const QColor kBackgroundColor{ 255, 255, 255 };
+  const QColor kHighlightedColor{ 240, 240, 255 };
+
  public:
   PhenotypeWidget(QWidget* parent, unique_ptr<Phenotype> phenotype);
+
+ signals:
+  void sigClicked();
+
+ protected:
+  void mousePressEvent(QMouseEvent* event) override;
+  void mouseReleaseEvent(QMouseEvent* event) override;
+  void mouseMoveEvent(QMouseEvent* event) override;
+  void enterEvent(QEvent* event) override;
+  void leaveEvent(QEvent* event) override;
+
+  void setUniformBackgroundColor(const QColor& color);
 
  private:
   unique_ptr<Phenotype> phenotype_;

@@ -14,15 +14,45 @@
 
 #include "phenotype_widget.h"
 
+#include <QMouseEvent>
+
 namespace experimental::replicators {
 
 PhenotypeWidget::PhenotypeWidget(QWidget* parent, unique_ptr<Phenotype> phenotype)
     : physics_ui::Box2dWidget(parent), phenotype_(std::move(phenotype)) {
   setBorderSize(4);
   setFrameStyle(QFrame::StyledPanel | QFrame::Plain);
+  setUniformBackgroundColor(kBackgroundColor);
   setViewportPolicy(ViewportPolicy::AutoFit);
   setDebugRender(true);
   setWorld(phenotype_->specimen());
+}
+
+void PhenotypeWidget::mousePressEvent(QMouseEvent* /*event*/) {
+  // TODO
+}
+
+void PhenotypeWidget::mouseReleaseEvent(QMouseEvent* event) {
+  if (rect().contains(event->pos())) {
+    emit sigClicked();
+  }
+}
+
+void PhenotypeWidget::mouseMoveEvent(QMouseEvent* /*event*/) {
+  // TODO
+}
+
+void PhenotypeWidget::enterEvent(QEvent* event) {
+  setUniformBackgroundColor(kHighlightedColor);
+}
+
+void PhenotypeWidget::leaveEvent(QEvent* event) {
+  setUniformBackgroundColor(kBackgroundColor);
+}
+
+void PhenotypeWidget::setUniformBackgroundColor(const QColor& color) {
+  setBackgroundColor(color);
+  setViewportColor(color);
 }
 
 }  // namespace experimental::replicators
