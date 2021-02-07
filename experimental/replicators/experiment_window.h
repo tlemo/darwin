@@ -28,6 +28,11 @@ class ExperimentWindow : public QFrame {
 
  private:
   void resetPopulation();
+  void newGeneration(unique_ptr<Genotype> parent);
+  void sampleGeneration();
+  void pickGenotype(size_t index);
+  void deletePhenotypeWidgets();
+  void createPhenotypeWidgets();
 
  private:
   Ui::ExperimentWindow* ui = nullptr;

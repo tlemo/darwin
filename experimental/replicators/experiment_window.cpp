@@ -24,33 +24,55 @@ ExperimentWindow::~ExperimentWindow() {
 }
 
 void ExperimentWindow::resetPopulation() {
-  // create the population samples
   if (sample_set_) {
-    parent_.reset();
-    population_ = factory_->samples();
-    if (population_.empty()) {
-      throw core::Exception("Empty sample set");
-    }
+    sampleGeneration();
   } else {
-    parent_ = factory_->primordialGenotype();
-    population_.clear();
-    for (int i = 0; i < kDefaultPopulationSize; ++i) {
-      auto clone = parent_->clone();
-      clone->mutate();
-      population_.push_back(std::move(clone));
-    }
+    newGeneration(factory_->primordialGenotype());
+  }
+}
+
+void ExperimentWindow::newGeneration(unique_ptr<Genotype> parent) {
+  deletePhenotypeWidgets();
+
+  parent_ = std::move(parent);
+  population_.clear();
+  for (int i = 0; i < kDefaultPopulationSize; ++i) {
+    auto clone = parent_->clone();
+    clone->mutate();
+    population_.push_back(std::move(clone));
   }
 
-  // reset existing widgets
+  createPhenotypeWidgets();
+}
+
+void ExperimentWindow::sampleGeneration() {
+  deletePhenotypeWidgets();
+
+  parent_.reset();
+  population_ = factory_->samples();
+  if (population_.empty()) {
+    throw core::Exception("Empty sample set");
+  }
+
+  createPhenotypeWidgets();
+}
+
+void ExperimentWindow::pickGenotype(size_t index) {
+  newGeneration(population_[index]->clone());
+}
+
+void ExperimentWindow::deletePhenotypeWidgets() {
   for (const auto widget : layout_->children()) {
     delete widget;
   }
+}
 
-  // create widgets for the new samples
+void ExperimentWindow::createPhenotypeWidgets() {
   for (size_t i = 0; i < population_.size(); ++i) {
     const auto col = i % kColumns;
     const auto row = i / kColumns;
     const auto widget = new PhenotypeWidget(this, population_[i]->grow());
+    connect(widget, &PhenotypeWidget::sigClicked, [=] { pickGenotype(i); });
     layout_->addWidget(widget, row, col);
   }
 }
