@@ -33,9 +33,7 @@
 namespace physics_ui {
 
 Box2dWidget::Box2dWidget(QWidget* parent) : core_ui::Canvas(parent) {
-  QPalette background_palette;
-  background_palette.setColor(QPalette::Window, kBackgroundColor);
-  setPalette(background_palette);
+  setBackgroundColor(kDefaultBackgroundColor);
   setAutoFillBackground(true);
   setFocusPolicy(Qt::StrongFocus);
   setBorderSize(15);
@@ -74,6 +72,18 @@ void Box2dWidget::setDebugRender(bool enable) {
 
 void Box2dWidget::setRenderLights(bool enable) {
   render_lights_ = enable;
+  update();
+}
+
+void Box2dWidget::setBackgroundColor(const QColor& color) {
+  QPalette background_palette;
+  background_palette.setColor(QPalette::Window, color);
+  setPalette(background_palette);
+  update();
+}
+
+void Box2dWidget::setViewportColor(const QColor& color) {
+  viewport_color_ = color;
   update();
 }
 
@@ -280,7 +290,7 @@ void Box2dWidget::paintEvent(QPaintEvent* event) {
 
   // viewport background
   painter.setPen(Qt::NoPen);
-  painter.setBrush(kViewportColor);
+  painter.setBrush(viewport_color_);
   painter.drawRect(viewport());
 
   if (world_ != nullptr) {

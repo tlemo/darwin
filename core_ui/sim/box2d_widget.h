@@ -63,8 +63,8 @@ class Box2dSceneUi : public QObject {
 class Box2dWidget : public core_ui::Canvas {
   Q_OBJECT
 
-  const QColor kBackgroundColor{ 255, 255, 255 };
-  const QColor kViewportColor{ 240, 240, 255 };
+  const QColor kDefaultBackgroundColor{ 255, 255, 255 };
+  const QColor kDefaultViewportColor{ 240, 240, 255 };
 
  public:
   //! The viewpoint extents rules
@@ -88,6 +88,9 @@ class Box2dWidget : public core_ui::Canvas {
 
   bool renderLights() const { return render_lights_; }
   void setRenderLights(bool enable);
+
+  void setBackgroundColor(const QColor& color);
+  void setViewportColor(const QColor& color);
 
  signals:
   void sigPlayPause();
@@ -116,6 +119,7 @@ class Box2dWidget : public core_ui::Canvas {
   ViewportPolicy viewport_policy_ = ViewportPolicy::UserDefined;
   bool enable_debug_render_ = true;
   bool render_lights_ = false;
+  QColor viewport_color_ = kDefaultViewportColor;
 };
 
 }  // namespace physics_ui
