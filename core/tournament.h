@@ -52,6 +52,8 @@ class GameRules : public core::NonCopyable {
 //! Tournament interface
 class Tournament : public core::NonCopyable {
  public:
+  virtual ~Tournament() = default;
+
   //! Run the tournament and assigns fitness values based on the results
   virtual void evaluatePopulation(darwin::Population* population,
                                   GameRules* game_rules) = 0;
