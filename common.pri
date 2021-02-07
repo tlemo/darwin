@@ -6,6 +6,7 @@ win32-msvc {
     QMAKE_CXXFLAGS += /wd5030 # attribute is not recognized
 } else:wasm {
     QMAKE_LFLAGS += -s ERROR_ON_UNDEFINED_SYMBOLS=0
+    QMAKE_LFLAGS += --emrun
     QMAKE_CXXFLAGS += -Wno-reorder
     QMAKE_CXXFLAGS += -Wno-sign-compare
     QMAKE_CXXFLAGS += -Wno-type-limits
