@@ -42,7 +42,7 @@ void PhenotypeWidget::mouseMoveEvent(QMouseEvent* /*event*/) {
   // TODO
 }
 
-void PhenotypeWidget::enterEvent(QEvent* event) {
+void PhenotypeWidget::enterEvent(QEvent* /*event*/) {
   setUniformBackgroundColor(kHighlightedColor);
 }
 

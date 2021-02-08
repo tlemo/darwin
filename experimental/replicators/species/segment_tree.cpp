@@ -392,7 +392,18 @@ void Phenotype::createSegment(const Segment* segment,
     createSegment(segment->side_appendage, body, ra_left, ra_right, !mirror);
   }
 
-  // TODO: set joints
+  // parent joint
+  if (parent_body) {
+    b2RevoluteJointDef hinge_def;
+    hinge_def.bodyA = parent_body;
+    hinge_def.bodyB = body;
+    hinge_def.localAnchorA = parent_body->GetLocalPoint(body_def.position);
+    hinge_def.localAnchorB.Set(0, 0);
+    hinge_def.enableLimit = true;
+    hinge_def.lowerAngle = 0;
+    hinge_def.upperAngle = 0;
+    world_.CreateJoint(&hinge_def);
+  }
 }
 
 Genotype::Genotype() {
