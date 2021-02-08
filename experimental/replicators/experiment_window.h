@@ -5,6 +5,7 @@
 
 #include <QFrame>
 #include <QGridLayout>
+#include <QTimer>
 
 #include <vector>
 #include <memory>
@@ -21,6 +22,8 @@ class ExperimentWindow : public QFrame {
 
   static constexpr int kColumns = 4;
   static constexpr int kDefaultPopulationSize = 16;
+
+  static constexpr int kDefaultTimerSpeed = 20;  // ms
 
  public:
   explicit ExperimentWindow(QWidget* parent, SpeciesFactory* factory, bool sample_set);
@@ -43,6 +46,8 @@ class ExperimentWindow : public QFrame {
 
   SpeciesFactory* factory_ = nullptr;
   const bool sample_set_ = false;
+
+  QTimer timer_;
 };
 
 }  // namespace experimental::replicators

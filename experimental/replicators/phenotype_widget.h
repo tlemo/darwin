@@ -32,6 +32,8 @@ class PhenotypeWidget : public physics_ui::Box2dWidget {
  public:
   PhenotypeWidget(QWidget* parent, unique_ptr<Phenotype> phenotype);
 
+  void animate();
+
  signals:
   void sigClicked();
 

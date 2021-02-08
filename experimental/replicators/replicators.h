@@ -36,7 +36,7 @@ class Phenotype : public core::NonCopyable {
   virtual b2World* specimen() { return &world_; }
 
   //! Animate the phenotype (a single step)
-  virtual void animate() {}
+  virtual void animate();
 
  protected:
   b2World world_;

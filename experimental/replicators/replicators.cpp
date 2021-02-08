@@ -18,4 +18,11 @@ namespace experimental::replicators {
 
 Phenotype::Phenotype() : world_(b2Vec2(0, 0)) {}
 
+void Phenotype::animate() {
+  constexpr float32 time_step = 1.0f / 50.0f;
+  constexpr int32 velocity_iterations = 10;
+  constexpr int32 position_iterations = 10;
+  world_.Step(time_step, velocity_iterations, position_iterations);
+}
+
 }  // namespace experimental::replicators

@@ -16,10 +16,12 @@ ExperimentWindow::ExperimentWindow(QWidget* parent,
       sample_set_(sample_set) {
   ui->setupUi(this);
   layout_ = new QGridLayout(this);
+  timer_.setInterval(kDefaultTimerSpeed);
   resetPopulation();
 }
 
 ExperimentWindow::~ExperimentWindow() {
+  timer_.stop();
   delete ui;
 }
 
@@ -62,6 +64,7 @@ void ExperimentWindow::pickGenotype(size_t index) {
 }
 
 void ExperimentWindow::deletePhenotypeWidgets() {
+  timer_.stop();
   for (const auto widget : layout_->children()) {
     delete widget;
   }
@@ -73,8 +76,12 @@ void ExperimentWindow::createPhenotypeWidgets() {
     const auto row = i / kColumns;
     const auto widget = new PhenotypeWidget(this, population_[i]->grow());
     connect(widget, &PhenotypeWidget::sigClicked, [=] { pickGenotype(i); });
+    connect(&timer_, &QTimer::timeout, widget, &PhenotypeWidget::animate);
     layout_->addWidget(widget, row, col);
   }
+
+  CHECK(!timer_.isActive());
+  timer_.start();
 }
 
 }  // namespace experimental::replicators

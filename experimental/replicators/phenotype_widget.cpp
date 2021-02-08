@@ -28,6 +28,11 @@ PhenotypeWidget::PhenotypeWidget(QWidget* parent, unique_ptr<Phenotype> phenotyp
   setWorld(phenotype_->specimen());
 }
 
+void PhenotypeWidget::animate() {
+  phenotype_->animate();
+  update();
+}
+
 void PhenotypeWidget::mousePressEvent(QMouseEvent* /*event*/) {
   // TODO
 }
@@ -46,7 +51,7 @@ void PhenotypeWidget::enterEvent(QEvent* /*event*/) {
   setUniformBackgroundColor(kHighlightedColor);
 }
 
-void PhenotypeWidget::leaveEvent(QEvent* event) {
+void PhenotypeWidget::leaveEvent(QEvent* /*event*/) {
   setUniformBackgroundColor(kBackgroundColor);
 }
 
