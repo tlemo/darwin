@@ -14,9 +14,11 @@
 
 ### General Prerequisites
 
-- [Qt 5.x+ and QtCreator 4.x+][3] (_Qt Charts must be selected_)
+- [Qt 5.x and QtCreator 4.x+][3] (_Qt Charts must be selected_)
 - [Python 3][4] for running the bundled scripts
 - [Doxygen][1] for generating the API documentation
+
+> Qt 6.x is not supported yet
 
 ### Getting the Source Code
 
@@ -52,7 +54,7 @@ git submodule update
 ### Building from the Command Line
 
 1. Export `QTDIR` to point to the Qt location
-   (ex. `export QTDIR=/home/tlemo/tools/qt/5.14.2/gcc_64`)
+   (ex. `export QTDIR=/home/user/Qt/5.14.2/gcc_64`)
 
 2. Create a build directory and `cd` into it
    (ex. `mkdir .build_release && cd .build_release`)
