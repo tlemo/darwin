@@ -52,7 +52,7 @@ git submodule update
 ### Building from the Command Line
 
 1. Export `QTDIR` to point to the Qt location
-   (ex. `export QTDIR=/home/tlemo/tools/qt/5.14.2/gcc_64`)
+   (ex. `export QTDIR=/home/tlemo/tools/qt/5.14.2/gcc_64` or probably `QTDIR=~/Qt/6.0.1/gcc_64` if you use the default Qt installation)
 
 2. Create a build directory and `cd` into it
    (ex. `mkdir .build_release && cd .build_release`)
