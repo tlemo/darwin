@@ -353,6 +353,7 @@ void Phenotype::createSegment(const Segment* segment,
 
     b2PolygonShape shape;
     shape.Set(points.data(), points.size());
+    shape.m_radius = 0;
 
     b2FixtureDef fixture_def;
     fixture_def.shape = &shape;
