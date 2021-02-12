@@ -260,7 +260,7 @@ GLOBAL_INITIALIZER {
 
 Phenotype::Phenotype(const Genotype* genotype) {
   try {
-    createSegment(genotype->root(), nullptr, b2Vec2(), b2Vec2(), false);
+    root_ = createSegment(genotype->root(), nullptr, b2Vec2(), b2Vec2(), false);
   } catch (const std::exception& e) {
     // Failed to generate Phenotype (genotype is not viable)
     // (create a dummy placeholder)
@@ -276,16 +276,36 @@ Phenotype::Phenotype(const Genotype* genotype) {
   }
 }
 
-void Phenotype::createSegment(const Segment* segment,
-                              b2Body* parent_body,
-                              const b2Vec2& base_left,
-                              const b2Vec2& base_right,
-                              bool mirror) {
+void Phenotype::animateJoint(const Joint& joint, float phase) {
+  if (joint.box2d_joint) {
+    joint.box2d_joint->SetMotorSpeed(cos(phase) * kJointSpeed);
+  }
+
+  for (const auto& child_joint : joint.children) {
+    animateJoint(child_joint, phase + kPhaseLag);
+  }
+}
+
+void Phenotype::animate() {
+  animateJoint(root_, current_phase_);
+  current_phase_ += kPhaseVelocity;
+
+  experimental::replicators::Phenotype::animate();
+}
+
+Phenotype::Joint Phenotype::createSegment(const Segment* segment,
+                                          b2Body* parent_body,
+                                          const b2Vec2& base_left,
+                                          const b2Vec2& base_right,
+                                          bool mirror) {
   CHECK(segment != nullptr);
   CHECK(!segment->slices.empty());
 
+  Joint joint;
+  joint.mirror = mirror;
+
   if (segment->suppressed) {
-    return;
+    return joint;
   }
 
   const auto d = base_right - base_left;
@@ -357,7 +377,7 @@ void Phenotype::createSegment(const Segment* segment,
 
     b2FixtureDef fixture_def;
     fixture_def.shape = &shape;
-    fixture_def.density = 1.0f;
+    fixture_def.density = 0.1f;
     body->CreateFixture(&fixture_def);
   }
 
@@ -370,7 +390,7 @@ void Phenotype::createSegment(const Segment* segment,
       if (mirror) {
         swap(left, right);
       }
-      createSegment(slice.appendage, body, left, right, mirror);
+      joint.children.push_back(createSegment(slice.appendage, body, left, right, mirror));
     }
   }
 
@@ -382,7 +402,8 @@ void Phenotype::createSegment(const Segment* segment,
     if (mirror) {
       swap(la_left, la_right);
     }
-    createSegment(segment->side_appendage, body, la_left, la_right, mirror);
+    joint.children.push_back(
+        createSegment(segment->side_appendage, body, la_left, la_right, mirror));
 
     // right appendage (mirror)
     auto ra_left = body->GetWorldPoint(extremity_points.back());
@@ -390,7 +411,8 @@ void Phenotype::createSegment(const Segment* segment,
     if (mirror) {
       swap(ra_left, ra_right);
     }
-    createSegment(segment->side_appendage, body, ra_left, ra_right, !mirror);
+    joint.children.push_back(
+        createSegment(segment->side_appendage, body, ra_left, ra_right, !mirror));
   }
 
   // parent joint
@@ -400,8 +422,19 @@ void Phenotype::createSegment(const Segment* segment,
     hinge_def.bodyB = body;
     hinge_def.localAnchorA = parent_body->GetLocalPoint(body_def.position);
     hinge_def.localAnchorB.Set(0, 0);
-    world_.CreateJoint(&hinge_def);
+    hinge_def.lowerAngle = -0.5f * b2_pi;
+    hinge_def.upperAngle = 0.5f * b2_pi;
+    if (parent_body) {
+      hinge_def.referenceAngle = body->GetAngle() - parent_body->GetAngle();
+    }
+    hinge_def.enableLimit = true;
+    hinge_def.maxMotorTorque = 20.0f;
+    hinge_def.motorSpeed = 0;
+    hinge_def.enableMotor = true;
+    joint.box2d_joint = static_cast<b2RevoluteJoint*>(world_.CreateJoint(&hinge_def));
   }
+
+  return joint;
 }
 
 Genotype::Genotype() {

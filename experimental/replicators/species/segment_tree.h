@@ -98,15 +98,33 @@ class Genotype : public experimental::replicators::Genotype {
 };
 
 class Phenotype : public experimental::replicators::Phenotype {
+  static constexpr float kPhaseVelocity = b2_pi / 32;
+  static constexpr float kPhaseLag = b2_pi / 16;
+  static constexpr float kJointSpeed = 0.2f;
+
+  struct Joint {
+    b2RevoluteJoint* box2d_joint = nullptr;
+    bool mirror = false;
+    vector<Joint> children;
+  };
+
  public:
   explicit Phenotype(const Genotype* genotype);
 
+  void animate() override;
+
  private:
-  void createSegment(const Segment* segment,
-                     b2Body* parent_body,
-                     const b2Vec2& base_left,
-                     const b2Vec2& base_right,
-                     bool mirror);
+  Joint createSegment(const Segment* segment,
+                      b2Body* parent_body,
+                      const b2Vec2& base_left,
+                      const b2Vec2& base_right,
+                      bool mirror);
+
+  void animateJoint(const Joint& joint, float phase);
+
+ private:
+  Joint root_;
+  float current_phase_ = 0;
 };
 
 }  // namespace experimental::replicators::seg_tree
