@@ -278,7 +278,7 @@ Phenotype::Phenotype(const Genotype* genotype) {
 
 void Phenotype::animateJoint(const Joint& joint, float phase) {
   if (joint.box2d_joint) {
-    joint.box2d_joint->SetMotorSpeed(cos(phase) * kJointSpeed);
+    joint.box2d_joint->SetMotorSpeed(cos(phase) * kJointSpeed * (joint.mirror ? -1 : 1));
   }
 
   for (const auto& child_joint : joint.children) {
