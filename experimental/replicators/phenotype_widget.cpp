@@ -23,7 +23,7 @@ PhenotypeWidget::PhenotypeWidget(QWidget* parent, unique_ptr<Phenotype> phenotyp
   setBorderSize(4);
   setFrameStyle(QFrame::StyledPanel | QFrame::Plain);
   setUniformBackgroundColor(kBackgroundColor);
-  setViewportPolicy(ViewportPolicy::AutoFit);
+  setViewportPolicy(ViewportPolicy::AutoExpanding);
   setDebugRender(true);
   setWorld(phenotype_->specimen());
 }

@@ -65,8 +65,9 @@ void ExperimentWindow::pickGenotype(size_t index) {
 
 void ExperimentWindow::deletePhenotypeWidgets() {
   timer_.stop();
-  for (const auto widget : layout_->children()) {
-    delete widget;
+  while (auto item = layout_->takeAt(0)) {
+    delete item->widget();
+    delete item;
   }
 }
 
