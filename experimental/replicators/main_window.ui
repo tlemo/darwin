@@ -54,10 +54,23 @@
     <addaction name="separator"/>
     <addaction name="action_exit"/>
    </widget>
+   <widget class="QMenu" name="menu_Experiment">
+    <property name="title">
+     <string>&amp;Experiment</string>
+    </property>
+    <addaction name="action_refresh_candidates"/>
+    <addaction name="action_animate_phenotypes"/>
+    <addaction name="action_debug_render"/>
+    <addaction name="action_close_tab"/>
+   </widget>
    <addaction name="menu_file"/>
+   <addaction name="menu_Experiment"/>
   </widget>
   <widget class="QStatusBar" name="status_bar"/>
   <widget class="QToolBar" name="tool_bar">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
    <property name="windowTitle">
     <string>toolBar</string>
    </property>
@@ -67,6 +80,9 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+   <addaction name="action_refresh_candidates"/>
+   <addaction name="action_animate_phenotypes"/>
+   <addaction name="action_debug_render"/>
   </widget>
   <action name="action_exit">
    <property name="text">
@@ -84,6 +100,44 @@
   <action name="action_new_sample_set">
    <property name="text">
     <string>New &amp;sample set</string>
+   </property>
+  </action>
+  <action name="action_refresh_candidates">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Refresh candidates</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+R</string>
+   </property>
+  </action>
+  <action name="action_animate_phenotypes">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Animate phenotypes</string>
+   </property>
+  </action>
+  <action name="action_debug_render">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Debug render</string>
+   </property>
+  </action>
+  <action name="action_close_tab">
+   <property name="text">
+    <string>Close tab</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+W</string>
    </property>
   </action>
  </widget>
