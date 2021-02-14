@@ -277,8 +277,14 @@ Phenotype::Phenotype(const Genotype* genotype) {
 }
 
 void Phenotype::animateJoint(const Joint& joint, float phase) {
-  if (joint.box2d_joint) {
-    joint.box2d_joint->SetMotorSpeed(cos(phase) * kJointSpeed * (joint.mirror ? -1 : 1));
+  if (const auto b2_joint = joint.box2d_joint) {
+    auto target_speed = cos(phase) * kJointSpeed * (joint.mirror ? -1 : 1);
+    if (b2_joint->GetJointAngle() > 0) {
+      target_speed -= kJointResetSpeed;
+    } else {
+      target_speed += kJointResetSpeed;
+    }
+    b2_joint->SetMotorSpeed(target_speed);
   }
 
   for (const auto& child_joint : joint.children) {
@@ -377,7 +383,7 @@ Phenotype::Joint Phenotype::createSegment(const Segment* segment,
 
     b2FixtureDef fixture_def;
     fixture_def.shape = &shape;
-    fixture_def.density = 0.1f;
+    fixture_def.density = 1.0f;
     body->CreateFixture(&fixture_def);
   }
 
@@ -428,7 +434,7 @@ Phenotype::Joint Phenotype::createSegment(const Segment* segment,
       hinge_def.referenceAngle = body->GetAngle() - parent_body->GetAngle();
     }
     hinge_def.enableLimit = true;
-    hinge_def.maxMotorTorque = 20.0f;
+    hinge_def.maxMotorTorque = 25.0f;
     hinge_def.motorSpeed = 0;
     hinge_def.enableMotor = true;
     joint.box2d_joint = static_cast<b2RevoluteJoint*>(world_.CreateJoint(&hinge_def));

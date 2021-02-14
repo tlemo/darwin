@@ -98,9 +98,10 @@ class Genotype : public experimental::replicators::Genotype {
 };
 
 class Phenotype : public experimental::replicators::Phenotype {
-  static constexpr float kPhaseVelocity = b2_pi / 32;
-  static constexpr float kPhaseLag = b2_pi / 16;
-  static constexpr float kJointSpeed = 0.2f;
+  static constexpr float kPhaseVelocity = b2_pi / 64;
+  static constexpr float kPhaseLag = b2_pi / 4;
+  static constexpr float kJointSpeed = 0.15f;
+  static constexpr float kJointResetSpeed = 0.05f;
 
   struct Joint {
     b2RevoluteJoint* box2d_joint = nullptr;
