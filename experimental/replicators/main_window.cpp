@@ -40,6 +40,7 @@ void MainWindow::newExperimentWindow(bool sample_set) {
 }
 
 void MainWindow::closeTab(int index) {
+  Q_ASSERT(index >= 0);
   delete ui->tabs->widget(index);
   if (ui->tabs->count() == 0) {
     ui->action_refresh_candidates->setEnabled(false);
@@ -62,6 +63,21 @@ void MainWindow::on_tabs_tabCloseRequested(int index) {
 void MainWindow::on_action_close_tab_triggered() {
   Q_ASSERT(ui->tabs->count() > 0);
   closeTab(ui->tabs->currentIndex());
+}
+
+void MainWindow::on_action_refresh_candidates_triggered() {
+  if (auto experiment_window =
+          static_cast<ExperimentWindow*>(ui->tabs->currentWidget())) {
+    experiment_window->refreshCandidates();
+  }
+}
+
+void MainWindow::on_action_animate_phenotypes_toggled(bool checked) {
+  // TODO
+}
+
+void MainWindow::on_action_debug_render_toggled(bool checked) {
+  // TODO
 }
 
 }  // namespace experimental::replicators

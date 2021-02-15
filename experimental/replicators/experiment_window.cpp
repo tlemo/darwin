@@ -25,6 +25,10 @@ ExperimentWindow::~ExperimentWindow() {
   delete ui;
 }
 
+void ExperimentWindow::refreshCandidates() {
+  newGeneration(std::move(parent_));
+}
+
 void ExperimentWindow::resetPopulation() {
   if (sample_set_) {
     sampleGeneration();

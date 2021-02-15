@@ -29,6 +29,8 @@ class ExperimentWindow : public QFrame {
   explicit ExperimentWindow(QWidget* parent, SpeciesFactory* factory, bool sample_set);
   ~ExperimentWindow();
 
+  void refreshCandidates();
+
  private:
   void resetPopulation();
   void newGeneration(unique_ptr<Genotype> parent);
