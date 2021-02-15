@@ -384,6 +384,7 @@ Phenotype::Joint Phenotype::createSegment(const Segment* segment,
     b2FixtureDef fixture_def;
     fixture_def.shape = &shape;
     fixture_def.density = 1.0f;
+    fixture_def.material.color = b2Color(0.8f, 0.5f, 0.5f);
     body->CreateFixture(&fixture_def);
   }
 
