@@ -31,6 +31,12 @@ class ExperimentWindow : public QFrame {
 
   void refreshCandidates();
 
+  bool animated() const { return animated_; }
+  void setAnimated(bool animated);
+
+  bool debugRender() const { return debug_render_; }
+  void setDebugRender(bool debug_render);
+
  private:
   void resetPopulation();
   void newGeneration(unique_ptr<Genotype> parent);
@@ -48,6 +54,9 @@ class ExperimentWindow : public QFrame {
 
   SpeciesFactory* factory_ = nullptr;
   const bool sample_set_ = false;
+
+  bool animated_ = true;
+  bool debug_render_ = false;
 
   QTimer timer_;
 };

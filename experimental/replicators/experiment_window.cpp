@@ -29,6 +29,24 @@ void ExperimentWindow::refreshCandidates() {
   newGeneration(std::move(parent_));
 }
 
+void ExperimentWindow::setAnimated(bool animated) {
+  animated_ = animated;
+  if (animated_) {
+    timer_.start();
+  } else {
+    timer_.stop();
+  }
+}
+
+void ExperimentWindow::setDebugRender(bool debug_render) {
+  debug_render_ = debug_render;
+  for (int i = 0; i < layout_->count(); ++i) {
+    const auto widget = dynamic_cast<PhenotypeWidget*>(layout_->itemAt(i)->widget());
+    CHECK(widget != nullptr);
+    widget->setDebugRender(debug_render_);
+  }
+}
+
 void ExperimentWindow::resetPopulation() {
   if (sample_set_) {
     sampleGeneration();
@@ -80,13 +98,16 @@ void ExperimentWindow::createPhenotypeWidgets() {
     const auto col = i % kColumns;
     const auto row = i / kColumns;
     const auto widget = new PhenotypeWidget(this, population_[i]->grow());
+    widget->setDebugRender(debug_render_);
     connect(widget, &PhenotypeWidget::sigClicked, [=] { pickGenotype(i); });
     connect(&timer_, &QTimer::timeout, widget, &PhenotypeWidget::animate);
     layout_->addWidget(widget, row, col);
   }
 
   CHECK(!timer_.isActive());
-  timer_.start();
+  if (animated_) {
+    timer_.start();
+  }
 }
 
 }  // namespace experimental::replicators

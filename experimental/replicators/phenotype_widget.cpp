@@ -38,7 +38,7 @@ void PhenotypeWidget::mousePressEvent(QMouseEvent* /*event*/) {
 }
 
 void PhenotypeWidget::mouseReleaseEvent(QMouseEvent* event) {
-  if (rect().contains(event->pos())) {
+  if (rect().contains(event->pos()) && event->button() == Qt::MouseButton::LeftButton) {
     emit sigClicked();
   }
 }
