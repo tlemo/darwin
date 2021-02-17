@@ -20,6 +20,7 @@ SOURCES += \
     replicators.cpp \
     species/segment_tree.cpp \
     species/test.cpp \
+    species/ksims_virtual_creatures.cpp \
     tests.cpp
 
 HEADERS += \
@@ -30,6 +31,7 @@ HEADERS += \
     replicators.h \
     species/segment_tree.h \
     species/test.h \
+    species/ksims_virtual_creatures.h \
     tests.h
     
 FORMS += \
