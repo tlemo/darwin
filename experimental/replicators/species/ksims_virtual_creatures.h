@@ -57,6 +57,8 @@ struct Node {
   int recursive_limit = 4;
 
   Node(double width, double height) : width(width), height(height) {}
+
+  bool operator==(const Node& other) const;
 };
 
 struct Connection {
@@ -81,6 +83,8 @@ struct Connection {
 
   Connection(ArrayElem<Node> src, ArrayElem<Node> dst, double position)
       : src(src.index()), dst(dst.index()), position(position) {}
+
+  bool operator==(const Connection& other) const;
 };
 
 class Genotype : public experimental::replicators::Genotype {

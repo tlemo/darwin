@@ -28,6 +28,17 @@ using namespace std;
 
 namespace experimental::replicators::ksims {
 
+bool Node::operator==(const Node& other) const {
+  return width == other.width && height == other.height &&
+         rigid_joint == other.rigid_joint && recursive_limit == other.recursive_limit;
+}
+
+bool Connection::operator==(const Connection& other) const {
+  return src == other.src && dst == other.dst && position == other.position &&
+         orientation == other.orientation && terminal_only == other.terminal_only &&
+         scale == other.scale && reflection == other.reflection;
+}
+
 class Factory : public SpeciesFactory {
  public:
   unique_ptr<experimental::replicators::Genotype> primordialGenotype() override {
@@ -106,6 +117,7 @@ GLOBAL_INITIALIZER {
 }
 
 Phenotype::Phenotype(const Genotype* genotype) {
+  CHECK(!genotype->nodes().empty());
   try {
     // TODO
   } catch (const std::exception& e) {
@@ -147,7 +159,7 @@ void Phenotype::animate() {
 }
 
 Genotype::Genotype() {
-  // TODO
+  newNode(0.5, 2.0);
 }
 
 Genotype::Genotype(const Genotype& other)
@@ -186,8 +198,7 @@ void Genotype::load(const json& json_obj) {
 }
 
 bool Genotype::operator==(const Genotype& other) const {
-  // TODO
-  return true;
+  return nodes_ == other.nodes_ && connections_ == other.connections_;
 }
 
 unique_ptr<experimental::replicators::Genotype> Genotype::clone() const {
