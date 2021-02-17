@@ -19,6 +19,7 @@ SOURCES += \
     phenotype_widget.cpp \
     replicators.cpp \
     species/segment_tree.cpp \
+    species/test.cpp \
     tests.cpp
 
 HEADERS += \
@@ -28,6 +29,7 @@ HEADERS += \
     phenotype_widget.h \
     replicators.h \
     species/segment_tree.h \
+    species/test.h \
     tests.h
     
 FORMS += \

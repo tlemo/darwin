@@ -47,8 +47,6 @@ struct Segment {
 };
 
 class Genotype : public experimental::replicators::Genotype {
-  static constexpr int kMutationCount = 1;
-
  public:
   Genotype();
 

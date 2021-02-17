@@ -17,6 +17,7 @@
 #include <core/global_initializer.h>
 #include <core/exception.h>
 #include <core/utils.h>
+#include <core/random.h>
 
 #include <unordered_map>
 #include <random>
@@ -26,21 +27,6 @@
 using namespace std;
 
 namespace experimental::replicators::seg_tree {
-
-template <class T>
-static auto randomElem(T& container) {
-  random_device rd;
-  default_random_engine rnd(rd());
-  uniform_int_distribution<size_t> dist(0, container.size() - 1);
-  return container.begin() + dist(rnd);
-}
-
-static double mutateValue(double value, double std_dev, double min_value = 0.01) {
-  random_device rd;
-  default_random_engine rnd(rd());
-  normal_distribution<double> dist(value, std_dev);
-  return max(dist(rnd), min_value);
-}
 
 class Factory : public SpeciesFactory {
  public:
@@ -69,6 +55,12 @@ class Factory : public SpeciesFactory {
       Genotype clone;
       clone.load(sample->save());
       CHECK(clone == dynamic_cast<Genotype&>(*sample));
+      clone.grow();
+    }
+
+    // generating phenotypes
+    for (const auto& sample : samples()) {
+      sample->grow();
     }
 
     // cloning & deep copy
@@ -78,6 +70,8 @@ class Factory : public SpeciesFactory {
       const auto clone_b = sample->clone();
       clone.reset();
       CHECK(dynamic_cast<Genotype&>(*clone_a) == dynamic_cast<Genotype&>(*clone_b));
+      clone_a->grow();
+      clone_b->grow();
     }
 
     // mutations
@@ -90,6 +84,7 @@ class Factory : public SpeciesFactory {
       genotype.mutateLength(genotype.root(), 1.0);
       genotype.mutateWidth(genotype.root(), 1.0);
       genotype.mutateSliceWidth(genotype.root(), 1.0);
+      genotype.grow();
     }
   }
 
@@ -470,11 +465,10 @@ unique_ptr<experimental::replicators::Phenotype> Genotype::grow() const {
 }
 
 void Genotype::mutate() {
-  // pick a random segment
-  const auto segment = randomElem(segments_)->get();
+  const auto segment = core::randomElem(segments_)->get();
 
   struct MutationType {
-    double probability = 0;
+    double weight = 0;
     function<void()> mutate;
   };
 
@@ -491,28 +485,7 @@ void Genotype::mutate() {
     { 50, [&] { mutateSliceWidth(segment, 0.5); } },
   };
 
-  double total = 0;
-  for (const auto& mutation_type : mutagen) {
-    CHECK(mutation_type.probability >= 0);
-    total += mutation_type.probability;
-  }
-  CHECK(total > 0);
-
-  random_device rd;
-  default_random_engine rnd(rd());
-  uniform_real_distribution<double> dist(0, total);
-
-  for (int i = 0; i < kMutationCount; ++i) {
-    const double sample = dist(rnd);
-    double prefix_sum = 0;
-    for (const auto& mutation_type : mutagen) {
-      prefix_sum += mutation_type.probability;
-      if (sample < prefix_sum) {
-        mutation_type.mutate();
-        break;
-      }
-    }
-  }
+  core::randomWeightedElem(mutagen)->mutate();
 }
 
 json Genotype::save() const {
@@ -718,7 +691,7 @@ Segment* Genotype::deepCopy(const Segment* segment) {
 }
 
 void Genotype::growAppendage(Segment* segment) {
-  auto& slice = *randomElem(segment->slices);
+  auto& slice = *core::randomElem(segment->slices);
   slice.appendage = newSegment(1.0, 1.0, slice.appendage);
 }
 
@@ -731,7 +704,7 @@ void Genotype::growSideAppendage(Segment* segment) {
 void Genotype::lateralSplit(Segment* segment, double fraction) {
   CHECK(fraction > 0);
 
-  const auto slice_it = randomElem(segment->slices);
+  const auto slice_it = core::randomElem(segment->slices);
   const auto new_width = slice_it->relative_width * fraction;
 
   slice_it->relative_width = new_width;
@@ -757,16 +730,19 @@ void Genotype::axialSplit(Segment* segment, double fraction) {
 }
 
 void Genotype::mutateLength(Segment* segment, double std_dev) {
-  segment->length = mutateValue(segment->length, std_dev);
+  segment->length =
+      core::clampValue(core::mutateNormalValue(segment->length, std_dev), 0.01, 1000.0);
 }
 
 void Genotype::mutateWidth(Segment* segment, double std_dev) {
-  segment->width = mutateValue(segment->width, std_dev);
+  segment->width =
+      core::clampValue(core::mutateNormalValue(segment->width, std_dev), 0.01, 1000.0);
 }
 
 void Genotype::mutateSliceWidth(Segment* segment, double std_dev) {
-  auto& slice = *randomElem(segment->slices);
-  slice.relative_width = mutateValue(slice.relative_width, std_dev);
+  auto& slice = *core::randomElem(segment->slices);
+  slice.relative_width = core::clampValue(
+      core::mutateNormalValue(slice.relative_width, std_dev), 0.01, 100.0);
 }
 
 bool Genotype::operator==(const Genotype& other) const {

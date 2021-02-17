@@ -49,6 +49,7 @@ HEADERS += \
     outline_2d.h \
     pubsub.h \
     logging.h \
+    random.h \
     runtime.h \
     scope_guard.h \
     matrix.h \
