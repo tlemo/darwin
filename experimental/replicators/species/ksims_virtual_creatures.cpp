@@ -78,26 +78,24 @@ class Factory : public SpeciesFactory {
   unique_ptr<experimental::replicators::Genotype> mirrorSideLimb() {
     auto genotype = make_unique<Genotype>();
 
-    auto& nodes = genotype->nodes();
-    auto& connections = genotype->connections();
-
     auto palm = genotype->newNode(0.5, 0.3);
+
     auto forearm = genotype->newNode(0.2, 1.5);
+    forearm->recursive_limit = 2;
+
     auto arm = genotype->newNode(0.4, 1.2);
+    arm->recursive_limit = 2;
 
-    nodes[forearm].recursive_limit = 2;
-    nodes[arm].recursive_limit = 2;
+    genotype->newConnection(genotype->root(), arm, -math::kPi / 2);
 
-    genotype->newConnection(0, arm, -math::kPi / 2);
-
-    auto c1 = genotype->newConnection(0, arm, math::kPi / 2);
-    connections[c1].reflection = true;
+    auto c1 = genotype->newConnection(genotype->root(), arm, math::kPi / 2);
+    c1->reflection = true;
 
     genotype->newConnection(arm, forearm, 0.0);
     genotype->newConnection(forearm, arm, 0.0);
 
     auto c2 = genotype->newConnection(forearm, palm, 0.0);
-    connections[c2].terminal_only = true;
+    c2->terminal_only = true;
 
     return genotype;
   }
@@ -152,9 +150,8 @@ Genotype::Genotype() {
   // TODO
 }
 
-Genotype::Genotype(const Genotype& other) {
-  // TODO
-}
+Genotype::Genotype(const Genotype& other)
+    : nodes_(other.nodes_), connections_(other.connections_) {}
 
 Genotype& Genotype::operator=(const Genotype& other) {
   Genotype copy(other);
@@ -164,7 +161,8 @@ Genotype& Genotype::operator=(const Genotype& other) {
 
 void swap(Genotype& a, Genotype& b) noexcept {
   using std::swap;
-  // TODO
+  swap(a.nodes_, b.nodes_);
+  swap(a.connections_, b.connections_);
 }
 
 unique_ptr<experimental::replicators::Phenotype> Genotype::grow() const {

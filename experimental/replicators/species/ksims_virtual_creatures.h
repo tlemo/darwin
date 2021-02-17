@@ -26,6 +26,30 @@ using namespace std;
 
 namespace experimental::replicators::ksims {
 
+template <class T>
+class ArrayElem {
+ public:
+  ArrayElem(vector<T>& array, size_t index) : array_(array), index_(index) {
+    CHECK(index_ < array_.size());
+  }
+
+  int index() const { return int(index_); }
+
+  T& operator*() const noexcept {
+    CHECK(index_ < array_.size());
+    return array_[index_];
+  }
+
+  T* operator->() const noexcept {
+    CHECK(index_ < array_.size());
+    return &array_[index_];
+  }
+
+ private:
+  vector<T>& array_;
+  const size_t index_;
+};
+
 struct Node {
   double width = 1.0;
   double height = 2.0;
@@ -55,8 +79,8 @@ struct Connection {
   // x-axis mirroring?
   bool reflection = false;
 
-  Connection(int src, int dst, double position)
-      : src(src), dst(dst), position(position) {}
+  Connection(ArrayElem<Node> src, ArrayElem<Node> dst, double position)
+      : src(src.index()), dst(dst.index()), position(position) {}
 };
 
 class Genotype : public experimental::replicators::Genotype {
@@ -78,19 +102,21 @@ class Genotype : public experimental::replicators::Genotype {
   auto& nodes() { return nodes_; }
   auto& nodes() const { return nodes_; }
 
+  auto root() { return ArrayElem(nodes_, 0); }
+
   auto& connections() { return connections_; }
   auto& connections() const { return connections_; }
 
   template <class... Args>
-  int newNode(Args&&... args) {
+  auto newNode(Args&&... args) {
     nodes_.emplace_back(std::forward<Args>(args)...);
-    return int(nodes_.size() - 1);
+    return ArrayElem(nodes_, nodes_.size() - 1);
   }
 
   template <class... Args>
-  int newConnection(Args&&... args) {
+  auto newConnection(Args&&... args) {
     connections_.emplace_back(std::forward<Args>(args)...);
-    return int(connections_.size() - 1);
+    return ArrayElem(connections_, connections_.size() - 1);
   }
 
   // mutations
