@@ -16,6 +16,8 @@
 
 #include "replicators.h"
 
+#include <core/math_2d.h>
+
 #include <vector>
 #include <utility>
 #include <memory>
@@ -134,17 +136,19 @@ class Genotype : public experimental::replicators::Genotype {
   vector<Connection> connections_;
 };
 
+struct SegmentFrame {
+  math::Vector2d origin;
+  math::Scalar scale = 1.0;
+  math::Scalar angle = 0;
+  bool mirror = false;
+  b2Body* parent_body = nullptr;
+};
+
 class Phenotype : public experimental::replicators::Phenotype {
   static constexpr float kPhaseVelocity = b2_pi / 64;
   static constexpr float kPhaseLag = b2_pi / 4;
   static constexpr float kJointSpeed = 0.15f;
   static constexpr float kJointResetSpeed = 0.05f;
-
-  struct Joint {
-    b2RevoluteJoint* box2d_joint = nullptr;
-    bool mirror = false;
-    vector<Joint> children;
-  };
 
  public:
   explicit Phenotype(const Genotype* genotype);
@@ -152,10 +156,12 @@ class Phenotype : public experimental::replicators::Phenotype {
   void animate() override;
 
  private:
-  void animateJoint(const Joint& joint, float phase);
+  b2Body* createSegment(const Node& node, const SegmentFrame& frame);
+  void createDummyBody();
+  void animateJoint(b2Body* body, float phase);
 
  private:
-  Joint root_;
+  b2Body* root_ = nullptr;
   float current_phase_ = 0;
 };
 
