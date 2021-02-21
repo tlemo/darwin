@@ -80,7 +80,7 @@ struct Connection {
   // scale (relative to parent node)
   double scale = 1.0;
 
-  // x-axis mirroring?
+  // x-axis mirroring clone?
   bool reflection = false;
 
   Connection(ArrayElem<Node> src, ArrayElem<Node> dst, double position)

@@ -210,6 +210,7 @@ class Factory : public SpeciesFactory {
     root->width = 0.1;
     root->height = 0.1;
     root->recursive_limit = 20;
+    root->rigid_joint = true;
 
     auto c0 = genotype->newConnection(root, root, -math::kPi / 6);
     c0->orientation = -math::kPi / 8;
@@ -278,10 +279,11 @@ static SegmentFrame childFrame(SegmentFrame parent_frame,
                                const Node& node) {
   CHECK(body != nullptr);
 
-  mirror = mirror != parent_frame.mirror;
+  const auto mirrorAngle = [&](double angle) {
+    return mirror != parent_frame.mirror ? -angle : angle;
+  };
 
-  const auto pos_angle =
-      (mirror ? -connection.position : connection.position) + math::kPi / 2;
+  const auto pos_angle = mirrorAngle(connection.position) + math::kPi / 2;
   const auto cx = cos(pos_angle);
   const auto cy = sin(pos_angle);
   const auto t = min(1 / abs(cx), 1 / abs(cy));
@@ -295,14 +297,11 @@ static SegmentFrame childFrame(SegmentFrame parent_frame,
 
   SegmentFrame child_frame;
   child_frame.scale = parent_frame.scale * connection.scale;
-  if (mirror) {
-    child_frame.angle = parent_frame.angle - connection.position - connection.orientation;
-  } else {
-    child_frame.angle = parent_frame.angle + connection.position + connection.orientation;
-  }
+  child_frame.angle = parent_frame.angle + mirrorAngle(connection.position) +
+                      mirrorAngle(connection.orientation);
   child_frame.origin = parent_frame.origin + transf * p;
   child_frame.parent_body = body;
-  child_frame.mirror = mirror;
+  child_frame.mirror = (mirror != parent_frame.mirror);
   return child_frame;
 }
 
@@ -329,9 +328,10 @@ Phenotype::Phenotype(const Genotype* genotype) {
     b2Body* body = nullptr;
   };
 
-  vector<StackEntry> stack = { { 0, SegmentFrame() } };
-
+  // max segment instantiation depth
   constexpr size_t kMaxStackSize = 128;
+
+  vector<StackEntry> stack = { { 0, SegmentFrame() } };
 
   try {
     while (!stack.empty()) {
@@ -363,6 +363,7 @@ Phenotype::Phenotype(const Genotype* genotype) {
 
         const auto connection = it->second[current.next_child];
         if (connection->reflection && !current.mirror) {
+          // instantiate the mirrored clone
           current.mirror = true;
         } else {
           current.mirror = false;
@@ -370,20 +371,17 @@ Phenotype::Phenotype(const Genotype* genotype) {
         }
 
         const bool terminal = node_instances[current.node] == node.recursive_limit;
-        const bool dst_terminal =
-            node_instances[connection->dst] == nodes[connection->dst].recursive_limit;
         if (!connection->terminal_only || terminal) {
-          if (!dst_terminal) {
-            stack.push_back(
-                { connection->dst,
-                  childFrame(
-                      current.frame, current.body, current.mirror, *connection, node) });
+          if (node_instances[connection->dst] < nodes[connection->dst].recursive_limit) {
+            const auto child_frame = childFrame(
+                current.frame, current.body, current.mirror, *connection, node);
+            stack.push_back({ connection->dst, child_frame });
           }
         }
       }
     }
 
-    // sanity check
+    // postcondition (sanity check)
     for (const auto [node, count] : node_instances) {
       CHECK(count == 0);
     }
@@ -396,15 +394,15 @@ Phenotype::Phenotype(const Genotype* genotype) {
 void Phenotype::animateJoint(b2Body* body, float phase) {
   for (auto e = body->GetJointList(); e != nullptr; e = e->next) {
     if (e->joint->GetBodyB() == body) {
-      auto revolute_joint = dynamic_cast<b2RevoluteJoint*>(e->joint);
-      CHECK(revolute_joint);
-      auto target_speed = cos(phase) * kJointSpeed;
-      if (revolute_joint->GetJointAngle() > 0) {
-        target_speed -= kJointResetSpeed;
-      } else {
-        target_speed += kJointResetSpeed;
+      if (auto revolute_joint = dynamic_cast<b2RevoluteJoint*>(e->joint)) {
+        auto target_speed = cos(phase) * kJointSpeed;
+        if (revolute_joint->GetJointAngle() > 0) {
+          target_speed -= kJointResetSpeed;
+        } else {
+          target_speed += kJointResetSpeed;
+        }
+        revolute_joint->SetMotorSpeed(target_speed);
       }
-      revolute_joint->SetMotorSpeed(target_speed);
     } else {
       animateJoint(e->joint->GetBodyB(), phase + kPhaseLag);
     }
@@ -423,7 +421,7 @@ static b2Vec2 toBox2dVec(const math::Vector2d& v) {
 }
 
 b2Body* Phenotype::createSegment(const Node& node, const SegmentFrame& frame) {
-  // angle = 0 is up (y axis)
+  // angle = 0 is "up" (y axis), relative to the parent coord frame
   const math::Vector2d dir(sin(frame.angle), cos(frame.angle));
 
   const float half_width = node.width * frame.scale * 0.5;
