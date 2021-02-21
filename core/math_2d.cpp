@@ -45,6 +45,30 @@ Intersection2d intersect(const Vector2d& a1,
   }
 }
 
+HMatrix2d HMatrix2d::identity() {
+  HMatrix2d m;
+  m.setIdentity();
+  return m;
+}
+
+HMatrix2d HMatrix2d::translate(Scalar tx, Scalar ty) {
+  HMatrix2d m;
+  m.setTranslate(tx, ty);
+  return m;
+}
+
+HMatrix2d HMatrix2d::scale(Scalar sx, Scalar sy) {
+  HMatrix2d m;
+  m.setScale(sx, sy);
+  return m;
+}
+
+HMatrix2d HMatrix2d::rotate(Scalar angle) {
+  HMatrix2d m;
+  m.setRotation(angle);
+  return m;
+}
+
 void HMatrix2d::setIdentity() {
   setZero();
   m[0][0] = 1;
@@ -75,7 +99,7 @@ void HMatrix2d::setRotation(Scalar angle) {
   m[1][1] = c;
 }
 
-HMatrix2d HMatrix2d::operator*(const HMatrix2d& other) {
+HMatrix2d HMatrix2d::operator*(const HMatrix2d& other) const {
   HMatrix2d result;
   for (int i = 0; i < 3; ++i)
     for (int j = 0; j < 3; ++j)
@@ -84,7 +108,7 @@ HMatrix2d HMatrix2d::operator*(const HMatrix2d& other) {
   return result;
 }
 
-Vector2d HMatrix2d::operator*(const Vector2d& v) {
+Vector2d HMatrix2d::operator*(const Vector2d& v) const {
   const Scalar w = m[2][0] * v.x + m[2][1] * v.y + m[2][2];
   return Vector2d((m[0][0] * v.x + m[0][1] * v.y + m[0][2]) / w,
                   (m[1][0] * v.x + m[1][1] * v.y + m[1][2]) / w);
