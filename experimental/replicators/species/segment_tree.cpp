@@ -426,9 +426,7 @@ Phenotype::Joint Phenotype::createSegment(const Segment* segment,
     hinge_def.localAnchorB.Set(0, 0);
     hinge_def.lowerAngle = -0.5f * b2_pi;
     hinge_def.upperAngle = 0.5f * b2_pi;
-    if (parent_body) {
-      hinge_def.referenceAngle = body->GetAngle() - parent_body->GetAngle();
-    }
+    hinge_def.referenceAngle = body->GetAngle() - parent_body->GetAngle();
     hinge_def.enableLimit = true;
     hinge_def.maxMotorTorque = 25.0f;
     hinge_def.motorSpeed = 0;
