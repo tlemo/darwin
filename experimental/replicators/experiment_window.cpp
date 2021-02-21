@@ -26,7 +26,11 @@ ExperimentWindow::~ExperimentWindow() {
 }
 
 void ExperimentWindow::refreshCandidates() {
-  newGeneration(std::move(parent_));
+  if (parent_) {
+    newGeneration(std::move(parent_));
+  } else if (sample_set_) {
+    sampleGeneration();
+  }
 }
 
 void ExperimentWindow::setAnimated(bool animated) {
