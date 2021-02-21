@@ -55,6 +55,7 @@ class Factory : public SpeciesFactory {
     samples.push_back(shell());
     samples.push_back(centipede());
     samples.push_back(spider());
+    samples.push_back(star());
     return samples;
   }
 
@@ -263,6 +264,29 @@ class Factory : public SpeciesFactory {
 
     auto c4 = genotype->newConnection(root, leg, 3 * math::kPi / 4);
     c4->reflection = true;
+
+    return genotype;
+  }
+
+  unique_ptr<experimental::replicators::Genotype> star() {
+    auto genotype = make_unique<Genotype>();
+
+    auto arm = genotype->newNode(0.2, 4.0);
+
+    auto root = genotype->root();
+    root->width = 2.0;
+    root->height = 2.0;
+    root->recursive_limit = 3;
+
+    constexpr int kArmsCount = 6;
+    constexpr double kAngleLimit = math::kPi * 0.8;
+    constexpr double kSliceAngle = 2 * kAngleLimit / (kArmsCount - 1);
+    for (double angle = -kAngleLimit; angle <= kAngleLimit; angle += kSliceAngle) {
+      genotype->newConnection(root, arm, angle);
+    }
+
+    auto c1 = genotype->newConnection(arm, root, 0);
+    c1->scale = 0.3;
 
     return genotype;
   }
