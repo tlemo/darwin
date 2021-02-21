@@ -228,7 +228,7 @@ class Factory : public SpeciesFactory {
     auto root = genotype->root();
     root->width = 1.0;
     root->height = 1.0;
-    root->recursive_limit = 10;
+    root->recursive_limit = 20;
 
     auto c1 = genotype->newConnection(root, leg, math::kPi / 2);
     c1->orientation = -math::kPi / 8;
