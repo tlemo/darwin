@@ -25,12 +25,13 @@
 #include <array>
 #include <string>
 #include <cmath>
+#include <random>
 using namespace std;
 
 namespace experimental::replicators::ksims {
 
 bool Node::operator==(const Node& other) const {
-  return width == other.width && height == other.height &&
+  return width == other.width && length == other.length &&
          rigid_joint == other.rigid_joint && recursive_limit == other.recursive_limit;
 }
 
@@ -90,7 +91,11 @@ class Factory : public SpeciesFactory {
     // mutations
     for (const auto& sample : samples()) {
       auto& genotype = dynamic_cast<Genotype&>(*sample);
-      // TODO
+      genotype.mutateNodeWidth(1.0);
+      genotype.mutateNodeLength(1.0);
+      genotype.mutateNodeJointType();
+      genotype.mutateNodeRecursiveLimitUp();
+      genotype.mutateNodeRecursiveLimitDown();
       genotype.grow();
     }
   }
@@ -151,7 +156,7 @@ class Factory : public SpeciesFactory {
 
     auto root = genotype->root();
     root->width = 1.0;
-    root->height = 1.0;
+    root->length = 1.0;
 
     auto c0 = genotype->newConnection(root, fin, math::kPi / 2);
     c0->orientation = math::kPi / 8;
@@ -184,7 +189,7 @@ class Factory : public SpeciesFactory {
 
     auto root = genotype->root();
     root->width = 0.9;
-    root->height = 0.9;
+    root->length = 0.9;
 
     genotype->newConnection(root, fore_segment, math::kPi);
     genotype->newConnection(antenna, bulb, 0);
@@ -209,7 +214,7 @@ class Factory : public SpeciesFactory {
 
     auto root = genotype->root();
     root->width = 0.1;
-    root->height = 0.1;
+    root->length = 0.1;
     root->recursive_limit = 20;
     root->rigid_joint = true;
 
@@ -228,7 +233,7 @@ class Factory : public SpeciesFactory {
 
     auto root = genotype->root();
     root->width = 1.0;
-    root->height = 1.0;
+    root->length = 1.0;
     root->recursive_limit = 20;
 
     auto c1 = genotype->newConnection(root, leg, math::kPi / 2);
@@ -248,7 +253,7 @@ class Factory : public SpeciesFactory {
 
     auto root = genotype->root();
     root->width = 1.0;
-    root->height = 1.0;
+    root->length = 1.0;
 
     auto c0 = genotype->newConnection(leg, leg, 0);
     c0->orientation = math::kPi / 6;
@@ -275,7 +280,7 @@ class Factory : public SpeciesFactory {
 
     auto root = genotype->root();
     root->width = 2.0;
-    root->height = 2.0;
+    root->length = 2.0;
     root->recursive_limit = 3;
 
     constexpr int kArmsCount = 6;
@@ -315,9 +320,9 @@ static SegmentFrame childFrame(SegmentFrame parent_frame,
 
   const auto scale = parent_frame.scale;
   const auto half_width = node.width * 0.5;
-  const auto half_height = node.height * 0.5;
+  const auto half_length = node.length * 0.5;
   const auto transf = math::HMatrix2d::rotate(parent_frame.angle) *
-                      math::HMatrix2d::scale(scale * half_width, scale * half_height);
+                      math::HMatrix2d::scale(scale * half_width, scale * half_length);
 
   SegmentFrame child_frame;
   child_frame.scale = parent_frame.scale * connection.scale;
@@ -449,7 +454,7 @@ b2Body* Phenotype::createSegment(const Node& node, const SegmentFrame& frame) {
   const math::Vector2d dir(sin(frame.angle), cos(frame.angle));
 
   const float half_width = node.width * frame.scale * 0.5;
-  const float height = node.height * frame.scale;
+  const float length = node.length * frame.scale;
 
   b2BodyDef body_def;
   body_def.type = b2_dynamicBody;
@@ -460,8 +465,8 @@ b2Body* Phenotype::createSegment(const Node& node, const SegmentFrame& frame) {
   array<b2Vec2, 4> points;
   points[0] = b2Vec2(-half_width, 0);
   points[1] = b2Vec2(half_width, 0);
-  points[2] = b2Vec2(half_width, height);
-  points[3] = b2Vec2(-half_width, height);
+  points[2] = b2Vec2(half_width, length);
+  points[3] = b2Vec2(-half_width, length);
 
   b2PolygonShape shape;
   shape.Set(points.data(), points.size());
@@ -530,7 +535,22 @@ unique_ptr<experimental::replicators::Phenotype> Genotype::grow() const {
 }
 
 void Genotype::mutate() {
-  // TODO
+  struct MutationType {
+    double weight = 0;
+    function<void()> mutate;
+  };
+
+  vector<MutationType> mutagen = {
+    { 10, [&] { mutateNodeWidth(1.0); } },
+    { 20, [&] { mutateNodeWidth(0.5); } },
+    { 10, [&] { mutateNodeLength(1.0); } },
+    { 20, [&] { mutateNodeLength(0.5); } },
+    { 10, [&] { mutateNodeJointType(); } },
+    { 15, [&] { mutateNodeRecursiveLimitUp(); } },
+    { 10, [&] { mutateNodeRecursiveLimitDown(); } },
+  };
+
+  core::randomWeightedElem(mutagen)->mutate();
 }
 
 json Genotype::save() const {
@@ -543,6 +563,35 @@ void Genotype::load(const json& json_obj) {
   Genotype tmp;
   // TODO
   swap(*this, tmp);
+}
+
+void Genotype::mutateNodeWidth(double std_dev) {
+  auto& node = *core::randomElem(nodes_);
+  node.width =
+      core::clampValue(core::mutateNormalValue(node.width, std_dev), 0.01, 1000.0);
+}
+
+void Genotype::mutateNodeLength(double std_dev) {
+  auto& node = *core::randomElem(nodes_);
+  node.length =
+      core::clampValue(core::mutateNormalValue(node.length, std_dev), 0.01, 1000.0);
+}
+
+void Genotype::mutateNodeJointType() {
+  auto& node = *core::randomElem(nodes_);
+  node.rigid_joint = !node.rigid_joint;
+}
+
+void Genotype::mutateNodeRecursiveLimitUp() {
+  auto& node = *core::randomElem(nodes_);
+  ++node.recursive_limit;
+}
+
+void Genotype::mutateNodeRecursiveLimitDown() {
+  auto& node = *core::randomElem(nodes_);
+  if (node.recursive_limit > 1) {
+    --node.recursive_limit;
+  }
 }
 
 bool Genotype::operator==(const Genotype& other) const {

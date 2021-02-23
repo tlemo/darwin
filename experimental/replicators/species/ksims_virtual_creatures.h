@@ -54,11 +54,11 @@ class ArrayElem {
 
 struct Node {
   double width = 1.0;
-  double height = 2.0;
+  double length = 2.0;
   bool rigid_joint = false;
   int recursive_limit = 4;
 
-  Node(double width, double height) : width(width), height(height) {}
+  Node(double width, double length) : width(width), length(length) {}
 
   bool operator==(const Node& other) const;
 };
@@ -126,7 +126,11 @@ class Genotype : public experimental::replicators::Genotype {
   }
 
   // mutations
-  // TODO
+  void mutateNodeWidth(double std_dev);
+  void mutateNodeLength(double std_dev);
+  void mutateNodeJointType();
+  void mutateNodeRecursiveLimitUp();
+  void mutateNodeRecursiveLimitDown();
 
   // for testing purposes
   bool operator==(const Genotype& other) const;
