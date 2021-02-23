@@ -19,6 +19,7 @@
 #include <third_party/box2d/box2d.h>
 
 #include <third_party/json/json.h>
+#define JSON_DEF NLOHMANN_DEFINE_TYPE_INTRUSIVE
 using nlohmann::json;
 
 #include <memory>

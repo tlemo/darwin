@@ -61,9 +61,6 @@ class Factory : public SpeciesFactory {
   }
 
   void runTests() override {
-    // TODO
-    return;
-
     // serialization roundtrip
     for (const auto& sample : samples()) {
       Genotype clone;
@@ -555,13 +552,15 @@ void Genotype::mutate() {
 
 json Genotype::save() const {
   json json_obj;
-  // TODO
+  json_obj["nodes"] = nodes_;
+  json_obj["connections"] = connections_;
   return json_obj;
 }
 
 void Genotype::load(const json& json_obj) {
   Genotype tmp;
-  // TODO
+  tmp.nodes_ = json_obj.at("nodes").get<vector<Node>>();
+  tmp.connections_ = json_obj.at("connections").get<vector<Connection>>();
   swap(*this, tmp);
 }
 

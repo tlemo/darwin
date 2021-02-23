@@ -58,9 +58,13 @@ struct Node {
   bool rigid_joint = false;
   int recursive_limit = 4;
 
+  Node() = default;
+
   Node(double width, double length) : width(width), length(length) {}
 
   bool operator==(const Node& other) const;
+
+  JSON_DEF(Node, width, length, rigid_joint, recursive_limit);
 };
 
 struct Connection {
@@ -83,10 +87,14 @@ struct Connection {
   // x-axis mirroring clone?
   bool reflection = false;
 
+  Connection() = default;
+
   Connection(ArrayElem<Node> src, ArrayElem<Node> dst, double position)
       : src(src.index()), dst(dst.index()), position(position) {}
 
   bool operator==(const Connection& other) const;
+
+  JSON_DEF(Connection, src, dst, position, orientation, terminal_only, scale, reflection);
 };
 
 class Genotype : public experimental::replicators::Genotype {
