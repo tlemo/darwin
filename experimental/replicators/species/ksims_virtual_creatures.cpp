@@ -93,6 +93,11 @@ class Factory : public SpeciesFactory {
       genotype.mutateNodeJointType();
       genotype.mutateNodeRecursiveLimitUp();
       genotype.mutateNodeRecursiveLimitDown();
+      genotype.mutateConnectionPosition(1.0);
+      genotype.mutateConnectionOrientation(1.0);
+      genotype.mutateConnectionScale(1.0);
+      genotype.mutateConnectionTerminalOnly();
+      genotype.mutateConnectionReflection();
       genotype.grow();
     }
   }
@@ -413,7 +418,7 @@ Phenotype::Phenotype(const Genotype* genotype) {
     }
   } catch (const std::exception& e) {
     // Failed to generate Phenotype (genotype is not viable)
-    createDummyBody();
+    root_ = createDummyBody();
   }
 }
 
@@ -496,7 +501,7 @@ b2Body* Phenotype::createSegment(const Node& node, const SegmentFrame& frame) {
   return body;
 }
 
-void Phenotype::createDummyBody() {
+b2Body* Phenotype::createDummyBody() {
   b2BodyDef body_def;
   b2Body* body = world_.CreateBody(&body_def);
 
@@ -506,6 +511,8 @@ void Phenotype::createDummyBody() {
   b2FixtureDef fixture_def;
   fixture_def.shape = &shape;
   body->CreateFixture(&fixture_def);
+
+  return body;
 }
 
 Genotype::Genotype() {
@@ -545,6 +552,11 @@ void Genotype::mutate() {
     { 10, [&] { mutateNodeJointType(); } },
     { 15, [&] { mutateNodeRecursiveLimitUp(); } },
     { 10, [&] { mutateNodeRecursiveLimitDown(); } },
+    { 20, [&] { mutateConnectionPosition(0.5); } },
+    { 20, [&] { mutateConnectionOrientation(0.5); } },
+    { 15, [&] { mutateConnectionScale(0.5); } },
+    { 10, [&] { mutateConnectionTerminalOnly(); } },
+    { 10, [&] { mutateConnectionReflection(); } },
   };
 
   core::randomWeightedElem(mutagen)->mutate();
@@ -590,6 +602,42 @@ void Genotype::mutateNodeRecursiveLimitDown() {
   auto& node = *core::randomElem(nodes_);
   if (node.recursive_limit > 1) {
     --node.recursive_limit;
+  }
+}
+
+void Genotype::mutateConnectionPosition(double std_dev) {
+  if (!connections_.empty()) {
+    auto& connection = *core::randomElem(connections_);
+    connection.position = core::mutateNormalValue(connection.position, std_dev);
+  }
+}
+
+void Genotype::mutateConnectionOrientation(double std_dev) {
+  if (!connections_.empty()) {
+    auto& connection = *core::randomElem(connections_);
+    connection.orientation = core::mutateNormalValue(connection.orientation, std_dev);
+  }
+}
+
+void Genotype::mutateConnectionScale(double std_dev) {
+  if (!connections_.empty()) {
+    auto& connection = *core::randomElem(connections_);
+    connection.scale =
+        core::clampValue(core::mutateNormalValue(connection.scale, std_dev), 0.1, 10.0);
+  }
+}
+
+void Genotype::mutateConnectionTerminalOnly() {
+  if (!connections_.empty()) {
+    auto& connection = *core::randomElem(connections_);
+    connection.terminal_only = !connection.terminal_only;
+  }
+}
+
+void Genotype::mutateConnectionReflection() {
+  if (!connections_.empty()) {
+    auto& connection = *core::randomElem(connections_);
+    connection.reflection = !connection.reflection;
   }
 }
 

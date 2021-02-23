@@ -139,6 +139,11 @@ class Genotype : public experimental::replicators::Genotype {
   void mutateNodeJointType();
   void mutateNodeRecursiveLimitUp();
   void mutateNodeRecursiveLimitDown();
+  void mutateConnectionPosition(double std_dev);
+  void mutateConnectionOrientation(double std_dev);
+  void mutateConnectionScale(double std_dev);
+  void mutateConnectionTerminalOnly();
+  void mutateConnectionReflection();
 
   // for testing purposes
   bool operator==(const Genotype& other) const;
@@ -169,7 +174,7 @@ class Phenotype : public experimental::replicators::Phenotype {
 
  private:
   b2Body* createSegment(const Node& node, const SegmentFrame& frame);
-  void createDummyBody();
+  b2Body* createDummyBody();
   void animateJoint(b2Body* body, float phase);
 
  private:
