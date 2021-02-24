@@ -57,6 +57,7 @@ class Factory : public SpeciesFactory {
     samples.push_back(centipede());
     samples.push_back(spider());
     samples.push_back(star());
+    samples.push_back(binaryTree());
     return samples;
   }
 
@@ -297,6 +298,21 @@ class Factory : public SpeciesFactory {
 
     return genotype;
   }
+
+  unique_ptr<experimental::replicators::Genotype> binaryTree() {
+    auto genotype = make_unique<Genotype>();
+
+    auto root = genotype->root();
+    root->width = 0.2;
+    root->length = 10.0;
+    root->recursive_limit = 9;
+
+    auto c1 = genotype->newConnection(root, root, math::kPi / 4);
+    c1->reflection = true;
+    c1->scale = 0.6;
+
+    return genotype;
+  }
 };
 
 GLOBAL_INITIALIZER {
@@ -351,6 +367,8 @@ Phenotype::Phenotype(const Genotype* genotype) {
   // so we can handle the `recursive_limit` attribute
   unordered_map<int, int> node_instances;
 
+  size_t segment_count = 0;
+
   struct StackEntry {
     int node = -1;
     SegmentFrame frame;
@@ -359,8 +377,8 @@ Phenotype::Phenotype(const Genotype* genotype) {
     b2Body* body = nullptr;
   };
 
-  // max segment instantiation depth
   constexpr size_t kMaxStackSize = 128;
+  constexpr size_t kMaxSegmentCount = 511;
 
   vector<StackEntry> stack = { { 0, SegmentFrame() } };
 
@@ -373,6 +391,9 @@ Phenotype::Phenotype(const Genotype* genotype) {
       // create segment's body and joint
       if (current.body == nullptr) {
         CHECK(current.next_child == 0);
+        if (++segment_count > kMaxSegmentCount) {
+          throw core::Exception("Phenotype exceeded max segment count");
+        }
         current.body = createSegment(node, current.frame);
         CHECK(current.body != nullptr);
         ++node_instances[current.node];
