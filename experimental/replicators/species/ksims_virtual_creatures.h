@@ -144,6 +144,10 @@ class Genotype : public experimental::replicators::Genotype {
   void mutateConnectionScale(double std_dev);
   void mutateConnectionTerminalOnly();
   void mutateConnectionReflection();
+  void mutateConnectionSrc();
+  void mutateConnectionDst();
+  void mutateNewConnection();
+  void mutateNewNode();
 
   // for testing purposes
   bool operator==(const Genotype& other) const;

@@ -99,6 +99,10 @@ class Factory : public SpeciesFactory {
       genotype.mutateConnectionScale(1.0);
       genotype.mutateConnectionTerminalOnly();
       genotype.mutateConnectionReflection();
+      genotype.mutateConnectionSrc();
+      genotype.mutateConnectionDst();
+      genotype.mutateNewConnection();
+      genotype.mutateNewNode();
       genotype.grow();
     }
   }
@@ -578,6 +582,10 @@ void Genotype::mutate() {
     { 15, [&] { mutateConnectionScale(0.5); } },
     { 10, [&] { mutateConnectionTerminalOnly(); } },
     { 10, [&] { mutateConnectionReflection(); } },
+    { 10, [&] { mutateConnectionSrc(); } },
+    { 10, [&] { mutateConnectionDst(); } },
+    { 10, [&] { mutateNewConnection(); } },
+    { 15, [&] { mutateNewNode(); } },
   };
 
   core::randomWeightedElem(mutagen)->mutate();
@@ -660,6 +668,50 @@ void Genotype::mutateConnectionReflection() {
     auto& connection = *core::randomElem(connections_);
     connection.reflection = !connection.reflection;
   }
+}
+
+void Genotype::mutateConnectionSrc() {
+  if (!connections_.empty()) {
+    auto& connection = *core::randomElem(connections_);
+    const auto max_index = int(nodes_.size());
+    connection.src = core::randomInteger(0, max_index);
+    if (connection.src == max_index) {
+      newNode(0.5, 2.0);
+    }
+  }
+}
+
+void Genotype::mutateConnectionDst() {
+  if (!connections_.empty()) {
+    auto& connection = *core::randomElem(connections_);
+    const auto max_index = int(nodes_.size());
+    connection.dst = core::randomInteger(0, max_index);
+    if (connection.dst == max_index) {
+      mutateNewNode();
+    }
+  }
+}
+
+void Genotype::mutateNewConnection() {
+  const auto max_index = int(nodes_.size());
+  auto new_connection = newConnection();
+  new_connection->src = core::randomInteger(0, max_index);
+  new_connection->dst = core::randomInteger(0, max_index);
+  new_connection->position = core::randomReal<double>(0, 2 * math::kPi);
+  new_connection->orientation = core::randomReal<double>(-math::kPi / 8, math::kPi / 8);
+  new_connection->scale = core::randomReal<double>(0.5, 2.0);
+  new_connection->reflection = core::randomCoin(0.6);
+  new_connection->terminal_only = core::randomCoin(0.2);
+  if (new_connection->src == max_index || new_connection->dst == max_index) {
+    mutateNewNode();
+  }
+}
+
+void Genotype::mutateNewNode() {
+  auto new_node = newNode();
+  new_node->width = core::randomReal<double>(0.1, 1.0);
+  new_node->length = core::randomReal<double>(0.5, 2.0);
+  new_node->rigid_joint = core::randomCoin(0.2);
 }
 
 bool Genotype::operator==(const Genotype& other) const {
