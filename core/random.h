@@ -34,6 +34,35 @@ auto randomElem(T& container) {
   return container.begin() + dist(rnd);
 }
 
+//! Convenience helper to generate a random integer in the [min, max] interval
+template <class T>
+auto randomInteger(T min_value, T max_value) {
+  CHECK(min_value <= max_value);
+  random_device rd;
+  default_random_engine rnd(rd());
+  uniform_int_distribution<T> dist(min_value, max_value);
+  return dist(rnd);
+}
+
+//! Convenience helper to generate a random real value in the [min, max) interval
+template <class T>
+auto randomReal(T min_value, T max_value) {
+  CHECK(min_value <= max_value);
+  random_device rd;
+  default_random_engine rnd(rd());
+  uniform_real_distribution<T> dist(min_value, max_value);
+  return dist(rnd);
+}
+
+//! Convenience helper for flipping a coin
+inline bool randomCoin(double probability = 0.5) {
+  CHECK(probability >= 0 && probability <= 1);
+  random_device rd;
+  default_random_engine rnd(rd());
+  bernoulli_distribution dist(probability);
+  return dist(rnd);
+}
+
 //! Returns an interator to a random element, where each element has an associated weight
 //! (weight is considered to be the element's relative probability)
 //!
