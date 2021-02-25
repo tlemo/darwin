@@ -153,6 +153,7 @@ class Genotype : public experimental::replicators::Genotype {
   void mutateConnectionSrc();
   void mutateConnectionDst();
   void mutateNewConnection(bool new_dst_node);
+  void mutateCloneConnection();
 
   // for testing purposes
   bool operator==(const Genotype& other) const;

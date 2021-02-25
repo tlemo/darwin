@@ -103,6 +103,7 @@ class Factory : public SpeciesFactory {
       genotype.mutateConnectionDst();
       genotype.mutateNewConnection(true);
       genotype.mutateNewConnection(false);
+      genotype.mutateCloneConnection();
       genotype.grow();
     }
   }
@@ -584,8 +585,9 @@ void Genotype::mutate() {
     { 10, [&] { mutateConnectionReflection(); } },
     { 10, [&] { mutateConnectionSrc(); } },
     { 10, [&] { mutateConnectionDst(); } },
-    { 20, [&] { mutateNewConnection(true); } },
-    { 20, [&] { mutateNewConnection(false); } },
+    { 15, [&] { mutateNewConnection(true); } },
+    { 15, [&] { mutateNewConnection(false); } },
+    { 15, [&] { mutateCloneConnection(); } },
   };
 
   core::randomWeightedElem(mutagen)->mutate();
@@ -712,6 +714,18 @@ void Genotype::mutateNewConnection(bool new_dst_node) {
   new_connection->terminal_only = core::randomCoin(0.2);
   if (new_connection->dst == max_index) {
     addRandomNode();
+  }
+}
+
+void Genotype::mutateCloneConnection() {
+  auto connection_index = randomLiveConnection();
+  if (connection_index != -1) {
+    auto new_connection = newConnection(connections_[connection_index]);
+    new_connection->position = core::randomReal<double>(0, 2 * math::kPi);
+    new_connection->orientation = core::randomReal<double>(-math::kPi / 8, math::kPi / 8);
+    new_connection->scale = core::randomReal<double>(0.5, 2.0);
+    new_connection->reflection = core::randomCoin(0.6);
+    new_connection->terminal_only = core::randomCoin(0.2);
   }
 }
 
