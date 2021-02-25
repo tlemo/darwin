@@ -101,8 +101,8 @@ class Factory : public SpeciesFactory {
       genotype.mutateConnectionReflection();
       genotype.mutateConnectionSrc();
       genotype.mutateConnectionDst();
-      genotype.mutateNewConnection();
-      genotype.mutateNewNode();
+      genotype.mutateNewConnection(true);
+      genotype.mutateNewConnection(false);
       genotype.grow();
     }
   }
@@ -584,8 +584,8 @@ void Genotype::mutate() {
     { 10, [&] { mutateConnectionReflection(); } },
     { 10, [&] { mutateConnectionSrc(); } },
     { 10, [&] { mutateConnectionDst(); } },
-    { 10, [&] { mutateNewConnection(); } },
-    { 15, [&] { mutateNewNode(); } },
+    { 20, [&] { mutateNewConnection(true); } },
+    { 20, [&] { mutateNewConnection(false); } },
   };
 
   core::randomWeightedElem(mutagen)->mutate();
@@ -606,73 +606,79 @@ void Genotype::load(const json& json_obj) {
 }
 
 void Genotype::mutateNodeWidth(double std_dev) {
-  auto& node = *core::randomElem(nodes_);
+  auto& node = nodes_[randomLiveNode()];
   node.width =
       core::clampValue(core::mutateNormalValue(node.width, std_dev), 0.01, 1000.0);
 }
 
 void Genotype::mutateNodeLength(double std_dev) {
-  auto& node = *core::randomElem(nodes_);
+  auto& node = nodes_[randomLiveNode()];
   node.length =
       core::clampValue(core::mutateNormalValue(node.length, std_dev), 0.01, 1000.0);
 }
 
 void Genotype::mutateNodeJointType() {
-  auto& node = *core::randomElem(nodes_);
+  auto& node = nodes_[randomLiveNode()];
   node.rigid_joint = !node.rigid_joint;
 }
 
 void Genotype::mutateNodeRecursiveLimitUp() {
-  auto& node = *core::randomElem(nodes_);
+  auto& node = nodes_[randomLiveNode()];
   ++node.recursive_limit;
 }
 
 void Genotype::mutateNodeRecursiveLimitDown() {
-  auto& node = *core::randomElem(nodes_);
+  auto& node = nodes_[randomLiveNode()];
   if (node.recursive_limit > 1) {
     --node.recursive_limit;
   }
 }
 
 void Genotype::mutateConnectionPosition(double std_dev) {
-  if (!connections_.empty()) {
-    auto& connection = *core::randomElem(connections_);
+  auto connection_index = randomLiveConnection();
+  if (connection_index != -1) {
+    auto& connection = connections_[connection_index];
     connection.position = core::mutateNormalValue(connection.position, std_dev);
   }
 }
 
 void Genotype::mutateConnectionOrientation(double std_dev) {
-  if (!connections_.empty()) {
-    auto& connection = *core::randomElem(connections_);
+  auto connection_index = randomLiveConnection();
+  if (connection_index != -1) {
+    auto& connection = connections_[connection_index];
     connection.orientation = core::mutateNormalValue(connection.orientation, std_dev);
   }
 }
 
 void Genotype::mutateConnectionScale(double std_dev) {
-  if (!connections_.empty()) {
-    auto& connection = *core::randomElem(connections_);
+  auto connection_index = randomLiveConnection();
+  if (connection_index != -1) {
+    auto& connection = connections_[connection_index];
     connection.scale =
         core::clampValue(core::mutateNormalValue(connection.scale, std_dev), 0.1, 10.0);
   }
 }
 
 void Genotype::mutateConnectionTerminalOnly() {
-  if (!connections_.empty()) {
-    auto& connection = *core::randomElem(connections_);
+  auto connection_index = randomLiveConnection();
+  if (connection_index != -1) {
+    auto& connection = connections_[connection_index];
     connection.terminal_only = !connection.terminal_only;
   }
 }
 
 void Genotype::mutateConnectionReflection() {
-  if (!connections_.empty()) {
-    auto& connection = *core::randomElem(connections_);
+  auto connection_index = randomLiveConnection();
+  if (connection_index != -1) {
+    auto& connection = connections_[connection_index];
     connection.reflection = !connection.reflection;
   }
 }
 
 void Genotype::mutateConnectionSrc() {
-  if (!connections_.empty()) {
-    auto& connection = *core::randomElem(connections_);
+  auto connection_index = randomLiveConnection();
+  if (connection_index != -1) {
+    auto& connection = connections_[connection_index];
     const auto max_index = int(nodes_.size());
     connection.src = core::randomInteger(0, max_index);
     if (connection.src == max_index) {
@@ -682,40 +688,101 @@ void Genotype::mutateConnectionSrc() {
 }
 
 void Genotype::mutateConnectionDst() {
-  if (!connections_.empty()) {
-    auto& connection = *core::randomElem(connections_);
+  auto connection_index = randomLiveConnection();
+  if (connection_index != -1) {
+    auto& connection = connections_[connection_index];
     const auto max_index = int(nodes_.size());
     connection.dst = core::randomInteger(0, max_index);
     if (connection.dst == max_index) {
-      mutateNewNode();
+      addRandomNode();
     }
   }
 }
 
-void Genotype::mutateNewConnection() {
+// new connections always start from a "live" node
+void Genotype::mutateNewConnection(bool new_dst_node) {
   const auto max_index = int(nodes_.size());
   auto new_connection = newConnection();
-  new_connection->src = core::randomInteger(0, max_index);
-  new_connection->dst = core::randomInteger(0, max_index);
+  new_connection->src = randomLiveNode();
+  new_connection->dst = new_dst_node ? max_index : core::randomInteger(0, max_index - 1);
   new_connection->position = core::randomReal<double>(0, 2 * math::kPi);
   new_connection->orientation = core::randomReal<double>(-math::kPi / 8, math::kPi / 8);
   new_connection->scale = core::randomReal<double>(0.5, 2.0);
   new_connection->reflection = core::randomCoin(0.6);
   new_connection->terminal_only = core::randomCoin(0.2);
-  if (new_connection->src == max_index || new_connection->dst == max_index) {
-    mutateNewNode();
+  if (new_connection->dst == max_index) {
+    addRandomNode();
   }
 }
 
-void Genotype::mutateNewNode() {
+bool Genotype::operator==(const Genotype& other) const {
+  return nodes_ == other.nodes_ && connections_ == other.connections_;
+}
+
+int Genotype::randomLiveConnection() {
+  const auto live_genes = liveGenes();
+  const auto count = int(live_genes.connections.size());
+  if (count == 0) {
+    return -1;
+  }
+  const auto pick_index = core::randomInteger(0, count - 1);
+  int index = 0;
+  for (int connection_index : live_genes.connections) {
+    if (index++ == pick_index) {
+      return connection_index;
+    }
+  }
+  FATAL("Unreachable");
+}
+
+int Genotype::randomLiveNode() {
+  const auto live_genes = liveGenes();
+  const auto count = int(live_genes.nodes.size());
+  CHECK(count > 0);
+  const auto pick_index = core::randomInteger(0, count - 1);
+  int index = 0;
+  for (int node_index : live_genes.nodes) {
+    if (index++ == pick_index) {
+      return node_index;
+    }
+  }
+  FATAL("Unreachable");
+}
+
+void Genotype::addRandomNode() {
   auto new_node = newNode();
   new_node->width = core::randomReal<double>(0.1, 1.0);
   new_node->length = core::randomReal<double>(0.5, 2.0);
   new_node->rigid_joint = core::randomCoin(0.2);
 }
 
-bool Genotype::operator==(const Genotype& other) const {
-  return nodes_ == other.nodes_ && connections_ == other.connections_;
+Genotype::LiveGenes Genotype::liveGenes() const {
+  // build the node -> list of connections map
+  unordered_map<int, vector<int>> node_connections;
+  for (int i = 0; i < int(connections_.size()); ++i) {
+    node_connections[connections_[i].src].push_back(i);
+  }
+
+  LiveGenes live_genes;
+
+  // simple DFS traversal to identify the "live" part of the genotype
+  // (ie. filter out "introns")
+  vector<int> stack = { 0 };
+  while (!stack.empty()) {
+    const int node_index = stack.back();
+    stack.pop_back();
+    if (live_genes.nodes.insert(node_index).second) {
+      const auto it = node_connections.find(node_index);
+      if (it != node_connections.end()) {
+        for (auto connection_index : it->second) {
+          live_genes.connections.insert(connection_index);
+          stack.push_back(connections_[connection_index].dst);
+        }
+      }
+    }
+  }
+
+  return live_genes;
 }
 
 unique_ptr<experimental::replicators::Genotype> Genotype::clone() const {

@@ -21,6 +21,7 @@
 #include <vector>
 #include <utility>
 #include <memory>
+#include <unordered_set>
 using namespace std;
 
 // An attempt to implement a 2D version of Karl Sims's Virtual Creatures morphology
@@ -98,6 +99,11 @@ struct Connection {
 };
 
 class Genotype : public experimental::replicators::Genotype {
+  struct LiveGenes {
+    unordered_set<int> nodes;
+    unordered_set<int> connections;
+  };
+
  public:
   Genotype();
 
@@ -146,11 +152,16 @@ class Genotype : public experimental::replicators::Genotype {
   void mutateConnectionReflection();
   void mutateConnectionSrc();
   void mutateConnectionDst();
-  void mutateNewConnection();
-  void mutateNewNode();
+  void mutateNewConnection(bool new_dst_node);
 
   // for testing purposes
   bool operator==(const Genotype& other) const;
+
+ private:
+  int randomLiveConnection();
+  int randomLiveNode();
+  void addRandomNode();
+  LiveGenes liveGenes() const;
 
  private:
   vector<Node> nodes_;
