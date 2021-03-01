@@ -34,13 +34,13 @@ auto randomElem(T& container) {
   return container.begin() + dist(rnd);
 }
 
-//! Convenience helper to generate a random integer in the [min, max] interval
+//! Convenience helper to generate a random integer in the [min, max) interval
 template <class T>
 auto randomInteger(T min_value, T max_value) {
-  CHECK(min_value <= max_value);
+  CHECK(min_value < max_value);
   random_device rd;
   default_random_engine rnd(rd());
-  uniform_int_distribution<T> dist(min_value, max_value);
+  uniform_int_distribution<T> dist(min_value, max_value - 1);
   return dist(rnd);
 }
 

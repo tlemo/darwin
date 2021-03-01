@@ -444,6 +444,9 @@ Phenotype::Phenotype(const Genotype* genotype) {
     }
   } catch (const std::exception& e) {
     // Failed to generate Phenotype (genotype is not viable)
+    while (auto body = world_.GetBodyList()) {
+      world_.DestroyBody(body);
+    }
     root_ = createDummyBody();
   }
 }
@@ -682,7 +685,7 @@ void Genotype::mutateConnectionSrc() {
   if (connection_index != -1) {
     auto& connection = connections_[connection_index];
     const auto max_index = int(nodes_.size());
-    connection.src = core::randomInteger(0, max_index);
+    connection.src = core::randomInteger(0, max_index + 1);
     if (connection.src == max_index) {
       newNode(0.5, 2.0);
     }
@@ -694,7 +697,7 @@ void Genotype::mutateConnectionDst() {
   if (connection_index != -1) {
     auto& connection = connections_[connection_index];
     const auto max_index = int(nodes_.size());
-    connection.dst = core::randomInteger(0, max_index);
+    connection.dst = core::randomInteger(0, max_index + 1);
     if (connection.dst == max_index) {
       addRandomNode();
     }
@@ -706,7 +709,7 @@ void Genotype::mutateNewConnection(bool new_dst_node) {
   const auto max_index = int(nodes_.size());
   auto new_connection = newConnection();
   new_connection->src = randomLiveNode();
-  new_connection->dst = new_dst_node ? max_index : core::randomInteger(0, max_index - 1);
+  new_connection->dst = new_dst_node ? max_index : core::randomInteger(0, max_index);
   new_connection->position = core::randomReal<double>(0, 2 * math::kPi);
   new_connection->orientation = core::randomReal<double>(-math::kPi / 8, math::kPi / 8);
   new_connection->scale = core::randomReal<double>(0.5, 2.0);
@@ -739,7 +742,7 @@ int Genotype::randomLiveConnection() {
   if (count == 0) {
     return -1;
   }
-  const auto pick_index = core::randomInteger(0, count - 1);
+  const auto pick_index = core::randomInteger(0, count);
   int index = 0;
   for (int connection_index : live_genes.connections) {
     if (index++ == pick_index) {
@@ -753,7 +756,7 @@ int Genotype::randomLiveNode() {
   const auto live_genes = liveGenes();
   const auto count = int(live_genes.nodes.size());
   CHECK(count > 0);
-  const auto pick_index = core::randomInteger(0, count - 1);
+  const auto pick_index = core::randomInteger(0, count);
   int index = 0;
   for (int node_index : live_genes.nodes) {
     if (index++ == pick_index) {
