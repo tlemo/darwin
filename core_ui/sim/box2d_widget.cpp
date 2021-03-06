@@ -62,6 +62,7 @@ void Box2dWidget::setSceneUi(Box2dSceneUi* scene_ui) {
 
 void Box2dWidget::setViewportPolicy(Box2dWidget::ViewportPolicy policy) {
   viewport_policy_ = policy;
+  viewport_reference_ = viewport();
   update();
 }
 
@@ -242,10 +243,10 @@ void Box2dWidget::applyViewportPolicy() {
 
     case ViewportPolicy::AutoExpanding:
       // initialize Box2dWorldExtents to the current viewport
-      extents_tracker.min_x = viewport().left();
-      extents_tracker.max_x = viewport().right();
-      extents_tracker.min_y = viewport().bottom();
-      extents_tracker.min_x = viewport().top();
+      extents_tracker.min_x = viewport_reference_.left();
+      extents_tracker.max_x = viewport_reference_.right();
+      extents_tracker.min_y = viewport_reference_.bottom();
+      extents_tracker.max_y = viewport_reference_.top();
       break;
 
     case ViewportPolicy::AutoFit:
@@ -266,7 +267,10 @@ void Box2dWidget::applyViewportPolicy() {
     const auto width = extents_tracker.max_x - extents_tracker.min_x;
     const auto height = extents_tracker.min_y - extents_tracker.max_y;
 
-    const QRectF new_viewport(left, top, width, height);
+    viewport_reference_ = QRectF(left, top, width, height);
+
+    const auto new_viewport =
+        scene_ui_ ? scene_ui_->adjustViewport(viewport_reference_) : viewport_reference_;
 
     if (new_viewport != viewport()) {
       setViewport(new_viewport, false);

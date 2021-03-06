@@ -90,7 +90,7 @@ void Canvas::updateTransformations() const {
   }
   auto offset = client_rect.topLeft() - viewport_origin;
 
-  // build the tranfromations
+  // build the transformations
   transform_from_viewport_.reset();
   transform_from_viewport_.translate(offset.x(), offset.y());
   transform_from_viewport_.scale(scale_, (flip_y ? -scale_ : scale_));

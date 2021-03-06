@@ -18,6 +18,7 @@
 #include <third_party/box2d/box2d.h>
 
 #include <QColor>
+#include <QRectF>
 
 namespace physics_ui {
 
@@ -50,6 +51,9 @@ class Box2dSceneUi : public QObject {
 
   // help text
   virtual QString help() const { return ""; }
+
+  // optional viewport adjustment
+  virtual QRectF adjustViewport(const QRectF& viewport) { return viewport; }
 
  signals:
   void sigPlayPause();
@@ -95,7 +99,7 @@ class Box2dWidget : public core_ui::Canvas {
  signals:
   void sigPlayPause();
 
- private:
+ protected:
   void paintEvent(QPaintEvent* event) override;
 
   void mousePressEvent(QMouseEvent* event) override;
@@ -108,6 +112,7 @@ class Box2dWidget : public core_ui::Canvas {
   void focusInEvent(QFocusEvent*) override;
   void focusOutEvent(QFocusEvent*) override;
 
+ private:
   void renderDebugLayer(QPainter& painter) const;
   void renderGeneric(QPainter& painter) const;
 
@@ -117,6 +122,7 @@ class Box2dWidget : public core_ui::Canvas {
   b2World* world_ = nullptr;
   Box2dSceneUi* scene_ui_ = nullptr;
   ViewportPolicy viewport_policy_ = ViewportPolicy::UserDefined;
+  QRectF viewport_reference_;
   bool enable_debug_render_ = true;
   bool render_lights_ = false;
   QColor viewport_color_ = kDefaultViewportColor;
