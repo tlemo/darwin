@@ -27,6 +27,7 @@ PhenotypeWidget::PhenotypeWidget(QWidget* parent, unique_ptr<Phenotype> phenotyp
   setViewportPolicy(ViewportPolicy::AutoExpanding);
   setDebugRender(true);
   setWorld(phenotype_->specimen());
+  setSceneUi(phenotype_.get());
 }
 
 void PhenotypeWidget::animate() {
@@ -34,26 +35,29 @@ void PhenotypeWidget::animate() {
   update();
 }
 
-void PhenotypeWidget::mousePressEvent(QMouseEvent* /*event*/) {
-  // TODO
+void PhenotypeWidget::mousePressEvent(QMouseEvent* event) {
+  Box2dWidget::mousePressEvent(event);
 }
 
 void PhenotypeWidget::mouseReleaseEvent(QMouseEvent* event) {
   if (rect().contains(event->pos()) && event->button() == Qt::MouseButton::LeftButton) {
     emit sigClicked();
   }
+  Box2dWidget::mouseReleaseEvent(event);
 }
 
-void PhenotypeWidget::mouseMoveEvent(QMouseEvent* /*event*/) {
-  // TODO
+void PhenotypeWidget::mouseMoveEvent(QMouseEvent* event) {
+  Box2dWidget::mouseMoveEvent(event);
 }
 
-void PhenotypeWidget::enterEvent(QEvent* /*event*/) {
+void PhenotypeWidget::enterEvent(QEvent* event) {
   setUniformBackgroundColor(kHighlightedColor);
+  Box2dWidget::enterEvent(event);
 }
 
-void PhenotypeWidget::leaveEvent(QEvent* /*event*/) {
+void PhenotypeWidget::leaveEvent(QEvent* event) {
   setUniformBackgroundColor(kBackgroundColor);
+  Box2dWidget::leaveEvent(event);
 }
 
 void PhenotypeWidget::setUniformBackgroundColor(const QColor& color) {

@@ -16,6 +16,7 @@
 
 #include <core/utils.h>
 #include <core/modules.h>
+#include <core_ui/sim/box2d_widget.h>
 #include <third_party/box2d/box2d.h>
 
 #include <third_party/json/json.h>
@@ -28,10 +29,37 @@ using namespace std;
 
 namespace experimental::replicators {
 
-class Phenotype : public core::NonCopyable {
+//! A wrapped array element
+//!
+//! \todo move this to core:: ?
+//!
+template <class T>
+class ArrayElem {
+ public:
+  ArrayElem(vector<T>& array, size_t index) : array_(array), index_(index) {
+    CHECK(index_ < array_.size());
+  }
+
+  int index() const { return int(index_); }
+
+  T& operator*() const noexcept {
+    CHECK(index_ < array_.size());
+    return array_[index_];
+  }
+
+  T* operator->() const noexcept {
+    CHECK(index_ < array_.size());
+    return &array_[index_];
+  }
+
+ private:
+  vector<T>& array_;
+  const size_t index_;
+};
+
+class Phenotype : public physics_ui::Box2dSceneUi, public core::NonCopyable {
  public:
   Phenotype();
-  virtual ~Phenotype() = default;
 
   //! The returned b2World is owned by the Phenotype instance
   virtual b2World* specimen() { return &world_; }

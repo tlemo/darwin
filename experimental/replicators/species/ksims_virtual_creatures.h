@@ -29,30 +29,6 @@ using namespace std;
 
 namespace experimental::replicators::ksims {
 
-template <class T>
-class ArrayElem {
- public:
-  ArrayElem(vector<T>& array, size_t index) : array_(array), index_(index) {
-    CHECK(index_ < array_.size());
-  }
-
-  int index() const { return int(index_); }
-
-  T& operator*() const noexcept {
-    CHECK(index_ < array_.size());
-    return array_[index_];
-  }
-
-  T* operator->() const noexcept {
-    CHECK(index_ < array_.size());
-    return &array_[index_];
-  }
-
- private:
-  vector<T>& array_;
-  const size_t index_;
-};
-
 struct Node {
   double width = 1.0;
   double length = 2.0;

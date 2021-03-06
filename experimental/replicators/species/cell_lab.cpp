@@ -20,6 +20,12 @@
 #include <core/random.h>
 #include <core/math_2d.h>
 
+#include <QPainter>
+#include <QBrush>
+#include <QColor>
+#include <QPen>
+#include <QPointF>
+
 #include <functional>
 using namespace std;
 
@@ -34,7 +40,7 @@ class Factory : public SpeciesFactory {
   vector<unique_ptr<experimental::replicators::Genotype>> samples() override {
     vector<unique_ptr<experimental::replicators::Genotype>> samples;
     samples.push_back(primordialGenotype());
-    samples.push_back(sample());
+    samples.push_back(triangle());
     return samples;
   }
 
@@ -75,9 +81,24 @@ class Factory : public SpeciesFactory {
   }
 
  private:
-  unique_ptr<experimental::replicators::Genotype> sample() {
+  unique_ptr<experimental::replicators::Genotype> triangle() {
     auto genotype = make_unique<Genotype>();
-    // TODO
+
+    auto gene_c = genotype->newGene(b2Color(1.0, 0.0, 0.0));
+    gene_c->terminal = true;
+
+    auto gene_b = genotype->newGene(b2Color(0.0, 1.0, 0.0));
+    gene_b->daughter_1_gene = gene_c.index();
+    gene_b->daughter_2_gene = gene_c.index();
+    gene_b->split_angle = math::kPi / 2;
+
+    auto gene_a = genotype->newGene(b2Color(0.0, 0.0, 1.0));
+    gene_a->terminal = true;
+
+    auto root = genotype->root();
+    root->daughter_1_gene = gene_a.index();
+    root->daughter_2_gene = gene_b.index();
+
     return genotype;
   }
 };
@@ -87,10 +108,10 @@ GLOBAL_INITIALIZER {
 }
 
 bool Gene::operator==(const Gene& other) const {
-  return split_angle == other.split_angle && daughter_a_angle == other.daughter_a_angle &&
-         daughter_b_angle == other.daughter_b_angle &&
-         daughter_a_gene == other.daughter_a_gene &&
-         daughter_b_gene == other.daughter_b_gene && terminal == other.terminal;
+  return split_angle == other.split_angle && daughter_1_angle == other.daughter_1_angle &&
+         daughter_2_angle == other.daughter_2_angle &&
+         daughter_1_gene == other.daughter_1_gene &&
+         daughter_2_gene == other.daughter_2_gene && terminal == other.terminal;
 }
 
 Phenotype::Phenotype(const Genotype* genotype) {
@@ -99,7 +120,7 @@ Phenotype::Phenotype(const Genotype* genotype) {
   b2Body* body = world_.CreateBody(&body_def);
 
   b2CircleShape shape;
-  shape.m_radius = 1.0;
+  shape.m_radius = 0.1;
 
   b2FixtureDef fixture_def;
   fixture_def.shape = &shape;
@@ -111,6 +132,17 @@ void Phenotype::animate() {
   experimental::replicators::Phenotype::animate();
 }
 
+void Phenotype::render(QPainter& painter, const QRectF& /*viewport*/) {
+  painter.setPen(QPen(Qt::lightGray, 0, Qt::DotLine));
+  painter.setBrush(Qt::NoBrush);
+  painter.drawEllipse(QPointF(0, 0), 1, 1);
+}
+
+QRectF Phenotype::adjustViewport(const QRectF& viewport) {
+  constexpr double kMargin = 1.0;
+  return viewport.adjusted(-kMargin, kMargin, kMargin, -kMargin);
+}
+
 void swap(Genotype& a, Genotype& b) noexcept {
   using std::swap;
   swap(a.genes_, b.genes_);
@@ -118,7 +150,7 @@ void swap(Genotype& a, Genotype& b) noexcept {
 }
 
 Genotype::Genotype() {
-  genes_ = { randomGene() };
+  genes_ = { Gene() };
 }
 
 unique_ptr<experimental::replicators::Phenotype> Genotype::grow() const {
@@ -148,10 +180,10 @@ bool Genotype::operator==(const Genotype& other) const {
 Gene Genotype::randomGene() const {
   Gene gene;
   gene.split_angle = core::randomReal(-math::kPi, math::kPi);
-  gene.daughter_a_angle = core::randomReal(-math::kPi, math::kPi);
-  gene.daughter_b_angle = core::randomReal(-math::kPi, math::kPi);
-  gene.daughter_a_gene = core::randomInteger(0, int(genes_.size()));
-  gene.daughter_b_gene = core::randomInteger(0, int(genes_.size()));
+  gene.daughter_1_angle = core::randomReal(-math::kPi, math::kPi);
+  gene.daughter_2_angle = core::randomReal(-math::kPi, math::kPi);
+  gene.daughter_1_gene = core::randomInteger(0, int(genes_.size()));
+  gene.daughter_2_gene = core::randomInteger(0, int(genes_.size()));
   gene.terminal = core::randomCoin(0.2);
   gene.color.r = core::randomReal(0.0, 1.0);
   gene.color.g = core::randomReal(0.0, 1.0);

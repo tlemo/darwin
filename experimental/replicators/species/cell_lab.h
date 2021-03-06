@@ -27,12 +27,16 @@ namespace experimental::replicators::cell_lab {
 
 struct Gene {
   double split_angle = 0;
-  double daughter_a_angle = 0;
-  double daughter_b_angle = 0;
-  int daughter_a_gene = 0;
-  int daughter_b_gene = 0;
+  double daughter_1_angle = 0;
+  double daughter_2_angle = 0;
+  int daughter_1_gene = 0;
+  int daughter_2_gene = 0;
   bool terminal = false;
-  b2Color color;
+  b2Color color{ 0.5, 1.0, 0.5 };
+
+  Gene() = default;
+
+  Gene(const b2Color& color) : color(color) {}
 
   bool operator==(const Gene& other) const;
 };
@@ -49,6 +53,14 @@ class Genotype : public experimental::replicators::Genotype {
 
   json save() const override;
   void load(const json& json_obj) override;
+
+  auto root() { return ArrayElem(genes_, root_); }
+
+  template <class... Args>
+  auto newGene(Args&&... args) {
+    genes_.emplace_back(std::forward<Args>(args)...);
+    return ArrayElem(genes_, genes_.size() - 1);
+  }
 
   // mutations
   // TODO
@@ -68,7 +80,12 @@ class Phenotype : public experimental::replicators::Phenotype {
  public:
   explicit Phenotype(const Genotype* genotype);
 
+  // replicators::Phenotype interface
   void animate() override;
+
+  // physics_ui::Box2dSceneUi interface
+  void render(QPainter& painter, const QRectF& viewport) override;
+  QRectF adjustViewport(const QRectF& viewport) override;
 };
 
 }  // namespace experimental::replicators::cell_lab
