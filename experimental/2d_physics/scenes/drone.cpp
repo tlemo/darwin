@@ -210,7 +210,7 @@ void SceneUi::renderDrone(QPainter& painter) const {
   painter.restore();
 }
 
-void SceneUi::render(QPainter& painter, const QRectF&) {
+void SceneUi::render(QPainter& painter, const QRectF&, bool) {
   renderDrone(painter);
   renderCamera(painter, scene_->camera());
 }

@@ -57,7 +57,7 @@ class SceneUi : public physics_ui::Box2dSceneUi {
     return it != key_state_.end() ? it->second : false;
   }
 
-  void render(QPainter& painter, const QRectF&) override;
+  void render(QPainter& painter, const QRectF&, bool) override;
 
   void step() override;
 

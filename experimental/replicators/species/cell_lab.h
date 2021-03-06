@@ -84,7 +84,7 @@ class Phenotype : public experimental::replicators::Phenotype {
   void animate() override;
 
   // physics_ui::Box2dSceneUi interface
-  void render(QPainter& painter, const QRectF& viewport) override;
+  void render(QPainter& painter, const QRectF& viewport, bool debug) override;
   QRectF adjustViewport(const QRectF& viewport) override;
 };
 

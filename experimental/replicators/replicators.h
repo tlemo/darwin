@@ -57,6 +57,7 @@ class ArrayElem {
   const size_t index_;
 };
 
+//! \todo This is getting very similar to sim::Scene...
 class Phenotype : public physics_ui::Box2dSceneUi, public core::NonCopyable {
  public:
   Phenotype();
@@ -69,6 +70,7 @@ class Phenotype : public physics_ui::Box2dSceneUi, public core::NonCopyable {
 
  protected:
   b2World world_;
+  float timestamp_ = 0;
 };
 
 class Genotype : public core::NonCopyable {

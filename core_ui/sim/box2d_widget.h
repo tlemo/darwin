@@ -30,7 +30,8 @@ class Box2dSceneUi : public QObject {
 
  public:
   // rendering
-  virtual void render(QPainter& /*painter*/, const QRectF& /*viewport*/) {}
+  virtual void render(QPainter& /*painter*/, const QRectF& /*viewport*/, bool /*debug*/) {
+  }
 
   // mouse
   virtual void mousePressEvent(const QPointF& /*pos*/, QMouseEvent* /*event*/) {}

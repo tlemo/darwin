@@ -132,10 +132,24 @@ void Phenotype::animate() {
   experimental::replicators::Phenotype::animate();
 }
 
-void Phenotype::render(QPainter& painter, const QRectF& /*viewport*/) {
+void Phenotype::render(QPainter& painter, const QRectF& /*viewport*/, bool debug) {
   painter.setPen(QPen(Qt::lightGray, 0, Qt::DotLine));
   painter.setBrush(Qt::NoBrush);
   painter.drawEllipse(QPointF(0, 0), 1, 1);
+
+  // x-axis
+  painter.setPen(QPen(Qt::red, 0, Qt::DotLine));
+  painter.drawLine(QPointF(0, 0), QPointF(1, 0));
+
+  // y-axis
+  painter.setPen(QPen(Qt::green, 0, Qt::DotLine));
+  painter.drawLine(QPointF(0, 0), QPointF(0, 1));
+
+  // split angle
+  painter.setPen(QPen(Qt::blue, 0, Qt::DotLine));
+  const double rx = cos(math::kPi / 4);
+  const double ry = sin(math::kPi / 4);
+  painter.drawLine(QPointF(-rx, -ry), QPointF(rx, ry));
 }
 
 QRectF Phenotype::adjustViewport(const QRectF& viewport) {

@@ -42,7 +42,7 @@ SceneUi::SceneUi(car_track::Scene* scene) : scene_(scene) {
   car_path_.moveTo(carPosition(scene_->car()));
 }
 
-void SceneUi::render(QPainter& painter, const QRectF& viewport) {
+void SceneUi::render(QPainter& painter, const QRectF& viewport, bool /*debug*/) {
   painter.setPen(Qt::NoPen);
   painter.setBrush(Qt::white);
   painter.drawRect(viewport);

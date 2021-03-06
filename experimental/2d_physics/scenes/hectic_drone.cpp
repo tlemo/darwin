@@ -267,7 +267,7 @@ SceneUi::SceneUi(Scene* scene) : scene_(scene) {
   drone_path_.moveTo(vars->drone_x, vars->drone_y);
 }
 
-void SceneUi::render(QPainter& painter, const QRectF&) {
+void SceneUi::render(QPainter& painter, const QRectF&, bool) {
   renderPath(painter);
   renderTarget(painter);
   renderDrone(painter);

@@ -24,7 +24,7 @@ class SceneUi : public physics_ui::Box2dSceneUi {
  public:
   SceneUi(drone_vision::Scene* scene) : scene_(scene) {}
 
-  void render(QPainter& painter, const QRectF&) override;
+  void render(QPainter& painter, const QRectF&, bool) override;
 
  private:
   void renderCamera(QPainter& painter, const sim::Camera* camera) const;

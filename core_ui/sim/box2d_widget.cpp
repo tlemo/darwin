@@ -300,7 +300,7 @@ void Box2dWidget::paintEvent(QPaintEvent* event) {
   if (world_ != nullptr) {
     // custom rendering (optional)
     if (scene_ui_ != nullptr) {
-      scene_ui_->render(painter, viewport());
+      scene_ui_->render(painter, viewport(), enable_debug_render_);
     }
 
     if (enable_debug_render_) {

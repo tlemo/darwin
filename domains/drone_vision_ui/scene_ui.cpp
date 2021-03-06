@@ -24,7 +24,7 @@
 
 namespace drone_vision_ui {
 
-void SceneUi::render(QPainter& painter, const QRectF&) {
+void SceneUi::render(QPainter& painter, const QRectF&, bool) {
   renderDrone(painter, scene_->drone());
 }
 

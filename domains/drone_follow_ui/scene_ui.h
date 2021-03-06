@@ -26,7 +26,7 @@ class SceneUi : public physics_ui::Box2dSceneUi {
  public:
   SceneUi(drone_follow::Scene* scene);
 
-  void render(QPainter& painter, const QRectF&) override;
+  void render(QPainter& painter, const QRectF&, bool) override;
   void step() override;
 
  private:

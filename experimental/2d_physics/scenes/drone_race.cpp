@@ -218,7 +218,7 @@ bool SceneUi::keyPressed(int key) const {
   return it != key_state_.end() ? it->second : false;
 }
 
-void SceneUi::render(QPainter& painter, const QRectF& viewport) {
+void SceneUi::render(QPainter& painter, const QRectF& viewport, bool /*debug*/) {
   painter.setPen(Qt::NoPen);
   painter.setBrush(Qt::white);
   painter.drawRect(viewport);
