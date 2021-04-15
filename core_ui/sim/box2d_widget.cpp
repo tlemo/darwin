@@ -266,15 +266,14 @@ void Box2dWidget::applyViewportPolicy() {
     const auto top = extents_tracker.max_y;
     const auto width = extents_tracker.max_x - extents_tracker.min_x;
     const auto height = extents_tracker.min_y - extents_tracker.max_y;
-
     viewport_reference_ = QRectF(left, top, width, height);
+  }
 
-    const auto new_viewport =
-        scene_ui_ ? scene_ui_->adjustViewport(viewport_reference_) : viewport_reference_;
+  const auto new_viewport =
+      scene_ui_ ? scene_ui_->adjustViewport(viewport_reference_) : viewport_reference_;
 
-    if (new_viewport != viewport()) {
-      setViewport(new_viewport, false);
-    }
+  if (new_viewport != viewport()) {
+    setViewport(new_viewport, false);
   }
 }
 
@@ -300,7 +299,9 @@ void Box2dWidget::paintEvent(QPaintEvent* event) {
   if (world_ != nullptr) {
     // custom rendering (optional)
     if (scene_ui_ != nullptr) {
+      painter.save();
       scene_ui_->render(painter, viewport(), enable_debug_render_);
+      painter.restore();
     }
 
     if (enable_debug_render_) {

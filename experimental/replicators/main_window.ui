@@ -54,7 +54,7 @@
     <addaction name="separator"/>
     <addaction name="action_exit"/>
    </widget>
-   <widget class="QMenu" name="menu_Experiment">
+   <widget class="QMenu" name="menu_experiment">
     <property name="title">
      <string>&amp;Experiment</string>
     </property>
@@ -63,8 +63,14 @@
     <addaction name="action_debug_render"/>
     <addaction name="action_close_tab"/>
    </widget>
+   <widget class="QMenu" name="menu_window">
+    <property name="title">
+     <string>&amp;Window</string>
+    </property>
+   </widget>
    <addaction name="menu_file"/>
-   <addaction name="menu_Experiment"/>
+   <addaction name="menu_experiment"/>
+   <addaction name="menu_window"/>
   </widget>
   <widget class="QStatusBar" name="status_bar"/>
   <widget class="QToolBar" name="tool_bar">

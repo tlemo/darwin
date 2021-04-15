@@ -47,7 +47,9 @@ class ArrayElem {
     return array_[index_];
   }
 
-  T* operator->() const noexcept {
+  T* operator->() const noexcept { return ptr(); }
+
+  T* ptr() const noexcept {
     CHECK(index_ < array_.size());
     return &array_[index_];
   }

@@ -24,15 +24,13 @@ PhenotypeWidget::PhenotypeWidget(QWidget* parent, unique_ptr<Phenotype> phenotyp
   setFrameStyle(QFrame::StyledPanel | QFrame::Plain);
   setUniformBackgroundColor(kBackgroundColor);
   setViewport(QRectF(0, 0, 0.01f, 0.01f));
-  setViewportPolicy(ViewportPolicy::AutoExpanding);
-  setDebugRender(true);
+  setViewportPolicy(ViewportPolicy::AutoFit);
   setWorld(phenotype_->specimen());
   setSceneUi(phenotype_.get());
 }
 
 void PhenotypeWidget::animate() {
   phenotype_->animate();
-  update();
 }
 
 void PhenotypeWidget::mousePressEvent(QMouseEvent* event) {
@@ -42,8 +40,9 @@ void PhenotypeWidget::mousePressEvent(QMouseEvent* event) {
 void PhenotypeWidget::mouseReleaseEvent(QMouseEvent* event) {
   if (rect().contains(event->pos()) && event->button() == Qt::MouseButton::LeftButton) {
     emit sigClicked();
+  } else {
+    Box2dWidget::mouseReleaseEvent(event);
   }
-  Box2dWidget::mouseReleaseEvent(event);
 }
 
 void PhenotypeWidget::mouseMoveEvent(QMouseEvent* event) {

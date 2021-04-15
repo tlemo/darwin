@@ -23,8 +23,11 @@ NewExperimentDialog::~NewExperimentDialog() {
   delete ui;
 }
 
-QString NewExperimentDialog::speciesName() const {
-  return ui->species_name->currentText();
+void NewExperimentDialog::done(int result) {
+  if (result == QDialog::Accepted) {
+    emit sigNewExperiment(ui->species_name->currentText());
+  }
+  QDialog::done(result);
 }
 
 }  // namespace experimental::replicators

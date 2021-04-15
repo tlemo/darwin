@@ -4,6 +4,7 @@
 #include "phenotype_widget.h"
 
 #include <core/exception.h>
+#include <core/parallel_for_each.h>
 
 namespace experimental::replicators {
 
@@ -15,8 +16,10 @@ ExperimentWindow::ExperimentWindow(QWidget* parent,
       factory_(factory),
       sample_set_(sample_set) {
   ui->setupUi(this);
+  setFocusPolicy(Qt::StrongFocus);
   layout_ = new QGridLayout(this);
   timer_.setInterval(kDefaultTimerSpeed);
+  connect(&timer_, &QTimer::timeout, this, &ExperimentWindow::onAnimationTimer);
   resetPopulation();
 }
 
@@ -48,6 +51,14 @@ void ExperimentWindow::setDebugRender(bool debug_render) {
     const auto widget = dynamic_cast<PhenotypeWidget*>(layout_->itemAt(i)->widget());
     CHECK(widget != nullptr);
     widget->setDebugRender(debug_render_);
+  }
+}
+
+void ExperimentWindow::setActive(bool active) {
+  if (active && animated_) {
+    timer_.start();
+  } else {
+    timer_.stop();
   }
 }
 
@@ -89,8 +100,32 @@ void ExperimentWindow::pickGenotype(size_t index) {
   newGeneration(population_[index]->clone());
 }
 
+void ExperimentWindow::onAnimationTimer() {
+  CHECK(timer_.isActive());
+  CHECK(animated_);
+
+#ifdef DARWIN_OS_WASM
+  // Emscripten support for threads is not functional yet
+  for (auto widget : phenotype_widgets_) {
+    widget->animate();
+    widget->update();
+  }
+#else
+  pp::for_each(phenotype_widgets_, [](int, auto widget) {
+    // animate each widget in parallel
+    widget->animate();
+  });
+
+  // we need to call update() from the UI thread
+  for (auto widget : phenotype_widgets_) {
+    widget->update();
+  }
+#endif
+}
+
 void ExperimentWindow::deletePhenotypeWidgets() {
   timer_.stop();
+  phenotype_widgets_.clear();
   while (auto item = layout_->takeAt(0)) {
     delete item->widget();
     delete item;
@@ -98,14 +133,17 @@ void ExperimentWindow::deletePhenotypeWidgets() {
 }
 
 void ExperimentWindow::createPhenotypeWidgets() {
+  CHECK(phenotype_widgets_.empty());
+
+  // TODO: multi-threaded phenotype animation
   for (size_t i = 0; i < population_.size(); ++i) {
     const auto col = i % kColumns;
     const auto row = i / kColumns;
     const auto widget = new PhenotypeWidget(this, population_[i]->grow());
     widget->setDebugRender(debug_render_);
     connect(widget, &PhenotypeWidget::sigClicked, [=] { pickGenotype(i); });
-    connect(&timer_, &QTimer::timeout, widget, &PhenotypeWidget::animate);
     layout_->addWidget(widget, row, col);
+    phenotype_widgets_.push_back(widget);
   }
 
   CHECK(!timer_.isActive());

@@ -17,6 +17,8 @@ class ExperimentWindow;
 
 namespace experimental::replicators {
 
+class PhenotypeWidget;
+
 class ExperimentWindow : public QFrame {
   Q_OBJECT
 
@@ -37,6 +39,8 @@ class ExperimentWindow : public QFrame {
   bool debugRender() const { return debug_render_; }
   void setDebugRender(bool debug_render);
 
+  void setActive(bool active);
+
  private:
   void resetPopulation();
   void newGeneration(unique_ptr<Genotype> parent);
@@ -44,6 +48,7 @@ class ExperimentWindow : public QFrame {
   void pickGenotype(size_t index);
   void deletePhenotypeWidgets();
   void createPhenotypeWidgets();
+  void onAnimationTimer();
 
  private:
   Ui::ExperimentWindow* ui = nullptr;
@@ -51,6 +56,9 @@ class ExperimentWindow : public QFrame {
 
   unique_ptr<Genotype> parent_;
   vector<unique_ptr<Genotype>> population_;
+
+  // non-owning list of phenotype widgets
+  vector<PhenotypeWidget*> phenotype_widgets_;
 
   SpeciesFactory* factory_ = nullptr;
   const bool sample_set_ = false;

@@ -1,7 +1,11 @@
 
 #pragma once
 
+#include <core_ui/properties_widget.h>
+
 #include <QMainWindow>
+#include <QFrame>
+#include <QDockWidget>
 
 namespace Ui {
 class MainWindow;
@@ -30,12 +34,19 @@ class MainWindow : public QMainWindow {
 
  private:
   void newExperimentWindow(bool sample_set);
+  void openTab(const QString& species_name, bool sample_set);
   void closeTab(int index);
   void enableExperimentActions(bool enabled);
-  ExperimentWindow* currentExperimentWindow() const;
+  void deactivateCurrentExperiment();
+
+  void dockWindow(const char* name,
+                  QFrame* window,
+                  Qt::DockWidgetAreas allowed_areas,
+                  Qt::DockWidgetArea area);
 
  private:
   Ui::MainWindow* ui = nullptr;
+  ExperimentWindow* current_experiment_window_ = nullptr;
 };
 
 }  // namespace experimental::replicators

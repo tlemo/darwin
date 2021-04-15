@@ -41,7 +41,7 @@ struct Node {
 
   bool operator==(const Node& other) const;
 
-  JSON_DEF(Node, width, length, rigid_joint, recursive_limit);
+  JSON_DEF(Node, width, length, rigid_joint, recursive_limit)
 };
 
 struct Connection {

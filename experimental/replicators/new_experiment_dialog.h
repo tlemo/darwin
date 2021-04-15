@@ -16,7 +16,10 @@ class NewExperimentDialog : public QDialog {
   explicit NewExperimentDialog(QWidget* parent, const char* title);
   ~NewExperimentDialog();
 
-  QString speciesName() const;
+  void done(int result) override;
+
+ signals:
+  void sigNewExperiment(QString species_name);
 
  private:
   Ui::NewExperimentDialog* ui = nullptr;
