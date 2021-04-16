@@ -125,7 +125,7 @@ void Scene::updateVariables() {
   variables_.objects_count = world_.GetBodyCount();
 }
 
-void SceneUi::render(QPainter& painter, const QRectF&) {
+void SceneUi::render(QPainter& painter, const QRectF&, bool) {
   painter.setPen(QPen(Qt::blue, 0));
 }
 

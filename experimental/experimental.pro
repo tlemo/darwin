@@ -2,4 +2,6 @@
 TEMPLATE = subdirs
 
 SUBDIRS += \
-    2d_physics
+    2d_physics \
+    replicators
+

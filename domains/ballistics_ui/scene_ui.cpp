@@ -26,7 +26,7 @@ using namespace std;
 
 namespace ballistics_ui {
 
-void SceneUi::render(QPainter& painter, const QRectF& viewport) {
+void SceneUi::render(QPainter& painter, const QRectF& viewport, bool /*debug*/) {
   painter.setPen(QPen(Qt::lightGray, 0));
 
   // x/y axis

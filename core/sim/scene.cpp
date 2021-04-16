@@ -32,20 +32,20 @@ bool Scene::simStep() {
 
   preStep();
 
-  constexpr float32 time_step = 1.0f / 50.0f;
-  constexpr int32 velocity_iterations = 10;
-  constexpr int32 position_iterations = 10;
+  constexpr float32 kTimeStep = 1.0f / 50.0f;
+  constexpr int32 kVelocityIterations = 10;
+  constexpr int32 kPositionIterations = 10;
 
   script_.play(timestamp_);
 
   // Box2D simulation step
-  world_.Step(time_step, velocity_iterations, position_iterations);
-  timestamp_ += time_step;
+  world_.Step(kTimeStep, kVelocityIterations, kPositionIterations);
+  timestamp_ += kTimeStep;
 
   // TODO: process the contacts
   // TODO: pause/resume/done/reset?
 
-  postStep(time_step);
+  postStep(kTimeStep);
   return true;
 }
 

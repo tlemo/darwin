@@ -31,7 +31,7 @@ class SceneUi : public physics_ui::Box2dSceneUi {
   void sigNewTarget(double x, double y);
 
  private:
-  void render(QPainter& painter, const QRectF& viewport) override;
+  void render(QPainter& painter, const QRectF& viewport, bool debug) override;
   void mousePressEvent(const QPointF& pos, QMouseEvent* event) override;
 
  private:

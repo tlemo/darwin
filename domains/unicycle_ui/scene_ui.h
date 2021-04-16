@@ -24,7 +24,7 @@ class SceneUi : public physics_ui::Box2dSceneUi {
   SceneUi(unicycle::World* world) : world_(world) {}
 
  private:
-  void render(QPainter& painter, const QRectF&) override;
+  void render(QPainter& painter, const QRectF&, bool) override;
   void mousePressEvent(const QPointF& pos, QMouseEvent* event) override;
 
  private:

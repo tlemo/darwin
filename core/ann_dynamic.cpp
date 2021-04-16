@@ -17,7 +17,10 @@
 #include "platform_abstraction_layer.h"
 
 #include <assert.h>
+
+#ifndef DARWIN_OS_WASM
 #include <immintrin.h>
+#endif
 
 namespace ann {
 
@@ -27,6 +30,9 @@ EvaluateLayer evaluateLayer = nullptr;
 static void evaluateLayer_avx(const vector<float>& in,
                               vector<float>& out,
                               const Matrix& w) {
+#ifdef DARWIN_OS_WASM
+  FATAL("Unreachable");
+#else
   assert(in.size() + 1 == w.rows);
   assert(out.size() == w.cols);
 
@@ -67,6 +73,7 @@ static void evaluateLayer_avx(const vector<float>& in,
 
     _mm256_maskstore_ps(&out[j], mask, r);
   }
+#endif
 }
 
 static void evaluateLayer_cpu(const vector<float>& in,

@@ -116,6 +116,18 @@ struct HMatrix2d {
   //! Constructs a zero-matrix
   HMatrix2d() { setZero(); }
 
+  //! Returns the identity
+  static HMatrix2d identity();
+
+  //! Returns a translation matrix
+  static HMatrix2d translate(Scalar tx, Scalar ty);
+
+  //! Returns a translation matrix
+  static HMatrix2d scale(Scalar sx, Scalar sy);
+
+  //! Returns a translation matrix
+  static HMatrix2d rotate(Scalar angle);
+
   //! Resets all the elements to zero
   void setZero() { ::memset(m, 0, sizeof(m)); }
 
@@ -132,10 +144,10 @@ struct HMatrix2d {
   void setRotation(Scalar angle);
 
   //! Matrix multiplication
-  HMatrix2d operator*(const HMatrix2d& other);
+  HMatrix2d operator*(const HMatrix2d& other) const;
 
   //! Matrix x Vector multiplication
-  Vector2d operator*(const Vector2d& v);
+  Vector2d operator*(const Vector2d& v) const;
 };
 
 }  // namespace math

@@ -61,8 +61,8 @@ class Canvas : public QFrame {
   //! \warning When using coordinates where y "points up", the text will also be 
   //!   flipped upside down. To render text properly, the viewport transformation must
   //!   be temporary modified to flip the y-coordinate.
-  //! 
-  void setViewport(const QRectF& viewport_rect);
+  //!
+  void setViewport(const QRectF& viewport_rect, bool auto_update = true);
   
   //! Sets the viewport rectangle
   //! \note Convenience overload, calls setViewport(const QRect&)

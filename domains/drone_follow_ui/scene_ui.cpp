@@ -43,7 +43,7 @@ SceneUi::SceneUi(drone_follow::Scene* scene) : scene_(scene) {
   target_drone_path_.moveTo(dronePosition(scene_->targetDrone()));
 }
 
-void SceneUi::render(QPainter& painter, const QRectF&) {
+void SceneUi::render(QPainter& painter, const QRectF&, bool) {
   // draw a line from the drone to the target drone`
   const auto drone_pos = dronePosition(scene_->drone());
   const auto target_drone_pos = dronePosition(scene_->targetDrone());

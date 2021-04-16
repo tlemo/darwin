@@ -165,7 +165,7 @@ void SceneUi::renderCamera(QPainter& painter, const sim::Camera* camera) const {
   painter.drawPie(frustum_rect, int(-angle * 16), int(fov * 16));
 }
 
-void SceneUi::render(QPainter& painter, const QRectF&) {
+void SceneUi::render(QPainter& painter, const QRectF&, bool) {
   renderCamera(painter, scene_->camera());
 }
 

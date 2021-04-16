@@ -60,7 +60,7 @@ class SceneUi : public physics_ui::Box2dSceneUi {
 
   bool keyPressed(int key) const;
 
-  void render(QPainter& painter, const QRectF&) override;
+  void render(QPainter& painter, const QRectF&, bool) override;
 
   void step() override;
 

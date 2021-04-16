@@ -28,12 +28,14 @@ void Canvas::setBorderSize(int border_size) {
   update();
 }
 
-void Canvas::setViewport(const QRectF& viewport_rect) {
+void Canvas::setViewport(const QRectF& viewport_rect, bool auto_update) {
   Q_ASSERT(viewport_rect.width() > 0);
   Q_ASSERT(viewport_rect.height() != 0);
   viewport_rect_ = viewport_rect;
   valid_transformations_ = false;
-  update();
+  if (auto_update) {
+    update();
+  }
 }
 
 void Canvas::setViewport(const QPointF& top_left, const QPointF& bottom_right) {
@@ -88,7 +90,7 @@ void Canvas::updateTransformations() const {
   }
   auto offset = client_rect.topLeft() - viewport_origin;
 
-  // build the tranfromations
+  // build the transformations
   transform_from_viewport_.reset();
   transform_from_viewport_.translate(offset.x(), offset.y());
   transform_from_viewport_.scale(scale_, (flip_y ? -scale_ : scale_));

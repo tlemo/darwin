@@ -42,7 +42,7 @@ SceneUi::SceneUi(drone_track::Scene* scene) : scene_(scene) {
   drone_path_.moveTo(dronePosition(scene_->drone()));
 }
 
-void SceneUi::render(QPainter& painter, const QRectF& viewport) {
+void SceneUi::render(QPainter& painter, const QRectF& viewport, bool) {
   painter.setPen(Qt::NoPen);
   painter.setBrush(Qt::white);
   painter.drawRect(viewport);

@@ -36,6 +36,8 @@
 #define DARWIN_OS_LINUX
 #elif defined(__APPLE__)
 #define DARWIN_OS_APPLE
+#elif defined(__EMSCRIPTEN__)
+#define DARWIN_OS_WASM
 #else
 #error Unsupported OS
 #endif

@@ -151,7 +151,7 @@ void SceneUi::renderControlPoints(QPainter& painter,
   painter.drawPath(cp_path);
 }
 
-void SceneUi::render(QPainter& painter, const QRectF&) {
+void SceneUi::render(QPainter& painter, const QRectF&, bool) {
   if (!control_points_.empty()) {
     renderControlPoints(painter, Qt::green, control_points_);
     if (render_outer_control_points_) {

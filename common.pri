@@ -4,6 +4,13 @@ win32-msvc {
     QMAKE_CXXFLAGS += /permissive-
     QMAKE_CXXFLAGS += /wd4244 # conversion from 'double' to 'float', possible loss of data
     QMAKE_CXXFLAGS += /wd5030 # attribute is not recognized
+} else:wasm {
+    QMAKE_LFLAGS += -s ERROR_ON_UNDEFINED_SYMBOLS=0
+    QMAKE_LFLAGS += --emrun
+    QMAKE_CXXFLAGS += -Wno-reorder
+    QMAKE_CXXFLAGS += -Wno-sign-compare
+    QMAKE_CXXFLAGS += -Wno-type-limits
+    QMAKE_CXXFLAGS += -Wno-deprecated-declarations
 } else {
     QMAKE_CXXFLAGS += -mavx2 -mfma
     QMAKE_CXXFLAGS += -Wno-reorder
@@ -54,7 +61,7 @@ defineTest(addLibrary) {
 
 # system & runtime libraries
 defineTest(addSystemLibraries) {
-    unix {
+    unix:!wasm {
         clang: LIBS += -ldl -lc++fs
         else: LIBS += -ldl -lstdc++fs
     }

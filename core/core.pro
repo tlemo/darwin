@@ -49,7 +49,10 @@ HEADERS += \
     outline_2d.h \
     pubsub.h \
     logging.h \
+    random.h \
     runtime.h \
+    chronometer.h \
+    rate_tracker.h \
     scope_guard.h \
     matrix.h \
     math_2d.h \

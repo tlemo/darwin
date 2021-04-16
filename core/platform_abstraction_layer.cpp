@@ -54,7 +54,9 @@ string userHomePath() {
 }
 
 bool detectAvx2() {
-#ifdef DARWIN_COMPILER_MSVC
+#if defined(DARWIN_OS_WASM)
+  return false;
+#elif defined(DARWIN_COMPILER_MSVC)
   int cpu_info[4] = {};
   bool has_avx = false;
 
@@ -70,7 +72,7 @@ bool detectAvx2() {
   return has_avx;
 #else
   return __builtin_cpu_supports("avx2");
-#endif  // DARWIN_COMPILER_MSVC
+#endif
 }
 
 void setenv(const char* name, const char* value) {
@@ -78,7 +80,7 @@ void setenv(const char* name, const char* value) {
   CHECK(::_putenv_s(name, value) == 0);
 #else
   CHECK(::setenv(name, value, true) == 0);
-#endif  // DARWIN_OS_WINDOWS
+#endif
 }
 
 }  // namespace pal
