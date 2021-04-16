@@ -1,4 +1,21 @@
 
+## Apr 16th, 2021
+
+A new side experiment: a standalone sandbox for experimenting with generative
+systems, in the form of a basic UI for [Interactive Evolution][14]. Currently
+there are implementations for a few generative systems:
+
+- A 2D version of [Karl Sims](https://www.karlsims.com/)'s Virtual Creatures
+- A [Cell Lab](https://cell-lab.net/)-inspired system
+- An original, yet very basic system ("Segment Tree")
+
+![Replicators Sandbox](docs/images/replicators.png)
+
+This new sub-project is located under `experimental/replicators`, and a WASM build
+can be found [here](https://tlemo.github.io/darwin/experimental/replicators.html)
+(note that this build is significantly slower, and less stable, compared with
+the native builds)
+
 ## Dec 12th, 2020
 
 The new `notebooks` subdirectory contains a few examples of using Darwin's 
@@ -218,3 +235,4 @@ Initial release
 [11]: https://docs.google.com/presentation/d/13ppNNKvsLxe4W_CgGO8THQArsma8colxh-cEzRWkUCE/edit?usp=sharing
 [12]: docs/python.md
 [13]: bindings/python/docs/tutorial.md
+[14]: https://en.wikipedia.org/wiki/Interactive_evolutionary_computation
