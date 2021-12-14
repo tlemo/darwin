@@ -34,7 +34,7 @@ class MainWindow : public QMainWindow {
 
  private:
   void newExperimentWindow(bool sample_set);
-  void openTab(const QString& species_name, bool sample_set);
+  void openTab(const QString& species_name, int population_size, bool sample_set);
   void closeTab(int index);
   void enableExperimentActions(bool enabled);
   void deactivateCurrentExperiment();

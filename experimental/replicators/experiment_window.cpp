@@ -10,10 +10,12 @@ namespace experimental::replicators {
 
 ExperimentWindow::ExperimentWindow(QWidget* parent,
                                    SpeciesFactory* factory,
+                                   int population_size,
                                    bool sample_set)
     : QFrame(parent),
       ui(new Ui::ExperimentWindow),
       factory_(factory),
+      population_size_(population_size),
       sample_set_(sample_set) {
   ui->setupUi(this);
   setFocusPolicy(Qt::StrongFocus);
@@ -75,7 +77,7 @@ void ExperimentWindow::newGeneration(unique_ptr<Genotype> parent) {
 
   parent_ = std::move(parent);
   population_.clear();
-  for (int i = 0; i < kDefaultPopulationSize; ++i) {
+  for (int i = 0; i < population_size_; ++i) {
     auto clone = parent_->clone();
     clone->mutate();
     population_.push_back(std::move(clone));

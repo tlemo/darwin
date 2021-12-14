@@ -24,19 +24,24 @@ void MainWindow::newExperimentWindow(bool sample_set) {
   const auto dlg_title = sample_set ? "New sample set" : "New experiment";
   auto dlg = new NewExperimentDialog(this, dlg_title);
   dlg->setAttribute(Qt::WA_DeleteOnClose);
-  connect(dlg, &NewExperimentDialog::sigNewExperiment, [=](QString species_name) {
-    this->openTab(species_name, sample_set);
-  });
+  connect(dlg,
+          &NewExperimentDialog::sigNewExperiment,
+          [=](QString species_name, int population_size) {
+            this->openTab(species_name, population_size, sample_set);
+          });
   dlg->open();
 }
 
-void MainWindow::openTab(const QString& species_name, bool sample_set) {
+void MainWindow::openTab(const QString& species_name,
+                         int population_size,
+                         bool sample_set) {
   const auto factory = registry()->find(species_name.toStdString());
   CHECK(factory != nullptr);
 
   try {
     const auto tab_title = species_name + (sample_set ? " (Samples)" : "");
-    auto experiment_window = make_unique<ExperimentWindow>(this, factory, sample_set);
+    auto experiment_window =
+        make_unique<ExperimentWindow>(this, factory, population_size, sample_set);
     auto new_tab_index = ui->tabs->addTab(experiment_window.release(), tab_title);
     ui->tabs->setCurrentIndex(new_tab_index);
     enableExperimentActions(true);

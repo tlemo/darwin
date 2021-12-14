@@ -23,12 +23,14 @@ class ExperimentWindow : public QFrame {
   Q_OBJECT
 
   static constexpr int kColumns = 4;
-  static constexpr int kDefaultPopulationSize = 16;
-
   static constexpr int kDefaultTimerSpeed = 20;  // ms
 
  public:
-  explicit ExperimentWindow(QWidget* parent, SpeciesFactory* factory, bool sample_set);
+  ExperimentWindow(QWidget* parent,
+                   SpeciesFactory* factory,
+                   int population_size,
+                   bool sample_set);
+
   ~ExperimentWindow();
 
   void refreshCandidates();
@@ -61,7 +63,8 @@ class ExperimentWindow : public QFrame {
   vector<PhenotypeWidget*> phenotype_widgets_;
 
   SpeciesFactory* factory_ = nullptr;
-  const bool sample_set_ = false;
+  const int population_size_;
+  const bool sample_set_;
 
   bool animated_ = true;
   bool debug_render_ = false;

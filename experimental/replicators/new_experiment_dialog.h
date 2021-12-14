@@ -19,7 +19,7 @@ class NewExperimentDialog : public QDialog {
   void done(int result) override;
 
  signals:
-  void sigNewExperiment(QString species_name);
+  void sigNewExperiment(QString species_name, int population_size);
 
  private:
   Ui::NewExperimentDialog* ui = nullptr;

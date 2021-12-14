@@ -25,7 +25,7 @@ NewExperimentDialog::~NewExperimentDialog() {
 
 void NewExperimentDialog::done(int result) {
   if (result == QDialog::Accepted) {
-    emit sigNewExperiment(ui->species_name->currentText());
+    emit sigNewExperiment(ui->species_name->currentText(), ui->population_size->value());
   }
   QDialog::done(result);
 }
