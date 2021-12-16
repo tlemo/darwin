@@ -148,7 +148,7 @@ class Phenotype : public experimental::replicators::Phenotype {
   static constexpr Scalar kLinearDamping = 0.1;
   static constexpr Scalar kAngularDamping = 0.1;
 
-  static constexpr Scalar kGridCellSize = 2.0;
+  static constexpr Scalar kGridCellSize = 4.0;
   static constexpr int kGridExtent = 100;
 
   // CONSIDER: max, avg?
@@ -187,9 +187,10 @@ class Phenotype : public experimental::replicators::Phenotype {
 
   core::RateTracker fps_tracker_;
   Stats stats_;
+  Stats stats_max_;
 
   // spatial hashing grid
-  vector<vector<int>> grid_;
+  vector<vector<short>> grid_;
 
   Scalar last_division_timestamp_ = 0;
 

@@ -403,7 +403,8 @@ void Phenotype::collisions() {
 #else
   // reset spatial hashing
   for (auto& bin : grid_) {
-    bin.clear();
+    bin.reserve(8);
+    bin.resize(0);
   }
 
   const auto gridCoord = [](Scalar pos) {
@@ -415,33 +416,28 @@ void Phenotype::collisions() {
   // place cells into the grid bins
   for (int cell_index = 0; cell_index < int(cells_.size()); ++cell_index) {
     const auto& cell = cells_[cell_index];
-    const auto& pos = cell.pos;
-    const auto aabb_size = cell.size;
-    const int first_row = gridCoord(pos.y - aabb_size);
-    const int last_row = gridCoord(pos.y + aabb_size);
-    const int first_col = gridCoord(pos.x - aabb_size);
-    const int last_col = gridCoord(pos.x + aabb_size);
-    for (int i = first_row; i <= last_row; ++i) {
-      for (int j = first_col; j <= last_col; ++j) {
-        const auto grid_index = i * kGridExtent + j;
-        grid_[grid_index].push_back(cell_index);
-      }
-    }
+    const int row = gridCoord(cell.pos.y);
+    const int col = gridCoord(cell.pos.x);
+    const auto grid_index = row * kGridExtent + col;
+    grid_[grid_index].push_back(cell_index);
   }
 
-  const auto cells_count = cells_.size();
-  vector<bool> pairs(cells_count * cells_count);
-
   // check for collisions between the cells in each bin
-  for (const auto& close_cells : grid_) {
-    for (size_t i = 1; i < close_cells.size(); ++i) {
-      for (size_t j = 0; j < i; ++j) {
-        const auto index_a = close_cells[i];
-        const auto index_b = close_cells[j];
-        const auto pair_index = index_a * cells_count + index_b;
-        if (!pairs[pair_index]) {
-          pairs[pair_index] = true;
-          handleCollisionPair(cells_[index_a], cells_[index_b]);
+  constexpr int kGridRange = int((2 * kMaxCellSize) / kGridCellSize);
+  for (int cell_index = 0; cell_index < int(cells_.size()); ++cell_index) {
+    auto& cell = cells_[cell_index];
+    const int row = gridCoord(cell.pos.y);
+    const int col = gridCoord(cell.pos.x);
+    const int row_start = max(row - kGridRange, 0);
+    const int row_end = min(row + kGridRange + 1, kGridExtent);
+    const int col_start = max(col - kGridRange, 0);
+    const int col_end = min(col + kGridRange + 1, kGridExtent);
+    for (int i = row_start; i < row_end; ++i) {
+      for (int j = col_start; j < col_end; ++j) {
+        for (int other_index : grid_[i * kGridExtent + j]) {
+          if (other_index > cell_index) {
+            handleCollisionPair(cell, cells_[other_index]);
+          }
         }
       }
     }
@@ -562,17 +558,27 @@ void Phenotype::cellLifecycle() {
 void Phenotype::animate() {
   stats_ = {};
 
-  core::Chronometer scope_timing(&stats_.elapsed_animate);
+  {
+    core::Chronometer scope_timing(&stats_.elapsed_animate);
 
-  if (timestamp_ - last_division_timestamp_ < kExtraTime) {
-    for (int i = 0; i < kSimulationIterations; ++i) {
-      cellLifecycle();
-      constraints();
-      collisions();
-      if (!simulationStep(kSimulationDt) && cells_.size() == kMaxCellCount) {
-        break;
+    if (timestamp_ - last_division_timestamp_ < kExtraTime) {
+      for (int i = 0; i < kSimulationIterations; ++i) {
+        cellLifecycle();
+        constraints();
+        collisions();
+        if (!simulationStep(kSimulationDt) && cells_.size() == kMaxCellCount) {
+          break;
+        }
       }
     }
+  }
+
+  // aggregate stats
+  if (stats_.elapsed_collisions > stats_max_.elapsed_collisions) {
+    stats_max_.elapsed_collisions = stats_.elapsed_collisions;
+  }
+  if (stats_.actual_collisions > stats_max_.actual_collisions) {
+    stats_max_.actual_collisions = stats_.actual_collisions;
   }
 }
 
@@ -587,25 +593,29 @@ void Phenotype::renderStats(QPainter& painter) {
 
   if (verbose_stats_) {
     const auto& box2d_profile = world_.GetProfile();
-    text += QString::asprintf("Box2d.step: %.3f ms\n", box2d_profile.step);
+    text += QString::asprintf("Box2d.step: %.2f ms\n", box2d_profile.step);
     text += QString::asprintf("Box2d.objects_count: %d\n", world_.GetBodyCount());
-    text += QString::asprintf("Box2d.collide: %.3f ms\n", box2d_profile.collide);
-    text += QString::asprintf("Box2d.solve: %.3f ms\n", box2d_profile.solve);
-    text += QString::asprintf("Box2d.broadphase: %.3f ms\n", box2d_profile.broadphase);
-    text += QString::asprintf("Box2d.solveTOI: %.3f ms\n", box2d_profile.solveTOI);
+    text += QString::asprintf("Box2d.collide: %.2f ms\n", box2d_profile.collide);
+    text += QString::asprintf("Box2d.solve: %.2f ms\n", box2d_profile.solve);
+    text += QString::asprintf("Box2d.broadphase: %.2f ms\n", box2d_profile.broadphase);
+    text += QString::asprintf("Box2d.solveTOI: %.2f ms\n", box2d_profile.solveTOI);
   }
 
   text += QString::asprintf("Cells count: %zu\n", cells_.size());
   text += QString::asprintf("FPS: %.2f\n", fps_tracker_.currentRate());
   text += QString::asprintf("Total: %.3f ms\n", stats_.elapsed_animate);
-  text += QString::asprintf("Substeps: %.3f ms\n", stats_.elapsed_substeps);
-  text += QString::asprintf("Cell lifecycle: %.3f ms\n", stats_.elapsed_lifecycle);
-  text += QString::asprintf("Constraints: %.3f ms\n", stats_.elapsed_constraints);
-  text += QString::asprintf("Collisions: %.3f ms\n", stats_.elapsed_collisions);
+  text += QString::asprintf("Substeps: %.2f ms\n", stats_.elapsed_substeps);
+  text += QString::asprintf("Cell lifecycle: %.2f ms\n", stats_.elapsed_lifecycle);
+  text += QString::asprintf("Constraints: %.2f ms\n", stats_.elapsed_constraints);
+  text += QString::asprintf("Collisions: %.2f ms (max: %.2f)\n",
+                            stats_.elapsed_collisions,
+                            stats_max_.elapsed_collisions);
 
   if (verbose_stats_) {
     text += QString::asprintf("Collision tests: %d\n", stats_.collision_tests);
-    text += QString::asprintf("Actual collisions: %d\n", stats_.actual_collisions);
+    text += QString::asprintf("Actual collisions: %d (max: %d)\n",
+                              stats_.actual_collisions,
+                              stats_max_.actual_collisions);
   }
 
   text += QString::asprintf("Constraint iter: %d", kSimulationIterations);
