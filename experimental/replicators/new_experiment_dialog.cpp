@@ -5,12 +5,16 @@
 
 namespace experimental::replicators {
 
-NewExperimentDialog::NewExperimentDialog(QWidget* parent, const char* title)
+NewExperimentDialog::NewExperimentDialog(QWidget* parent, const char* title, bool samples)
     : QDialog(parent,
               Qt::WindowTitleHint | Qt::WindowSystemMenuHint | Qt::WindowCloseButtonHint),
       ui(new Ui::NewExperimentDialog) {
   ui->setupUi(this);
   setWindowTitle(title);
+
+  if (samples) {
+    ui->population_size->setDisabled(true);
+  }
 
   for (const auto& [name, factory] : *registry()) {
     ui->species_name->addItem(QString::fromStdString(name));

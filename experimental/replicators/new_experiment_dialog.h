@@ -13,7 +13,7 @@ class NewExperimentDialog : public QDialog {
   Q_OBJECT
 
  public:
-  explicit NewExperimentDialog(QWidget* parent, const char* title);
+  explicit NewExperimentDialog(QWidget* parent, const char* title, bool samples = false);
   ~NewExperimentDialog();
 
   void done(int result) override;

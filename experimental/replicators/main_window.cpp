@@ -22,7 +22,7 @@ MainWindow::~MainWindow() {
 
 void MainWindow::newExperimentWindow(bool sample_set) {
   const auto dlg_title = sample_set ? "New sample set" : "New experiment";
-  auto dlg = new NewExperimentDialog(this, dlg_title);
+  auto dlg = new NewExperimentDialog(this, dlg_title, sample_set);
   dlg->setAttribute(Qt::WA_DeleteOnClose);
   connect(dlg,
           &NewExperimentDialog::sigNewExperiment,
