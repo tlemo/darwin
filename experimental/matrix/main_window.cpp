@@ -35,6 +35,16 @@ MainWindow::MainWindow() : QMainWindow(nullptr), ui(new Ui::MainWindow) {
   // compass window
   auto compass_window = new CompassWindow(this);
   dockWindow(compass_window, Qt::AllDockWidgetAreas, Qt::LeftDockWidgetArea);
+
+  status_label = new QLabel;
+  status_label->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+  ui->status_bar->addPermanentWidget(status_label);
+
+  world_.generateWorld();
+
+  connect(&timer_, &QTimer::timeout, this, &MainWindow::simStep);
+  timer_.setInterval(0);
+  timer_.start();
 }
 
 MainWindow::~MainWindow() {
@@ -62,3 +72,10 @@ void MainWindow::dockWindow(ToolWindow* tool_window,
   tool_windows_.push_back(tool_window);
 }
 
+void MainWindow::simStep() {
+  world_.simStep();
+  update();
+
+  fps_tracker_.update();
+  status_label->setText(QString::asprintf("%.2f fps", fps_tracker_.currentRate()));
+}

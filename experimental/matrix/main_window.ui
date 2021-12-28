@@ -19,7 +19,7 @@
   <property name="windowTitle">
    <string>Matrix</string>
   </property>
-  <widget class="QWidget" name="central_widget">
+  <widget class="MapView" name="map_view">
    <layout class="QVBoxLayout" name="vertical_layout">
     <property name="spacing">
      <number>5</number>
@@ -93,6 +93,14 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>MapView</class>
+   <extends>QWidget</extends>
+   <header>map_view.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
   <connection>

@@ -1,15 +1,14 @@
 
 #pragma once
 
-#include "main_window.h"
-
+#include <QMainWindow>
 #include <QGraphicsView>
 
 class MapView : public QGraphicsView {
   Q_OBJECT
 
  public:
-  explicit MapView(MainWindow* parent);
+  explicit MapView(QMainWindow* parent);
 
  signals:
   void zoomIn();

@@ -1,7 +1,13 @@
 
 #pragma once
 
+#include "world.h"
+
+#include <core/rate_tracker.h>
+
 #include <QMainWindow>
+#include <QTimer>
+#include <QLabel>
 
 #include <memory>
 #include <vector>
@@ -20,7 +26,7 @@ class MainWindow : public QMainWindow {
  public:
   MainWindow();
   ~MainWindow() override;
-  
+
   void updateToolWindows();
 
  private:
@@ -28,8 +34,13 @@ class MainWindow : public QMainWindow {
                   Qt::DockWidgetAreas allowed_areas,
                   Qt::DockWidgetArea area);
 
+  void simStep();
+
  private:
   Ui::MainWindow* ui = nullptr;
   vector<ToolWindow*> tool_windows_;
+  World world_;
+  QTimer timer_;
+  QLabel* status_label = nullptr;
+  core::RateTracker fps_tracker_;
 };
-
