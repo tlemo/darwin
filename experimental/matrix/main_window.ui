@@ -17,7 +17,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>Box2D Sandbox</string>
+   <string>Matrix</string>
   </property>
   <widget class="QWidget" name="central_widget">
    <layout class="QVBoxLayout" name="vertical_layout">
@@ -36,22 +36,6 @@
     <property name="bottomMargin">
      <number>4</number>
     </property>
-    <item>
-     <widget class="QTabWidget" name="tabs">
-      <property name="currentIndex">
-       <number>-1</number>
-      </property>
-      <property name="usesScrollButtons">
-       <bool>false</bool>
-      </property>
-      <property name="tabsClosable">
-       <bool>true</bool>
-      </property>
-      <property name="movable">
-       <bool>true</bool>
-      </property>
-     </widget>
-    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menu_bar">
@@ -60,7 +44,7 @@
      <x>0</x>
      <y>0</y>
      <width>1177</width>
-     <height>21</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_file">
