@@ -22,7 +22,7 @@ class World : public sim::Scene {
   void runSimulation();
   void pauseSimulation();
 
-  const auto& visibleState() const { return world_; }
+  const sf::World visibleState() const;
 
  private:
   void simThread();
@@ -32,9 +32,10 @@ class World : public sim::Scene {
 
  private:
   sf::World world_;
+  sf::World snapshot_;
+  mutable std::mutex snapshot_lock_;
 
   SimState sim_state_ = SimState::Invalid;
-
-  std::mutex lock_;
-  std::condition_variable cv_;
+  mutable std::mutex state_lock_;
+  mutable std::condition_variable state_cv_;
 };

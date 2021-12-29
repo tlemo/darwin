@@ -31,9 +31,8 @@ bool World::obstructed(const sf::Pos& pos) const {
 void World::generateWorld() {
   printf("Generating world...\n");
 
-  unique_lock<mutex> guard(lock_);
+  unique_lock<mutex> guard(state_lock_);
   CHECK(sim_state_ == SimState::Invalid);
-  sim_state_ = SimState::Paused;
 
   random_device rd;
   default_random_engine rnd(rd());
@@ -102,30 +101,45 @@ void World::generateWorld() {
     if (obstructed(robot.pos))
       --i;
   }
+
+  sim_state_ = SimState::Paused;
+  state_cv_.notify_all();
 }
 
 void World::runSimulation() {
-  unique_lock<mutex> guard(lock_);
+  unique_lock<mutex> guard(state_lock_);
   CHECK(sim_state_ != SimState::Invalid);
   sim_state_ = SimState::Running;
+  state_cv_.notify_all();
 }
 
 void World::pauseSimulation() {
-  unique_lock<mutex> guard(lock_);
+  unique_lock<mutex> guard(state_lock_);
   CHECK(sim_state_ != SimState::Invalid);
   sim_state_ = SimState::Paused;
+  state_cv_.notify_all();
+}
+
+const sf::World World::visibleState() const {
+  unique_lock<mutex> guard(snapshot_lock_);
+  return snapshot_;
 }
 
 void World::simThread() {
   for (;;) {
     {
-      unique_lock<mutex> guard(lock_);
+      unique_lock<mutex> guard(state_lock_);
       while (sim_state_ != SimState::Running) {
-        cv_.wait(guard);
+        state_cv_.wait(guard);
       }
     }
 
     simStep();
+
+    {
+      unique_lock<mutex> guard(snapshot_lock_);
+      snapshot_ = world_;
+    }
   }
 }
 
