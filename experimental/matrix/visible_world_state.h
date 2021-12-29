@@ -24,63 +24,53 @@ const int DEFAULT_ZOOM = 15;
 const float ROBOT_DIAMETER = 10.0f;
 const float FOOD_DIAMETER = 5.0f;
 
-namespace sf
-{
+namespace sf {
 
-struct Pos
-{
+struct Pos {
   float x;
   float y;
 };
 
-struct Size
-{
+struct Size {
   uint16_t width;
   uint16_t height;
 };
 
-struct Robot
-{
+struct Robot {
   Pos pos;
   float angle;
 };
 
-struct Food
-{
+struct Food {
   Pos pos;
 };
 
-struct JunkFood
-{
+struct JunkFood {
   Pos pos;
 };
 
-struct Poison
-{
+struct Poison {
   Pos pos;
 };
 
-struct Obstacle
-{
+struct Obstacle {
   Pos pos;
   Size size;
 };
 
-struct Farm
-{
+struct Farm {
   Pos pos;
   uint16_t size;
 };
 
-struct World
-{
+struct World {
   Obstacle obstacles[OBSTACLES_COUNT];
   Farm farms[FARMS_COUNT];
   Food food[FOOD_COUNT];
   JunkFood junkFood[JUNK_FOOD_COUNT];
   Poison poison[POISON_COUNT];
   Robot robots[ROBOTS_COUNT];
+  double ups = 0;  // updates per second
 };
 
-} // namespace sf
-
+}  // namespace sf

@@ -3,12 +3,13 @@
 
 #include "visible_world_state.h"
 
-#include <core/sim/scene.h>
+#include <core/rate_tracker.h>
+#include <core/utils.h>
 
 #include <mutex>
 #include <condition_variable>
 
-class World : public sim::Scene {
+class World : public core::NonCopyable {
   static constexpr float kWidth = 200;
   static constexpr float kHeight = 100;
 
@@ -33,6 +34,7 @@ class World : public sim::Scene {
  private:
   sf::World world_;
   sf::World snapshot_;
+  core::RateTracker ups_tracker_;
   mutable std::mutex snapshot_lock_;
 
   SimState sim_state_ = SimState::Invalid;

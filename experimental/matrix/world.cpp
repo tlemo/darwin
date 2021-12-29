@@ -9,8 +9,7 @@
 #include <thread>
 using namespace std;
 
-World::World()
-    : sim::Scene(b2Vec2(0, 0), sim::Rect(-kWidth / 2, -kHeight / 2, kWidth, kHeight)) {
+World::World() {
   new std::thread(&World::simThread, this);
 }
 
@@ -138,7 +137,9 @@ void World::simThread() {
 
     {
       unique_lock<mutex> guard(snapshot_lock_);
+      ups_tracker_.update();
       snapshot_ = world_;
+      snapshot_.ups = ups_tracker_.currentRate();
     }
   }
 }
