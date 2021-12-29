@@ -6,10 +6,13 @@
 #include <cmath>
 #include <limits>
 #include <assert.h>
+#include <thread>
 using namespace std;
 
 World::World()
-    : sim::Scene(b2Vec2(0, 0), sim::Rect(-kWidth / 2, -kHeight / 2, kWidth, kHeight)) {}
+    : sim::Scene(b2Vec2(0, 0), sim::Rect(-kWidth / 2, -kHeight / 2, kWidth, kHeight)) {
+  new std::thread(&World::simThread, this);
+}
 
 bool World::obstructed(const sf::Pos& pos) const {
   for (const auto& obstacle : world_.obstacles) {
@@ -27,6 +30,10 @@ bool World::obstructed(const sf::Pos& pos) const {
 
 void World::generateWorld() {
   printf("Generating world...\n");
+
+  unique_lock<mutex> guard(lock_);
+  CHECK(sim_state_ == SimState::Invalid);
+  sim_state_ = SimState::Paused;
 
   random_device rd;
   default_random_engine rnd(rd());
@@ -94,6 +101,31 @@ void World::generateWorld() {
 
     if (obstructed(robot.pos))
       --i;
+  }
+}
+
+void World::runSimulation() {
+  unique_lock<mutex> guard(lock_);
+  CHECK(sim_state_ != SimState::Invalid);
+  sim_state_ = SimState::Running;
+}
+
+void World::pauseSimulation() {
+  unique_lock<mutex> guard(lock_);
+  CHECK(sim_state_ != SimState::Invalid);
+  sim_state_ = SimState::Paused;
+}
+
+void World::simThread() {
+  for (;;) {
+    {
+      unique_lock<mutex> guard(lock_);
+      while (sim_state_ != SimState::Running) {
+        cv_.wait(guard);
+      }
+    }
+
+    simStep();
   }
 }
 

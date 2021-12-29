@@ -41,9 +41,10 @@ MainWindow::MainWindow() : QMainWindow(nullptr), ui(new Ui::MainWindow) {
   ui->status_bar->addPermanentWidget(status_label);
 
   world_.generateWorld();
+  world_.runSimulation();
 
   connect(&timer_, &QTimer::timeout, this, &MainWindow::simStep);
-  timer_.setInterval(0);
+  timer_.setInterval(20);
   timer_.start();
 }
 
@@ -73,7 +74,7 @@ void MainWindow::dockWindow(ToolWindow* tool_window,
 }
 
 void MainWindow::simStep() {
-  world_.simStep();
+  //world_.simStep();
   update();
 
   fps_tracker_.update();
