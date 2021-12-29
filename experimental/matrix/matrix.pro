@@ -14,6 +14,8 @@ DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000
 SOURCES += \
     main.cpp \
     main_window.cpp \
+    map_layers.cpp \
+    map_scene.cpp \
     map_view.cpp \
     tool_window.cpp \
     accelerometer_window.cpp \
@@ -26,6 +28,8 @@ SOURCES += \
 
 HEADERS += \
     main_window.h \
+    map_layers.h \
+    map_scene.h \
     map_view.h \
     tool_window.h \
     accelerometer_window.h \

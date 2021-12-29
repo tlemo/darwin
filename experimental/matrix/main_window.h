@@ -3,8 +3,6 @@
 
 #include "world.h"
 
-#include <core/rate_tracker.h>
-
 #include <QMainWindow>
 #include <QTimer>
 #include <QLabel>
@@ -42,5 +40,4 @@ class MainWindow : public QMainWindow {
   World world_;
   QTimer timer_;
   QLabel* status_label = nullptr;
-  core::RateTracker fps_tracker_;
 };

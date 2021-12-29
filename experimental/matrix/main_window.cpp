@@ -74,10 +74,9 @@ void MainWindow::dockWindow(ToolWindow* tool_window,
 }
 
 void MainWindow::simStep() {
-  const auto visible_state = world_.visibleState();
-  update();
+  const auto& visible_state = world_.visibleState();
+  ui->map_view->updateState(visible_state);
 
-  fps_tracker_.update();
   status_label->setText(
-      QString::asprintf("%.2f fps, %.2f ups", fps_tracker_.currentRate(), visible_state.ups));
+      QString::asprintf("%.2f fps, %.2f ups", ui->map_view->fps(), visible_state.ups));
 }
