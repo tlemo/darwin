@@ -6,6 +6,7 @@
 #include <QMainWindow>
 #include <QTimer>
 #include <QLabel>
+#include <QSlider>
 
 #include <memory>
 #include <vector>
@@ -28,6 +29,13 @@ class MainWindow : public QMainWindow {
   void updateToolWindows();
 
  private:
+  void zoomIn();
+  void zoomOut();
+
+  void updateZoom();
+
+  void setupToolbar();
+
   void dockWindow(ToolWindow* tool_window,
                   Qt::DockWidgetAreas allowed_areas,
                   Qt::DockWidgetArea area);
@@ -39,5 +47,6 @@ class MainWindow : public QMainWindow {
   vector<ToolWindow*> tool_windows_;
   World world_;
   QTimer timer_;
+  QSlider* zoom_slider = nullptr;
   QLabel* status_label = nullptr;
 };

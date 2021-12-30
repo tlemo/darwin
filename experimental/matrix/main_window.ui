@@ -51,7 +51,6 @@
     <property name="title">
      <string>&amp;File</string>
     </property>
-    <addaction name="action_new_sandbox"/>
     <addaction name="separator"/>
     <addaction name="action_exit"/>
    </widget>
@@ -75,20 +74,33 @@
     <bool>false</bool>
    </attribute>
   </widget>
-  <action name="action_new_sandbox">
-   <property name="text">
-    <string>&amp;New sandbox tab</string>
-   </property>
-   <property name="toolTip">
-    <string>Open a new sandbox tab</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+N</string>
-   </property>
-  </action>
   <action name="action_exit">
    <property name="text">
     <string>E&amp;xit</string>
+   </property>
+  </action>
+  <action name="action_zoom_in">
+   <property name="icon">
+    <iconset resource="../../core_ui/resources.qrc">
+     <normaloff>:/resources/zoom_in.png</normaloff>:/resources/zoom_in.png</iconset>
+   </property>
+   <property name="text">
+    <string>Zoom In</string>
+   </property>
+   <property name="toolTip">
+    <string>Zoom In</string>
+   </property>
+  </action>
+  <action name="action_zoom_out">
+   <property name="icon">
+    <iconset resource="../../core_ui/resources.qrc">
+     <normaloff>:/resources/zoom_out.png</normaloff>:/resources/zoom_out.png</iconset>
+   </property>
+   <property name="text">
+    <string>Zoom Out</string>
+   </property>
+   <property name="toolTip">
+    <string>Zoom Out</string>
    </property>
   </action>
  </widget>
@@ -101,7 +113,9 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="../../core_ui/resources.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>action_exit</sender>
