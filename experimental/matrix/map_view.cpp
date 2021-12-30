@@ -7,7 +7,7 @@
 MapView::MapView(QMainWindow* parent) : QGraphicsView(parent) {
   setFrameStyle(QFrame::Plain);
 
-  setRenderHint(QPainter::Antialiasing, false);
+  setRenderHint(QPainter::Antialiasing, true);
   setDragMode(QGraphicsView::ScrollHandDrag);
   setOptimizationFlags(QGraphicsView::DontSavePainterState);
   setViewportUpdateMode(QGraphicsView::MinimalViewportUpdate);
