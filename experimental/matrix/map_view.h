@@ -15,7 +15,7 @@ class MapView : public QGraphicsView {
  public:
   explicit MapView(QMainWindow* parent);
 
-  void updateState(const sf::World& visible_state);
+  void updateState(const vis::World& visible_state);
 
   double fps() const { return fps_tracker_.currentRate(); }
 

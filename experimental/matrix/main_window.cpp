@@ -79,10 +79,10 @@ void MainWindow::zoomOut() {
 }
 
 void MainWindow::updateZoom() {
-  const double scale = std::pow(2, (zoom_slider->value() - 50) / 12.0);
+  const double scale = std::pow(2, (zoom_slider->value() + 22) / 12.0);
 
   QTransform transform;
-  transform.scale(scale, scale);
+  transform.scale(scale, -scale);
 
   ui->map_view->setTransform(transform);
 }
@@ -90,9 +90,9 @@ void MainWindow::updateZoom() {
 void MainWindow::setupToolbar() {
   zoom_slider = new QSlider;
   zoom_slider->setMinimum(0);
-  zoom_slider->setMaximum(70);
+  zoom_slider->setMaximum(60);
   zoom_slider->setTickInterval(5);
-  zoom_slider->setValue(DEFAULT_ZOOM);
+  zoom_slider->setValue(kDefaultZoom);
   zoom_slider->setOrientation(Qt::Horizontal);
   zoom_slider->setTickPosition(QSlider::TicksBelow);
 
@@ -147,5 +147,5 @@ void MainWindow::simStep() {
   ui->map_view->updateState(visible_state);
 
   status_label->setText(
-      QString::asprintf("%.2f fps, %.2f ups", ui->map_view->fps(), visible_state.ups));
+      QString::asprintf("%.2f fps, %.2f ups", ui->map_view->fps(), world_.ups()));
 }

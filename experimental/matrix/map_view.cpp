@@ -15,7 +15,7 @@ MapView::MapView(QMainWindow* parent) : QGraphicsView(parent) {
   setCacheMode(QGraphicsView::CacheNone);
 }
 
-void MapView::updateState(const sf::World& visible_state) {
+void MapView::updateState(const vis::World& visible_state) {
   if (!scene_) {
     scene_ = new MapScene();
     setScene(scene_);
@@ -33,8 +33,7 @@ void MapView::wheelEvent(QWheelEvent* event) {
   event->accept();
 }
 
-void MapView::paintEvent(QPaintEvent* event)
-{
+void MapView::paintEvent(QPaintEvent* event) {
   QGraphicsView::paintEvent(event);
   fps_tracker_.update();
 }

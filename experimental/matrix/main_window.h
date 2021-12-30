@@ -22,6 +22,8 @@ class SandboxWindow;
 class MainWindow : public QMainWindow {
   Q_OBJECT
 
+  static constexpr int kDefaultZoom = 5;
+
  public:
   MainWindow();
   ~MainWindow() override;

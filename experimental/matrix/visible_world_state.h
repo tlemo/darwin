@@ -1,76 +1,39 @@
 
 #pragma once
 
-#include <stdint.h>
+#include <third_party/box2d/box2d.h>
 
-const int WORLD_WIDTH = 40000;
-const int WORLD_HEIGHT = 20000;
+#include <vector>
 
-const int MIN_FARM_SIZE = 150;
-const int MAX_FARM_SIZE = 1500;
+namespace vis {
 
-const int MIN_OBSTACLE_SIZE = 150;
-const int MAX_OBSTACLE_SIZE = 1500;
-
-const int FARMS_COUNT = 100;
-const int OBSTACLES_COUNT = 1000;
-const int FOOD_COUNT = 2000;
-const int JUNK_FOOD_COUNT = 2000;
-const int POISON_COUNT = 2000;
-const int ROBOTS_COUNT = 10000;
-
-const int DEFAULT_ZOOM = 15;
-
-const float ROBOT_DIAMETER = 10.0f;
-const float FOOD_DIAMETER = 5.0f;
-
-namespace sf {
-
-struct Pos {
-  float x;
-  float y;
+struct Edge {
+  b2Vec2 a;
+  b2Vec2 b;
+  b2Color color;
 };
 
-struct Size {
-  uint16_t width;
-  uint16_t height;
+struct Circle {
+  b2Vec2 center;
+  float radius;
+  b2Color color;
 };
 
-struct Robot {
-  Pos pos;
-  float angle;
+struct Polygon {
+  std::vector<b2Vec2> points;
+  b2Color color;
 };
 
-struct Food {
-  Pos pos;
+struct Object {
+  float radius;
+  b2Transform xf;
+  std::vector<Edge> edges;
+  std::vector<Circle> circles;
+  std::vector<Polygon> polygons;
+
+  b2Vec2 worldPoint(const b2Vec2& local_point) const { return b2Mul(xf, local_point); }
 };
 
-struct JunkFood {
-  Pos pos;
-};
+using World = std::vector<Object>;
 
-struct Poison {
-  Pos pos;
-};
-
-struct Obstacle {
-  Pos pos;
-  Size size;
-};
-
-struct Farm {
-  Pos pos;
-  uint16_t size;
-};
-
-struct World {
-  Obstacle obstacles[OBSTACLES_COUNT];
-  Farm farms[FARMS_COUNT];
-  Food food[FOOD_COUNT];
-  JunkFood junkFood[JUNK_FOOD_COUNT];
-  Poison poison[POISON_COUNT];
-  Robot robots[ROBOTS_COUNT];
-  double ups = 0;  // updates per second
-};
-
-}  // namespace sf
+}  // namespace vis

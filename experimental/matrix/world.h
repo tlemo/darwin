@@ -5,11 +5,14 @@
 
 #include <core/rate_tracker.h>
 #include <core/utils.h>
+#include <third_party/box2d/box2d.h>
 
 #include <mutex>
 #include <condition_variable>
+#include <atomic>
 
 class World : public core::NonCopyable {
+ public:
   static constexpr float kWidth = 200;
   static constexpr float kHeight = 100;
 
@@ -23,18 +26,22 @@ class World : public core::NonCopyable {
   void runSimulation();
   void pauseSimulation();
 
-  const sf::World visibleState() const;
+  const vis::World visibleState();
+
+  double ups() const { return ups_; }
 
  private:
   void simThread();
   void simStep();
-  bool obstructed(const sf::Pos& pos) const;
-  float moveRobot(sf::Robot& robot, float dist);
+  vis::World extractVisibleState() const;
 
  private:
-  sf::World world_;
-  sf::World snapshot_;
+  b2World world_;
+  float timestamp_ = 0;
+
+  vis::World snapshot_;
   core::RateTracker ups_tracker_;
+  std::atomic<double> ups_;
   mutable std::mutex snapshot_lock_;
 
   SimState sim_state_ = SimState::Invalid;
