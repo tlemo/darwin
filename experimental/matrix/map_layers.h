@@ -4,6 +4,7 @@
 #include "visible_world_state.h"
 
 #include <QGraphicsItem>
+#include <QPointF>
 #include <QRectF>
 
 class MapLayer : public QGraphicsItem {
@@ -23,10 +24,14 @@ class WorldMap : public MapLayer {
   explicit WorldMap(const QRectF& bounding_rect, const vis::World* world)
       : MapLayer(bounding_rect), world_(world) {}
 
+  void setCursorPosition(const QPointF& pos, bool enable_highlighting);
+
   void paint(QPainter* painter,
              const QStyleOptionGraphicsItem* option,
              QWidget* widget) override;
 
  private:
   const vis::World* world_ = nullptr;
+  QPointF cursor_pos_;
+  bool enable_highlighting_ = false;
 };

@@ -9,8 +9,15 @@
 #include <QMarginsF>
 #include <QStyleOptionGraphicsItem>
 
+#include <limits>
+
 static QPointF vecToPoint(const b2Vec2& v) {
   return QPointF(v.x, v.y);
+}
+
+void WorldMap::setCursorPosition(const QPointF& pos, bool enable_highlighting) {
+  cursor_pos_ = pos;
+  enable_highlighting_ = enable_highlighting;
 }
 
 void WorldMap::paint(QPainter* painter,
@@ -22,6 +29,11 @@ void WorldMap::paint(QPainter* painter,
   painter->setPen(Qt::NoPen);
   painter->drawRect(bounding_rect_);
 
+  // track the closest object to the cursor position
+  double closest_dist_squared = std::numeric_limits<float>::infinity();
+  QPointF selection_pos;
+  float selection_radius = 0;
+
   for (const auto& obj : *world_) {
     const auto ds = obj.radius;
     const auto clip_rect = option->exposedRect.adjusted(-ds, -ds, ds, ds);
@@ -31,6 +43,15 @@ void WorldMap::paint(QPainter* painter,
     const auto center = vecToPoint(obj.worldPoint(b2Vec2(0, 0)));
     if (!clip_rect.contains(center)) {
       continue;
+    }
+
+    const auto dx = center.x() - cursor_pos_.x();
+    const auto dy = center.y() - cursor_pos_.y();
+    const auto dist_squared = dx * dx + dy * dy;
+    if (dist_squared < closest_dist_squared) {
+      closest_dist_squared = dist_squared;
+      selection_pos = center;
+      selection_radius = obj.radius;
     }
 
     if (lod_size < 0.5) {
@@ -78,5 +99,12 @@ void WorldMap::paint(QPainter* painter,
         break;
       }
     }
+  }
+
+  if (enable_highlighting_ && selection_radius > 0) {
+    const auto r = selection_radius * 1.2;
+    painter->setPen(QPen(Qt::black, 0, Qt::PenStyle::DashLine));
+    painter->setBrush(Qt::NoBrush);
+    painter->drawEllipse(selection_pos, r, r);
   }
 }

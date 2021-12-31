@@ -21,6 +21,7 @@ MainWindow::MainWindow() : QMainWindow(nullptr), ui(new Ui::MainWindow) {
 
   ui->action_pan_view->setChecked(true);
   ui->action_select->setChecked(false);
+  ui->map_view->setMode(MapView::Mode::Pan);
 
   connect(ui->map_view, &MapView::zoomIn, this, &MainWindow::zoomIn);
   connect(ui->map_view, &MapView::zoomOut, this, &MainWindow::zoomOut);
@@ -158,12 +159,10 @@ void MainWindow::simStep() {
 
 void MainWindow::on_action_select_toggled(bool checked) {
   ui->action_pan_view->setChecked(!checked);
-  ui->map_view->setDragMode(checked ? QGraphicsView::NoDrag
-                                    : QGraphicsView::ScrollHandDrag);
+  ui->map_view->setMode(checked ? MapView::Mode::Select : MapView::Mode::Pan);
 }
 
 void MainWindow::on_action_pan_view_toggled(bool checked) {
   ui->action_select->setChecked(!checked);
-  ui->map_view->setDragMode(checked ? QGraphicsView::ScrollHandDrag
-                                    : QGraphicsView::NoDrag);
+  ui->map_view->setMode(checked ? MapView::Mode::Pan : MapView::Mode::Select);
 }

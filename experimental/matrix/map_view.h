@@ -13,9 +13,14 @@ class MapView : public QGraphicsView {
   Q_OBJECT
 
  public:
+  enum class Mode { None, Select, Pan };
+
+ public:
   explicit MapView(QMainWindow* parent);
 
   void updateState(const vis::World& visible_state);
+
+  void setMode(Mode mode);
 
   double fps() const { return fps_tracker_.currentRate(); }
 
@@ -30,4 +35,5 @@ class MapView : public QGraphicsView {
  private:
   MapScene* scene_ = nullptr;
   core::RateTracker fps_tracker_;
+  Mode mode_ = Mode::None;
 };
