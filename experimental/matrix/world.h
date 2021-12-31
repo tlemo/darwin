@@ -36,7 +36,7 @@ class World : public core::NonCopyable {
 
   vis::World extractVisibleState() const;
 
-  b2Body* addBall(float x, float y);
+  b2Body* addBall(const b2Vec2& pos);
 
  private:
   b2World world_;

@@ -26,7 +26,7 @@ void World::generateWorld() {
   b2FixtureDef wall_fixture_def;
   wall_fixture_def.shape = &wall_shape;
   wall_fixture_def.friction = 10.0f;
-  wall_fixture_def.restitution = 0.5f;
+  wall_fixture_def.restitution = 0.8f;
   wall_fixture_def.material.color = b2Color(0.2, 0.5, 0.1);
   wall_fixture_def.material.emit_intensity = 0.1f;
 
@@ -48,10 +48,33 @@ void World::generateWorld() {
   std::default_random_engine rnd(rd());
   uniform_real_distribution<float> dist_x(-kWidth / 2, kWidth / 2);
   uniform_real_distribution<float> dist_y(-kHeight / 2, kHeight / 2);
-  uniform_real_distribution<float> dist_v(0, 1);
+  uniform_real_distribution<float> dist_v(-10, 10);
+  uniform_real_distribution<float> dist_wall_size(0.5, 5);
+
+  for (int i = 0; i < 250; ++i) {
+    const float x = dist_x(rnd);
+    const float y = dist_y(rnd);
+    const float w = dist_wall_size(rnd);
+    const float h = dist_wall_size(rnd);
+
+    b2PolygonShape shape;
+    shape.SetAsBox(w, h, b2Vec2(x, y), 0);
+
+    wall_fixture_def.shape = &shape;
+    walls->CreateFixture(&wall_fixture_def);
+  }
 
   for (int i = 0; i < 10000; ++i) {
-    const auto body = addBall(dist_x(rnd), dist_y(rnd));
+  retry:
+    const b2Vec2 pos(dist_x(rnd), dist_y(rnd));
+
+    for (auto fixture = walls->GetFixtureList(); fixture; fixture = fixture->GetNext()) {
+      if (fixture->TestPoint(pos)) {
+        goto retry;
+      }
+    }
+
+    const auto body = addBall(pos);
     body->SetLinearVelocity(b2Vec2(dist_v(rnd), dist_v(rnd)));
   }
 
@@ -139,10 +162,10 @@ vis::World World::extractVisibleState() const {
   return vis_world;
 }
 
-b2Body* World::addBall(float x, float y) {
+b2Body* World::addBall(const b2Vec2& pos) {
   b2BodyDef body_def;
   body_def.type = b2_dynamicBody;
-  body_def.position.Set(x, y);
+  body_def.position = pos;
   auto body = world_.CreateBody(&body_def);
 
   b2CircleShape shape;
@@ -152,7 +175,7 @@ b2Body* World::addBall(float x, float y) {
   fixture_def.shape = &shape;
   fixture_def.density = 1.0f;
   fixture_def.friction = 0.3f;
-  fixture_def.restitution = 0.6f;
+  fixture_def.restitution = 0.8f;
   fixture_def.material.color = b2Color(1.0, 0.5, 0.1);
   fixture_def.material.emit_intensity = 0.1f;
   body->CreateFixture(&fixture_def);
