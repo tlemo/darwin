@@ -44,6 +44,17 @@ void World::generateWorld() {
   wall_shape.Set(top_left, top_right);
   walls->CreateFixture(&wall_fixture_def);
 
+  std::random_device rd;
+  std::default_random_engine rnd(rd());
+  uniform_real_distribution<float> dist_x(-kWidth / 2, kWidth / 2);
+  uniform_real_distribution<float> dist_y(-kHeight / 2, kHeight / 2);
+  uniform_real_distribution<float> dist_v(0, 1);
+
+  for (int i = 0; i < 10000; ++i) {
+    const auto body = addBall(dist_x(rnd), dist_y(rnd));
+    body->SetLinearVelocity(b2Vec2(dist_v(rnd), dist_v(rnd)));
+  }
+
   sim_state_ = SimState::Paused;
   state_cv_.notify_all();
 }
@@ -130,6 +141,27 @@ vis::World World::extractVisibleState() const {
   }
 
   return vis_world;
+}
+
+b2Body* World::addBall(float x, float y) {
+  b2BodyDef body_def;
+  body_def.type = b2_dynamicBody;
+  body_def.position.Set(x, y);
+  auto body = world_.CreateBody(&body_def);
+
+  b2CircleShape shape;
+  shape.m_radius = 0.1f;
+
+  b2FixtureDef fixture_def;
+  fixture_def.shape = &shape;
+  fixture_def.density = 1.0f;
+  fixture_def.friction = 0.3f;
+  fixture_def.restitution = 0.6f;
+  fixture_def.material.color = b2Color(1.0, 0.5, 0.1);
+  fixture_def.material.emit_intensity = 0.1f;
+  body->CreateFixture(&fixture_def);
+
+  return body;
 }
 
 void World::simThread() {

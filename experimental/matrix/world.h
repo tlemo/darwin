@@ -33,7 +33,10 @@ class World : public core::NonCopyable {
  private:
   void simThread();
   void simStep();
+
   vis::World extractVisibleState() const;
+
+  b2Body* addBall(float x, float y);
 
  private:
   b2World world_;
