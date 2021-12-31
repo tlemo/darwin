@@ -1,6 +1,8 @@
 
 #include "world.h"
 
+#include <core/math_2d.h>
+
 #include <utility>
 #include <random>
 #include <cmath>
@@ -50,6 +52,7 @@ void World::generateWorld() {
   uniform_real_distribution<float> dist_y(-kHeight / 2, kHeight / 2);
   uniform_real_distribution<float> dist_v(-10, 10);
   uniform_real_distribution<float> dist_wall_size(0.5, 5);
+  uniform_real_distribution<float> dist_angle(0, 2 * math::kPi);
 
   for (int i = 0; i < 250; ++i) {
     const float x = dist_x(rnd);
@@ -58,7 +61,7 @@ void World::generateWorld() {
     const float h = dist_wall_size(rnd);
 
     b2PolygonShape shape;
-    shape.SetAsBox(w, h, b2Vec2(x, y), 0);
+    shape.SetAsBox(w, h, b2Vec2(x, y), dist_angle(rnd));
 
     wall_fixture_def.shape = &shape;
     walls->CreateFixture(&wall_fixture_def);
