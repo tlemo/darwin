@@ -26,8 +26,17 @@ void WorldMap::paint(QPainter* painter,
     const auto ds = obj.radius;
     const auto clip_rect = option->exposedRect.adjusted(-ds, -ds, ds, ds);
 
+    const auto lod_size = ds * lod;
+
     const auto center = vecToPoint(obj.worldPoint(b2Vec2(0, 0)));
     if (!clip_rect.contains(center)) {
+      continue;
+    }
+
+    if (lod_size < 0.5) {
+      const auto& color = obj.base_color;
+      painter->setPen(QPen(QColor::fromRgbF(color.r, color.g, color.b), 0));
+      painter->drawPoint(center);
       continue;
     }
 

@@ -6,7 +6,7 @@ QT += core gui widgets
 TARGET = matrix
 TEMPLATE = app
 
-#CONFIG += console
+CONFIG += console
 
 DEFINES += QT_DEPRECATED_WARNINGS
 DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000

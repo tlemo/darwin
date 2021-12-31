@@ -122,6 +122,7 @@ vis::World World::extractVisibleState() const {
           circle.color = fixture->GetMaterial().color;
           circle.center = shape->m_p;
           circle.radius = shape->m_radius;
+          object.base_color = circle.color;
           object.circles.push_back(circle);
           const float dist = circle.center.Length() + circle.radius;
           radius_squared = max(radius_squared, dist * dist);
@@ -135,6 +136,7 @@ vis::World World::extractVisibleState() const {
           edge.b = shape->m_vertex2;
           update_radius(edge.a);
           update_radius(edge.b);
+          object.base_color = edge.color;
           object.edges.push_back(edge);
           break;
         }
@@ -147,6 +149,7 @@ vis::World World::extractVisibleState() const {
             polygon.points.push_back(p);
             update_radius(p);
           }
+          object.base_color = polygon.color;
           object.polygons.push_back(std::move(polygon));
           break;
         }
