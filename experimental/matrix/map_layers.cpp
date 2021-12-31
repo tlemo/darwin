@@ -47,6 +47,9 @@ void WorldMap::paint(QPainter* painter,
       const auto a = vecToPoint(obj.worldPoint(edge.a));
       const auto b = vecToPoint(obj.worldPoint(edge.b));
       painter->drawLine(a, b);
+      if (lod_size < 5.0) {
+        break;
+      }
     }
 
     // circles
@@ -56,6 +59,9 @@ void WorldMap::paint(QPainter* painter,
       painter->setBrush(QColor::fromRgbF(color.r, color.g, color.b, 0.4));
       const auto p = vecToPoint(obj.worldPoint(circle.center));
       painter->drawEllipse(p, circle.radius, circle.radius);
+      if (lod_size < 5.0) {
+        break;
+      }
     }
 
     // polygons
@@ -68,6 +74,9 @@ void WorldMap::paint(QPainter* painter,
         shape.append(vecToPoint(obj.worldPoint(p)));
       }
       painter->drawPolygon(shape);
+      if (lod_size < 8.0) {
+        break;
+      }
     }
   }
 }
