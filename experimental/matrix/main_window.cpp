@@ -17,34 +17,13 @@ MainWindow::MainWindow() : QMainWindow(nullptr), ui(new Ui::MainWindow) {
   ui->setupUi(this);
 
   setupToolbar();
+  setupToolWindows();
+
+  ui->action_pan_view->setChecked(true);
+  ui->action_select->setChecked(false);
 
   connect(ui->map_view, &MapView::zoomIn, this, &MainWindow::zoomIn);
   connect(ui->map_view, &MapView::zoomOut, this, &MainWindow::zoomOut);
-
-  // main toolbar menu entry
-  ui->menu_windows->addAction(ui->tool_bar->toggleViewAction());
-
-  // configure docking
-  setCorner(Qt::TopLeftCorner, Qt::LeftDockWidgetArea);
-  setCorner(Qt::BottomLeftCorner, Qt::LeftDockWidgetArea);
-  setCorner(Qt::TopRightCorner, Qt::RightDockWidgetArea);
-  setCorner(Qt::BottomRightCorner, Qt::RightDockWidgetArea);
-
-  // camera window
-  auto camera_window = new CameraWindow(this);
-  dockWindow(camera_window, Qt::AllDockWidgetAreas, Qt::BottomDockWidgetArea);
-
-  // touch window
-  auto touch_window = new TouchWindow(this);
-  dockWindow(touch_window, Qt::AllDockWidgetAreas, Qt::LeftDockWidgetArea);
-
-  // accelerometer window
-  auto accelerometer_window = new AccelerometerWindow(this);
-  dockWindow(accelerometer_window, Qt::AllDockWidgetAreas, Qt::LeftDockWidgetArea);
-
-  // compass window
-  auto compass_window = new CompassWindow(this);
-  dockWindow(compass_window, Qt::AllDockWidgetAreas, Qt::LeftDockWidgetArea);
 
   status_label = new QLabel;
   status_label->setFrameStyle(QFrame::Panel | QFrame::Sunken);
@@ -127,6 +106,33 @@ void MainWindow::setupToolbar() {
   ui->tool_bar->addWidget(toolbar_controls);
 }
 
+void MainWindow::setupToolWindows() {
+  // main toolbar menu entry
+  ui->menu_windows->addAction(ui->tool_bar->toggleViewAction());
+
+  // configure docking
+  setCorner(Qt::TopLeftCorner, Qt::LeftDockWidgetArea);
+  setCorner(Qt::BottomLeftCorner, Qt::LeftDockWidgetArea);
+  setCorner(Qt::TopRightCorner, Qt::RightDockWidgetArea);
+  setCorner(Qt::BottomRightCorner, Qt::RightDockWidgetArea);
+
+  // camera window
+  auto camera_window = new CameraWindow(this);
+  dockWindow(camera_window, Qt::AllDockWidgetAreas, Qt::BottomDockWidgetArea);
+
+  // touch window
+  auto touch_window = new TouchWindow(this);
+  dockWindow(touch_window, Qt::AllDockWidgetAreas, Qt::LeftDockWidgetArea);
+
+  // accelerometer window
+  auto accelerometer_window = new AccelerometerWindow(this);
+  dockWindow(accelerometer_window, Qt::AllDockWidgetAreas, Qt::LeftDockWidgetArea);
+
+  // compass window
+  auto compass_window = new CompassWindow(this);
+  dockWindow(compass_window, Qt::AllDockWidgetAreas, Qt::LeftDockWidgetArea);
+}
+
 void MainWindow::dockWindow(ToolWindow* tool_window,
                             Qt::DockWidgetAreas allowed_areas,
                             Qt::DockWidgetArea area) {
@@ -148,4 +154,16 @@ void MainWindow::simStep() {
 
   status_label->setText(
       QString::asprintf("%.2f fps, %.2f ups", ui->map_view->fps(), world_.ups()));
+}
+
+void MainWindow::on_action_select_toggled(bool checked) {
+  ui->action_pan_view->setChecked(!checked);
+  ui->map_view->setDragMode(checked ? QGraphicsView::NoDrag
+                                    : QGraphicsView::ScrollHandDrag);
+}
+
+void MainWindow::on_action_pan_view_toggled(bool checked) {
+  ui->action_select->setChecked(!checked);
+  ui->map_view->setDragMode(checked ? QGraphicsView::ScrollHandDrag
+                                    : QGraphicsView::NoDrag);
 }

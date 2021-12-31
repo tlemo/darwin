@@ -73,6 +73,8 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+   <addaction name="action_select"/>
+   <addaction name="action_pan_view"/>
   </widget>
   <action name="action_exit">
    <property name="text">
@@ -101,6 +103,25 @@
    </property>
    <property name="toolTip">
     <string>Zoom Out</string>
+   </property>
+  </action>
+  <action name="action_select">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Select</string>
+   </property>
+   <property name="toolTip">
+    <string>Select</string>
+   </property>
+  </action>
+  <action name="action_pan_view">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Pan View</string>
    </property>
   </action>
  </widget>

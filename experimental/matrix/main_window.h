@@ -30,6 +30,10 @@ class MainWindow : public QMainWindow {
 
   void updateToolWindows();
 
+ private slots:
+  void on_action_select_toggled(bool checked);
+  void on_action_pan_view_toggled(bool checked);
+
  private:
   void zoomIn();
   void zoomOut();
@@ -37,6 +41,7 @@ class MainWindow : public QMainWindow {
   void updateZoom();
 
   void setupToolbar();
+  void setupToolWindows();
 
   void dockWindow(ToolWindow* tool_window,
                   Qt::DockWidgetAreas allowed_areas,
