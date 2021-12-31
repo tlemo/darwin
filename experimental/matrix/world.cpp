@@ -74,12 +74,8 @@ void World::pauseSimulation() {
 }
 
 const vis::World World::visibleState() {
-  vis::World visible_state;
-  {
-    unique_lock<mutex> guard(snapshot_lock_);
-    swap(visible_state, snapshot_);
-  }
-  return visible_state;
+  unique_lock<mutex> guard(snapshot_lock_);
+  return snapshot_;
 }
 
 vis::World World::extractVisibleState() const {
