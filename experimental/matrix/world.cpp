@@ -11,11 +11,11 @@
 #include <array>
 using namespace std;
 
-Simulation::Simulation() : world_(b2Vec2(0, 0)) {
-  new std::thread(&Simulation::simThread, this);
+World::World() : world_(b2Vec2(0, 0)) {
+  new std::thread(&World::simThread, this);
 }
 
-void Simulation::generateWorld() {
+void World::generateWorld() {
   printf("Generating world...\n");
 
   unique_lock<mutex> guard(state_lock_);
@@ -86,26 +86,26 @@ void Simulation::generateWorld() {
   state_cv_.notify_all();
 }
 
-void Simulation::runSimulation() {
+void World::runSimulation() {
   unique_lock<mutex> guard(state_lock_);
   CHECK(sim_state_ != SimState::Invalid);
   sim_state_ = SimState::Running;
   state_cv_.notify_all();
 }
 
-void Simulation::pauseSimulation() {
+void World::pauseSimulation() {
   unique_lock<mutex> guard(state_lock_);
   CHECK(sim_state_ != SimState::Invalid);
   sim_state_ = SimState::Paused;
   state_cv_.notify_all();
 }
 
-const vis::World Simulation::visibleState() {
+const vis::World World::visibleState() {
   unique_lock<mutex> guard(snapshot_lock_);
   return snapshot_;
 }
 
-vis::World Simulation::extractVisibleState() const {
+vis::World World::extractVisibleState() const {
   vis::World vis_world;
 
   for (const b2Body* body = world_.GetBodyList(); body; body = body->GetNext()) {
@@ -169,7 +169,7 @@ vis::World Simulation::extractVisibleState() const {
   return vis_world;
 }
 
-b2Body* Simulation::addBall(const b2Vec2& pos) {
+b2Body* World::addBall(const b2Vec2& pos) {
   b2BodyDef body_def;
   body_def.type = b2_dynamicBody;
   body_def.position = pos;
@@ -208,7 +208,7 @@ b2Body* Simulation::addBall(const b2Vec2& pos) {
   return body;
 }
 
-void Simulation::simThread() {
+void World::simThread() {
   for (;;) {
     {
       unique_lock<mutex> guard(state_lock_);
@@ -230,7 +230,7 @@ void Simulation::simThread() {
   }
 }
 
-void Simulation::simStep() {
+void World::simStep() {
   constexpr float32 kTimeStep = 1.0f / 50.0f;
   constexpr int32 kVelocityIterations = 10;
   constexpr int32 kPositionIterations = 10;

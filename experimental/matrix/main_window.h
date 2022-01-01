@@ -52,7 +52,7 @@ class MainWindow : public QMainWindow {
  private:
   Ui::MainWindow* ui = nullptr;
   vector<ToolWindow*> tool_windows_;
-  Simulation simulation_;
+  World world_;
   QTimer timer_;
   QSlider* zoom_slider = nullptr;
   QLabel* status_label = nullptr;

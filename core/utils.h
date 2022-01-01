@@ -52,9 +52,9 @@ namespace core {
                                 ...);
 
 //! A runtime check, present in all build flavors
-#define CHECK(x, ...)                                               \
-  do {                                                              \
-    if (!(x))                                                       \
+#define CHECK(x, ...)                                             \
+  do {                                                            \
+    if (!(x))                                                     \
       core::__checkFailed(#x, __LINE__, __FILE__, ##__VA_ARGS__); \
   } while (false)
 
@@ -64,10 +64,10 @@ namespace core {
 #define FATAL(msg, ...) core::__fatal("\nFATAL: " msg "\n\n", ##__VA_ARGS__)
 
 //! Classes derived from this are not copyable or movable
-//! 
+//!
 //! \warning Technically, a derived class could provide the copy or move operations,
 //!   case in which they would defeat the purpose of this mixin base class. Don't do it.
-//! 
+//!
 class NonCopyable {
  public:
   NonCopyable() = default;
@@ -75,6 +75,53 @@ class NonCopyable {
   // no copy/move semantics
   NonCopyable(const NonCopyable&) = delete;
   NonCopyable& operator=(const NonCopyable&) = delete;
+};
+
+//! A generic root for a hierarchy of polymorphic classes:
+//! - It ensures virtual destructors
+//! - Provides the base->as<Derived>() and node->isA<T>() notation
+class PolymorphicBase {
+ public:
+  virtual ~PolymorphicBase() = default;
+
+  //! Replacement for static_cast<T*>(ptr): ptr->as<T>()
+  //! (checked in DEBUG builds)
+  template <class T>
+  T* as() {
+#ifdef NDEBUG
+    auto downcast_ptr = static_cast<T*>(this);
+#else
+    auto downcast_ptr = dynamic_cast<T*>(this);
+    assert(downcast_ptr != nullptr);
+#endif
+    return downcast_ptr;
+  }
+
+  template <class T>
+  const T* as() const {
+#ifdef NDEBUG
+    auto downcast_ptr = static_cast<const T*>(this);
+#else
+    auto downcast_ptr = dynamic_cast<const T*>(this);
+    assert(downcast_ptr != nullptr);
+#endif
+    return downcast_ptr;
+  }
+
+  //! Check if the runtime time is T (or derived from T)
+  //!
+  //! \note Don't use this for conditional casts. Instead, use:
+  //!
+  //!  if (auto t = dynamic_cast<T>(p)) { ... }
+  //!
+  //! instead of:
+  //!
+  //!  if (p->isA<T>()) { auto t = p->as<T>(); ... }
+  //!
+  template <class T>
+  bool isA() const {
+    return dynamic_cast<const T*>(this) != nullptr;
+  }
 };
 
 }  // namespace core
