@@ -54,7 +54,7 @@ void WorldMap::paint(QPainter* painter,
       selection_radius = obj.radius;
     }
 
-    if (lod_size < 0.5) {
+    if (lod_size < 1.1) {
       const auto& color = obj.base_color;
       painter->setPen(QPen(QColor::fromRgbF(color.r, color.g, color.b), 0));
       painter->drawPoint(center);

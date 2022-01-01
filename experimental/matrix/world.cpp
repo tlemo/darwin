@@ -8,6 +8,7 @@
 #include <cmath>
 #include <limits>
 #include <thread>
+#include <array>
 using namespace std;
 
 World::World() : world_(b2Vec2(0, 0)) {
@@ -174,6 +175,12 @@ b2Body* World::addBall(const b2Vec2& pos) {
   body_def.position = pos;
   auto body = world_.CreateBody(&body_def);
 
+  array<b2Vec2, 3> points = {
+    b2Vec2(0, 0.3),
+    b2Vec2(-0.1, 0),
+    b2Vec2(0.1, 0),
+  };
+
   b2CircleShape shape;
   shape.m_radius = 0.1f;
 
@@ -185,6 +192,18 @@ b2Body* World::addBall(const b2Vec2& pos) {
   fixture_def.material.color = b2Color(1.0, 0.5, 0.1);
   fixture_def.material.emit_intensity = 0.1f;
   body->CreateFixture(&fixture_def);
+
+  b2PolygonShape shape2;
+  shape2.Set(points.data(), points.size());
+
+  b2FixtureDef fixture_def2;
+  fixture_def2.shape = &shape2;
+  fixture_def2.density = 1.0f;
+  fixture_def2.friction = 0.3f;
+  fixture_def2.restitution = 0.8f;
+  fixture_def2.material.color = b2Color(1.0, 0.5, 0.3);
+  fixture_def2.material.emit_intensity = 0.1f;
+  body->CreateFixture(&fixture_def2);
 
   return body;
 }
