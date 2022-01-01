@@ -11,11 +11,11 @@
 #include <array>
 using namespace std;
 
-World::World() : world_(b2Vec2(0, 0)) {
-  new std::thread(&World::simThread, this);
+Simulation::Simulation() : world_(b2Vec2(0, 0)) {
+  new std::thread(&Simulation::simThread, this);
 }
 
-void World::generateWorld() {
+void Simulation::generateWorld() {
   printf("Generating world...\n");
 
   unique_lock<mutex> guard(state_lock_);
@@ -55,7 +55,7 @@ void World::generateWorld() {
   uniform_real_distribution<float> dist_wall_size(0.5, 5);
   uniform_real_distribution<float> dist_angle(0, 2 * math::kPi);
 
-  for (int i = 0; i < 250; ++i) {
+  for (int i = 0; i < 150; ++i) {
     const float x = dist_x(rnd);
     const float y = dist_y(rnd);
     const float w = dist_wall_size(rnd);
@@ -68,7 +68,7 @@ void World::generateWorld() {
     walls->CreateFixture(&wall_fixture_def);
   }
 
-  for (int i = 0; i < 10000; ++i) {
+  for (int i = 0; i < 5000; ++i) {
   retry:
     const b2Vec2 pos(dist_x(rnd), dist_y(rnd));
 
@@ -86,26 +86,26 @@ void World::generateWorld() {
   state_cv_.notify_all();
 }
 
-void World::runSimulation() {
+void Simulation::runSimulation() {
   unique_lock<mutex> guard(state_lock_);
   CHECK(sim_state_ != SimState::Invalid);
   sim_state_ = SimState::Running;
   state_cv_.notify_all();
 }
 
-void World::pauseSimulation() {
+void Simulation::pauseSimulation() {
   unique_lock<mutex> guard(state_lock_);
   CHECK(sim_state_ != SimState::Invalid);
   sim_state_ = SimState::Paused;
   state_cv_.notify_all();
 }
 
-const vis::World World::visibleState() {
+const vis::World Simulation::visibleState() {
   unique_lock<mutex> guard(snapshot_lock_);
   return snapshot_;
 }
 
-vis::World World::extractVisibleState() const {
+vis::World Simulation::extractVisibleState() const {
   vis::World vis_world;
 
   for (const b2Body* body = world_.GetBodyList(); body; body = body->GetNext()) {
@@ -169,7 +169,7 @@ vis::World World::extractVisibleState() const {
   return vis_world;
 }
 
-b2Body* World::addBall(const b2Vec2& pos) {
+b2Body* Simulation::addBall(const b2Vec2& pos) {
   b2BodyDef body_def;
   body_def.type = b2_dynamicBody;
   body_def.position = pos;
@@ -208,7 +208,7 @@ b2Body* World::addBall(const b2Vec2& pos) {
   return body;
 }
 
-void World::simThread() {
+void Simulation::simThread() {
   for (;;) {
     {
       unique_lock<mutex> guard(state_lock_);
@@ -230,7 +230,7 @@ void World::simThread() {
   }
 }
 
-void World::simStep() {
+void Simulation::simStep() {
   constexpr float32 kTimeStep = 1.0f / 50.0f;
   constexpr int32 kVelocityIterations = 10;
   constexpr int32 kPositionIterations = 10;

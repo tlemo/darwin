@@ -5,8 +5,10 @@
 #include <QRectF>
 
 MapScene::MapScene() {
-  const QRectF extents(
-      -World::kWidth / 2, -World::kHeight / 2, World::kWidth, World::kHeight);
+  const QRectF extents(-Simulation::kWidth / 2,
+                       -Simulation::kHeight / 2,
+                       Simulation::kWidth,
+                       Simulation::kHeight);
 
   setBackgroundBrush(QBrush(Qt::lightGray));
   setSceneRect(extents);

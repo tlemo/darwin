@@ -11,7 +11,7 @@
 #include <condition_variable>
 #include <atomic>
 
-class World : public core::NonCopyable {
+class Simulation : public core::NonCopyable {
  public:
   static constexpr float kWidth = 200;
   static constexpr float kHeight = 100;
@@ -19,7 +19,7 @@ class World : public core::NonCopyable {
   enum class SimState { Invalid, Paused, Running };
 
  public:
-  World();
+  Simulation();
 
   void generateWorld();
 
