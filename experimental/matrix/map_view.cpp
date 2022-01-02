@@ -14,15 +14,13 @@ MapView::MapView(QMainWindow* parent) : QGraphicsView(parent) {
   setViewportUpdateMode(QGraphicsView::MinimalViewportUpdate);
   setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
   setCacheMode(QGraphicsView::CacheNone);
+
+  setScene(&scene_);
+  scene_.world().runSimulation();
 }
 
-void MapView::updateState(const vis::World& visible_state) {
-  if (!scene_) {
-    scene_ = new MapScene();
-    setScene(scene_);
-  }
-
-  scene_->updateState(visible_state);
+void MapView::refresh() {
+  scene_.updateScene();
 }
 
 void MapView::setMode(MapView::Mode mode) {
@@ -52,8 +50,8 @@ void MapView::wheelEvent(QWheelEvent* event) {
 }
 
 void MapView::paintEvent(QPaintEvent* event) {
-  scene_->setCursorPosition(mapToScene(mapFromGlobal(QCursor::pos())),
-                            mode_ == Mode::Select);
+  scene_.setCursorPosition(mapToScene(mapFromGlobal(QCursor::pos())),
+                           mode_ == Mode::Select);
   QGraphicsView::paintEvent(event);
   fps_tracker_.update();
 }

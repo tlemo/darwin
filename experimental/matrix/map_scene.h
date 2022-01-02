@@ -2,6 +2,7 @@
 #pragma once
 
 #include "map_layers.h"
+#include "test_world.h"
 #include "visible_world_state.h"
 
 #include <QGraphicsScene>
@@ -13,9 +14,13 @@ class MapScene : public QGraphicsScene {
 
   void setCursorPosition(const QPointF& pos, bool enable_highlighting);
 
-  void updateState(const vis::World& visible_world);
+  auto& world() { return world_; }
+  auto& world() const { return world_; }
+
+  void updateScene();
 
  private:
+  TestWorld world_;
   vis::World visible_world_;
   WorldMap* world_layer_ = nullptr;
 };

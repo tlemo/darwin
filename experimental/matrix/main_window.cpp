@@ -32,10 +32,7 @@ MainWindow::MainWindow() : QMainWindow(nullptr), ui(new Ui::MainWindow) {
 
   updateZoom();
 
-  world_.generateWorld();
-  world_.runSimulation();
-
-  connect(&timer_, &QTimer::timeout, this, &MainWindow::simStep);
+  connect(&timer_, &QTimer::timeout, this, &MainWindow::refresh);
   timer_.setInterval(20);
   timer_.start();
 }
@@ -149,12 +146,12 @@ void MainWindow::dockWindow(ToolWindow* tool_window,
   tool_windows_.push_back(tool_window);
 }
 
-void MainWindow::simStep() {
-  const auto& visible_state = world_.visibleState();
-  ui->map_view->updateState(visible_state);
+void MainWindow::refresh() {
+  ui->map_view->refresh();
 
-  status_label->setText(
-      QString::asprintf("%.2f fps, %.2f ups", ui->map_view->fps(), world_.ups()));
+  const double ups = ui->map_view->ups();
+  const double fps = ui->map_view->fps();
+  status_label->setText(QString::asprintf("%.2f fps, %.2f ups", fps, ups));
 }
 
 void MainWindow::on_action_select_toggled(bool checked) {

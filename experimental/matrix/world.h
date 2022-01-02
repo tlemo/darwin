@@ -5,6 +5,7 @@
 
 #include <core/rate_tracker.h>
 #include <core/utils.h>
+#include <core/sim/scene.h>
 #include <third_party/box2d/box2d.h>
 
 #include <mutex>
@@ -12,16 +13,10 @@
 #include <atomic>
 
 class World : public core::NonCopyable, public core::PolymorphicBase {
- public:
-  static constexpr float kWidth = 200;
-  static constexpr float kHeight = 100;
-
   enum class SimState { Invalid, Paused, Running };
 
  public:
-  World();
-
-  void generateWorld();
+  explicit World(const sim::Rect& extents);
 
   void runSimulation();
   void pauseSimulation();
@@ -30,18 +25,22 @@ class World : public core::NonCopyable, public core::PolymorphicBase {
 
   double ups() const { return ups_; }
 
+  const auto& extents() const { return extents_; }
+
+  float timestamp() const { return timestamp_; }
+
  private:
   void simThread();
   void simStep();
 
   vis::World extractVisibleState() const;
 
-  b2Body* addBall(const b2Vec2& pos);
-
- private:
+ protected:
   b2World world_;
+  sim::Rect extents_;
   float timestamp_ = 0;
 
+ private:
   vis::World snapshot_;
   core::RateTracker ups_tracker_;
   std::atomic<double> ups_;

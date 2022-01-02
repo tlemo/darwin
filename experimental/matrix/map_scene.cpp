@@ -5,8 +5,9 @@
 #include <QRectF>
 
 MapScene::MapScene() {
+  const auto sim_extents = world_.extents();
   const QRectF extents(
-      -World::kWidth / 2, -World::kHeight / 2, World::kWidth, World::kHeight);
+      sim_extents.x, sim_extents.y, sim_extents.width, sim_extents.height);
 
   setBackgroundBrush(QBrush(Qt::lightGray));
   setSceneRect(extents);
@@ -19,7 +20,7 @@ void MapScene::setCursorPosition(const QPointF& pos, bool enable_highlighting) {
   world_layer_->setCursorPosition(pos, enable_highlighting);
 }
 
-void MapScene::updateState(const vis::World& visible_world) {
-  visible_world_ = visible_world;
+void MapScene::updateScene() {
+  visible_world_ = world_.visibleState();
   invalidate();
 }

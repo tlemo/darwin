@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include "world.h"
+#include "tool_window.h"
 
 #include <QMainWindow>
 #include <QTimer>
@@ -15,9 +15,6 @@ using namespace std;
 namespace Ui {
 class MainWindow;
 }
-
-class ToolWindow;
-class SandboxWindow;
 
 class MainWindow : public QMainWindow {
   Q_OBJECT
@@ -47,12 +44,11 @@ class MainWindow : public QMainWindow {
                   Qt::DockWidgetAreas allowed_areas,
                   Qt::DockWidgetArea area);
 
-  void simStep();
+  void refresh();
 
  private:
   Ui::MainWindow* ui = nullptr;
   vector<ToolWindow*> tool_windows_;
-  World world_;
   QTimer timer_;
   QSlider* zoom_slider = nullptr;
   QLabel* status_label = nullptr;

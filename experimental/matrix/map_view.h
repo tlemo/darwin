@@ -2,7 +2,6 @@
 #pragma once
 
 #include "map_scene.h"
-#include "visible_world_state.h"
 
 #include <core/rate_tracker.h>
 
@@ -18,10 +17,11 @@ class MapView : public QGraphicsView {
  public:
   explicit MapView(QMainWindow* parent);
 
-  void updateState(const vis::World& visible_state);
+  void refresh();
 
   void setMode(Mode mode);
 
+  double ups() const { return scene_.world().ups(); }
   double fps() const { return fps_tracker_.currentRate(); }
 
  signals:
@@ -33,7 +33,7 @@ class MapView : public QGraphicsView {
   void paintEvent(QPaintEvent* event) override;
 
  private:
-  MapScene* scene_ = nullptr;
+  MapScene scene_;
   core::RateTracker fps_tracker_;
   Mode mode_ = Mode::None;
 };
