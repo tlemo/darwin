@@ -12,6 +12,9 @@
 #include <condition_variable>
 #include <atomic>
 
+// This looks very similar to sim::Scene, with a few important differences:
+// - The simulation runs on a dedicated background thread
+// - The visible state is extracted and made available thread-safe
 class World : public core::NonCopyable, public core::PolymorphicBase {
   enum class SimState { Invalid, Paused, Running };
 
