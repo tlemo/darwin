@@ -3,12 +3,15 @@
 
 #include "map_layers.h"
 #include "test_world.h"
+#include "seg_tree_world.h"
 #include "visible_world_state.h"
 
 #include <QGraphicsScene>
 #include <QPointF>
 
 class MapScene : public QGraphicsScene {
+  using WorldType = SegTreeWorld;
+
  public:
   MapScene();
 
@@ -20,7 +23,7 @@ class MapScene : public QGraphicsScene {
   void updateScene();
 
  private:
-  TestWorld world_;
+  WorldType world_;
   vis::World visible_world_;
   WorldMap* world_layer_ = nullptr;
 };

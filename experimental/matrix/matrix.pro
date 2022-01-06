@@ -17,6 +17,7 @@ SOURCES += \
     map_layers.cpp \
     map_scene.cpp \
     map_view.cpp \
+    seg_tree_world.cpp \
     test_world.cpp \
     tool_window.cpp \
     accelerometer_window.cpp \
@@ -32,6 +33,7 @@ HEADERS += \
     map_layers.h \
     map_scene.h \
     map_view.h \
+    seg_tree_world.h \
     test_world.h \
     tool_window.h \
     accelerometer_window.h \
