@@ -166,7 +166,11 @@ Organism::Organism(World* world,
 
   // develop the organism
   // (this may throw if the genotype doesn't result in a viable phenotype)
-  root_ = createSegment(genotype_.root(), nullptr, b2Vec2(), b2Vec2(), false);
+  constexpr float kTipSize = 0.1f;
+  const float dx = cosf(angle) * kTipSize;
+  const float dy = sinf(angle) * kTipSize;
+  root_ = createSegment(
+      genotype_.root(), nullptr, pos - b2Vec2(dx, dy), pos + b2Vec2(dx, dy), false);
 
   alive_ = true;
 }
@@ -176,15 +180,17 @@ void Organism::simStep(float dt) {
     CHECK(dt > 0);
     age_ += dt;
 
+#if 0
     if (health_ < 0 || age_ > 5.0) {
       die();
       return;
     }
+#endif
 
     gestation_time_ += dt;
     if (gestation_time_ > 3.0) {
       gestation_time_ = 0;
-      reproduce();
+      //reproduce();
     }
 
     animateJoint(root_, current_phase_);
@@ -217,7 +223,7 @@ Organism::Joint Organism::createSegment(const Segment* segment,
   b2BodyDef body_def;
   body_def.type = b2_dynamicBody;
   body_def.position = (base_left + base_right) * 0.5f;
-  body_def.angle = parent_body ? atan2f(d.y, d.x) : 0;
+  body_def.angle = atan2f(d.y, d.x);
   b2Body* body = b2_world->CreateBody(&body_def);
   body_parts_.push_back(body);
 
@@ -283,6 +289,7 @@ Organism::Joint Organism::createSegment(const Segment* segment,
     fixture_def.shape = &shape;
     fixture_def.density = 1.0f;
     fixture_def.material.color = b2Color(0.8f, 0.5f, 0.5f);
+    fixture_def.material.emit_intensity = 0.5f;
     body->CreateFixture(&fixture_def);
   }
 
@@ -357,8 +364,8 @@ void Organism::animateJoint(const Organism::Joint& joint, float phase) {
 }
 
 void Organism::reproduce() {
-  CHECK(root_.box2d_joint);
-  const auto ref_body = root_.box2d_joint->GetBodyA();
+  CHECK(!body_parts_.empty());
+  const auto ref_body = body_parts_.front();
   const auto child_pos = ref_body->GetPosition();
   const auto child_angle = ref_body->GetAngle();
   world_->newOrganism(child_pos, child_angle, genotype_);
@@ -411,13 +418,11 @@ World::World() : ::World(sim::Rect(-kWidth / 2, -kHeight / 2, kWidth, kHeight)) 
     newFood(pos);
   }
 
-#if 0
   for (int i = 0; i < 5000; ++i) {
     const auto pos = b2Vec2(dist_x(rnd), dist_y(rnd));
     const auto angle = dist_angle(rnd);
     newOrganism(pos, angle, Genotype());
   }
-#endif
 }
 
 void World::newOrganism(const b2Vec2& pos, float angle, const Genotype& parent_genotype) {

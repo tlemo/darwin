@@ -149,9 +149,11 @@ void MainWindow::dockWindow(ToolWindow* tool_window,
 void MainWindow::refresh() {
   ui->map_view->refresh();
 
+  const double timestamp = ui->map_view->timestamp();
   const double ups = ui->map_view->ups();
   const double fps = ui->map_view->fps();
-  status_label->setText(QString::asprintf("%.2f fps, %.2f ups", fps, ups));
+  status_label->setText(
+      QString::asprintf("Time: %.2f (%.2f fps, %.2f ups)", timestamp, fps, ups));
 }
 
 void MainWindow::on_action_select_toggled(bool checked) {

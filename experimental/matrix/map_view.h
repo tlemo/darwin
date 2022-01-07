@@ -21,6 +21,7 @@ class MapView : public QGraphicsView {
 
   void setMode(Mode mode);
 
+  double timestamp() const { return scene_.world().timestamp(); }
   double ups() const { return scene_.world().ups(); }
   double fps() const { return fps_tracker_.currentRate(); }
 

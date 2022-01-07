@@ -24,8 +24,8 @@ struct Slice {
 };
 
 struct Segment {
-  double length = 0.1;
-  double width = 0.1;
+  double length = 0.3;
+  double width = 0.2;
   bool suppressed = false;
   Segment* side_appendage = nullptr;
   vector<Slice> slices = { Slice() };
