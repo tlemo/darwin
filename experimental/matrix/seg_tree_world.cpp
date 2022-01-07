@@ -408,9 +408,16 @@ World::World() : ::World(sim::Rect(-kWidth / 2, -kHeight / 2, kWidth, kHeight)) 
 
   for (int i = 0; i < 5000; ++i) {
     const auto pos = b2Vec2(dist_x(rnd), dist_y(rnd));
+    newFood(pos);
+  }
+
+#if 0
+  for (int i = 0; i < 5000; ++i) {
+    const auto pos = b2Vec2(dist_x(rnd), dist_y(rnd));
     const auto angle = dist_angle(rnd);
     newOrganism(pos, angle, Genotype());
   }
+#endif
 }
 
 void World::newOrganism(const b2Vec2& pos, float angle, const Genotype& parent_genotype) {
@@ -419,6 +426,25 @@ void World::newOrganism(const b2Vec2& pos, float angle, const Genotype& parent_g
   } catch (const std::exception& e) {
     printf("Organism not viable.\n");
   }
+}
+
+void World::newFood(const b2Vec2& pos) {
+  b2BodyDef body_def;
+  body_def.type = b2_dynamicBody;
+  body_def.position = pos;
+  auto body = world_.CreateBody(&body_def);
+
+  b2CircleShape shape;
+  shape.m_radius = 0.1f;
+
+  b2FixtureDef fixture_def;
+  fixture_def.shape = &shape;
+  fixture_def.density = 1.0f;
+  fixture_def.friction = 0.3f;
+  fixture_def.restitution = 0.8f;
+  fixture_def.material.color = b2Color(0.1, 0.9, 0.1);
+  fixture_def.material.emit_intensity = 0.1f;
+  body->CreateFixture(&fixture_def);
 }
 
 void World::postStep(float dt) {

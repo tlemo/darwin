@@ -24,8 +24,8 @@ struct Slice {
 };
 
 struct Segment {
-  double length = 1.0;
-  double width = 1.0;
+  double length = 0.1;
+  double width = 0.1;
   bool suppressed = false;
   Segment* side_appendage = nullptr;
   vector<Slice> slices = { Slice() };
@@ -130,6 +130,7 @@ class World : public ::World {
   World();
 
   void newOrganism(const b2Vec2& pos, float angle, const Genotype& parent_genotype);
+  void newFood(const b2Vec2& pos);
 
  private:
   void postStep(float dt) override;
