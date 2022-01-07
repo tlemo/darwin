@@ -10,7 +10,7 @@
 #include <QPointF>
 
 class MapScene : public QGraphicsScene {
-  using WorldType = SegTreeWorld;
+  using WorldType = seg_tree::World;
 
  public:
   MapScene();

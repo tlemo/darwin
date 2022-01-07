@@ -32,6 +32,11 @@ class World : public core::NonCopyable, public core::PolymorphicBase {
 
   float timestamp() const { return timestamp_; }
 
+  virtual void preStep() {}
+  virtual void postStep(float /*dt*/) {}
+
+  b2World* box2dWorld() { return &world_; }
+
  private:
   void simThread();
   void simStep();

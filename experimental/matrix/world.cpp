@@ -121,6 +121,8 @@ void World::simStep() {
   constexpr float32 kTimeStep = 1.0f / 50.0f;
   constexpr int32 kVelocityIterations = 10;
   constexpr int32 kPositionIterations = 10;
+  preStep();
   world_.Step(kTimeStep, kVelocityIterations, kPositionIterations);
   timestamp_ += kTimeStep;
+  postStep(kTimeStep);
 }
