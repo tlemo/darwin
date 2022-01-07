@@ -7,6 +7,7 @@
 
 #include <vector>
 #include <memory>
+#include <random>
 using namespace std;
 
 namespace seg_tree {
@@ -92,7 +93,8 @@ class Organism {
  public:
   Organism(World* world, const b2Vec2& pos, float angle, const Genotype& parent_genotype);
 
-  void simStep(float dt);
+  // returns `true` if still alive
+  bool simStep(float dt);
 
  private:
   Joint createSegment(const Segment* segment,
@@ -119,7 +121,9 @@ class Organism {
   float age_ = 0;
   float gestation_time_ = 0;
   float health_ = 0;
-  bool alive_ = false;
+  bool alive_ = false;  // TODO: remove?
+
+  std::default_random_engine rnd_{ std::random_device{}() };
 };
 
 class World : public ::World {

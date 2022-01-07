@@ -3,9 +3,9 @@
 
 #include <core/math_2d.h>
 #include <core/random.h>
+#include <core/exception.h>
 
 #include <utility>
-#include <random>
 #include <cmath>
 #include <limits>
 #include <array>
@@ -171,31 +171,35 @@ Organism::Organism(World* world,
   const float dy = sinf(angle) * kTipSize;
   root_ = createSegment(
       genotype_.root(), nullptr, pos - b2Vec2(dx, dy), pos + b2Vec2(dx, dy), false);
+  if (body_parts_.empty()) {
+    throw core::Exception("Organism not viable");
+  }
 
   alive_ = true;
 }
 
-void Organism::simStep(float dt) {
-  if (alive_) {
-    CHECK(dt > 0);
-    age_ += dt;
+bool Organism::simStep(float dt) {
+  CHECK(alive_);
+  CHECK(dt > 0);
+  age_ += dt;
 
-#if 0
-    if (health_ < 0 || age_ > 5.0) {
-      die();
-      return;
-    }
-#endif
-
-    gestation_time_ += dt;
-    if (gestation_time_ > 3.0) {
-      gestation_time_ = 0;
-      //reproduce();
-    }
-
-    animateJoint(root_, current_phase_);
-    current_phase_ += kPhaseVelocity;
+  if (health_ < 0 || age_ > 5.0) {
+    die();
+    return false;
   }
+
+  gestation_time_ += dt;
+  if (gestation_time_ > 3.0) {
+    bernoulli_distribution dist(0.05);
+    if (dist(rnd_)) {
+      gestation_time_ = 0;
+      reproduce();
+    }
+  }
+
+  animateJoint(root_, current_phase_);
+  current_phase_ += kPhaseVelocity;
+  return true;
 }
 
 Organism::Joint Organism::createSegment(const Segment* segment,
@@ -418,7 +422,7 @@ World::World() : ::World(sim::Rect(-kWidth / 2, -kHeight / 2, kWidth, kHeight)) 
     newFood(pos);
   }
 
-  for (int i = 0; i < 5000; ++i) {
+  for (int i = 0; i < 1000; ++i) {
     const auto pos = b2Vec2(dist_x(rnd), dist_y(rnd));
     const auto angle = dist_angle(rnd);
     newOrganism(pos, angle, Genotype());
@@ -453,8 +457,15 @@ void World::newFood(const b2Vec2& pos) {
 }
 
 void World::postStep(float dt) {
-  for (auto& organism : organisms_) {
-    organism.simStep(dt);
+  vector<Organism> tmp;
+  tmp.reserve(organisms_.size());
+
+  std::swap(tmp, organisms_);
+
+  for (auto& organism : tmp) {
+    if (organism.simStep(dt)) {
+      organisms_.push_back(std::move(organism));
+    }
   }
 }
 
