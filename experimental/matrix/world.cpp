@@ -37,9 +37,11 @@ vis::World World::extractVisibleState() const {
   for (const b2Body* body = world_.GetBodyList(); body; body = body->GetNext()) {
     vis::Object object;
     object.xf = body->GetTransform();
+    object.center = body->GetLocalCenter();
 
     float radius_squared = 0;
-    auto update_radius = [&radius_squared](const b2Vec2& p) {
+    auto update_radius = [&radius_squared, body](const b2Vec2& pos) {
+      const auto p = pos - body->GetLocalCenter();
       radius_squared = max(radius_squared, p.x * p.x + p.y * p.y);
     };
 
@@ -54,7 +56,8 @@ vis::World World::extractVisibleState() const {
           circle.radius = shape->m_radius;
           object.base_color = circle.color;
           object.circles.push_back(circle);
-          const float dist = circle.center.Length() + circle.radius;
+          const auto p = circle.center - body->GetLocalCenter();
+          const float dist = p.Length() + circle.radius;
           radius_squared = max(radius_squared, dist * dist);
           break;
         }

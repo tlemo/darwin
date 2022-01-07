@@ -40,7 +40,7 @@ void WorldMap::paint(QPainter* painter,
 
     const auto lod_size = ds * lod;
 
-    const auto center = vecToPoint(obj.worldPoint(b2Vec2(0, 0)));
+    const auto center = vecToPoint(obj.worldPoint(obj.center));
     if (!clip_rect.contains(center)) {
       continue;
     }

@@ -27,6 +27,7 @@ struct Polygon {
 struct Object {
   float radius;
   b2Transform xf;
+  b2Vec2 center;
   std::vector<Edge> edges;
   std::vector<Circle> circles;
   std::vector<Polygon> polygons;
