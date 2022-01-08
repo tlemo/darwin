@@ -123,7 +123,7 @@ static QPointF vecToPoint(const b2Vec2& v) {
 void World::renderVisualMap() {
   QPainter painter(&visual_map_);
 
-  //painter.setRenderHints(QPainter::Antialiasing);
+  painter.setRenderHints(QPainter::Antialiasing);
   painter.setTransform(visual_map_transformation_);
 
   const QRectF map_rect(extents_.x, extents_.y, extents_.width, extents_.height);

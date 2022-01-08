@@ -31,6 +31,9 @@ class World : public core::NonCopyable, public core::PolymorphicBase {
 
   const vis::World visibleState();
 
+  // experimental!
+  const QImage* visualMap() const { return &visual_map_; }
+
   double ups() const { return ups_; }
 
   const auto& extents() const { return extents_; }
