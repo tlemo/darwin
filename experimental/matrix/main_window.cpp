@@ -132,9 +132,11 @@ void MainWindow::setupToolWindows() {
   dockWindow(compass_window, Qt::AllDockWidgetAreas, Qt::LeftDockWidgetArea);
 
   // visual map window
+#if 0
   auto visual_map_window = new VisualMapWindow(this);
   dockWindow(visual_map_window, Qt::AllDockWidgetAreas, Qt::TopDockWidgetArea);
   visual_map_window->setScene(ui->map_view->mapScene());
+#endif
 }
 
 void MainWindow::dockWindow(ToolWindow* tool_window,

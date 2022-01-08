@@ -9,7 +9,7 @@ VisualMapWindow::VisualMapWindow(QWidget* parent) : ToolWindow(parent) {
   setMinimumSize(64, 64);
   visual_map_widget_ = new VisualMapWidget(this);
   auto layout = new QVBoxLayout(this);
-  layout->setContentsMargins(0, 0, 0, 0);
+  layout->setContentsMargins(2, 2, 2, 2);
   layout->addWidget(visual_map_widget_);
 }
 
