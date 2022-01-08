@@ -4,6 +4,7 @@
 #include "touch_window.h"
 #include "accelerometer_window.h"
 #include "compass_window.h"
+#include "visual_map_window.h"
 #include "ui_main_window.h"
 
 #include <QHBoxLayout>
@@ -129,6 +130,10 @@ void MainWindow::setupToolWindows() {
   // compass window
   auto compass_window = new CompassWindow(this);
   dockWindow(compass_window, Qt::AllDockWidgetAreas, Qt::LeftDockWidgetArea);
+
+  // visual map window
+  auto visual_map_window = new VisualMapWindow(this);
+  dockWindow(visual_map_window, Qt::AllDockWidgetAreas, Qt::TopDockWidgetArea);
 }
 
 void MainWindow::dockWindow(ToolWindow* tool_window,

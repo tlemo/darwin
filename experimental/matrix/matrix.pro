@@ -25,6 +25,7 @@ SOURCES += \
     compass_window.cpp \
     touch_window.cpp \
     visible_world_state.cpp \
+    visual_map_window.cpp \
     world.cpp
     
 
@@ -41,6 +42,7 @@ HEADERS += \
     compass_window.h \
     touch_window.h \
     visible_world_state.h \
+    visual_map_window.h \
     world.h
     
 FORMS += main_window.ui
