@@ -40,7 +40,7 @@ void WorldMap::paint(QPainter* painter,
 
     const auto lod_size = ds * lod;
 
-    const auto center = vecToPoint(obj.worldPoint(obj.center));
+    const auto center = vecToPoint(obj.center);
     if (!clip_rect.contains(center)) {
       continue;
     }
@@ -65,8 +65,8 @@ void WorldMap::paint(QPainter* painter,
     for (const auto& edge : obj.edges) {
       const auto& color = edge.color;
       painter->setPen(QPen(QColor::fromRgbF(color.r, color.g, color.b), 0));
-      const auto a = vecToPoint(obj.worldPoint(edge.a));
-      const auto b = vecToPoint(obj.worldPoint(edge.b));
+      const auto a = vecToPoint(edge.a);
+      const auto b = vecToPoint(edge.b);
       painter->drawLine(a, b);
       if (lod_size < 5.0) {
         break;
@@ -78,7 +78,7 @@ void WorldMap::paint(QPainter* painter,
       const auto& color = circle.color;
       painter->setPen(QPen(QColor::fromRgbF(color.r, color.g, color.b), 0));
       painter->setBrush(QColor::fromRgbF(color.r, color.g, color.b, 0.4));
-      const auto p = vecToPoint(obj.worldPoint(circle.center));
+      const auto p = vecToPoint(circle.center);
       painter->drawEllipse(p, circle.radius, circle.radius);
       if (lod_size < 5.0) {
         break;
@@ -92,7 +92,7 @@ void WorldMap::paint(QPainter* painter,
       painter->setBrush(QColor::fromRgbF(color.r, color.g, color.b, 0.4));
       QPolygonF shape;
       for (const auto& p : polygon.points) {
-        shape.append(vecToPoint(obj.worldPoint(p)));
+        shape.append(vecToPoint(p));
       }
       painter->drawPolygon(shape);
       if (lod_size < 8.0) {

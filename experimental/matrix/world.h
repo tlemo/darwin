@@ -8,6 +8,9 @@
 #include <core/sim/scene.h>
 #include <third_party/box2d/box2d.h>
 
+#include <QImage>
+#include <QTransform>
+
 #include <mutex>
 #include <condition_variable>
 #include <atomic>
@@ -17,6 +20,8 @@
 // - The visible state is extracted and made available thread-safe
 class World : public core::NonCopyable, public core::PolymorphicBase {
   enum class SimState { Invalid, Paused, Running };
+
+  static constexpr double kVisualMapScale = 10.0;
 
  public:
   explicit World(const sim::Rect& extents);
@@ -43,6 +48,11 @@ class World : public core::NonCopyable, public core::PolymorphicBase {
 
   vis::World extractVisibleState() const;
 
+  void setupVisualMapTransformation();
+
+  // updates visual_map_, called from the simulation thread
+  void renderVisualMap();
+
  protected:
   b2World world_;
   sim::Rect extents_;
@@ -57,4 +67,7 @@ class World : public core::NonCopyable, public core::PolymorphicBase {
   SimState sim_state_ = SimState::Invalid;
   mutable std::mutex state_lock_;
   mutable std::condition_variable state_cv_;
+
+  QImage visual_map_;
+  QTransform visual_map_transformation_;
 };

@@ -26,14 +26,11 @@ struct Polygon {
 
 struct Object {
   float radius;
-  b2Transform xf;
   b2Vec2 center;
   std::vector<Edge> edges;
   std::vector<Circle> circles;
   std::vector<Polygon> polygons;
   b2Color base_color;
-
-  b2Vec2 worldPoint(const b2Vec2& local_point) const { return b2Mul(xf, local_point); }
 };
 
 using World = std::vector<Object>;
