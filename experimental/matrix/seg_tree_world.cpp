@@ -4,6 +4,7 @@
 #include <core/math_2d.h>
 #include <core/random.h>
 #include <core/exception.h>
+#include <core/parallel_for_each.h>
 
 #include <utility>
 #include <cmath>
@@ -465,6 +466,7 @@ void World::newFood(const b2Vec2& pos) {
 }
 
 void World::postStep(float dt) {
+#if 0
   vector<Organism> tmp;
   tmp.reserve(organisms_.size());
 
@@ -475,6 +477,12 @@ void World::postStep(float dt) {
       organisms_.push_back(std::move(organism));
     }
   }
+#else
+  pp::for_each(organisms_, [&](int, Organism& organism) {
+    organism.simStep(dt);
+    // ...
+  });
+#endif
 }
 
 }  // namespace seg_tree
