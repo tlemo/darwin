@@ -175,6 +175,9 @@ Organism::Organism(World* world,
     throw core::Exception("Organism not viable");
   }
 
+  const auto head = body_parts_[0];
+  camera_ = make_unique<sim::Camera>(head, 90, 0.1f, 10.0f, 9);
+
   alive_ = true;
 }
 
@@ -183,6 +186,10 @@ bool Organism::simStep(float dt) {
   CHECK(dt > 0);
   age_ += dt;
 
+  // for testing only
+  const auto vision = camera_->render();
+
+#if 0
   if (health_ < 0 || age_ > 5.0) {
     die();
     return false;
@@ -196,6 +203,7 @@ bool Organism::simStep(float dt) {
       reproduce();
     }
   }
+#endif
 
   animateJoint(root_, current_phase_);
   current_phase_ += kPhaseVelocity;
@@ -422,7 +430,7 @@ World::World() : ::World(sim::Rect(-kWidth / 2, -kHeight / 2, kWidth, kHeight)) 
     newFood(pos);
   }
 
-  for (int i = 0; i < 1000; ++i) {
+  for (int i = 0; i < 10000; ++i) {
     const auto pos = b2Vec2(dist_x(rnd), dist_y(rnd));
     const auto angle = dist_angle(rnd);
     newOrganism(pos, angle, Genotype());

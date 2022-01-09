@@ -3,6 +3,7 @@
 
 #include "world.h"
 
+#include <core/sim/camera.h>
 #include <third_party/box2d/box2d.h>
 
 #include <vector>
@@ -115,6 +116,8 @@ class Organism {
   World* world_ = nullptr;
 
   vector<b2Body*> body_parts_;
+
+  unique_ptr<sim::Camera> camera_;
 
   Genotype genotype_;
 
