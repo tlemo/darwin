@@ -68,7 +68,7 @@ vis::World World::extractVisibleState() const {
           circle.radius = shape->m_radius;
           object.base_color = circle.color;
           object.circles.push_back(circle);
-          const auto p = circle.center - body->GetLocalCenter();
+          const auto p = circle.center - body->GetWorldCenter();
           const float dist = p.Length() + circle.radius;
           radius_squared = max(radius_squared, dist * dist);
           break;
@@ -184,7 +184,9 @@ void World::simThread() {
       ups_ = ups_tracker_.currentRate();
     }
 
+#if 0
     renderVisualMap();
+#endif
   }
 }
 

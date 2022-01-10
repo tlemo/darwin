@@ -177,7 +177,7 @@ Organism::Organism(World* world,
   }
 
   const auto head = body_parts_[0];
-  camera_ = make_unique<sim::Camera>(head, 90, 0.1f, 10.0f, 9);
+  camera_ = make_unique<sim::Camera>(head, 90, 0.1f, 10.0f, 3);
 
   alive_ = true;
 }
@@ -426,12 +426,12 @@ World::World() : ::World(sim::Rect(-kWidth / 2, -kHeight / 2, kWidth, kHeight)) 
   uniform_real_distribution<float> dist_y(-kHeight / 2, kHeight / 2);
   uniform_real_distribution<float> dist_angle(0, 2 * math::kPi);
 
-  for (int i = 0; i < 3000; ++i) {
+  for (int i = 0; i < 5000; ++i) {
     const auto pos = b2Vec2(dist_x(rnd), dist_y(rnd));
     newFood(pos);
   }
 
-  for (int i = 0; i < 1000; ++i) {
+  for (int i = 0; i < 5000; ++i) {
     const auto pos = b2Vec2(dist_x(rnd), dist_y(rnd));
     const auto angle = dist_angle(rnd);
     newOrganism(pos, angle, Genotype());
