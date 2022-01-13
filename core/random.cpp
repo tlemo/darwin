@@ -16,8 +16,6 @@
 
 #include <mutex>
 
-#define DARWIN_DETERMINISTIC_RANDOM_SEED
-
 namespace core {
 
 std::random_device::result_type randomSeed() {
