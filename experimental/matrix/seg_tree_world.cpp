@@ -5,6 +5,7 @@
 #include <core/random.h>
 #include <core/exception.h>
 #include <core/parallel_for_each.h>
+#include <core/random.h>
 
 #include <utility>
 #include <cmath>
@@ -420,8 +421,7 @@ World::World() : ::World(sim::Rect(-kWidth / 2, -kHeight / 2, kWidth, kHeight)) 
   wall_shape.Set(top_left, top_right);
   walls->CreateFixture(&wall_fixture_def);
 
-  std::random_device rd;
-  std::default_random_engine rnd(rd());
+  std::default_random_engine rnd(core::randomSeed());
   uniform_real_distribution<float> dist_x(-kWidth / 2, kWidth / 2);
   uniform_real_distribution<float> dist_y(-kHeight / 2, kHeight / 2);
   uniform_real_distribution<float> dist_angle(0, 2 * math::kPi);

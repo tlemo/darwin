@@ -2,6 +2,7 @@
 #include "test_world.h"
 
 #include <core/math_2d.h>
+#include <core/random.h>
 
 #include <utility>
 #include <random>
@@ -37,8 +38,7 @@ TestWorld::TestWorld() : World(sim::Rect(-kWidth / 2, -kHeight / 2, kWidth, kHei
   wall_shape.Set(top_left, top_right);
   walls->CreateFixture(&wall_fixture_def);
 
-  std::random_device rd;
-  std::default_random_engine rnd(rd());
+  std::default_random_engine rnd(core::randomSeed());
   uniform_real_distribution<float> dist_x(-kWidth / 2, kWidth / 2);
   uniform_real_distribution<float> dist_y(-kHeight / 2, kHeight / 2);
   uniform_real_distribution<float> dist_v(-10, 10);

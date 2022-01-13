@@ -4,6 +4,7 @@
 #include "world.h"
 
 #include <core/sim/camera.h>
+#include <core/random.h>
 #include <third_party/box2d/box2d.h>
 
 #include <vector>
@@ -82,7 +83,7 @@ class Genotype {
 class Organism {
   static constexpr float kPhaseVelocity = b2_pi / 64;
   static constexpr float kPhaseLag = b2_pi / 4;
-  static constexpr float kJointSpeed = 0.15f;
+  static constexpr float kJointSpeed = 1.15f;
   static constexpr float kJointResetSpeed = 0.05f;
 
   struct Joint {
@@ -126,7 +127,7 @@ class Organism {
   float health_ = 0;
   bool alive_ = false;  // TODO: remove?
 
-  std::default_random_engine rnd_{ std::random_device{}() };
+  std::default_random_engine rnd_{ core::randomSeed() };
 };
 
 class World : public ::World {
