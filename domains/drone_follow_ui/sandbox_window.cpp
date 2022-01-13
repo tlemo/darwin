@@ -18,6 +18,7 @@
 #include <core/evolution.h>
 #include <core/logging.h>
 #include <core/math_2d.h>
+#include <core/random.h>
 #include <core_ui/sim/box2d_sandbox_dialog.h>
 
 #include <QString>
@@ -85,8 +86,7 @@ void SandboxWindow::newScene() {
   setSceneUi(nullptr);
   scene_ui_.reset();
 
-  const auto random_seed = std::random_device{}();
-  scene_ = make_unique<drone_follow::Scene>(random_seed, domain_);
+  scene_ = make_unique<drone_follow::Scene>(core::randomSeed(), domain_);
   agent_ = make_unique<sim::DroneController>(genotype_.get(), scene_->drone());
   step_ = 0;
 

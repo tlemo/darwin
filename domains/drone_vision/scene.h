@@ -19,6 +19,7 @@
 #include <core/sim/scene.h>
 #include <core/sim/drone.h>
 #include <core/properties.h>
+#include <core/random.h>
 
 #include <memory>
 #include <random>
@@ -74,7 +75,7 @@ class Scene : public sim::Scene {
   unique_ptr<Drone> drone_;
   SceneVariables variables_;
   const DroneVision* domain_ = nullptr;
-  default_random_engine rnd_{ random_device{}() };
+  default_random_engine rnd_{ core::randomSeed() };
 };
 
 }  // namespace drone_vision

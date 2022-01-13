@@ -17,6 +17,7 @@
 #include <core/darwin.h>
 #include <core/parallel_for_each.h>
 #include <core/utils.h>
+#include <core/random.h>
 
 #include <third_party/gtest/gtest.h>
 
@@ -81,8 +82,7 @@ TEST_P(PopulationsTest, RandomFitnessValues) {
   initialize(kInputs, kOutputs);
 
   // "evaluate" the population
-  random_device rd;
-  default_random_engine rnd(rd());
+  default_random_engine rnd(core::randomSeed());
   uniform_int_distribution<int> dist(-3, 3);
   for (size_t i = 0; i < population->size(); ++i) {
     darwin::Genotype* genotype = population->genotype(i);

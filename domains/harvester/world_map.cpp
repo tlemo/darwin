@@ -16,6 +16,7 @@
 
 #include <core/utils.h>
 #include <core/logging.h>
+#include <core/random.h>
 
 #include <assert.h>
 #include <algorithm>
@@ -32,8 +33,7 @@ Config g_config;
 bool WorldMap::generate(int max_attempts) {
   CHECK(!cells.empty());
 
-  random_device rd;
-  default_random_engine rnd(rd());
+  default_random_engine rnd(core::randomSeed());
   uniform_int_distribution<size_t> dist_row(0, cells.rows - 1);
   uniform_int_distribution<size_t> dist_col(0, cells.cols - 1);
   uniform_int_distribution<size_t> dist_size(1, 10);

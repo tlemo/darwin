@@ -17,6 +17,8 @@
 #include "board.h"
 #include "player.h"
 
+#include <core/random.h>
+
 #include <random>
 using namespace std;
 
@@ -35,7 +37,7 @@ class RandomPlayer : public Player {
   float evaluateMove(int square) const;
 
  private:
-  mutable default_random_engine rnd_{ random_device{}() };
+  mutable default_random_engine rnd_{ core::randomSeed() };
   bool informed_choice_ = false;
 };
 

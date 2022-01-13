@@ -18,6 +18,7 @@
 #include <core/evolution.h>
 #include <core/logging.h>
 #include <core/math_2d.h>
+#include <core/random.h>
 #include <core_ui/sim/box2d_sandbox_dialog.h>
 
 #include <QString>
@@ -96,8 +97,7 @@ void SandboxWindow::newScene() {
   track_config.curb_friction = config.curb_friction;
   track_config.gates = config.track_gates;
   track_config.solid_gate_posts = config.solid_gate_posts;
-  const auto random_seed = std::random_device{}();
-  track_ = make_unique<sim::Track>(random_seed, track_config);
+  track_ = make_unique<sim::Track>(core::randomSeed(), track_config);
 
   scene_ = make_unique<drone_track::Scene>(track_.get(), domain_);
   agent_ = make_unique<sim::DroneController>(genotype_.get(), scene_->drone());

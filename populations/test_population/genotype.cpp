@@ -16,6 +16,8 @@
 #include "brain.h"
 #include "test_population.h"
 
+#include <core/random.h>
+
 namespace test_population {
 
 Genotype::Genotype(const Population* population) : population_(population) {
@@ -24,7 +26,7 @@ Genotype::Genotype(const Population* population) : population_(population) {
 
 void Genotype::reset() {
   darwin::Genotype::reset();
-  seed_ = random_device{}();
+  seed_ = core::randomSeed();
 }
 
 unique_ptr<darwin::Brain> Genotype::grow() const {

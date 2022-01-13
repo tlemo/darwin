@@ -16,6 +16,7 @@
 
 #include <core/exception.h>
 #include <core/parallel_for_each.h>
+#include <core/random.h>
 
 using namespace selection;
 
@@ -58,8 +59,7 @@ void RouletteSelection::createNextGeneration(GenerationFactory* next_generation)
     if (index < elite_limit && old_genotype->fitness >= config_.elite_min_fitness) {
       genotype_factory->replicate(old_genotype_index);
     } else {
-      random_device rd;
-      default_random_engine rnd(rd());
+      default_random_engine rnd(core::randomSeed());
 
       auto selectParent = [&] {
         uniform_real_distribution<double> dist_sample(0, sum);

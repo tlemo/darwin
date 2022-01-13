@@ -15,6 +15,7 @@
 #include <core/darwin.h>
 #include <core/tournament_implementations.h>
 #include <core/utils.h>
+#include <core/random.h>
 
 #include <third_party/gtest/gtest.h>
 
@@ -78,8 +79,7 @@ struct TestPopulation : public darwin::Population {
       }
     }
 
-    random_device rd;
-    default_random_engine rnd(rd());
+    default_random_engine rnd(core::randomSeed());
     std::shuffle(genotypes_.begin(), genotypes_.end(), rnd);
   }
 
@@ -161,8 +161,7 @@ class TestGameRules : public tournament::GameRules {
     } else if (p2->strategy == TestPlayerStrategy::Draw) {
       return tournament::GameOutcome::Draw;
     } else {
-      random_device rd;
-      default_random_engine rnd(rd());
+      default_random_engine rnd(core::randomSeed());
       uniform_int_distribution<int> outcome_dist(0, 2);
       switch (outcome_dist(rnd)) {
         case 0:

@@ -20,6 +20,7 @@
 #include <core/logging.h>
 #include <core/parallel_for_each.h>
 #include <core/sim/drone_controller.h>
+#include <core/random.h>
 
 #include <random>
 using namespace std;
@@ -72,7 +73,7 @@ bool DroneFollow::evaluatePopulation(darwin::Population* population) const {
         population->size());
     core::log(" ... world %d\n", world_index);
 
-    const auto random_seed = std::random_device{}();
+    const auto random_seed = core::randomSeed();
 
     pp::for_each(*population, [&](int, darwin::Genotype* genotype) {
       Scene scene(random_seed, this);

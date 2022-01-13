@@ -20,6 +20,7 @@
 #include <core/parallel_for_each.h>
 #include <core/logging.h>
 #include <core/exception.h>
+#include <core/random.h>
 
 #include <random>
 using namespace std;
@@ -81,8 +82,7 @@ bool CartPole::evaluatePopulation(darwin::Population* population) const {
 }
 
 float CartPole::randomInitialAngle() const {
-  random_device rd;
-  default_random_engine rnd(rd());
+  default_random_engine rnd(core::randomSeed());
   uniform_real_distribution<float> dist(-config_.max_initial_angle,
                                         config_.max_initial_angle);
   return dist(rnd);

@@ -16,6 +16,7 @@
 
 #include <core/darwin.h>
 #include <core/utils.h>
+#include <core/random.h>
 #include <populations/neat/brain.h>
 #include <populations/neat/genotype.h>
 #include <populations/neat/neat.h>
@@ -107,8 +108,7 @@ TEST_F(NeatTest, Crossover) {
   constexpr int kTestPopulationSize = 100;
   constexpr int kTestGenerations = 500;
 
-  random_device rd;
-  default_random_engine rnd(rd());
+  default_random_engine rnd(core::randomSeed());
   uniform_int_distribution<size_t> dist_parent(0, kTestPopulationSize - 1);
   uniform_real_distribution<float> dist_preference(0, 1);
 

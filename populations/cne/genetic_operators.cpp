@@ -15,6 +15,7 @@
 #include "cne.h"
 
 #include <core/ann_dynamic.h>
+#include <core/random.h>
 
 namespace cne {
 
@@ -29,8 +30,7 @@ void crossoverOperator(ann::Matrix& child,
   CHECK(cols == parent1.cols && cols == parent2.cols);
   CHECK(rows == parent1.rows && rows == parent2.rows);
 
-  std::random_device rd;
-  std::default_random_engine rnd(rd());
+  std::default_random_engine rnd(core::randomSeed());
   std::bernoulli_distribution dist_parent(preference);
   std::bernoulli_distribution dist_coin;
 
@@ -197,8 +197,7 @@ void mutationOperator(ann::Matrix& w, float mutation_std_dev) {
   const size_t rows = w.rows;
   const size_t cols = w.cols;
 
-  std::random_device rd;
-  std::default_random_engine rnd(rd());
+  std::default_random_engine rnd(core::randomSeed());
   std::bernoulli_distribution dist_mutate(g_config.mutation_chance);
 
   switch (g_config.mutation_operator) {

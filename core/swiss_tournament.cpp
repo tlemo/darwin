@@ -18,6 +18,7 @@
 #include <core/evolution.h>
 #include <core/parallel_for_each.h>
 #include <core/logging.h>
+#include <core/random.h>
 
 #include <algorithm>
 #include <random>
@@ -71,8 +72,7 @@ void SwissTournament::evaluatePopulation(darwin::Population* population,
   if (population->size() % 2 != 0)
     throw core::Exception("Swiss tournament requires an even population size");
 
-  random_device rd;
-  default_random_engine rnd(rd());
+  default_random_engine rnd(core::randomSeed());
 
   // setup the index used to setup the pairings for each round
   vector<int> pairing_index(population->size());

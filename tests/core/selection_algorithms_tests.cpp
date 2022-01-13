@@ -18,6 +18,7 @@
 #include <core/roulette_selection.h>
 #include <core/cgp_islands_selection.h>
 #include <core/truncation_selection.h>
+#include <core/random.h>
 
 #include <third_party/gtest/gtest.h>
 
@@ -145,8 +146,7 @@ struct SelectionAlgorithmsTest : public testing::TestWithParam<int> {
   }
 
   void testRandomFitness(int generations_count) {
-    random_device rd;
-    default_random_engine rnd(rd());
+    default_random_engine rnd(core::randomSeed());
     uniform_real_distribution<float> dist_fitness(-5, 5);
     for (int generation = 0; generation < generations_count; ++generation) {
       for (size_t i = 0; i < population.size(); ++i) {

@@ -2,6 +2,7 @@
 #include "splines.h"
 
 #include <core/global_initializer.h>
+#include <core/random.h>
 
 #include <QPainter>
 #include <QBrush>
@@ -228,8 +229,7 @@ void SceneUi::generateControlPoints() {
   const double y_limit = config->height / 2 - config->track_width;
   const double radius = (config->width + config->height) / 2.0;
   std::uniform_real_distribution<double> dist(0.1f, radius);
-  std::random_device rd;
-  std::default_random_engine rnd(rd());
+  std::default_random_engine rnd(core::randomSeed());
 
   control_points_.resize(config->track_complexity);
   for (size_t i = 0; i < config->track_complexity; ++i) {

@@ -20,6 +20,7 @@
 #include <core/logging.h>
 #include <core/parallel_for_each.h>
 #include <core/pp_utils.h>
+#include <core/random.h>
 
 #include <algorithm>
 #include <limits>
@@ -172,8 +173,7 @@ void Population::neatSelection() {
   atomic<int> extinct_species = 0;
 
   pp::for_each(species_, [&](int, Species& species) {
-    std::random_device rd;
-    std::default_random_engine rnd(rd());
+    std::default_random_engine rnd(core::randomSeed());
 
     std::uniform_int_distribution<size_t> dist_parent_U(0, species.genotypes.size() - 1);
 
@@ -240,8 +240,7 @@ void Population::neatSelection() {
   core::log("bonus interspecies=%d\n", int(next_generation.size()) - next_child);
 
   // fill in the rest with interspecies offsprings
-  std::random_device rd;
-  std::default_random_engine rnd(rd());
+  std::default_random_engine rnd(core::randomSeed());
   std::uniform_int_distribution<int> dist_any_genome(0, int(genotypes_.size()) - 1);
   while (next_child < next_generation.size()) {
     int child_index = next_child++;
@@ -295,8 +294,7 @@ void Population::classicSelection() {
   const vector<size_t> rank_to_index = rankingIndex();
 
   pp::for_each(next_generation, [&](int index, Genotype& genotype) {
-    std::random_device rd;
-    std::default_random_engine rnd(rd());
+    std::default_random_engine rnd(core::randomSeed());
     std::uniform_int_distribution<int> dist_parent;
     std::uniform_real_distribution<double> dist_survive(0, 1);
 

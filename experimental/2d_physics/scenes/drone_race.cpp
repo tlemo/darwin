@@ -4,6 +4,7 @@
 
 #include <core/math_2d.h>
 #include <core/global_initializer.h>
+#include <core/random.h>
 
 #include <QPainter>
 #include <QPointF>
@@ -110,8 +111,7 @@ unique_ptr<sim::Track> Scene::createTrack() {
   track_config.curb_friction = config_.curb_friction;
   track_config.gates = config_.track_gates;
   track_config.solid_gate_posts = config_.solid_gate_posts;
-  const auto random_seed = std::random_device{}();
-  return make_unique<sim::Track>(random_seed, track_config);
+  return make_unique<sim::Track>(core::randomSeed(), track_config);
 }
 
 void Scene::updateVariables() {

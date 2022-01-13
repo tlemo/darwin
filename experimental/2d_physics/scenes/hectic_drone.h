@@ -8,6 +8,7 @@
 #include <core/sim/touch_sensor.h>
 #include <core/properties.h>
 #include <core_ui/sim/box2d_widget.h>
+#include <core/random.h>
 
 #include <QKeyEvent>
 #include <QPixmap>
@@ -90,7 +91,7 @@ class Scene : public sim::Scene {
   b2Vec2 start_pos_;
   b2Vec2 target_pos_;
 
-  default_random_engine rnd_{ random_device{}() };
+  default_random_engine rnd_{ core::randomSeed() };
 
   unique_ptr<Camera> camera_;
   unique_ptr<TouchSensor> touch_sensor_;

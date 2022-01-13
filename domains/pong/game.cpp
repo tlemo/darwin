@@ -17,6 +17,7 @@
 #include "ann_player.h"
 
 #include <core/utils.h>
+#include <core/random.h>
 
 #include <cmath>
 #include <random>
@@ -49,8 +50,7 @@ void Game::newSet() {
     ball_.vx = ball_speed_;
     ball_.vy = 0;
   } else {
-    random_device rd;
-    default_random_engine rnd(rd());
+    default_random_engine rnd(core::randomSeed());
     uniform_real_distribution<float> dist(-kMaxAngle, kMaxAngle);
 
     float angle = dist(rnd);

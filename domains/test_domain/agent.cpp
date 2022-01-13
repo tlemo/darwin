@@ -14,6 +14,8 @@
 
 #include "agent.h"
 
+#include <core/random.h>
+
 #include <cmath>
 #include <random>
 using namespace std;
@@ -28,8 +30,7 @@ Agent::Agent(const darwin::Genotype* genotype, const TestDomain* domain)
 float Agent::evaluate() {
   const auto& config = domain_->config();
 
-  random_device rd;
-  default_random_engine rnd(rd());
+  default_random_engine rnd(core::randomSeed());
   uniform_real_distribution<float> dist_input(-config.input_range, +config.input_range);
 
   // "evaluation" steps

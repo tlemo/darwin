@@ -18,6 +18,7 @@
 
 #include <core/properties.h>
 #include <core/tournament_implementations.h>
+#include <core/random.h>
 
 #include <random>
 #include <string>
@@ -132,7 +133,7 @@ class Game : public core::NonCopyable {
   int blue_start_node_ = -1;
   int red_start_node_ = -1;
 
-  default_random_engine rnd_{ random_device{}() };
+  default_random_engine rnd_{ core::randomSeed() };
 
   const Board* const board_ = nullptr;
 };

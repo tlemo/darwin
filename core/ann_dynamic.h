@@ -18,6 +18,8 @@
 #include "utils.h"
 #include "darwin.h"
 
+#include <core/random.h>
+
 #include <algorithm>
 #include <cmath>
 #include <random>
@@ -62,8 +64,7 @@ inline void activateLayer(vector<float>& out) {
 inline void randomize(Matrix& w) {
   const float range = g_config.connection_range;
 
-  std::random_device rd;
-  std::default_random_engine rnd(rd());
+  std::default_random_engine rnd(core::randomSeed());
   std::uniform_real_distribution<float> dist(-range, range);
 
   if (g_config.sparse_weights) {

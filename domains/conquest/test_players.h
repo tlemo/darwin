@@ -16,6 +16,8 @@
 
 #include "player.h"
 
+#include <core/random.h>
+
 #include <random>
 using namespace std;
 
@@ -31,7 +33,7 @@ class RandomPlayer : public Player {
   string name() const override { return "Random"; }
 
  private:
-  default_random_engine rnd_{ random_device{}() };
+  default_random_engine rnd_{ core::randomSeed() };
 };
 
 class HandcraftedPlayer : public Player {

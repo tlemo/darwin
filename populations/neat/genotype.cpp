@@ -16,6 +16,8 @@
 #include "brain.h"
 #include "neat.h"
 
+#include <core/random.h>
+
 namespace neat {
 
 Genotype::Genotype() {
@@ -151,8 +153,7 @@ Innovation Genotype::createPrimordialSeed() {
 
   const float range = ann::g_config.connection_range;
 
-  std::random_device rd;
-  std::default_random_engine rnd(rd());
+  std::default_random_engine rnd(core::randomSeed());
   std::uniform_real_distribution<float> dist(-range, range);
 
   Innovation innovation = 1;
@@ -187,8 +188,7 @@ Innovation Genotype::createPrimordialSeed() {
 }
 
 void Genotype::mutate(atomic<Innovation>& next_innovation, bool weights_only) {
-  std::random_device rd;
-  std::default_random_engine rnd(rd());
+  std::default_random_engine rnd(core::randomSeed());
 
   mutateWeights(rnd);
 
@@ -205,8 +205,7 @@ void Genotype::inherit(const Genotype& parent1,
 
   const NodeId kHiddenFirst = 1 + g_inputs + g_outputs;
 
-  std::random_device rd;
-  std::default_random_engine rnd(rd());
+  std::default_random_engine rnd(core::randomSeed());
   std::bernoulli_distribution dist_parent(preference);
   bool use_parent1 = preference >= 0.5f;
 

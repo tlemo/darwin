@@ -16,6 +16,7 @@ SOURCES += \
     outline_2d.cpp \
     platform_abstraction_layer.cpp \
     database.cpp \
+    random.cpp \
     runtime.cpp \
     sim/car.cpp \
     universe.cpp \

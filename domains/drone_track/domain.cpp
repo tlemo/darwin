@@ -21,6 +21,7 @@
 #include <core/parallel_for_each.h>
 #include <core/sim/drone_controller.h>
 #include <core/sim/track.h>
+#include <core/random.h>
 
 #include <random>
 using namespace std;
@@ -85,8 +86,7 @@ bool DroneTrack::evaluatePopulation(darwin::Population* population) const {
     track_config.curb_friction = config_.curb_friction;
     track_config.gates = config_.track_gates;
     track_config.solid_gate_posts = config_.solid_gate_posts;
-    const auto random_seed = std::random_device{}();
-    const sim::Track track(random_seed, track_config);
+    const sim::Track track(core::randomSeed(), track_config);
 
     pp::for_each(*population, [&](int, darwin::Genotype* genotype) {
       Scene scene(&track, this);

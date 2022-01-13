@@ -15,6 +15,8 @@
 #include "world.h"
 #include "robot.h"
 
+#include <core/random.h>
+
 #include <assert.h>
 #include <algorithm>
 #include <deque>
@@ -31,8 +33,7 @@ Config g_config;
 void World::generate() {
   CHECK(g_config.min_size >= kMinSize);
 
-  random_device rd;
-  default_random_engine rnd(rd());
+  default_random_engine rnd(core::randomSeed());
 
   uniform_int_distribution<int> dist_size(g_config.min_size, g_config.max_size);
   uniform_int_distribution<int> dist_val(1, g_config.max_value);

@@ -20,6 +20,7 @@
 #include <core/exception.h>
 #include <core/logging.h>
 #include <core/parallel_for_each.h>
+#include <core/random.h>
 
 #include <random>
 using namespace std;
@@ -88,8 +89,7 @@ bool Ballistics::evaluatePopulation(darwin::Population* population) const {
 }
 
 b2Vec2 Ballistics::randomTargetPosition() const {
-  random_device rd;
-  default_random_engine rnd(rd());
+  default_random_engine rnd(core::randomSeed());
   uniform_real_distribution<float> dist_x(config_.range_min_x, config_.range_max_x);
   uniform_real_distribution<float> dist_y(config_.range_min_y, config_.range_max_y);
   return b2Vec2(dist_x(rnd), dist_y(rnd));

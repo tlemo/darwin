@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include <core/sim/track.h>
+#include <core/random.h>
 #include <third_party/box2d/box2d.h>
 #include <third_party/gtest/gtest.h>
 
@@ -25,12 +26,10 @@ TEST(TrackTest, DefaultConfig) {
   // track configuration
   sim::TrackConfig track_config;
 
-  random_device rd;
   constexpr int kIterations = 100;
   for (int i = 0; i < kIterations; ++i) {
     b2World world(b2Vec2(0, 0));
-    const auto random_seed = rd();
-    sim::Track test_track(random_seed, track_config);
+    sim::Track test_track(core::randomSeed(), track_config);
     test_track.createFixtures(&world);
   }
 }
@@ -46,12 +45,10 @@ TEST(TrackTest, HighComplexity) {
   track_config.curb_width = 0.5f;
   track_config.gates = true;
 
-  random_device rd;
   constexpr int kIterations = 100;
   for (int i = 0; i < kIterations; ++i) {
     b2World world(b2Vec2(0, 0));
-    const auto random_seed = rd();
-    sim::Track test_track(random_seed, track_config);
+    sim::Track test_track(core::randomSeed(), track_config);
     test_track.createFixtures(&world);
   }
 }
@@ -67,12 +64,10 @@ TEST(TrackTest, HighResolution) {
   track_config.curb_width = 0.01f;
   track_config.gates = true;
 
-  random_device rd;
   constexpr int kIterations = 25;
   for (int i = 0; i < kIterations; ++i) {
     b2World world(b2Vec2(0, 0));
-    const auto random_seed = rd();
-    sim::Track test_track(random_seed, track_config);
+    sim::Track test_track(core::randomSeed(), track_config);
     test_track.createFixtures(&world);
   }
 }
@@ -88,12 +83,10 @@ TEST(TrackTest, LowResolution) {
   track_config.curb_width = 0.3f;
   track_config.gates = true;
 
-  random_device rd;
   constexpr int kIterations = 100;
   for (int i = 0; i < kIterations; ++i) {
     b2World world(b2Vec2(0, 0));
-    const auto random_seed = rd();
-    sim::Track test_track(random_seed, track_config);
+    sim::Track test_track(core::randomSeed(), track_config);
     test_track.createFixtures(&world);
   }
 }

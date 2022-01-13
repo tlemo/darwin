@@ -18,6 +18,7 @@
 #include "population.h"
 
 #include <core/format.h>
+#include <core/random.h>
 
 #include <string>
 #include <random>
@@ -203,7 +204,7 @@ void Genotype::createPrimordialSeed() {
   constants_genes_.resize(config.evolvable_constants_count);
 
   struct Predicates {
-    default_random_engine rnd{ random_device{}() };
+    default_random_engine rnd{ core::randomSeed() };
     bool mutateConnection() { return true; }
     bool mutateFunction() { return true; }
     bool mutateOutput() { return true; }
@@ -224,7 +225,7 @@ void Genotype::createPrimordialSeed() {
 
 void Genotype::probabilisticMutation(const ProbabilisticMutation& config) {
   struct Predicates {
-    default_random_engine rnd{ random_device{}() };
+    default_random_engine rnd{ core::randomSeed() };
     bernoulli_distribution dist_mutate_connection;
     bernoulli_distribution dist_mutate_function;
     bernoulli_distribution dist_mutate_output;
@@ -255,7 +256,7 @@ void Genotype::fixedCountMutation(const FixedCountMutation& config) {
                                    output_genes_count + constant_genes_count;
 
   struct Predicates {
-    default_random_engine rnd{ random_device{}() };
+    default_random_engine rnd{ core::randomSeed() };
     double remaining_genes;
     double remaining_mutations;
 
@@ -313,8 +314,7 @@ static vector<T> singlePointCrossoverHelper(const vector<T>& a,
 void Genotype::inherit(const Genotype& parent1,
                        const Genotype& parent2,
                        float /*preference*/) {
-  random_device rd;
-  default_random_engine rnd(rd());
+  default_random_engine rnd(core::randomSeed());
 
   function_genes_ =
       singlePointCrossoverHelper(parent1.function_genes_, parent2.function_genes_, rnd);

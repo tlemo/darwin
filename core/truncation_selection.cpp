@@ -17,6 +17,7 @@
 #include <core/exception.h>
 #include <core/parallel_for_each.h>
 #include <core/logging.h>
+#include <core/random.h>
 
 #include <algorithm>
 #include <atomic>
@@ -48,8 +49,7 @@ void TruncationSelection::createNextGeneration(GenerationFactory* next_generatio
   const int elite_limit = max(2, int(population_->size() * config_.elite_percentage));
   
   pp::for_each(*next_generation, [&](int index, GenotypeFactory* genotype_factory) {
-    random_device rd;
-    default_random_engine rnd(rd());
+    default_random_engine rnd(core::randomSeed());
     bernoulli_distribution dist_mutate_elite(config_.elite_mutation_chance);
 
     const int old_genotype_index = int(ranking_index[index]);

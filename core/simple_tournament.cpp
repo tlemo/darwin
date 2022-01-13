@@ -16,6 +16,7 @@
 
 #include <core/evolution.h>
 #include <core/parallel_for_each.h>
+#include <core/random.h>
 
 namespace tournament {
 
@@ -27,8 +28,7 @@ void SimpleTournament::evaluatePopulation(darwin::Population* population,
                                           GameRules* game_rules) {
   darwin::StageScope stage("Tournament", population->size());
   pp::for_each(*population, [&](int index, darwin::Genotype* genotype) {
-    random_device rd;
-    default_random_engine rnd(rd());
+    default_random_engine rnd(core::randomSeed());
     uniform_int_distribution<size_t> dist_opponent(0, population->size() - 1);
 
     float score = 0;

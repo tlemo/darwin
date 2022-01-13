@@ -21,6 +21,10 @@ using namespace std;
 
 namespace core {
 
+//! Wrapper around `std::random_device`, enabling an optional
+//! deterministic seed sequence which may be used for debugging and profiling
+std::random_device::result_type randomSeed();
+
 //! Returns an iterator to a random element in the input container
 //!
 //! \note The container must not be empty
@@ -28,8 +32,7 @@ namespace core {
 template <class T>
 auto randomElem(T& container) {
   CHECK(!container.empty());
-  random_device rd;
-  default_random_engine rnd(rd());
+  default_random_engine rnd(randomSeed());
   uniform_int_distribution<size_t> dist(0, container.size() - 1);
   return container.begin() + dist(rnd);
 }
@@ -38,8 +41,7 @@ auto randomElem(T& container) {
 template <class T>
 auto randomInteger(T min_value, T max_value) {
   CHECK(min_value < max_value);
-  random_device rd;
-  default_random_engine rnd(rd());
+  default_random_engine rnd(randomSeed());
   uniform_int_distribution<T> dist(min_value, max_value - 1);
   return dist(rnd);
 }
@@ -48,8 +50,7 @@ auto randomInteger(T min_value, T max_value) {
 template <class T>
 auto randomReal(T min_value, T max_value) {
   CHECK(min_value <= max_value);
-  random_device rd;
-  default_random_engine rnd(rd());
+  default_random_engine rnd(randomSeed());
   uniform_real_distribution<T> dist(min_value, max_value);
   return dist(rnd);
 }
@@ -57,8 +58,7 @@ auto randomReal(T min_value, T max_value) {
 //! Convenience helper for flipping a coin
 inline bool randomCoin(double probability = 0.5) {
   CHECK(probability >= 0 && probability <= 1);
-  random_device rd;
-  default_random_engine rnd(rd());
+  default_random_engine rnd(randomSeed());
   bernoulli_distribution dist(probability);
   return dist(rnd);
 }
@@ -81,8 +81,7 @@ auto randomWeightedElem(T& container) {
   }
   CHECK(total > 0);
 
-  random_device rd;
-  default_random_engine rnd(rd());
+  default_random_engine rnd(randomSeed());
   uniform_real_distribution<double> dist(0, total);
   const double sample = dist(rnd);
 
@@ -101,8 +100,7 @@ auto randomWeightedElem(T& container) {
 //! Mutates a floating point value using an normal distribution
 template <class Scalar>
 Scalar mutateNormalValue(Scalar value, Scalar std_dev) {
-  random_device rd;
-  default_random_engine rnd(rd());
+  default_random_engine rnd(randomSeed());
   normal_distribution<Scalar> dist(value, std_dev);
   return dist(rnd);
 }

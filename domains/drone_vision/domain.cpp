@@ -20,6 +20,7 @@
 #include <core/logging.h>
 #include <core/parallel_for_each.h>
 #include <core/sim/drone_controller.h>
+#include <core/random.h>
 
 #include <random>
 using namespace std;
@@ -97,8 +98,7 @@ bool DroneVision::evaluatePopulation(darwin::Population* population) const {
 
 b2Vec2 DroneVision::randomTargetVelocity() const {
   constexpr float kPi = 3.14159274101f;
-  random_device rd;
-  default_random_engine rnd(rd());
+  default_random_engine rnd(core::randomSeed());
   uniform_real_distribution<float> dist(-kPi, kPi);
   const float angle = dist(rnd);
   return b2Vec2(cos(angle), sin(angle)) * config_.target_speed;
