@@ -10,6 +10,7 @@
 #include <vector>
 #include <memory>
 #include <random>
+#include <mutex>
 using namespace std;
 
 namespace seg_tree {
@@ -98,6 +99,12 @@ class Organism {
   // returns `true` if still alive
   bool simStep(float dt);
 
+  void developBody();
+
+  void die();
+
+  bool alive() const { return alive_; }
+
  private:
   Joint createSegment(const Segment* segment,
                       b2Body* parent_body,
@@ -108,7 +115,6 @@ class Organism {
   void animateJoint(const Joint& joint, float phase);
 
   void reproduce();
-  void die();
 
  private:
   Joint root_;
@@ -127,6 +133,9 @@ class Organism {
   float health_ = 0;
   bool alive_ = false;  // TODO: remove?
 
+  b2Vec2 birth_pos_;
+  float birth_angle_;
+
   std::default_random_engine rnd_{ core::randomSeed() };
 };
 
@@ -142,9 +151,16 @@ class World : public ::World {
 
  private:
   void postStep(float dt) override;
+  void applyPopulationChanges();
 
  private:
-  vector<Organism> organisms_;
+  vector<unique_ptr<Organism>> organisms_;
+
+  mutex new_organisms_lock_;
+  vector<unique_ptr<Organism>> new_organisms_;
+
+  mutex dead_organisms_lock_;
+  vector<int> dead_organisms_;
 };
 
 }  // namespace seg_tree

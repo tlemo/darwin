@@ -162,23 +162,9 @@ Organism::Organism(World* world,
                    const b2Vec2& pos,
                    float angle,
                    const Genotype& parent_genotype)
-    : world_(world), genotype_(parent_genotype) {
+    : world_(world), genotype_(parent_genotype), birth_pos_(pos), birth_angle_(angle) {
   CHECK(world_);
   genotype_.mutate();
-
-  // develop the organism
-  // (this may throw if the genotype doesn't result in a viable phenotype)
-  constexpr float kTipSize = 0.1f;
-  const float dx = cosf(angle) * kTipSize;
-  const float dy = sinf(angle) * kTipSize;
-  root_ = createSegment(
-      genotype_.root(), nullptr, pos - b2Vec2(dx, dy), pos + b2Vec2(dx, dy), false);
-  if (body_parts_.empty()) {
-    throw core::Exception("Organism not viable");
-  }
-
-  const auto head = body_parts_[0];
-  camera_ = make_unique<sim::Camera>(head, 90, 0.1f, 10.0f, 3);
 
   alive_ = true;
 }
@@ -189,11 +175,12 @@ bool Organism::simStep(float dt) {
   age_ += dt;
 
   // for testing only
-  const auto vision = camera_->render();
+  if (camera_) {
+    const auto vision = camera_->render();
+  }
 
-#if 0
+#if 1
   if (health_ < 0 || age_ > 5.0) {
-    die();
     return false;
   }
 
@@ -210,6 +197,25 @@ bool Organism::simStep(float dt) {
   animateJoint(root_, current_phase_);
   current_phase_ += kPhaseVelocity;
   return true;
+}
+
+void Organism::developBody() {
+  // develop the organism
+  // (this may throw if the genotype doesn't result in a viable phenotype)
+  constexpr float kTipSize = 0.1f;
+  const float dx = cosf(birth_angle_) * kTipSize;
+  const float dy = sinf(birth_angle_) * kTipSize;
+  root_ = createSegment(genotype_.root(),
+                        nullptr,
+                        birth_pos_ - b2Vec2(dx, dy),
+                        birth_pos_ + b2Vec2(dx, dy),
+                        false);
+  if (body_parts_.empty()) {
+    throw core::Exception("Organism not viable");
+  }
+
+  const auto head = body_parts_[0];
+  camera_ = make_unique<sim::Camera>(head, 90, 0.1f, 10.0f, 3);
 }
 
 Organism::Joint Organism::createSegment(const Segment* segment,
@@ -386,6 +392,7 @@ void Organism::reproduce() {
 }
 
 void Organism::die() {
+  CHECK(alive_, "Already dead");
   alive_ = false;
   const auto b2_world = world_->box2dWorld();
   for (auto body_part : body_parts_) {
@@ -431,19 +438,18 @@ World::World() : ::World(sim::Rect(-kWidth / 2, -kHeight / 2, kWidth, kHeight)) 
     newFood(pos);
   }
 
-  for (int i = 0; i < 5000; ++i) {
+  for (int i = 0; i < 2500; ++i) {
     const auto pos = b2Vec2(dist_x(rnd), dist_y(rnd));
     const auto angle = dist_angle(rnd);
     newOrganism(pos, angle, Genotype());
   }
+
+  applyPopulationChanges();
 }
 
 void World::newOrganism(const b2Vec2& pos, float angle, const Genotype& parent_genotype) {
-  try {
-    organisms_.emplace_back(this, pos, angle, parent_genotype);
-  } catch (const std::exception& e) {
-    printf("Organism not viable.\n");
-  }
+  unique_lock<mutex> guard(new_organisms_lock_);
+  new_organisms_.push_back(make_unique<Organism>(this, pos, angle, parent_genotype));
 }
 
 void World::newFood(const b2Vec2& pos) {
@@ -465,24 +471,48 @@ void World::newFood(const b2Vec2& pos) {
   body->CreateFixture(&fixture_def);
 }
 
-void World::postStep(float dt) {
-#if 0
-  vector<Organism> tmp;
-  tmp.reserve(organisms_.size());
+void World::applyPopulationChanges() {
+  unique_lock<mutex> guard_new(new_organisms_lock_);
+  unique_lock<mutex> guard_dead(dead_organisms_lock_);
 
-  std::swap(tmp, organisms_);
-
-  for (auto& organism : tmp) {
-    if (organism.simStep(dt)) {
-      organisms_.push_back(std::move(organism));
+  for (auto index : dead_organisms_) {
+    const auto& organism = organisms_[index];
+    if (organism->alive()) {
+      organism->die();
     }
   }
-#else
-  pp::for_each(organisms_, [&](int, Organism& organism) {
-    organism.simStep(dt);
-    // ...
+
+  for (auto& new_organism : new_organisms_) {
+    try {
+      new_organism->developBody();
+    } catch (const std::exception& e) {
+      printf("Organism not viable.\n");
+      continue;
+    }
+
+    if (!dead_organisms_.empty()) {
+      // reuse slot
+      organisms_[dead_organisms_.back()] = std::move(new_organism);
+      dead_organisms_.pop_back();
+    } else {
+      organisms_.push_back(std::move(new_organism));
+    }
+  }
+
+  new_organisms_.clear();
+}
+
+void World::postStep(float dt) {
+  pp::for_each(organisms_, [&](int index, const unique_ptr<Organism>& organism) {
+    if (organism->alive()) {
+      if (!organism->simStep(dt)) {
+        unique_lock<mutex> guard(dead_organisms_lock_);
+        dead_organisms_.push_back(index);
+      }
+    }
   });
-#endif
+
+  applyPopulationChanges();
 }
 
 }  // namespace seg_tree
