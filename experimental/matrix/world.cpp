@@ -45,7 +45,10 @@ const vis::World World::visibleState() {
 }
 
 void World::extractVisibleState() {
+  // reset the staging data
+  // (expecting that clear() would not free the memory)
   snapshot_staging_.clear();
+
   for (const b2Body* body = world_.GetBodyList(); body; body = body->GetNext()) {
     vis::Object object;
     object.center = body->GetWorldCenter();
