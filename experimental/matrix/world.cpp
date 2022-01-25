@@ -44,9 +44,8 @@ const vis::World World::visibleState() {
   return snapshot_;
 }
 
-vis::World World::extractVisibleState() const {
-  vis::World vis_world;
-
+void World::extractVisibleState() {
+  snapshot_staging_.clear();
   for (const b2Body* body = world_.GetBodyList(); body; body = body->GetNext()) {
     vis::Object object;
     object.center = body->GetWorldCenter();
@@ -104,10 +103,8 @@ vis::World World::extractVisibleState() const {
     }
 
     object.radius = sqrtf(radius_squared);
-    vis_world.push_back(std::move(object));
+    snapshot_staging_.push_back(std::move(object));
   }
-
-  return vis_world;
 }
 
 void World::setupVisualMapTransformation() {
@@ -176,11 +173,11 @@ void World::simThread() {
     simStep();
     ups_tracker_.update();
 
-    auto visible_state = extractVisibleState();
+    extractVisibleState();
 
     {
       unique_lock<mutex> guard(snapshot_lock_);
-      swap(snapshot_, visible_state);
+      swap(snapshot_, snapshot_staging_);
       ups_ = ups_tracker_.currentRate();
     }
 

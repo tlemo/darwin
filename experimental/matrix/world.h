@@ -49,7 +49,7 @@ class World : public core::NonCopyable, public core::PolymorphicBase {
   void simThread();
   void simStep();
 
-  vis::World extractVisibleState() const;
+  void extractVisibleState();
 
   void setupVisualMapTransformation();
 
@@ -63,9 +63,11 @@ class World : public core::NonCopyable, public core::PolymorphicBase {
 
  private:
   vis::World snapshot_;
+  vis::World snapshot_staging_;
+  mutable std::mutex snapshot_lock_;
+
   core::RateTracker ups_tracker_;
   std::atomic<double> ups_;
-  mutable std::mutex snapshot_lock_;
 
   SimState sim_state_ = SimState::Invalid;
   mutable std::mutex state_lock_;
