@@ -17,10 +17,12 @@ using namespace std;
 World::World(const sim::Rect& extents)
     : world_(b2Vec2(0, 0)),
       extents_(extents),
+      contact_listener_(this),
       visual_map_(extents.width * kVisualMapScale,
                   extents.height * kVisualMapScale,
                   QImage::Format::Format_RGB32) {
   setupVisualMapTransformation();
+  world_.SetContactListener(&contact_listener_);
   sim_state_ = SimState::Paused;
   new std::thread(&World::simThread, this);
 }

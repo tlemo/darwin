@@ -23,6 +23,15 @@ class World : public core::NonCopyable, public core::PolymorphicBase {
 
   static constexpr double kVisualMapScale = 10.0;
 
+  class ContactListener : public b2ContactListener {
+   public:
+    explicit ContactListener(World* world) : world_(world) {}
+    void BeginContact(b2Contact* contact) override { world_->onContact(contact); }
+
+   private:
+    World* world_ = nullptr;
+  };
+
  public:
   explicit World(const sim::Rect& extents);
 
@@ -42,6 +51,7 @@ class World : public core::NonCopyable, public core::PolymorphicBase {
 
   virtual void preStep() {}
   virtual void postStep(float /*dt*/) {}
+  virtual void onContact(b2Contact* /*contact*/) {}
 
   b2World* box2dWorld() { return &world_; }
 
@@ -65,6 +75,8 @@ class World : public core::NonCopyable, public core::PolymorphicBase {
   vis::World snapshot_;
   vis::World snapshot_staging_;
   mutable std::mutex snapshot_lock_;
+
+  ContactListener contact_listener_;
 
   core::RateTracker ups_tracker_;
   std::atomic<double> ups_;
