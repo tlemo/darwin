@@ -108,6 +108,43 @@ void World::extractVisibleState() {
     }
 
     object.radius = sqrtf(radius_squared);
+
+#if 0
+    int contacts_count = 0;
+    for (const auto* ce = body->GetContactList(); ce != nullptr; ce = ce->next) {
+      const int point_count = ce->contact->GetManifold()->pointCount;
+      if (ce->contact->IsTouching()) {
+        CHECK(point_count > 0);
+        b2WorldManifold manifold = {};
+        ce->contact->GetWorldManifold(&manifold);
+        vis::Circle circle;
+        circle.color = b2Color(1, 0, 0);
+        circle.radius = 0.03f;
+        for (int i = 0; i < point_count; ++i) {
+          circle.center = manifold.points[i];
+          object.circles.push_back(circle);
+        }
+        ++contacts_count;
+      }
+    }
+    if (contacts_count > max_contacts) {
+      max_contacts = contacts_count;
+    }
+    if (contacts_count > 25 && body->GetType() != b2_staticBody) {
+      const b2Color highlight_color(0, 0, 1);
+      object.base_color = highlight_color;
+      for (auto& s : object.edges) {
+        s.color = highlight_color;
+      }
+      for (auto& s : object.circles) {
+        s.color = highlight_color;
+      }
+      for (auto& s : object.polygons) {
+        s.color = highlight_color;
+      }
+    }
+#endif
+
     snapshot_staging_.push_back(std::move(object));
   }
 }
