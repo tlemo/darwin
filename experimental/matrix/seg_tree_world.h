@@ -11,6 +11,7 @@
 #include <memory>
 #include <random>
 #include <mutex>
+#include <unordered_set>
 using namespace std;
 
 namespace seg_tree {
@@ -151,10 +152,14 @@ class World : public ::World {
 
  private:
   void postStep(float dt) override;
+  void onContact(b2Contact* contact) override;
+
   void applyPopulationChanges();
 
  private:
   vector<unique_ptr<Organism>> organisms_;
+
+  unordered_set<b2Body*> reaped_bodies_;
 
   mutex new_organisms_lock_;
   vector<unique_ptr<Organism>> new_organisms_;

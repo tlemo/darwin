@@ -68,7 +68,7 @@ void MainWindow::updateZoom() {
 void MainWindow::setupToolbar() {
   zoom_slider = new QSlider;
   zoom_slider->setMinimum(0);
-  zoom_slider->setMaximum(75);
+  zoom_slider->setMaximum(100);
   zoom_slider->setTickInterval(5);
   zoom_slider->setValue(kDefaultZoom);
   zoom_slider->setOrientation(Qt::Horizontal);

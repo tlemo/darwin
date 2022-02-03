@@ -10,7 +10,7 @@ MapScene::MapScene() {
       sim_extents.x, sim_extents.y, sim_extents.width, sim_extents.height);
 
   setBackgroundBrush(QBrush(Qt::lightGray));
-  setSceneRect(extents);
+  setSceneRect(extents.adjusted(-1, -1, 1, 1));
 
   world_layer_ = new WorldMap(extents, &visible_world_);
   addItem(world_layer_);
