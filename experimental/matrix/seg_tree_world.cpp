@@ -504,48 +504,6 @@ void World::applyPopulationChanges() {
 }
 
 void World::postStep(float dt) {
-#if 1
-  float max_rt = 0;
-  float max_rf = 0;
-  for (auto body = world_.GetBodyList(); body; body = body->GetNext()) {
-#if 1
-    int contacts_count = 0;
-    for (const auto* ce = body->GetContactList(); ce != nullptr; ce = ce->next) {
-      if (ce->contact->IsTouching()) {
-        ++contacts_count;
-      }
-    }
-    if (contacts_count > 25) {
-      reaped_bodies_.insert(body);
-    }
-#endif
-#if 0
-    for (auto joint = world_.GetJointList(); joint; joint = joint->GetNext()) {
-      const float inv_dt = 1.0f / dt;
-      const float rt = joint->GetReactionTorque(inv_dt);
-      if (rt > max_rt) {
-        max_rt = rt;
-      }
-      if (rt > 1.0f) {
-        reaped_bodies_.insert(joint->GetBodyA());
-        reaped_bodies_.insert(joint->GetBodyB());
-      }
-      const float rf = joint->GetReactionForce(inv_dt).Length();
-      if (rf > max_rf) {
-        max_rf = rf;
-      }
-      if (rf > 10.0f) {
-        reaped_bodies_.insert(joint->GetBodyA());
-        reaped_bodies_.insert(joint->GetBodyB());
-      }
-    }
-#endif
-  }
-  // printf("%d bodies\n", world_.GetBodyCount());
-  printf("max_rt: %.3f\n", max_rt);
-  printf("max_rf: %.3f\n", max_rf);
-#endif
-
   for (auto body : reaped_bodies_) {
     world_.DestroyBody(body);
   }
