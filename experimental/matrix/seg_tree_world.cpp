@@ -165,7 +165,6 @@ Organism::Organism(World* world,
     : world_(world), genotype_(parent_genotype), birth_pos_(pos), birth_angle_(angle) {
   CHECK(world_);
   genotype_.mutate();
-
   alive_ = true;
 }
 

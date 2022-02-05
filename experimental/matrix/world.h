@@ -87,4 +87,7 @@ class World : public core::NonCopyable, public core::PolymorphicBase {
 
   QImage visual_map_;
   QTransform visual_map_transformation_;
+
+  bool debug_draw_bounding_box_ = false;
+  bool debug_draw_contacts_ = false;
 };

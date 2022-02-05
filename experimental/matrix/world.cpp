@@ -46,6 +46,70 @@ const vis::World World::visibleState() {
   return snapshot_;
 }
 
+static void highlightObject(vis::Object* object) {
+  const b2Color highlight_color(0, 0, 1);
+  object->base_color = highlight_color;
+  for (auto& edge : object->edges) {
+    edge.color = highlight_color;
+  }
+  for (auto& circle : object->circles) {
+    circle.color = highlight_color;
+  }
+  for (auto& polygon : object->polygons) {
+    polygon.color = highlight_color;
+  }
+}
+
+static void debugDrawContacts(vis::Object* object, const b2Body* body) {
+  int contacts_count = 0;
+  for (const auto* ce = body->GetContactList(); ce != nullptr; ce = ce->next) {
+    const int points_count = ce->contact->GetManifold()->pointCount;
+    if (ce->contact->IsTouching()) {
+      CHECK(points_count > 0);
+      b2WorldManifold manifold = {};
+      ce->contact->GetWorldManifold(&manifold);
+      vis::Circle circle;
+      circle.color = b2Color(1, 0, 0);
+      circle.radius = 0.01f;
+      for (int i = 0; i < points_count; ++i) {
+        circle.center = manifold.points[i];
+        object->circles.push_back(circle);
+      }
+      if (points_count == 2) {
+        vis::Edge edge;
+        edge.color = circle.color;
+        edge.a = manifold.points[0];
+        edge.b = manifold.points[1];
+        object->edges.push_back(edge);
+      }
+      ++contacts_count;
+    }
+  }
+  if (contacts_count > 25 && body->GetType() != b2_staticBody) {
+    highlightObject(object);
+  }
+}
+
+static void debugDrawBoundingBox(vis::Object* object, const b2Fixture* fixture) {
+  for (int i = 0; i < fixture->GetProxyCount(); ++i) {
+    const b2AABB& aabb = fixture->GetAABB(i);
+    vis::Edge edge;
+    edge.color = b2Color(0.5, 0.5, 0.5);
+    edge.a = aabb.lowerBound;
+    edge.b = b2Vec2(aabb.lowerBound.x, aabb.upperBound.y);
+    object->edges.push_back(edge);
+    edge.a = aabb.lowerBound;
+    edge.b = b2Vec2(aabb.upperBound.x, aabb.lowerBound.y);
+    object->edges.push_back(edge);
+    edge.a = aabb.upperBound;
+    edge.b = b2Vec2(aabb.lowerBound.x, aabb.upperBound.y);
+    object->edges.push_back(edge);
+    edge.a = aabb.upperBound;
+    edge.b = b2Vec2(aabb.upperBound.x, aabb.lowerBound.y);
+    object->edges.push_back(edge);
+  }
+}
+
 void World::extractVisibleState() {
   // reset the staging data
   // (expecting that clear() would not free the memory)
@@ -105,45 +169,16 @@ void World::extractVisibleState() {
         default:
           FATAL("Unexpected fixture shape");
       }
+      if (debug_draw_bounding_box_) {
+        debugDrawBoundingBox(&object, fixture);
+      }
     }
 
     object.radius = sqrtf(radius_squared);
 
-#if 0
-    int contacts_count = 0;
-    for (const auto* ce = body->GetContactList(); ce != nullptr; ce = ce->next) {
-      const int point_count = ce->contact->GetManifold()->pointCount;
-      if (ce->contact->IsTouching()) {
-        CHECK(point_count > 0);
-        b2WorldManifold manifold = {};
-        ce->contact->GetWorldManifold(&manifold);
-        vis::Circle circle;
-        circle.color = b2Color(1, 0, 0);
-        circle.radius = 0.03f;
-        for (int i = 0; i < point_count; ++i) {
-          circle.center = manifold.points[i];
-          object.circles.push_back(circle);
-        }
-        ++contacts_count;
-      }
+    if (debug_draw_contacts_) {
+      debugDrawContacts(&object, body);
     }
-    if (contacts_count > max_contacts) {
-      max_contacts = contacts_count;
-    }
-    if (contacts_count > 25 && body->GetType() != b2_staticBody) {
-      const b2Color highlight_color(0, 0, 1);
-      object.base_color = highlight_color;
-      for (auto& s : object.edges) {
-        s.color = highlight_color;
-      }
-      for (auto& s : object.circles) {
-        s.color = highlight_color;
-      }
-      for (auto& s : object.polygons) {
-        s.color = highlight_color;
-      }
-    }
-#endif
 
     snapshot_staging_.push_back(std::move(object));
   }
