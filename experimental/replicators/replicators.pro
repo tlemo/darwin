@@ -6,7 +6,7 @@ QT += core gui widgets
 TARGET = replicators
 TEMPLATE = app
 
-#CONFIG += console
+CONFIG += console
 
 DEFINES += QT_DEPRECATED_WARNINGS
 DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000
@@ -19,6 +19,7 @@ SOURCES += \
     phenotype_widget.cpp \
     replicators.cpp \
     species/segment_tree.cpp \
+    species/rigid_cells.cpp \
     species/test.cpp \
     species/ksims_virtual_creatures.cpp \
     species/cell_lab.cpp \
@@ -31,6 +32,7 @@ HEADERS += \
     phenotype_widget.h \
     replicators.h \
     species/segment_tree.h \
+    species/rigid_cells.h \
     species/test.h \
     species/ksims_virtual_creatures.h \
     species/cell_lab.h \
