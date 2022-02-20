@@ -119,6 +119,9 @@ class Phenotype : public experimental::replicators::Phenotype {
   void animateJoint(const Joint& joint, float phase);
 
  private:
+  b2Body* body_ = nullptr;
+  b2Fixture* fixture_ = nullptr;
+
   Joint root_;
   float current_phase_ = 0;
 };

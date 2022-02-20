@@ -57,13 +57,13 @@ class Factory : public SpeciesFactory {
     // mutations
     for (const auto& sample : samples()) {
       auto& genotype = dynamic_cast<Genotype&>(*sample);
-      //genotype.growAppendage(genotype.root());
-      //genotype.growSideAppendage(genotype.root());
-      //genotype.lateralSplit(genotype.root(), 0.2);
-      //genotype.axialSplit(genotype.root(), 0.8);
-      //genotype.mutateLength(genotype.root(), 1.0);
-      //genotype.mutateWidth(genotype.root(), 1.0);
-      //genotype.mutateSliceWidth(genotype.root(), 1.0);
+      // genotype.growAppendage(genotype.root());
+      // genotype.growSideAppendage(genotype.root());
+      // genotype.lateralSplit(genotype.root(), 0.2);
+      // genotype.axialSplit(genotype.root(), 0.8);
+      // genotype.mutateLength(genotype.root(), 1.0);
+      // genotype.mutateWidth(genotype.root(), 1.0);
+      // genotype.mutateSliceWidth(genotype.root(), 1.0);
       genotype.grow();
     }
   }
@@ -197,21 +197,17 @@ GLOBAL_INITIALIZER {
 }
 
 Phenotype::Phenotype(const Genotype* genotype) {
-  try {
-    root_ = createSegment(genotype->root(), nullptr, b2Vec2(), b2Vec2(), false);
-  } catch (const std::exception& e) {
-    // Failed to generate Phenotype (genotype is not viable)
-    // (create a dummy placeholder)
-    b2BodyDef body_def;
-    b2Body* body = world_.CreateBody(&body_def);
+  b2BodyDef body_def;
+  body_ = world_.CreateBody(&body_def);
 
-    b2CircleShape shape;
-    shape.m_radius = 1.0;
+  b2CircleShape shape;
+  shape.m_radius = 0.01f;
 
-    b2FixtureDef fixture_def;
-    fixture_def.shape = &shape;
-    body->CreateFixture(&fixture_def);
-  }
+  b2FixtureDef fixture_def;
+  fixture_def.shape = &shape;
+  fixture_def.density = 1.0f;
+  fixture_def.material.color = b2Color(0.8f, 0.5f, 0.5f);
+  fixture_ = body_->CreateFixture(&fixture_def);
 }
 
 void Phenotype::animateJoint(const Joint& joint, float phase) {
@@ -231,8 +227,22 @@ void Phenotype::animateJoint(const Joint& joint, float phase) {
 }
 
 void Phenotype::animate() {
-  animateJoint(root_, current_phase_);
-  current_phase_ += kPhaseVelocity;
+  //animateJoint(root_, current_phase_);
+  //current_phase_ += kPhaseVelocity;
+
+  if (fixture_) {
+    body_->DestroyFixture(fixture_);
+    fixture_ = nullptr;
+  }
+
+  b2CircleShape shape;
+  shape.m_radius = 0.1 + timestamp_ * 0.1f;
+
+  b2FixtureDef fixture_def;
+  fixture_def.shape = &shape;
+  fixture_def.density = 1.0f;
+  fixture_def.material.color = b2Color(0.8f, 0.5f, 0.5f);
+  fixture_ = body_->CreateFixture(&fixture_def);
 
   experimental::replicators::Phenotype::animate();
 }
