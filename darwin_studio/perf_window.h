@@ -20,7 +20,6 @@
 #include <QFrame>
 
 #include <QLineSeries>
-using namespace QtCharts;
 
 namespace Ui {
 class PerfWindow;

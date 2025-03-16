@@ -54,7 +54,7 @@ void ExperimentWindow::newExperiment() {
   for (auto property : experiment_->setup()->properties()) {
     auto property_item = setup_section->addProperty(property->name());
     property_item->setValue(property->value());
-    property_item->setTextColor(1, Qt::darkGray);
+    property_item->setForeground(1, Qt::darkGray);
   }
 
   // mutable sections

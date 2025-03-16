@@ -121,7 +121,7 @@ BoundPropertyItem* PropertiesSectionItem::addProperty(core::Property* property) 
 PropertiesSectionItem::PropertiesSectionItem(const string& name)
     : PropertyItemBase(nullptr) {
   setText(0, QString::fromStdString(name));
-  setBackgroundColor(0, QColor(200, 220, 255));
+  setBackground(0, QColor(200, 220, 255));
 }
 
 PropertyItem::PropertyItem(PropertyItemBase* section, const string& name)

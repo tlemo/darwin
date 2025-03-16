@@ -22,10 +22,10 @@ border-radius: 2px;
 </string>
   </property>
   <property name="frameShape">
-   <enum>QFrame::NoFrame</enum>
+   <enum>QFrame::Shape::NoFrame</enum>
   </property>
   <property name="frameShadow">
-   <enum>QFrame::Plain</enum>
+   <enum>QFrame::Shadow::Plain</enum>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="spacing">
@@ -44,12 +44,12 @@ border-radius: 2px;
     <number>0</number>
    </property>
    <item>
-    <widget class="QtCharts::QChartView" name="chart_view">
+    <widget class="QChartView" name="chart_view">
      <property name="frameShape">
-      <enum>QFrame::NoFrame</enum>
+      <enum>QFrame::Shape::NoFrame</enum>
      </property>
      <property name="frameShadow">
-      <enum>QFrame::Plain</enum>
+      <enum>QFrame::Shadow::Plain</enum>
      </property>
     </widget>
    </item>
@@ -57,7 +57,7 @@ border-radius: 2px;
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QtCharts::QChartView</class>
+   <class>QChartView</class>
    <extends>QFrame</extends>
    <header>QChartView</header>
    <container>1</container>

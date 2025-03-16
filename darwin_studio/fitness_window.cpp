@@ -23,7 +23,6 @@
 #include <QPen>
 #include <QSplineSeries>
 #include <QValueAxis>
-using namespace QtCharts;
 
 #include <random>
 using namespace std;

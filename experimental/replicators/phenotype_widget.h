@@ -41,7 +41,7 @@ class PhenotypeWidget : public physics_ui::Box2dWidget {
   void mousePressEvent(QMouseEvent* event) override;
   void mouseReleaseEvent(QMouseEvent* event) override;
   void mouseMoveEvent(QMouseEvent* event) override;
-  void enterEvent(QEvent* event) override;
+  void enterEvent(QEnterEvent* event) override;
   void leaveEvent(QEvent* event) override;
 
   void setUniformBackgroundColor(const QColor& color);

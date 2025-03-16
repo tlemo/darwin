@@ -19,7 +19,6 @@
 #include <QChart>
 #include <QLineSeries>
 #include <QValueAxis>
-using namespace QtCharts;
 
 namespace conquest_ui {
 

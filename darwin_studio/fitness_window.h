@@ -19,7 +19,6 @@
 
 #include <QFrame>
 #include <QLineSeries>
-using namespace QtCharts;
 
 #include <map>
 #include <random>

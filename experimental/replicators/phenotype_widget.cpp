@@ -49,7 +49,7 @@ void PhenotypeWidget::mouseMoveEvent(QMouseEvent* event) {
   Box2dWidget::mouseMoveEvent(event);
 }
 
-void PhenotypeWidget::enterEvent(QEvent* event) {
+void PhenotypeWidget::enterEvent(QEnterEvent* event) {
   setUniformBackgroundColor(kHighlightedColor);
   Box2dWidget::enterEvent(event);
 }

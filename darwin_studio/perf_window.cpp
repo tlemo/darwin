@@ -21,7 +21,6 @@
 #include <QAreaSeries>
 #include <QChart>
 #include <QValueAxis>
-using namespace QtCharts;
 
 PerfWindow::PerfWindow(QWidget* parent) : QFrame(parent), ui(new Ui::PerfWindow) {
   ui->setupUi(this);

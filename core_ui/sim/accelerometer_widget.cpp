@@ -37,8 +37,7 @@ void AccelerometerWidget::paintEvent(QPaintEvent* event) {
     QPainter painter(this);
 
     painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing |
-                           QPainter::SmoothPixmapTransform |
-                           QPainter::HighQualityAntialiasing);
+                           QPainter::SmoothPixmapTransform);
 
     // background (whole widget)
     painter.setPen(Qt::NoPen);
